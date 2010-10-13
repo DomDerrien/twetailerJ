@@ -116,7 +116,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>aucune(e)</seg>
+                <seg>aucun(e)</seg>
             </tuv>
         </tu>
         <tu tuid="short_core_noCCIndicator" dataType="text">
@@ -213,7 +213,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    |--|Cette command va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.
+                    |--|Cette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -222,7 +222,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    demand qty:X due-date:X tags:X
+                    demande qté:X dateLimite:X tags:X
                 </seg>
             </tuv>
         </tu>
@@ -231,7 +231,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    demand demand:{demand>key} qty:{demand>quantity} due-date:{demand>dueDate} locale:{demand>location>postalCode} {demand>location>countryCode} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
+                    demande demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -240,7 +240,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    cancel demand:{demand>key} {command>footer}
+                    annuler demande:{demand>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -249,7 +249,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    close demand:{demand>key} {command>footer}
+                    compléter demande:{demand>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -258,7 +258,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    propose demand:{demand>key} qty:{demand>quantity} unit-price:X total-cost:X due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
+                    proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -267,7 +267,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    propose proposal:{proposal>key} qty:{demand>quantity} unit-price:X total-cost:X due-date:{demand>dueDate} tags:{demand>criteria} metadata:{demand>metadata}
+                    proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -276,7 +276,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    cancel proposal:{proposal>key} {command>footer}
+                    annuler proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -285,7 +285,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    confirm proposal:{proposal>key} {command>footer}
+                    confirmer proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -294,7 +294,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    decline proposal:{proposal>key} {command>footer}
+                    décliner proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -303,7 +303,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    close proposal:{proposal>key} {command>footer}
+                    compléter proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -312,11 +312,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
-                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
-                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
-                    tags:{demand>cc}
+                    :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
+                    demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
+                    localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
+                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
+                    copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -325,11 +325,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
-                    demand:{demand>key} tee-time:{demand>dueDate}
-                    locale:{demand>location>postalCode} {demand>location>countryCode}
-                    players:{demand>quantity} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
-                    tags:{demand>criteria} {demand>cc}
+                    :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
+                    demande:{demand>key} heureDeJeu:{demand>dueDate}
+                    localité:{demand>location>postalCode} {demand>location>countryCode}
+                    joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    informations:{demand>criteria} copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -338,22 +338,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong></p>
-                    <p>Your demand has just been created with:</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong></p>
+                    <p>Votre demande a été créée avec les éléments suivants:</p>
                     <ul>
-                        <li>Tags: {demand>criteria} HashTags:{demand>hashTags}</li>
-                        <li>Quantity: {demand>quantity};</li>
-                        <li>Due date: {demand>dueDate};</li>
-                        <li>Where: {demand>location>postalCode} {demand>location>countryCode};</li>
-                        <li>Range: {demand>range} {demand>rangeUnit};</li>
+                        <li>Mots-clés: {demand>criteria} -- Étiquettes: {demand>hashTags}</li>
+                        <li>Quantité: {demand>quantity};</li>
+                        <li>Date limite: {demand>dueDate};</li>
+                        <li>Localité: {demand>location>postalCode} {demand>location>countryCode};</li>
+                        <li>Distance: {demand>range} {demand>rangeUnit};</li>
                     </ul>
-                    <p>We're anonymously broadcasting your demand# {demand>key}, to relevant stores
-                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -362,26 +367,30 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
-                           We're confirming your desire to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                           <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>, on <strong>{demand>dueDate}</strong>.
-                           You've also requested:
+                       Nous confirmons votre de demande por un départ de golf <strong>{demand>range} {demand>rangeUnit}</strong> autour de
+                       <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>, le <strong>{demand>dueDate}</strong>.
+                       Le détail de votre demande est:
                     </p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
-                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{demand>quantity}</strong></li>
+                        <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
-                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la emande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{demand>influencer>url}">{demand>influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{demand>influencer>url}">{demand>influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -390,8 +399,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand creation ...|
-                    {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} due-date:{demand>dueDate}.
+                    PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande...|
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -400,8 +409,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following tee-off demand creation ...|
-                    {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart} players:{demand>quantity} tee-time:{demand>dueDate}.
+                    PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande pour un départ de golf...|
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -411,22 +420,25 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>
-                        <strong>{demand>owner>name}</strong> has chosen to notify you of their new demand for:
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle demande:
                     </p>
                     <ul>
-                        <li>Tags: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: {demand>metadata}</li>
-                        <li>Due date: <strong>{demand>dueDate}</strong></li>
-                        <li>Expiration date: {demand>expirationDate}</li>
-                        <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Within: <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong></li>
+                        <li>Mots-clés: <strong>{demand>criteria}</strong></li>
+                        <li>Méta-données {demand>metadata}</li>
+                        <li>Date limite: <strong>{demand>dueDate}</strong></li>
+                        <li>Date d'expiration: {demand>expirationDate}</li>
+                        <li>Quantité: <strong>{demand>quantity}</strong></li>
+                        <li>Localité: <strong>{demand>range} {demand>rangeUnit}</strong> aoutour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong></li>
                     </ul>
-                    <p>The new demand {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>La nouvelle demande {demand>key} va être diffusée aux commerces environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -436,23 +448,26 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>
-                        <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their desire to tee-off
-                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
-                        on <strong>{demand>dueDate}</strong>.
-                        Also requested:
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle recherche pour un départ de golf
+                        à <strong>{demand>range} {demand>rangeUnit}</strong> autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        le <strong>{demand>dueDate}</strong>.
+                        Autres détails:
                     </p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
-                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{demand>quantity}</strong></li>
+                        <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:support@ezToff.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>La nouvelle demande {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@eztoff.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -461,8 +476,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. Can you supply {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} due-date:{demand>dueDate}?|
-                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:X unit-price:X total-cost:X due-date:{demand>dueDate}'.
+                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}?|
+                    Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate}'.
                 </seg>
             </tuv>
         </tu>
@@ -471,8 +486,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. Can you supply {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} players:{demand>quantity} tee-time:{demand>dueDate}?|
-                    If yes then replace the "?" and send the following: 'propose demand:{demand>key} tags:X metadata:{demand>metadata} round-price:X total-cost:X tee-time:{demand>dueDate}'.
+                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>criteria} étiquettes:{demand>hashTags} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?|
+                    Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?'.
                 </seg>
             </tuv>
         </tu>
@@ -481,25 +496,30 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>A new demand for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Une nouvelle demande pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
-                        <li>Tags: <strong>{demand>criteria} Hashtags:{demand>hashTags}</strong></li>
-                        <li>Due date: <strong>{demand>dueDate}</strong></li>
-                        <li>Expiration date: {demand>expirationDate}</li>
-                        <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Metadata: {demand>metadata}</li>
-                        <li>Consumer's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
+                        <li>Mots-clés: <strong>{demand>criteria} Étiquettes:{demand>hashTags}</strong></li>
+                        <li>Date limite: <strong>{demand>dueDate}</strong></li>
+                        <li>Date d'expiration: {demand>expirationDate}</li>
+                        <li>Quantité: <strong>{demand>quantity}</strong></li>
+                        <li>Méta-données {demand>metadata}</li>
+                        <li>Taux de transactions complétées par le consommateur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
-                        If <strong>you can accommodate</strong> the demand, then launch the <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp">Associate Console</a>
-                        and click "Create Proposal" for <strong>Demand {demand>key}</strong>.
-                        Alternatively, you can also send an email to create a Proposal by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
+                        Si <strong>vous pouvez fournir</strong> la demande, alors utilisez la
+                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
+                        et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
+                        Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Créer une proposition</a>
+                        en ayant pris soin de remplacer les 'X' par les bonnes valeurs.
                     </p>
-                    <p>If you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(</p>
+                    <p>
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -508,24 +528,29 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>A new tee-off demand for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Une nouvelle demande de départ de jeu pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
-                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{demand>quantity}</strong></li>
+                        <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Player's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
+                        <li>Taux de transactions complétées par le joueur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
-                        If <strong>you can accommodate</strong> the demand, then launch the <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp">ezToff Reservation Desk</a>
-                        and click "Create Tee-time Proposal" for <strong>Demand {demand>key}</strong>.
-                        Alternatively, you can also send an email to create a tee-off Proposal by clicking
-                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Create Proposal</a> and replacing the ? place holders.
+                        Si <strong>vous pouvez offrir</strong> une heure de départ, alors utilisez la
+                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
+                        et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
+                        Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Créer une proposition</a>
+                        en ayant pris soin de remplacer les 'X' par les bonnes valeurs.
                     </p>
-                    <p>If you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(</p>
+                    <p>
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -534,11 +559,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing your updated demand:{demand>key}...|
-                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
-                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
-                    tags:{demand>cc}
+                    :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
+                    demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
+                    localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
+                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
+                    copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -547,11 +572,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, listing your updated demand:{demand>key}...|
-                    demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
-                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    players:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
-                    tags:{demand>cc}
+                    :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
+                    demande:{demand>key} heureDeJeu:{demand>dueDate}
+                    localité:{demand>location>postalCode} {demand>location>countryCode}
+                    joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    informations:{demand>criteria} copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -560,24 +585,29 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
-                        We're confirming your <strong>update</strong> of the demand within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                        <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
-                        on <strong>{demand>dueDate}</strong>. You've also requested:
+                        Nous confirmons la <strong>mise-à-jour</strong> de la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
+                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>
-                        <li>Quantity: <strong>{demand>quantity}</strong></li>
+                        <li>Quantité: <strong>{demand>quantity}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                        <li>Méta-données <strong>{demand>metadata}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting your demand {demand>key}, to relevant stores
-                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demande: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -586,25 +616,31 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
-                        We're confirming your <strong>update</strong> to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                        <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
-                        on <strong>{demand>dueDate}</strong>. You've also requested:
+                        Nous confirmons la <strong>mise-à-jour</strong> de la demande de départ de golf
+                        à <strong>{demand>range} {demand>rangeUnit}</strong>
+                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
-                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{demand>quantity}</strong></li>
+                        <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
-                    and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demande: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -613,8 +649,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following Demand update ...|
-                    {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} dueDate:{demand>dueDate}.
+                    PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la demande...|
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -623,8 +659,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following tee-off demand update ...|
-                    {demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart} players:{demand>quantity} tee-time:{demand>dueDate}.
+                    PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la emande pour un départ de golf...|
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -633,20 +669,26 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> demand
-                    within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
-                    on <strong>{demand>dueDate}</strong>. Also requested:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
+                        la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
+                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        pour le <strong>{demand>dueDate}</strong>. Autres détails:
+                    </p>
                     <ul>
-                        <li>Quantity: <strong>{demand>quantity}</strong></li>
+                        <li>Quantité: <strong>{demand>quantity}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                        <li>Méta-données <strong>{demand>metadata}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant stores and will communicate their proposals, as soon as possible.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>La demande mise-à-jour {demand>key} va être diffusée aux commerces environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demande: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -655,21 +697,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off
-                    within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
-                    on <strong>{demand>dueDate}</strong>. Also requested:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
+                        la demande de départ de golf à <strong>{demand>range} {demand>rangeUnit}</strong>
+                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        pour le <strong>{demand>dueDate}</strong>. Autres détails:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{demand>quantity}</strong></li>
-                        <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{demand>quantity}</strong></li>
+                        <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>La demande mise-à-jour {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@eztoff.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demande: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -678,9 +726,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata}
+                    :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -689,9 +737,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -700,21 +748,24 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your proposal for:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Nous confirmons la création de la proposition:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this proposal, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Si vous ne pouvez plus fournir la proposition, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>
@@ -723,21 +774,24 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your tee-off proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Nous confirmons la création de la proposition pour un départ de golf le <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>
@@ -746,9 +800,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata}
+                    :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -757,9 +811,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -768,21 +822,24 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your <strong>updated</strong> proposal for:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition:</p>
                     <ul>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this proposal, you can send an email by clicking <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Si vous ne pouvez plus fournir la proposition, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -791,21 +848,24 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>We're confirming your <strong>updated</strong> tee-off proposal on <strong>{proposal>dueDate}</strong> for:</p>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition pour un départ de golf le <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -814,9 +874,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, your demand:{demand>key} received the proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                    :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a reçu la proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimit:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -825,9 +885,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, your tee-off Demand:{demand>key} received the proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    :-) Bonjour {demand>owner>name}, votre demande:{demand>key} pour un départ de golf a reçu la proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -836,29 +896,36 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed:</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
-                    Store registered by <a href="{reseller>url}">{reseller>name}</a></p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
+                        cette proposition {proposal>key}, la <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">décliner</a>, ou
+                        simplement attendre encore que d'autres soient soumises.
+                    </p>
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -867,29 +934,36 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed a tee-off on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé un départ de jeu pour le <strong>{proposal>dueDate}</strong> avec:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm</a></strong> this Proposal# {proposal>key},
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%<br />
-                    Golf course registered by <a href="{reseller>url}">{reseller>name}</a></p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
+                        cette proposition {proposal>key}, la <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">décliner</a>, ou
+                        simplement attendre encore que d'autres soient soumises.
+                    </p>
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -898,9 +972,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the following proposal:{proposal>key} reception ...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                    PVI: Vous êtes mis en copie par {demand>owner>name} pour la réception de la proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -909,9 +983,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off demand:{demand>key} which received a new proposal:{proposal>key} ...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    PVI: Vous êtes mis en copie par {demand>owner>name} pour la demande:{demand>key} de départ de golf qui a reçu la proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -920,24 +994,34 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their Demand:{demand>key}, which has received the following Proposal:{proposal>key}, from <strong><a href="{store>url}">{store>name}</a></strong>:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
+                        d'une proposition:{proposal>key} pour la demande:{demand>key}, émise par le commerce
+                        <strong><a href="{store>url}">{store>name}</a></strong>:
+                    </p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -946,25 +1030,34 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
-                    the Demand:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
-                    has been received with:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
+                        d'une proposition:{proposal>key} pour le l<strong>{proposal>dueDate}</strong>, en rapport avec
+                        la demande:{demand>key}, émise par le club de golf <strong><a href="{store>url}">{store>name}</a></strong>:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@eztoff.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -973,9 +1066,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                    :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour votre demande:{demand>key} a été modifiée...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -984,9 +1077,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your tee-off Demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour la demande:{demand>key} de départ de golf a été modifiée...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -995,28 +1088,36 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has updated the <strong>Proposal# {proposal>key}</strong> for:</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
+                        cette proposition {proposal>key}, la <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">décliner</a>, ou
+                        simplement attendre encore que d'autres soient soumises.
+                    </p>
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1025,28 +1126,39 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has update the tee-off <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  for:</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p>
+                        <strong><a href="{store>url}">{store>name}</a></strong> a modifiée la <strong>proposition {proposal>key}</strong>
+                        de départ de golf du <strong>{proposal>dueDate}</strong> avec:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this Proposal# {proposal>key}</a></strong>,
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or, simply wait to see if any others come in.</p>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel Demand</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuiller <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>,
+                        la proposition {proposal>key}, la <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">décliner</a>, ou
+                        simplement attendre encore que d'autres soient soumises.
+                    </p>
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1055,9 +1167,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the reception of an update of proposal:{proposal>key} ...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} metadata:{demand>metadata}
+                    PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key}...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1066,9 +1178,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off Demand:{demand>key} which received an update of proposal:{proposal>key} ...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    players:{proposal>quantity} tags:{proposal>criteria} {proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
+                    PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key} faite pour la demande:{demand>key} de départ de golf...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1077,24 +1189,33 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
-                    the Demand:{demand>key}. The proposal:{proposal>key} has been updated with:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
+                        d'une mise-à-jour de la  proposition:{proposal>key} en rapport avec la demande:{demand>key}
+                    </p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1103,25 +1224,34 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding the
-                    the tee-off Demand:{demand>key}. The proposal:{proposal>key} for <strong>{proposal>dueDate}</strong>
-                    has been updated with:</p>
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
+                        d'une mise-à-jour de la  proposition:{proposal>key} pour le l<strong>{proposal>dueDate}</strong>, en rapport avec
+                        la demande:{demand>key}, émise par le club de golf <strong><a href="{store>url}">{store>name}</a></strong>:
+                    </p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@eztoff.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1130,8 +1260,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}. Thank you for confirming proposal:{proposal>key} for demand:{demand>key} |
-                    The store:{store>key} {store>name} will be asked to mark and hold demand:{demand>key}.
+                    :-) Bonjour {demand>owner>name}. Merci d'avoir confirmer la proposition:{proposal>key} associée à la demande:{demand>key} |
+                    Le commerce:{store>key} {store>name} va en être informé et va réserver l'object de la demande:{demand>key}.
                 </seg>
             </tuv>
         </tu>
@@ -1140,8 +1270,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}. Thank you for confirming proposal:{proposal>key} for tee-off Demand:{demand>key} |
-                    The golf course {store>name} will be asked to reserve the tee-off time {demand>dueDate}.
+                    :-) Bonjour {demand>owner>name}. Merci d'avoir confirmer la proposition:{proposal>key} associée à la demande:{demand>key} de départ de golf |
+                    Le club de golf {store>name} va en être informé et va réserver le départ de golf pour {demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -1150,25 +1280,30 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved <strong>Proposal# {proposal>key}</strong>, due <strong>{proposal>dueDate}</strong>.</p>
-                    <p>Thank you for the confirmation &amp;amp; enjoy your purchase!</p>
+                    <p>Bonjour {demand>owner>name},</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> va réserver l'objet de la <strong>proposition {proposal>key}</strong>,  prévue pour le <strong>{proposal>dueDate}</strong>.</p>
+                    <p>Merci pour la confirmation. En espérant que l'achat vous convienne !</p>
                     <p>
-                        FYI. After closing your transaction at the Store, you should return here to
-                        <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong>
-                        your Demand. Not only will you improve <strong>your Closing Rate</strong>, you'll also be given the opportunity to later <strong>review</strong>
-                        the Store and/or Sales Associate.
+                        PVI. Une fois l'achat fait, vous devrez utiliser ce courriel pour
+                        <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de votre demande. Cela permettra d'améliorer votre <strong>ratio de transactions complétées</strong>, et vous offrira la possibilité
+                        de <strong>commenter</strong> le commerce et ses associés.
                     </p>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@AnotherSocialEcomony.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1177,24 +1312,30 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
-                    <p><strong><a href="{store>url}">{store>name}</a></strong> has reserved your tee-off under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>.</p>
-                    <p>Thank you for the confirmation &amp;amp; have a great game!</p>
+                    <p>Bonjour {demand>owner>name},</p>
+                    <p><strong><a href="{store>url}">{store>name}</a></strong> va réserver votre de départ de golf de la <strong>proposition {proposal>key}</strong> prévu le <strong>{proposal>dueDate}</strong>.</p>
+                    <p>Merci pour la confirmation. En vous souhaitant une bonne partie !</p>
                     <p>
-                        FYI. After closing your game at {store>name}, you should return here to
-                        <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close</a></strong>
-                        your Demand. Not only will you improve <strong>your Closing Rate</strong>, you'll also be given the opportunity to later <strong>review</strong>
-                        the Golf course.
+                        PVI. Une fois le parcours complèté, vous devrez utiliser ce courriel pour
+                        <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de votre demande. Cela permettra d'améliorer votre <strong>ratio de transactions complétées</strong>, et vous offrira la possibilité
+                        de <strong>commenter</strong> le club de golf et ses associés.
                     </p>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}</p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1203,8 +1344,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the proposal:{proposal>key} ...|
-                    tags:{proposal>criteria} {proposal>hashTags} metadata:{proposal>metadata} quantity:{proposal>quantity} dueDate:{proposal>dueDate}|
+                    PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} a été confirmée...|
+                    motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata} quantité:{proposal>quantity} dateLimite:{proposal>dueDate}|
                     store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
@@ -1214,9 +1355,9 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI: You have been CC'ed by {demand>owner>name} regarding the confirmation of the tee-off proposal:{proposal>key} ...|
-                    tee-time:{proposal>dueDate} players:{proposal>quantity} pullCart:{proposal>metadata>pullCart} golfCart:{proposal>metadata>golfCart} info:{proposal>criteria}|
-                    golf course:{store>key} {store>name} {store>phoneNb} {store>address}
+                    PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} de départ de golf a été confirmée...|
+                    heureDeJeu:{proposal>dueDate} joueurs:{proposal>quantity} chariots:{proposal>metadata>pullCart} voiturettes:{proposal>metadata>golfCart} info:{proposal>criteria}|
+                    store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
         </tu>
@@ -1225,18 +1366,25 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed Proposal# {proposal>key}</strong>
-                    at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
-                    <p>More store information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}<br />
-                    Store registered by <a href="http://http://www.yellowpages.ca/"><b>Yellow</b>Pages.ca</a></p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>confirmation de la proposition {proposal>key}</strong>
+                        au commerce <strong><a href="{store>url}">{store>name}</a></strong>.
+                    </p>
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1245,18 +1393,27 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p><strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed</strong> tee-off under <strong>ezToff Proposal# {proposal>key}</strong>
-                    on <strong>{proposal>dueDate}</strong> at <strong><a href="{store>url}">{store>name}</a></strong>.</p>
-                    <p>Have a great game!</p>
-                    <p>More course information: <br />
-                    Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a><br />
-                    Telephone: {store>phoneNb}</p>
-                    <p>If for any reason, you're no longer interested in being notified, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>confirmation</strong>
+                        de la <strong>proposition {proposal>key}</strong> de départ de golf
+                        le <strong>{proposal>dueDate}</strong> au club de golf <strong><a href="{store>url}">{store>name}</a></strong>.
+                    </p>
+                    <p>Bonne partie!</p>
+                    <p>Informations sur le club de golf:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                    </ul>
+                    <p>
+                        Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:Support@eztoff.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1265,8 +1422,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, proposal:{proposal>key} for Demand:{demand>key} has been confirmed.|
-                    Please mark, hold for Consumer with Demand:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                    :-) Bonjour {proposal>owner>name}, la proposition:{proposal>key} for la demande:{demand>key} a été confirmée.|
+                    Veuillez réserver l'objet de la demande:{demand>key}pour le consommateur. Une fois livré, alors 'compléter proposition:{proposal>key}', ou 'noter proposition:{proposal>key} note:your-note-here'.
                 </seg>
             </tuv>
         </tu>
@@ -1275,8 +1432,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, proposal:{proposal>key} on {proposal>dueDate} has been confirmed.|
-                    Please mark, schedule the tee-off Demand:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                    :-) Bonjour {proposal>owner>name}, la proposition:{proposal>key} for la demande:{demand>key} a été confirmée.|
+                    Veuillez réserver le départ de golf pour la demande:{demand>key}. Une fois la partie jouée, alors 'compléter proposition:{proposal>key}', ou 'noter proposition:{proposal>key} note:your-note-here'.
                 </seg>
             </tuv>
         </tu>
@@ -1285,25 +1442,29 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>Please reserve <strong>Proposal# {proposal>key}</strong> associated to <strong>Demand# {demand>key}</strong> for:</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>Veuillez réserver la <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> pour:</p>
                     <ul>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong>
-                    this Proposal {proposal>key} once the purchase is complete in order to better your Rating.</p>
-                    <p>Thanks for managing your consumer demands with AnotherSocialEconomy.com.</p>
-                    <p>If for any reason, you can longer serve this demand, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@AnotherSocialEconomy.com?body=I should not have been emailed. Please remove my mail address &amp;subject=Theres's been some kind of mistake regarding Proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">complèter</a></strong>
+                        le cycle de la proposition {proposal>key} une fois l'achat complété. Cela améliorera votre taux de transactions complètées.
+                    </p>
+                    <p>Merci de gérer les demandes des consommateurs avec AnotherSocialEconomy.com.</p>
+                    <p>
+                        Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1312,25 +1473,29 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>Please reserve tee-off under <strong>ezToff Proposal# {proposal>key}</strong> scheduled on <strong>{proposal>dueDate}</strong> for:</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>Please reserve tee-off under <strong>ezToff proposal {proposal>key}</strong> scheduled on <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
-                        <li>Players: <strong>{proposal>quantity}</strong></li>
-                        <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
-                        <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
+                        <li>Joueurs: <strong>{proposal>quantity}</strong></li>
+                        <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
+                        <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
-                    <p>Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> this Proposal {proposal>key}
-                    once the Golfer has teed-off in order to better your Rating.</p>
-                    <p>Thanks for managing your tee-off demands with ezToff.</p>
-                    <p>If for any reason, you can longer offer this tee-off, you can send an email by clicking
-                    <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                    if you've received this message in error, click <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my mail address &amp;subject=Theres's been some kind of mistake regarding tee-off proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">complèter</a></strong>
+                        le cycle de la proposition {proposal>key} une fois que les joueurs auront fini leur partie. Cema améliorera votre taux de transactions complètées.
+                    </p>
+                    <p>Merci de gérer les demandes de départ de golf avec ezToff.</p>
+                    <p>
+                        Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1339,7 +1504,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, Thanks for closing demand:{demand>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                    :-) Bonjour {demand>owner>name}, merci d'avoir complété la demande:{demand>key} - votre taux de participation va être mis-à-jour sous peu.
                 </seg>
             </tuv>
         </tu>
@@ -1348,13 +1513,15 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
-                    <p>Thank you for closing <strong>Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                    In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.</p>
-                    <p>We thank you once again for buying locally with AnotherSocialEconomy.com and hope you'll recomment us to your friends.</p>
-                    <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: Your missing link between shopping online &amp;amp; <strong>buying offline</strong>.</p>
+                    <p>Bonjour {demand>owner>name},</p>
+                    <p>
+                        Merci d'avoir complété la <strong>demand {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
+                        Pendant ce temps, nous vous invitons à écrire un commentaire avec le service <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
+                    </p>
+                    <p>Nous vous remercions pour magasiner locallement avec AnotherSocialEconomy.com et espérons que vous nous recommenderez à vos amis.</p>
+                    <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: comble le lien entre le magasinage virtuel et &amp;amp; <strong>l'achat réel</strong>.</p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1363,12 +1530,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
-                    <p>Thank you for closing the <strong>ezToff Demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                    In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.</p>
-                    <p>We thank you once again for reserving your tee-time wth ezToff.com.com and hope you'll recomment us to your friends.</p>
+                    <p>Bonjour {demand>owner>name},</p>
+                    <p>
+                        Merci d'avoir complété la <strong>demande {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
+                        Pendant ce temps, nous vous invitons à écrire un commentaire avec le service <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
+                    </p>
+                    <p>Nous vous remercions pour la réservation de vos parties de golf avec ezToff.com et espérons que vous nous recommenderez à vos amis et partenaires de golf.</p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1377,8 +1546,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. demand:{demand>key} associated to proposal:{proposal>key} has been closed by the Consumer. |
-                    Hint: Send "close proposal:{proposal>key}", or, "flag proposal:{proposal>key} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                    FYI. La demande:{demand>key} associée à la proposition:{proposal>key} a été complétée par le consommateur. |
+                    Conseil: envoyez "compléter proposition:{proposal>key}", ou "noter proposition:{proposal>key} note:X" pour améliorer votre taux de participation.
                 </seg>
             </tuv>
         </tu>
@@ -1387,11 +1556,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>The Demand# {demand>key} for <strong>Proposal# {proposal>key}</strong>, due on <strong>{proposal>dueDate}</strong> has been <strong>closed</strong>.
-                    Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>
+                        La demande {demand>key} associée à la  <strong>proposition {proposal>key}</strong>, prévue le <strong>{proposal>dueDate}</strong> a été <strong>complètée</strong>.
+                        Veuillezz <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complètées.
+                    </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1400,11 +1572,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>The Demand# {demand>key} for the reservation under <strong>ezToff Proposal# {proposal>key}</strong> on <strong>{proposal>dueDate}</strong>  has been <strong>closed</strong>.
-                    Please <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">close</a></strong> your matching proposal {proposal>key} in order to better your Rating.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>
+                        La demande {demand>key} pour la réservation <strong>proposition {proposal>key}</strong> du <strong>{proposal>dueDate}</strong> a été <strong>complètée</strong>.
+                        Veullez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complètées.
+                    </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1413,7 +1588,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, Thanks for closing proposal:{proposal>key} - which will be reflected in your AnotherSocialEconomy.com Rating shortly.
+                    :-) Bonjour {proposal>owner>name}, merci d'avoir compléter la proposition:{proposal>key} - votre taux de participation va être mis-à-jour sous peu.
                 </seg>
             </tuv>
         </tu>
@@ -1422,11 +1597,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>The <strong>Proposal# {proposal>key}</strong> has been closed.</p>
-                    <p>Your rating is going to be updated accordingly.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>La <strong>proposition {proposal>key}</strong> a été complètée.</p>
+                    <p>Votre taux de transactions complètées va être mis-à-jour sous peu.</p>
                     {message>footer}
-                    <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1435,11 +1610,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>The reservation under the <strong>ezToff Proposal# {proposal>key}</strong> has been closed.</p>
-                    <p>Your rating is going to be updated accordingly.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>La réservation de la <strong>proposition {proposal>key}</strong> a été complètée.</p>
+                    <p>Votre taux de transactions complètées va être mis-à-jour sous peu.</p>
                     {message>footer}
-                    <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1448,8 +1623,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. proposal:{proposal>key} for your demand:{demand>key} has been closed by the store:{store>key} {store>name}. |
-                    Hint: Send "close demand:{demand>key}", or, "flag demand:{demand>key} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                    FYI. La proposition:{proposal>key} associée à la demande:{demand>key} a été complètée par le commerce:{store>key} {store>name}. |
+                    Conseil: envoyez "complèter demande:{demand>key}", ou "noter demande:{demand>key} note:X" pour améliorer votre taux de participation.
                 </seg>
             </tuv>
         </tu>
@@ -1458,13 +1633,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
+                    <p>Bonjour {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>closed their Proposal# {proposal>key}</strong>.
-                        Please <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close your corresponding Demand {demand>key}</a> to better your Rating.
+                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complèté la proposition {proposal>key}</strong>.
+                        Veuillez <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a>
+                        votre demande {demand>key} correspondante pour améliorer votre taux de transactions completées.
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1473,13 +1649,14 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
+                    <p>Bonjour {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>closed their ezToff Proposal# {proposal>key}</strong>.
-                        Please <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">close your corresponding tee-off Demand {demand>key}</a> to better your Rating.
+                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>omplèté la proposition {proposal>key}</strong> de départ de golf.
+                        Veuillez <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">complèter</a>
+                        votre demande {demand>key} de partie de golf correspondante pour améliorer votre taux de transactions completées.
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1488,7 +1665,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, your demand:{demand>key} has been successfully canceled.
+                    :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a bien été annulée.
                 </seg>
             </tuv>
         </tu>
@@ -1497,11 +1674,11 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
-                    <p>Your <strong>Demand# {demand>key}</strong> has been <strong>canceled</strong>.</p>
-                    <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your fellow golfers, or, simply CC them next time.</p>
+                    <p>Bonjour {demand>owner>name},</p>
+                    <p>Votre <strong>demande {demand>key}</strong> a bien été <strong>annulée</strong>.</p>
+                    <p>Si vous avez aimé votre expérience avec AnotherSocialEconomy.com, n'hésitez pas à la partager avec vos amis, voire à les copier à de votre prochaine demande.</p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demande: {demand>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1510,8 +1687,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, owner of demand:{demand>key} canceled it.|
-                    Your confirmed proposal:{proposal>key} has been canceled as a side effect without impacting your rating.
+                    :-) Bonjour {proposal>owner>name}, le propriétaire de la demande:{demand>key} l'a annulée.|
+                    Votre proposition:{proposal>key} confirmée a par conséquent été annulée, sans impact sur votre taux de participation.
                 </seg>
             </tuv>
         </tu>
@@ -1520,19 +1697,21 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>The owner of the <strong>Demand# {demand>key}</strong> has canceled it even if your <strong>Proposal# {proposal>key}</strong>
-                    have been confirmed! The corresponding reservation has been canceled but will not have a negative impact on your Rating.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>
+                        Le propriétaire de la <strong>demande {demand>key}</strong> l'a annulée même si votre <strong>proposition {proposal>key}</strong>
+                        avait été confirm'ee! Votre proposition a par conséquent été annulée, sans impact sur votre taux de participation.
+                    </p>
                     <ul>
-                        <li>Quantitiy: <strong>{proposal>quantity}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1541,7 +1720,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, your proposal:{proposal>key} has been successfully canceled.
+                    :-) Bonjour {proposal>owner>name}, votre proposition:{proposal>key} a bien été annulée.
                 </seg>
             </tuv>
         </tu>
@@ -1550,10 +1729,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {proposal>owner>name},</p>
-                    <p>Your <strong>Proposal# {proposal>key}</strong> for <strong>Demand# {demand>key}</strong> has been <strong>canceled</strong>.</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>Votre <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> a bien été <strong>annulée</strong>.</p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1562,8 +1741,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, the proposal:{proposal>key} you confirmed has been canceled.|
-                    Your demand:{demand>key} has been re-broadcasted to stores around. Send "cancel demand:{demand>key}" to stop the process.
+                    :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} que vous aviez confirmée a été annulée.|
+                    Votre demande:{demand>key} a été transmise de nouveau aux commerces environnants. Envoyez "annuler demande:{demand>key}" si vous souhaitez arrêter le processus.
                 </seg>
             </tuv>
         </tu>
@@ -1572,17 +1751,19 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi {demand>owner>name},</p>
+                    <p>Bonjour {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{store>url}">{store>name}</a></strong> has <strong>canceled their Proposal# {proposal>key}</strong>.
-                        As the result, your Demand# {demand>key} has been forwarded to stores in your area.
+                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>annulé la proposition {proposal>key}</strong>.
+                        Par conséquent, votre demande {demand>key} a été transmise de nouveau aux commerces environnants.
                     </p>
-                    <p>If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                    <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or, if you've received this message in error, click
-                    <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address &amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key},  Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
             </tuv>
         </tu>

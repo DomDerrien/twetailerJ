@@ -673,10 +673,12 @@ public class TestCommandLineParser {
     @Test
     public void testParseActionIIe() throws ClientException, ParseException {
         String url = "http://anothersocialeconomy.com/";
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " www " + url, Locale.ENGLISH);
         assertEquals(Action.www.toString(), data.getString(Command.ACTION));
         assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
         assertEquals(url, data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
+        assertEquals("url", data.getString(Command.ACTION)); // as "url" is an equivalent to "www"
     }
 
     @Test

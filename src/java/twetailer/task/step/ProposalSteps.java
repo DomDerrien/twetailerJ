@@ -50,6 +50,8 @@ import domderrien.jsontools.JsonObject;
 
 public class ProposalSteps extends BaseSteps {
 
+    private final static Logger log = Logger.getLogger(ProposalSteps.class.getName());
+
     /* legacy *
     protected static AmazonFPS amazonFPS = new AmazonFPS();
     */
@@ -262,7 +264,10 @@ public class ProposalSteps extends BaseSteps {
                 lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
                 queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
             }
-            catch (ParseException e) { } // Date not set, too bad.
+            catch (ParseException e) {
+                // Date not set, too bad.
+                log.warning("Date in an invalid format: " + parameters.getString(Entity.MODIFICATION_DATE));
+            }
         }
 
         return queryFilters;
@@ -411,7 +416,10 @@ public class ProposalSteps extends BaseSteps {
                                 new String[] { msgGen.getMessage(MessageId.PROPOSAL_CLOSING_OK_TO_CONSUMER) }
                         );
                     }
-                    catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
+                    catch (CommunicationException e) {
+                        // Not a critical error, should not block the rest of the process
+                        log.warning("Cannot inform " + demand.getOwnerKey());
+                    }
                 }
 
                 // No need to bother CC-ed
@@ -495,7 +503,10 @@ public class ProposalSteps extends BaseSteps {
                                 new String[] { msgGen.getMessage(MessageId.PROPOSAL_CONFIRMED_CANCELLATION_OK_TO_CONSUMER) }
                         );
                     }
-                    catch (CommunicationException ex) {} // Not a critical error, should not block the rest of the process
+                    catch (CommunicationException e) {
+                        // Not a critical error, should not block the rest of the process
+                        log.warning("Cannot inform " + demand.getOwnerKey());
+                    }
                 }
 
                 getDemandOperations().updateDemand(pm, demand);
@@ -610,9 +621,9 @@ public class ProposalSteps extends BaseSteps {
             // Echo back the successful confirmation
             Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
             Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
-            Locale locale = demandOwner.getLocale();
 
             if (rawCommand != null) {
+                Locale locale = demandOwner.getLocale();
                 MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
                 msgGen.
                     put("demand>owner>name", demandOwner.getName()).
@@ -658,6 +669,7 @@ public class ProposalSteps extends BaseSteps {
                 // Inform the sale associate of the successful confirmation
                 SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
                 Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                Locale locale = saConsumerRecord.getLocale();
 
                 MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), proposal.getHashTags(), locale);
                 msgGen.
@@ -694,6 +706,7 @@ public class ProposalSteps extends BaseSteps {
             // Notify CC-ed
             List<String> cc = demand.getCC();
             if (cc != null && 0 < cc.size()) {
+                Locale locale = demandOwner.getLocale();
                 MessageGenerator msgGen = null;
                 String message = null;
                 String subject = null;
@@ -732,7 +745,10 @@ public class ProposalSteps extends BaseSteps {
                                 locale
                         );
                     }
-                    catch (ClientException e) { } // Too bad, cannot contact the CC-ed person... Don't block the next sending!
+                    catch (CommunicationException e) {
+                        // Too bad, cannot contact the CC-ed person... Don't block the next sending!
+                        log.warning("Cannot inform cc'ed " + coordinate);
+                    }
                 }
             }
         }

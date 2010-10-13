@@ -151,7 +151,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mode démo</seg>
+                <seg>Mode de démonstration</seg>
             </tuv>
         </tu>
         <tu tuid="shared_email_sample" dataType="text">
@@ -872,7 +872,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Coordonnées du magasin</seg>
+                <seg>Coordonnées du commerce</seg>
             </tuv>
         </tu>
         <tu tuid="core_stateSelector_anyState" dataType="text">
@@ -1002,7 +1002,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la demande {0}</seg>
+                <seg>Compléter la demande {0}</seg>
             </tuv>
         </tu>
         <tu tuid="core_cmenu_declineDemand" dataType="text">
@@ -1066,7 +1066,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la proposition {0}</seg>
+                <seg>Compléter la proposition {0}</seg>
             </tuv>
         </tu>
         <tu tuid="core_cmenu_detectLocale" dataType="text">
@@ -1325,14 +1325,14 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Coordonnées du magasin {0}</seg>
+                <seg>Coordonnées du commerce {0}</seg>
             </tuv>
         </tu>
         <tu tuid="core_storeForm_storeKey" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Identifiant du magasin:</seg>
+                <seg>Identifiant du commerce:</seg>
             </tuv>
         </tu>
         <tu tuid="core_storeForm_storeName" dataType="text">
@@ -1469,7 +1469,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la demande départ {0}</seg>
+                <seg>Compléter la demande départ {0}</seg>
             </tuv>
         </tu>
         <tu tuid="golf_cmenu_declineDemand" dataType="text">
@@ -1533,7 +1533,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Fermer la proposition de départ {0}</seg>
+                <seg>Compléter la proposition de départ {0}</seg>
             </tuv>
         </tu>
         <tu tuid="golf_demandForm_formTitle_creation" dataType="text">
@@ -1721,7 +1721,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoins, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous notifierons leurs propositions.</seg>
+                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous notifierons leurs propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_2_title" dataType="text">
@@ -1808,7 +1808,7 @@
                 <seg>
                     Merci de magasiner avec le <b>{0}</b>.
                     Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[dynamically updated]</span>.
-                    Si vous n'avez reçu de courriel en provenance de AnotherSocialEconomy.com d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
+                    Si vous n'avez reçu de courriel en provenance de AnotherSocialEconomy.com d'ici 20 minutes, vérifiez notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
                     ou contactez nous à l'adresse <a href="mailto:support@anothersocialeconomy.com"><span title="support@anothersocialeconomy.com">notre service de soutien technique</span></a>.
                     Par la suite, nous vous transmettrons les propositions des vendeurs de votre région dès qu'elles nous seront communiquées.
                 </seg>
@@ -2081,7 +2081,7 @@
                 <seg>
                     Merci de magasiner avec le Réseau <b>ezToff</b>.
                     Nous allons vous envoyer sous peu un courriel de confirmation à <span id="sender.email" style="font-weight:bold;">[dynamically updated]</span>.
-                    Si vous n'avez pas reçu de courriel en provenance de ezToff.com d'ici 20 minutes, vérifier notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
+                    Si vous n'avez pas reçu de courriel en provenance de ezToff.com d'ici 20 minutes, vérifiez notre <a href="http://ezToff.com/faq-fr">Foire aux questions</a>
                     ou contactez nous à l'adresse <a href="mailto:support@eztoff.com">support@eztoff.com</a>.
                     Par la suite, nous vous transmettrons les propositions des clubs de golf dès qu'elles nous seront communiquées.
                 </seg>

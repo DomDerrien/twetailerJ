@@ -216,7 +216,7 @@ public class CommandLineParser {
                 JsonObject actions = CommandLineParser.localizedActions.get(locale);
                 for (Action action: Action.values()) {
                     if (CommandSettings.isEquivalentTo(actions, action.toString(), currentGroup.toLowerCase(locale), null)) {
-                        command.put(Command.ACTION, action.toString());
+                        command.put(Command.ACTION, currentGroup.toLowerCase(locale));
                         messageCopy = extractPart(messageCopy, currentGroup);
                         oneFieldOverriden = true;
                         break;
@@ -437,6 +437,7 @@ public class CommandLineParser {
         if (!oneFieldOverriden) {
             throw new ClientException("No query field has been correctly extracted");
         }
+
         return command;
     }
 

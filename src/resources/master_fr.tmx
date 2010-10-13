@@ -107,7 +107,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>fermé</seg>
+                <seg>complété</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_cancelled" dataType="text">
@@ -161,7 +161,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>dateLimite</seg>
+                <seg>dateLimite,heureDeJeu</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_expiration" dataType="text">
@@ -176,7 +176,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>metaÉtiquette,hashtag,#</seg>
+                <seg>étiquettes,etiquettes,hashtag,#</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_help" dataType="text">
@@ -199,7 +199,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>metadata</seg>
+                <seg>metaDonnées</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_name" dataType="text">
@@ -271,7 +271,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>magasin</seg>
+                <seg>commerce</seg>
             </tuv>
         </tu>
         <tu tuid="cl_prefix_tags" dataType="text">
@@ -299,7 +299,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>fermer</seg>
+                <seg>compléter,fermer</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_confirm" dataType="text">
@@ -730,7 +730,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( L'action {0} n'est pas reconue par le système. Envoyer '?action' pour avoir de l'aide.</seg>
+                <seg>:-( L'action {0} n'est pas reconnue par le système. Envoyer '?action' pour avoir de l'aide.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_parser_reserved_action" dataType="text">
@@ -793,14 +793,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Veuillez vérifier la référence de la Demande que vous souhaiter Fermer et essayer de nouveau.</seg>
+                <seg>:-( Veuillez vérifier la référence de la Demande que vous souhaiter Compléter et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_invalid_demand_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Vous ne pouvez Fermer la {0} dans l'{1}.</seg>
+                <seg>:-( Vous ne pouvez Compléter la {0} dans l'{1}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_acknowledge_demand_closing" dataType="text">
@@ -831,7 +831,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Vous ne pouvez pas Fermer la {0} qui est dans l'{1}.</seg>
+                <seg>:-( Vous ne pouvez pas Compléter la {0} qui est dans l'{1}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_close_acknowledge_proposal_closing" dataType="text">
@@ -855,7 +855,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>Vous ne pouvez Fermer que des Demandes ou des Propositions.</seg>
+                <seg>Vous ne pouvez Compléter que des Demandes ou des Propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_confirm_invalid_state_demand" dataType="text">
@@ -1073,7 +1073,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Veuillez vérifier la référence du Magasin et essayer de nouveau.</seg>
+                <seg>:-( Veuillez vérifier la référence du Commerce et essayer de nouveau.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_no_active_demand" dataType="text">
@@ -1150,14 +1150,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">4</prop>
             <tuv xml:lang="fr">
-                <seg>:-( Je ne peux pas trouver de Magasins à {1} pour {0}.</seg>
+                <seg>:-( Je ne peux pas trouver de Commerces à {1} pour {0}.</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_list_store_series_introduction" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">8</prop>
             <tuv xml:lang="fr">
-                <seg>:-) Affichage de {0} Magasin(s) à {2} pour {0}...</seg>
+                <seg>:-) Affichage de {0} Commerce(s) à {2} pour {0}...</seg>
             </tuv>
         </tu>
         <tu tuid="cp_command_propose_invalid_proposal_id" dataType="text">
@@ -1262,7 +1262,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>magasin:{0}</seg>
+                <seg>commerce:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_state_part" dataType="text">
@@ -1360,7 +1360,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>magasin:{0} {1}</seg>
+                <seg>commerce:{0} {1}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_name_part" dataType="text">
@@ -1501,7 +1501,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Le concept de meta étiquette (#) est réservé pour une future fonctionalité. Pour le moment, seul "#demo" est accepté.|
+                    Le concept d'étiquette (#) est réservé pour une future fonctionalité. Pour le moment, seul "#demo" est accepté.|
                     Les autres valeurs sont ignorées. Vous pouvez les ajouter aux mots-clés avec '{0} {1}'.|
                     Envoyez '? demo' pour de l'aide sur le mode démo, et joignez la communauté de AnotherSocialEconomy.com pour plus d'informations sur les fonctionalités.
                 </seg>
@@ -1539,8 +1539,8 @@
             <prop type="x-version">3</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    1/2 PVI. Je n'ai trouvé aucun Magasin pour les mots-clés mais je vais continuer d'en chercher jusqu'à ce que la Demande expire.|
-                    2/2 N'hésitez pas à demander aux Magasins que vous visitez de s'enregistrer sur AnotherSocialEconomy.com pour améliorer notre service dans votre Localité.
+                    1/2 PVI. Je n'ai trouvé aucun Commerce pour les mots-clés mais je vais continuer d'en chercher jusqu'à ce que la Demande expire.|
+                    2/2 N'hésitez pas à demander aux Commerces que vous visitez de s'enregistrer sur AnotherSocialEconomy.com pour améliorer notre service dans votre Localité.
                 </seg>
             </tuv>
         </tu>
@@ -1608,7 +1608,7 @@
             <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>
-                   1/2 :-( #demo est la seule meta étiquette supportée.|
+                   1/2 :-( #demo est la seule étiquette supportée.|
                    2/2 Vous pouvez ajouter le mot clé à la description de la Proposition en envoyant: 'proposer proposition:{0} {1}'.
                 </seg>
             </tuv>

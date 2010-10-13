@@ -113,11 +113,16 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                     }
                     InternetAddress senderAddress = MailConnector.prepareInternetAddress("UTF-8", email, email);
                     Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
+                    if (consumer.getAutomaticLocaleUpdate()) {
+                        String language = in.getString(Consumer.LANGUAGE);
+                        if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
+                            consumer.setLanguage(language);
+                            BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
+                        }
+                    }
 
                     in.put(Demand.SOURCE, Source.widget.toString());
                     DemandSteps.createDemand(pm, in, consumer);
-
-                    // TODO: call generateTweet
                 }
                 else {
                     response.setStatus(404); // Not Found

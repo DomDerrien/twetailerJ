@@ -224,7 +224,7 @@
                     <tr>
                         <td><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_range", locale) %></label></td>
                         <td colspan="2">
-                            <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" /> km
+                            <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" />
                         </td>
                     </tr>
                 </table>
