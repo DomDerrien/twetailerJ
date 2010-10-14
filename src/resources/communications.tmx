@@ -361,7 +361,7 @@
                     :-) Hi {demand>owner>name}, listing newly created demand:{demand>key}...|
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
+                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags}
                     cc:{demand>cc}
                 </seg>
             </tuv>
@@ -409,7 +409,7 @@
                     <p>Hi <strong>{demand>owner>name}</strong></p>
                     <p>Your demand has just been created with:</p>
                     <ul>
-                        <li>Tags: {demand>criteria} HashTags:{demand>hashTags}</li>
+                        <li>Details: {demand>criteria} HashTags:{demand>hashTags}</li>
                         <li>Quantity: {demand>quantity};</li>
                         <li>Due date: {demand>dueDate};</li>
                         <li>Where: {demand>location>postalCode} {demand>location>countryCode};</li>
@@ -457,7 +457,7 @@
                         <li>Players: <strong>{demand>quantity}</strong></li>
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
@@ -489,7 +489,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the following demand creation...|
-                    demand:{demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} due-date:{demand>dueDate}.
+                    demand:{demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} quantity:{demand>quantity} due-date:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -531,8 +531,7 @@
                         <strong>{demand>owner>name}</strong> has chosen to notify you of their new demand for:
                     </p>
                     <ul>
-                        <li>Tags: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: {demand>metadata}</li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                         <li>Due date: <strong>{demand>dueDate}</strong></li>
                         <li>Expiration date: {demand>expirationDate}</li>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
@@ -575,7 +574,7 @@
                         <li>Players: <strong>{demand>quantity}</strong></li>
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>
@@ -654,11 +653,11 @@
                     <p>Hi <strong>{proposal>owner>name}</strong>,</p>
                     <p>A new demand for <strong>{demand>dueDate}</strong> has been posted in your area. Can you accommodate:</p>
                     <ul>
-                        <li>Tags: <strong>{demand>criteria} Hashtags:{demand>hashTags}</strong></li>
+                        <li>Details: <strong>{demand>criteria} Hashtags:{demand>hashTags}</strong></li>
                         <li>Due date: <strong>{demand>dueDate}</strong></li>
                         <li>Expiration date: {demand>expirationDate}</li>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Metadata: {demand>metadata}</li>
+                        <li>More options: {demand>metadata}</li>
                         <li>Consumer's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
@@ -702,7 +701,7 @@
                         <li>Players: <strong>{demand>quantity}</strong></li>
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                         <li>Player's closing rate: {demand>owner>closedDemandNb} of {demand>owner>publishedDemandNb}, or, {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
@@ -741,7 +740,7 @@
                     :-) Hi {demand>owner>name}, listing your updated demand:{demand>key}...|
                     demand:{demand>key} state:{demand>state} due:{demand>dueDate} expires:{demand>expirationDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata}
+                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags}
                     cc:{demand>cc}
                 </seg>
             </tuv>
@@ -794,8 +793,8 @@
                     </p>
                     <ul>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
+                        <li>More options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>
                         We're anonymously broadcasting your demand {demand>key}, to relevant stores
@@ -838,7 +837,7 @@
                         <li>Players: <strong>{demand>quantity}</strong></li>
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
@@ -870,7 +869,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the following demand update...|
-                    demand:{demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} metadata:{demand>metadata} quantity:{demand>quantity} dueDate:{demand>dueDate}.
+                    demand:{demand>key} tags:{demand>criteria} hashtags:{demand>hashTags} quantity:{demand>quantity} dueDate:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -914,8 +913,8 @@
                     </p>
                     <ul>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Metadata: <strong>{demand>metadata}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
+                        <li>More options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>We're anonymously broadcasting their demand {demand>key}, to relevant stores and will communicate their proposals, as soon as possible.</p>
                     <p>
@@ -952,7 +951,7 @@
                         <li>Players: <strong>{demand>quantity}</strong></li>
                         <li>Pull carts: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>
@@ -1026,8 +1025,8 @@
                     <p>Hi <strong>{proposal>owner>name}</strong>,</p>
                     <p>We're confirming your proposal for:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1065,7 +1064,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1141,8 +1140,8 @@
                     <p>We're confirming your <strong>updated</strong> proposal for:</p>
                     <ul>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
@@ -1179,7 +1178,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1264,8 +1263,8 @@
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has proposed:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1321,7 +1320,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1407,8 +1406,8 @@
                         which has received the following proposal:{proposal>key}, from <strong><a href="{store>url}">{store>name}</a></strong>:
                     </p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1458,7 +1457,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1550,8 +1549,8 @@
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> has updated the <strong>proposal {proposal>key}</strong> for:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1610,7 +1609,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1697,8 +1696,8 @@
                         the demand:{demand>key}. The proposal:{proposal>key} has been updated with:
                     </p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1748,7 +1747,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -2114,8 +2113,8 @@
                     <p>Hi {proposal>owner>name},</p>
                     <p>Please reserve <strong>proposal {proposal>key}</strong> associated to <strong>demand {demand>key}</strong> for:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -2160,7 +2159,7 @@
                         <li>Players: <strong>{proposal>quantity}</strong></li>
                         <li>Pull carts: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Golf carts: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
                         <li>Round price: <strong>{proposal>currencyCode}{proposal>price}</strong> per player</li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -2552,8 +2551,8 @@
                     </p>
                     <ul>
                         <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Metadata: <strong>{proposal>metadata}</strong></li>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>

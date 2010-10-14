@@ -212,7 +212,7 @@ public class ProposalProcessor {
                     put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                double publishedNb = store.getPublishedProposalNb(); // Cannot be 0 as this message is triggered by a published demand!
+                double publishedNb = store.getPublishedProposalNb() == null ? 1 : store.getPublishedProposalNb(); // Can't be null with new demands, but can still be null with the old ones without this field
                 double closedNb = store.getClosedProposalNb() == null ? 0 : store.getClosedProposalNb();
                 msgGen.
                     put("store>publishedProposalNb", (long) publishedNb).

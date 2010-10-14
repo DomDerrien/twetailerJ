@@ -315,7 +315,7 @@
                     :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
-                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
+                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
             </tuv>
@@ -341,7 +341,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong></p>
                     <p>Votre demande a été créée avec les éléments suivants:</p>
                     <ul>
-                        <li>Mots-clés: {demand>criteria} -- Étiquettes: {demand>hashTags}</li>
+                        <li>Détails: {demand>criteria} -- Étiquettes: {demand>hashTags}</li>
                         <li>Quantité: {demand>quantity};</li>
                         <li>Date limite: {demand>dueDate};</li>
                         <li>Localité: {demand>location>postalCode} {demand>location>countryCode};</li>
@@ -377,7 +377,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
@@ -400,7 +400,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -423,8 +423,7 @@
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle demande:
                     </p>
                     <ul>
-                        <li>Mots-clés: <strong>{demand>criteria}</strong></li>
-                        <li>Méta-données {demand>metadata}</li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                         <li>Date limite: <strong>{demand>dueDate}</strong></li>
                         <li>Date d'expiration: {demand>expirationDate}</li>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
@@ -457,7 +456,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>La nouvelle demande {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -499,11 +498,11 @@
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Une nouvelle demande pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
-                        <li>Mots-clés: <strong>{demand>criteria} Étiquettes:{demand>hashTags}</strong></li>
+                        <li>Détails: <strong>{demand>criteria} Étiquettes:{demand>hashTags}</strong></li>
                         <li>Date limite: <strong>{demand>dueDate}</strong></li>
                         <li>Date d'expiration: {demand>expirationDate}</li>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Méta-données {demand>metadata}</li>
+                        <li>Autres options: {demand>metadata}</li>
                         <li>Taux de transactions complétées par le consommateur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
@@ -534,7 +533,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                         <li>Taux de transactions complétées par le joueur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
@@ -562,7 +561,7 @@
                     :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
-                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
+                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
             </tuv>
@@ -593,8 +592,8 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Méta-données <strong>{demand>metadata}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Autres options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
@@ -627,7 +626,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
@@ -650,7 +649,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la demande...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -677,8 +676,8 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
-                        <li>Méta-données <strong>{demand>metadata}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Autres options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>La demande mise-à-jour {demand>key} va être diffusée aux commerces environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -707,7 +706,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>La demande mise-à-jour {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -751,8 +750,8 @@
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la création de la proposition:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -780,7 +779,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -826,8 +825,8 @@
                     <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition:</p>
                     <ul>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
@@ -854,7 +853,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -899,8 +898,8 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -940,7 +939,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1000,8 +999,8 @@
                         <strong><a href="{store>url}">{store>name}</a></strong>:
                     </p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1039,7 +1038,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1091,8 +1090,8 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1135,7 +1134,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1194,8 +1193,8 @@
                         d'une mise-à-jour de la  proposition:{proposal>key} en rapport avec la demande:{demand>key}
                     </p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1233,7 +1232,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1445,8 +1444,8 @@
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Veuillez réserver la <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> pour:</p>
                     <ul>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
@@ -1479,7 +1478,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
@@ -1704,8 +1703,8 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Options: <strong>{proposal>criteria}</strong></li>
-                        <li>Méta-données <strong>{proposal>metadata}</strong></li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>

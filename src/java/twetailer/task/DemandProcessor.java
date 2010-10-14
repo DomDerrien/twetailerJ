@@ -373,7 +373,7 @@ public class DemandProcessor {
                 put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                 put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
-            double publishedNb = demandOwner.getPublishedDemandNb(); // Cannot be 0 as this message is triggered by a published demand!
+            double publishedNb = demandOwner.getPublishedDemandNb() == null ? 1 : demandOwner.getPublishedDemandNb(); // Can't be null with new demands, but can still be null with the old ones without this field
             double closedNb = demandOwner.getClosedDemandNb() == null ? 0 : demandOwner.getClosedDemandNb();
             msgGen.
                 put("demand>owner>publishedDemandNb", (long) publishedNb).
