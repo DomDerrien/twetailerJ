@@ -1,0 +1,61 @@
+/**
+ * @author Dom Derrien
+ */
+.ase_buyItTab {
+    font-family: arial,helvetica,sans-serif;
+    font-size: 22px;
+    font-weight: normal;
+    border: 1px solid #ddd000;
+    -webkit-box-shadow: -3px 3px 10px #aaa;
+    -no-moz-box-shadow: -3px 3px 10px #aaa;
+    padding: 5px;
+    position: fixed;
+    top: 35%;
+    left: -5px;
+    background-color: #fff000;
+    -webkit-transform-origin: left top;
+    -webkit-transform: rotate(-90deg);
+    -moz-transform-origin: left top;
+    -moz-transform: rotate(-90deg);
+    -o-transform-origin: left top;
+    -o-transform: rotate(-90deg);
+    transform: rotate(90deg);
+    writing-mode: tb-rl;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    color:red;
+}
+.ase_buyItTab:hover {
+    left: 0px;
+}
+.ase_buyItTab a, .ase_buyItTab a:hover, .ase_buyItTab a:visited {
+    text-decoration: none !important;
+    color: #222;
+}
+.ase_buyItWidget {
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    bottom: 30px;
+    width: 250px;
+    border: 0 none;
+    text-align: left;
+    background-color: transparent;
+    z-index: 999;
+}
+.ase_buyItWidget>span {
+    background-color: #7f8082;
+    padding: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+.ase_buyItWidget>span>a {
+    font-family: arial, helvetica, sans-serif;
+    color: white !important;
+    font-weight: bold !important;
+}
+.ase_buyItWidget>iframe {
+    width: 100%;
+    height: 100%;
+    border: 0 none;
+}

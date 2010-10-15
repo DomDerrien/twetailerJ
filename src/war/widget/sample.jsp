@@ -32,18 +32,9 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <style type="text/css"><%
-        if (useCDN) {
-        %>
+    <style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";<%
-        }
-        else { // elif (!useCDN)
-        %>
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
-        } // endif (useCDN)
-        %>
+        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
 
         body { margin: 10px 60px; font-size: 10pt; font-family: tahoma, verdana, sans-serif; }
         h1 { font-size: 14pt; color: white; background-color: black; font-weight: bold; padding: 3px 5px; }
@@ -57,37 +48,6 @@
         .params>tbody>tr>td>input { color: blue; border: 0 none; width: 20em; }
         .params>tbody>tr>td>input:hover { background-color: #fff000; }
         .params>tbody>tr>td:last-child { color: brown; }
-
-        .buyItButton {
-            font-family: arial,helvetica,sans-serif;
-            font-size: 22px;
-            font-weight: normal;
-            border: 1px solid #ddd000;
-            -webkit-box-shadow: -3px 3px 10px #aaa;
-            -no-moz-box-shadow: -3px 3px 10px #aaa;
-            padding: 5px;
-            position: fixed;
-            top: 35%;
-            left: -5px;
-            background-color: #fff000;
-            -webkit-transform-origin: left top;
-            -webkit-transform: rotate(-90deg);
-            -moz-transform-origin: left top;
-            -moz-transform: rotate(-90deg);
-            -o-transform-origin: left top;
-            -o-transform: rotate(-90deg);
-            transform: rotate(90deg);
-            writing-mode: tb-rl;
-            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-            -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-        }
-        .buyItButton:hover {
-            left: 0px;
-        }
-        .buyItButton a, .buyItButton a:hover, .buyItButton a:visited {
-            text-decoration: none;
-            color: #222;
-        }
    </style>
 </head>
 <body class="tundra">
@@ -107,7 +67,6 @@
     </div>
     <h1 style="background-color: white; color: black; font-weight: bold; font-size: 30px; line-height: 36px; font-family: 'Helvetica Neue', Arial, Helvetica, 'Nimbus Sans L', sans-serif;">AnotherSocialEconomy</h1>
     <p><a href="http://anothersocialeconomy.com"><img src="http://anothersocialeconomy.com/wp-content/uploads/2010/08/cropped-iStock_000006943675Small.jpg" style="border-top: 4px solid black; border-bottom: 4px solid black;"/></a></p>
-    <div class="buyItButton"><a id="bkmklt-2">Buy it locally?</a></div>
     <h1>Widget context</h1>
     <p>
         <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a> (ASE) provides a multi-channel engine (e-mail, Twitter, Facebook, SMS, Android, iPhone, Web, etc.).
@@ -240,7 +199,7 @@
             </tr>
         </tbody>
     </table>
-    <h1>Code snippet</h1>
+    <h1>Code snippets</h1>
     <p>
         The following piece of code shows how flexible is the system.
         By default, the &lt;iframe/&gt; content shows a background colored and with rounded corners.
@@ -256,7 +215,14 @@
         (<a href="javascript:setupParametersForYPG();">shortcut for a YPG setup</a>).
         Reminder: you can update each <span style="color: blue;">blue value</span> with a simple click to edit them.
     </p>
-    <h1>Widget alternative</h1>
+    <p>
+        The following piece of code shows the line to add to your webpages in order to have the ASE Floating Tab installed on your site.
+        When the visitors click on the Tab, the widget is loaded and displayed over the content of your page.
+        This is a light process as it does not use space on your pages and it does not slowdown the page rendering as the widget itself can do.
+        The code snippet is about a command to load a &lt;script/&gt; file from the ASE servers.
+    </p>
+    <textarea rows="1" style="border: 1px solid gray; width: 100%;">&nbsp;&nbsp;&lt;script type="text/javascript" src="/widget/widget-loader.js"&gt;&lt;/script&gt;</textarea>
+    <h1>Widget alternatives</h1>
     <p>
         The widget is a nice tool to be embedded on retailers' website.
         But what happens to a customer visiting a website which does not provide the widget?
@@ -269,8 +235,29 @@
         Then you can 'drag and drop' the updated link on your bookmark toolbar.
     </p>
     <ul>
-        <li><a id="bkmklt-1" style="border:1px solid grey;background-color:lightgrey;padding:3px 5px;">ASE bookmarklet</a></li>
+        <li>
+            <a id="bkmklt" style="border:1px solid grey;background-color:lightgrey;padding:3px 5px;">ASE bookmarklet</a>
+            &mdash; trigger the bookmarklet code generator first and drag'n'drop the generated link on your bookmark toolbar
+        </li>
     </ul>
+    <ul>
+        <li>
+            <a
+                href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
+                style="border:1px solid grey;background-color:#fff000;padding:3px 5px;"
+            >ASE floating tab</a>
+            &mdash; ready to be dropped on your bookmark toolbar
+        </li>
+    </ul>
+    <p>
+        The widget can be also added to popular portal as <a href="http://www.google.com/ig" target="ig">iGoogle</a> , for example, with standard buttons as
+        <a 
+            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//domderrien.github.com/ase-ypg-igoogle.xml"
+            onclick="javascript:pageTracker._trackPageview('/outbound/article/fusion.google.com');"
+        >
+            <img src="http://gmodules.com/ig/images/plus_google.gif" border="0" alt="Add to Google" />
+        </a>.
+    </p>
 
     <script type="text/javascript">
     var setupParametersForYPG = function() {
@@ -382,6 +369,8 @@
             st = hd.style;
             st.backgroundColor = '#7f8082';
             st.fontFamily = 'arial,sans-serif';
+            st.fontSize = 'smaller';
+            st.color = '#fff';
             px = '5px';
             st.padding = px;
             st[rad] = px;
@@ -418,8 +407,7 @@
     var compressRawCode = function() {
         var code = compressAseBkmkltCode();
         // if (prompt('Here is the compressed code (size: ' + code.length + ').\n\nIf you agree, it will be injected in the bookmarklet [href] attribute and you will be able to use it standalone.', code)) {
-            document.getElementById('bkmklt-1').href = 'javascript:(' + code + ')();';
-            document.getElementById('bkmklt-2').href = 'javascript:(' + code + ')();';
+            document.getElementById('bkmklt').href = 'javascript:(' + code + ')();';
         // }
     };
     </script>
@@ -433,6 +421,8 @@
         <li>ASE console: <a href="/console/">Consumer</a> -- <a href="/console/associate.jsp">Associate</a>.</li>
         <li>ezToff console: <a href="/console/eztoff/">Consumer</a> -- <a href="/console/eztoff/associate.jsp">Associate</a>.</li>
     </ul>
+
+   <script type="text/javascript" src="/widget/widget-loader.js"></script>
 
     <% if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %><script type="text/javascript">
     var _gaq = _gaq || [];
@@ -449,8 +439,3 @@
     </script><% } %>
 </body>
 </html>
-<!--
-
- -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;background-color:#fff000;
-
- -->
