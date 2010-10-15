@@ -121,6 +121,7 @@ public class Location extends Entity {
         }
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(COUNTRY_CODE, getCountryCode());
@@ -131,6 +132,7 @@ public class Location extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
 

@@ -150,6 +150,7 @@ public class Entity implements TransferObject {
         this.modificationDate = modificationDate;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {
@@ -164,6 +165,7 @@ public class Entity implements TransferObject {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         if (in.containsKey(KEY)) {
             setKey(in.getLong(KEY));

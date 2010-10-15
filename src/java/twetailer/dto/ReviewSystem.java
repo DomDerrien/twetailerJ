@@ -75,6 +75,7 @@ public class ReviewSystem extends Entity {
         this.url = url;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(EMAIL, getEmail());
@@ -83,6 +84,7 @@ public class ReviewSystem extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }

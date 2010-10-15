@@ -154,6 +154,7 @@ public class Store extends Entity {
         this.url = url;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
@@ -172,6 +173,7 @@ public class Store extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }

@@ -163,6 +163,7 @@ public class Proposal extends Command {
         this.total = total;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (AWSCBUIURL != null) {
@@ -177,6 +178,7 @@ public class Proposal extends Command {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }

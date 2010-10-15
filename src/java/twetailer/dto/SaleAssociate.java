@@ -289,6 +289,7 @@ public class SaleAssociate extends Entity {
         this.score = score;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(CONSUMER_KEY, getConsumerKey());
@@ -317,6 +318,7 @@ public class SaleAssociate extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely

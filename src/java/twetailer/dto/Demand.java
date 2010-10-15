@@ -255,6 +255,7 @@ public class Demand extends Command {
         saleAssociateKeys.remove(saleAssociateKey);
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(EXPIRATION_DATE, DateUtils.dateToISO(getExpirationDate()));
@@ -280,6 +281,7 @@ public class Demand extends Command {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(EXPIRATION_DATE)) {

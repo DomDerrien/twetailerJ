@@ -107,6 +107,7 @@ public class Payment extends Entity {
     }
     */
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAuthorizationId() != null) { out.put(AUTHORIZATION_ID, getAuthorizationId()); }

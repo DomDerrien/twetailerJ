@@ -89,6 +89,7 @@ public class Reseller extends Entity {
         this.url = url;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(CONSUMER_KEY, getConsumerKey());
@@ -98,6 +99,7 @@ public class Reseller extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         // if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY))); } // Cannot be changed transparently

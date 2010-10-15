@@ -430,6 +430,7 @@ public class Command extends Entity {
         this.stateCmdList = stateCmdList;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         if (getAction() != null) { out.put(ACTION, getAction().toString()); }
@@ -466,6 +467,7 @@ public class Command extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }

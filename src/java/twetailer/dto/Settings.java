@@ -11,6 +11,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.TransferObject;
 
 /**
  * Define the application settings as stored in the back-end storage.
@@ -21,7 +22,7 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Settings implements Serializable {
+public class Settings implements Serializable, TransferObject {
 
     /** Required to be able to save the settings into the cache */
     private static final long serialVersionUID = -7877518547014483177L;
@@ -127,6 +128,7 @@ public class Settings implements Serializable {
         this.robotSaleAssociateKey = robotSaleAssociateKey;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
         if (getKey() != null) {
@@ -137,9 +139,11 @@ public class Settings implements Serializable {
         return out;
     }
 
-    public void fromJson(JsonObject in) {
+    @Override
+    public TransferObject fromJson(JsonObject in) {
         if (in.containsKey(KEY)) { setKey(in.getLong(KEY)); }
         setName(in.getString(NAME));
         setLastProcessDirectMessageId(in.getLong(LAST_PROCESSED_DIRECT_MESSAGE_ID));
+        return this;
     }
 }
