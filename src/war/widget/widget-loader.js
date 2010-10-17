@@ -3,7 +3,7 @@
  */
 (function() {
     var lg = location.search.indexOf('lg=fr') != -1 ? 'fr' : 'en',
-	    dm = 'http://anothersocialeconomy.appspot.com/widget/',
+        dm = 'http://anothersocialeconomy.appspot.com/widget/',
         id = "__ASE_wdgt",
         dc = document,
         buyItHandler = function(){

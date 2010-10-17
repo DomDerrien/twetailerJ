@@ -251,7 +251,7 @@
     </ul>
     <p>
         The widget can be also added to popular portal as <a href="http://www.google.com/ig" target="ig">iGoogle</a> , for example, with standard buttons as
-        <a 
+        <a
             href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//domderrien.github.com/ase-ypg-igoogle.xml"
             onclick="javascript:pageTracker._trackPageview('/outbound/article/fusion.google.com');"
         >
