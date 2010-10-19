@@ -24,22 +24,9 @@ public class Reseller extends Entity {
     public final static String CONSUMER_KEY = Consumer.CONSUMER_KEY;
 
     @Persistent
-    private String email;
+    private Long tokenNb;
 
-    public final static String EMAIL = Consumer.EMAIL;
-
-    @Persistent
-    private String name;
-
-    public final static String NAME = Store.NAME;
-
-    // Shortcut
-    public static final String RESELLER_KEY = "resellerKey";
-
-    @Persistent
-    private String url;
-
-    public final static String URL = Store.URL;
+    public final static String TOKEN_NB = "tokenNb";
 
     /** Default constructor */
     public Reseller() {
@@ -64,38 +51,19 @@ public class Reseller extends Entity {
         this.consumerKey = consumerKey;
     }
 
-     public String getEmail() {
-        return email;
+    public Long getTokenNb() {
+        return tokenNb;
     }
 
-    public void setEmail(String email) {
-        // Normalize the email address because it's case insensitive
-        this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null || name.length() == 0 ? null : name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setTokenNb(Long tokenNb) {
+        this.tokenNb = tokenNb;
     }
 
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(CONSUMER_KEY, getConsumerKey());
-        out.put(EMAIL, getEmail());
-        out.put(NAME, getName());
-        out.put(URL, getUrl());
+        out.put(TOKEN_NB, getTokenNb());
         return out;
     }
 
@@ -103,12 +71,7 @@ public class Reseller extends Entity {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         // if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY))); } // Cannot be changed transparently
-        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
-
-        // Shortcut
-        if (in.containsKey(RESELLER_KEY)) {setKey(in.getLong(RESELLER_KEY)); }
+        // if (in.containsKey(TOKEN_NB)) { setTokenNb(in.getLong(TOKEN_NB)); } // Cannot be changed transparently
 
         return this;
     }

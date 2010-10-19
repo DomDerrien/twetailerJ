@@ -396,10 +396,10 @@
                             <td><input dojoType="dijit.form.TextBox" id="store.publishedProposalNb" readonly="true" style="width:6em;" type="text" /></td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;padding-right:10px;"><label for="store.resellerKey">Reseller key:</label></td>
+                            <td style="text-align:right;padding-right:10px;"><label for="store.registrarKey">Registrar key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="store.resellerKey" name="resellerKey" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.resellerKey', 'Reseller');">Fetch</button>
+                                <input dojoType="dijit.form.TextBox" id="store.registrarKey" name="registrarKey" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.registrarKey', 'Registrar');">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -559,6 +559,69 @@
                     </table>
                 </form>
             </fieldset>
+            <fieldset class="entityInformation" id="registrarInformationFieldset" style="float:left;margin:5px;">
+                <legend>
+                    Registrar Information
+                    <a href="javascript:dojo.query('#registrarInformation>table').style('display','none');">[--]</a> /
+                    <a href="javascript:dojo.query('#registrarInformation>table').style('display','');">[+]</a>
+                </legend>
+                <form  dojoType="dijit.form.Form" id="registrarInformation">
+                    <table id="registrarAttributeTable">
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.key">Key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.key" name="key" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.key', 'Registrar');">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.creationDate">Creation date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="registrar.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.locationKey">Location key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.locationKey" name="locationKey" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.locationKey', 'Location');">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><input dojoType="dijit.form.CheckBox" id="registrar.markedForDeletion" name="markedForDeletion" type="checkbox" /></td>
+                            <td><label for="registrar.markedForDeletion">Marked for deletion</label></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.modificationDate">Modification date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="registrar.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.consumerKey">Consumer key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.consumerKey" name="consumerKey" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.consumerKey', 'Consumer');">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.email">E-mail:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="registrar.email" name="email" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.name">Name:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="registrar.name" name="name" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="registrar.url">URL:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="registrar.url" name="url" type="text" /></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Registrar');">Update</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
             <fieldset class="entityInformation" id="resellerInformationFieldset" style="float:left;margin:5px;">
                 <legend>
                     Reseller Information
@@ -602,16 +665,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;padding-right:10px;"><label for="reseller.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reseller.email" name="email" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;padding-right:10px;"><label for="reseller.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reseller.name" name="name" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td style="text-align:right;padding-right:10px;"><label for="reseller.url">URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reseller.url" name="url" type="text" /></td>
+                            <td style="text-align:right;padding-right:10px;"><label for="reseller.tokenNb">Token Nb:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="reseller.tokenNb" name="tokenNb" readonly="true" type="text" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>

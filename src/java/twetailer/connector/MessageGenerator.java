@@ -14,7 +14,7 @@ import twetailer.dto.Entity;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Reseller;
+import twetailer.dto.Registrar;
 import twetailer.dto.ReviewSystem;
 import twetailer.dto.Store;
 import twetailer.dto.HashTag.RegisteredHashTag;
@@ -396,18 +396,18 @@ public class MessageGenerator {
     /**
      * Extracts non null attributes and keeps them into the local parameter map
      *
-     * @param reseller Object to scan
+     * @param registrar Object to scan
      * @return The object instance, ready to be chained to another <code>fetch()</code> call
      */
-    public MessageGenerator fetch(Reseller reseller) {
-        if (reseller != null) {
+    public MessageGenerator fetch(Registrar registrar) {
+        if (registrar != null) {
             final String prefix = "reseller" + FIELD_SEPARATOR;
             // Entity
-            fetchEntity(reseller, prefix);
+            fetchEntity(registrar, prefix);
             // Reseller
-            parameters.put(prefix + Reseller.EMAIL, reseller.getEmail());
-            parameters.put(prefix + Reseller.NAME, reseller.getName());
-            parameters.put(prefix + Reseller.URL, reseller.getUrl());
+            parameters.put(prefix + Registrar.EMAIL, registrar.getEmail());
+            parameters.put(prefix + Registrar.NAME, registrar.getName());
+            parameters.put(prefix + Registrar.URL, registrar.getUrl());
         }
         return this;
     }
@@ -456,6 +456,16 @@ public class MessageGenerator {
     public MessageGenerator put(String key, Object value) {
         parameters.put(key, value);
         return this;
+    }
+
+    /**
+     * Helper to retrieve individual parameters
+     *
+     * @param key Identifier of the message to extract
+     * @return The identified data
+     */
+    public Object get(String key) {
+        return parameters.remove(key);
     }
 
     /**

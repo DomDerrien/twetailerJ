@@ -8,6 +8,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.PaymentOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.RegistrarOperations;
 import twetailer.dao.ResellerOperations;
 import twetailer.dao.ReviewSystemOperations;
 import twetailer.dao.SaleAssociateOperations;
@@ -24,6 +25,7 @@ public class BaseSteps {
     private static PaymentOperations paymentOperations;
     private static ProposalOperations proposalOperations;
     private static RawCommandOperations rawCommandOperations;
+    private static RegistrarOperations registrarOperations;
     private static ResellerOperations resellerOperations;
     private static ReviewSystemOperations reviewSystemOperations;
     private static SaleAssociateOperations saleAssociateOperations;
@@ -39,6 +41,7 @@ public class BaseSteps {
         paymentOperations = forUnitTests ? null : new PaymentOperations();
         proposalOperations = forUnitTests ? null : new ProposalOperations();
         rawCommandOperations = forUnitTests ? null : new RawCommandOperations();
+        registrarOperations = forUnitTests ? null : new RegistrarOperations();
         resellerOperations = forUnitTests ? null : new ResellerOperations();
         reviewSystemOperations = forUnitTests ? null : new ReviewSystemOperations();
         saleAssociateOperations = forUnitTests ? null : new SaleAssociateOperations();
@@ -58,6 +61,7 @@ public class BaseSteps {
     public static PaymentOperations getPaymentOperations() { return paymentOperations; }
     public static ProposalOperations getProposalOperations() { return proposalOperations; }
     public static RawCommandOperations getRawCommandOperations() { return rawCommandOperations; }
+    public static RegistrarOperations getRegistrarOperations() { return registrarOperations; }
     public static ResellerOperations getResellerOperations() { return resellerOperations; }
     public static ReviewSystemOperations getReviewSystemOperations() { return reviewSystemOperations; }
     public static SaleAssociateOperations getSaleAssociateOperations() { return saleAssociateOperations; }
@@ -72,6 +76,7 @@ public class BaseSteps {
     public static void setMockPaymentOperations(PaymentOperations paymentOperations) { BaseSteps.paymentOperations = paymentOperations; }
     public static void setMockProposalOperations(ProposalOperations proposalOperations) { BaseSteps.proposalOperations = proposalOperations; }
     public static void setMockRawCommandOperations(RawCommandOperations rawCommandOperations) { BaseSteps.rawCommandOperations = rawCommandOperations; }
+    public static void setMockRegistrarOperations(RegistrarOperations registrarOperations) { BaseSteps.registrarOperations = registrarOperations; }
     public static void setMockResellerOperations(ResellerOperations resellerOperations) { BaseSteps.resellerOperations = resellerOperations; }
     public static void setMockReviewSystemOperations(ReviewSystemOperations reviewSystemOperations) { BaseSteps.reviewSystemOperations = reviewSystemOperations; }
     public static void setMockSaleAssociateOperations(SaleAssociateOperations saleAssociateOperations) { BaseSteps.saleAssociateOperations = saleAssociateOperations; }

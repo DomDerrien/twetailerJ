@@ -442,7 +442,7 @@
         // Request preparation
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
-            referralId: "<%= referralId %>",
+            referralId: "<%= referralId == null || referralId.length() == 0 ? "0" : referralId %>",
             <%= Consumer.LANGUAGE %>: "<%= localeId %>",
             <%= Consumer.EMAIL %>: dijit.byId("email0").get("value"),
             <%= Location.POSTAL_CODE %>: dijit.byId("postalCode").get("value"),

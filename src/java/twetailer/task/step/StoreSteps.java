@@ -83,8 +83,8 @@ public class StoreSteps extends BaseSteps {
         if (!isPrivileged) {
             throw new ReservedOperationException("Store instances can only be created by admins");
         }
-        if (!parameters.containsKey(Store.RESELLER_KEY)) {
-            throw new ClientException("Missing reseller key");
+        if (!parameters.containsKey(Store.REGISTRAR_KEY)) {
+            throw new ClientException("Missing registrar key");
         }
 
         Store store = getStoreOperations().createStore(pm, parameters);
@@ -105,7 +105,7 @@ public class StoreSteps extends BaseSteps {
         }
         if (!isPrivileged) {
             // Prevent any unexpected update
-            parameters.remove(Store.RESELLER_KEY);
+            parameters.remove(Store.REGISTRAR_KEY);
         }
 
         Store store = getStoreOperations().getStore(pm, storeKey);

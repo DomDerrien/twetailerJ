@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.zip.Adler32;
-import java.util.zip.Checksum;
 
 import javamocks.io.MockOutputStream;
 
@@ -31,11 +29,8 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
-import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.Reseller;
-import twetailer.dto.ReviewSystem;
 import twetailer.dto.Settings;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
@@ -91,41 +86,6 @@ public class MaelzelServlet extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
-            }
-            else if("/ypgTrick".equals(pathInfo)) {
-                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-                try {
-                    Influencer influencer = new Influencer();
-                    // influencer.setConsumerKey(null);
-                    influencer.setEmail("support@ypg.ca");
-                    influencer.setName("YellowPages.ca");
-                    influencer.setUrl("http://www.yellowpages.ca/");
-                    influencer = BaseSteps.getInfluencerOperations().createInfluencer(pm, influencer);
-
-                    Checksum adler = new Adler32();
-                    adler.update(influencer.getKey().toString().getBytes(), 0, influencer.getKey().toString().length());
-                    influencer.setReferralId(influencer.getKey().toString() + "-" + adler.getValue() + "-00");
-                    influencer = BaseSteps.getInfluencerOperations().updateInfluencer(pm, influencer);
-                    System.err.println("Influencer: " + influencer.toJson().toString());
-
-                    Reseller reseller = new Reseller();
-                    // reseller.setConsumerKey(null);
-                    reseller.setEmail("support@ypg.ca");
-                    reseller.setName("YellowPages.ca");
-                    reseller.setUrl("http://www.yellowpages.ca/");
-                    reseller = BaseSteps.getResellerOperations().createReseller(pm, reseller);
-                    System.err.println("Reseller: " + reseller.toJson().toString());
-
-                    ReviewSystem reviewSystem = new ReviewSystem();
-                    reviewSystem.setEmail("support@ypg.ca");
-                    reviewSystem.setName("YellowPages.ca");
-                    reviewSystem.setUrl("http://profiles.yellowpages.ca/");
-                    reviewSystem = BaseSteps.getReviewSystemOperations().createReviewSystem(pm, reviewSystem);
-                    System.err.println("ReviewSystem: " + reviewSystem.toJson().toString());
-                }
-                finally {
-                    pm.close();
-                }
             }
             else if ("/deleteMarkedForDeletion".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();

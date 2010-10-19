@@ -54,13 +54,13 @@
     <div style="float: right; padding: 5px; background: white; text-align: center;">
         <div>
             Select your widget: <select onchange="document.getElementById('aseWidget').src=this.value;">
-                <option value="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=000-000">ezToff</option>
-                <option value="/widget/ase.jsp?lg=<%= localeId %>&referralId=000-000" selected>Generic ASE</option>
+                <option value="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=0">ezToff</option>
+                <option value="/widget/ase.jsp?lg=<%= localeId %>&referralId=0" selected>Generic ASE</option>
             </select>
         </div>
         <iframe
             id="aseWidget"
-            src="/widget/ase.jsp?lg=<%= localeId %>&referralId=000-000"
+            src="/widget/ase.jsp?lg=<%= localeId %>&referralId=0"
             style="width:<%= width %>px;height:<%= height %>px;border:0 none;"
             frameborder="0" width="<%= width %>" height="<%= height %>" border="0"
         ></iframe>
@@ -99,8 +99,8 @@
             </tr>
             <tr>
                 <td>referralId</td>
-                <td><input id="referralId" type="text" value=""/></td>
-                <td>Store identifier (mandatory for tracking purposes)</td>
+                <td><input id="referralId" type="text" value="0"/></td>
+                <td>Influencer identifier (mandatory for tracking purposes). The pattern is 'ddddd-ddddd-dd' with 'd' being a digit. Note that the last 2 digits can be updated by the influencer to track different entry points or marketing campaigns.</td>
             </tr>
             <tr>
                 <td>hideBrand</td>
@@ -262,7 +262,7 @@
     <script type="text/javascript">
     var setupParametersForYPG = function() {
         document.getElementById('lg').value = 'en';
-        document.getElementById('referralId').value = '';
+        document.getElementById('referralId').value = '223001-68747561-00';
         document.getElementById('hideBrand').value = '';
         document.getElementById('brand').value = 'YellowPages.ca Buying Network';
         document.getElementById('criteria').value = '';

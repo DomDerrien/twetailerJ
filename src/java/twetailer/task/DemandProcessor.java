@@ -361,17 +361,19 @@ public class DemandProcessor {
                 put("proposal>owner>name", saConsumerRecord.getName()).
                 fetch(demand).
                 fetch(influencer).
-                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
-                put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
-            String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", msgGen.getParameters(), locale);
-            String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", msgGen.getParameters(), locale);
-            String subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+            MessageGenerator cmdGen = new MessageGenerator(Source.jabber, demand.getHashTags(), locale). // "jabber" is a used to "source" to be able to generate short command by e-mail
+                fetch(demand).
+                put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+            String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", cmdGen.getParameters(), locale);
+            String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", cmdGen.getParameters(), locale);
+            String subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdGen.getParameters());
 
             msgGen.
                 put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
                 put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                put("command>createProposal", createProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
+                put("command>createProposal", LocaleValidator.encodeCommand(createProposal));
 
             double publishedNb = demandOwner.getPublishedDemandNb() == null ? 1 : demandOwner.getPublishedDemandNb(); // Can't be null with new demands, but can still be null with the old ones without this field
             double closedNb = demandOwner.getClosedDemandNb() == null ? 0 : demandOwner.getClosedDemandNb();

@@ -160,8 +160,24 @@
                                 <input dojoType="dijit.form.TextBox" name="<%= Store.ADDRESS %>" style="width:30em;" type="text" value="" />
                             </div>
                             <div>
+                                <label for="<%= Store.EMAIL %>">Email</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.EMAIL %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
                                 <label for="<%= Store.PHONE_NUMBER %>">Phone Number</label><br/>
                                 <input dojoType="dijit.form.TextBox" name="<%= Store.PHONE_NUMBER %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Store.REGISTRAR_KEY %>">Registrar Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.REGISTRAR_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Store.REVIEW_SYSTEM_KEY %>">Review System Key</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Store.URL %>">Website URL</label><br/>
+                                <input dojoType="dijit.form.TextBox" name="<%= Store.URL %>" style="width:10em;" type="text" value="" />
                             </div>
                         </form>
                         <p>

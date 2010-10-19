@@ -222,7 +222,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    demande qté:X dateLimite:X tags:X
+                    demander qté:X dateLimite:X tags:X {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -231,7 +231,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    demande demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata}
+                    demander demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -258,7 +258,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata}
+                    proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -267,7 +267,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata}
+                    proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -344,7 +344,7 @@
                         <li>Détails: {demand>criteria} -- Étiquettes: {demand>hashTags}</li>
                         <li>Quantité: {demand>quantity};</li>
                         <li>Date limite: {demand>dueDate};</li>
-                        <li>Localité: {demand>location>postalCode} {demand>location>countryCode};</li>
+                        <li>Localité: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
                         <li>Distance: {demand>range} {demand>rangeUnit};</li>
                     </ul>
                     <p>
@@ -370,7 +370,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                        Nous confirmons votre de demande por un départ de golf <strong>{demand>range} {demand>rangeUnit}</strong> autour de
-                       <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>, le <strong>{demand>dueDate}</strong>.
+                       <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>, le <strong>{demand>dueDate}</strong>.
                        Le détail de votre demande est:
                     </p>
                     <ul>
@@ -427,7 +427,7 @@
                         <li>Date limite: <strong>{demand>dueDate}</strong></li>
                         <li>Date d'expiration: {demand>expirationDate}</li>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Localité: <strong>{demand>range} {demand>rangeUnit}</strong> aoutour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong></li>
+                        <li>Localité: <strong>{demand>range} {demand>rangeUnit}</strong> aoutour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong></li>
                     </ul>
                     <p>La nouvelle demande {demand>key} va être diffusée aux commerces environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -448,7 +448,7 @@
                 <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle recherche pour un départ de golf
-                        à <strong>{demand>range} {demand>rangeUnit}</strong> autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        à <strong>{demand>range} {demand>rangeUnit}</strong> autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         le <strong>{demand>dueDate}</strong>.
                         Autres détails:
                     </p>
@@ -510,7 +510,7 @@
                         <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
                         et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
                         Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Créer une proposition</a>
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
                         en ayant pris soin de remplacer les 'X' par les bonnes valeurs.
                     </p>
                     <p>
@@ -541,7 +541,7 @@
                         <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
                         et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
                         Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal} &amp;subject={command>threadSubject}">Créer une proposition</a>
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
                         en ayant pris soin de remplacer les 'X' par les bonnes valeurs.
                     </p>
                     <p>
@@ -587,7 +587,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         Nous confirmons la <strong>mise-à-jour</strong> de la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
-                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>
@@ -619,7 +619,7 @@
                     <p>
                         Nous confirmons la <strong>mise-à-jour</strong> de la demande de départ de golf
                         à <strong>{demand>range} {demand>rangeUnit}</strong>
-                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>
@@ -671,7 +671,7 @@
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
                         la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
-                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>
@@ -699,7 +699,7 @@
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
                         la demande de départ de golf à <strong>{demand>range} {demand>rangeUnit}</strong>
-                        autour de <strong>{demand>location>postalCode} {demand>location>countryCode}</strong>,
+                        autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         pour le <strong>{demand>dueDate}</strong>. Autres détails:
                     </p>
                     <ul>

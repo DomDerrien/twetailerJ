@@ -74,9 +74,7 @@ public class ResellerOperations extends BaseOperations {
     public Reseller getReseller(PersistenceManager pm, Long key) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
             Reseller defaultReseller = new Reseller();
-            defaultReseller.setEmail("reseller-program@anothersocialeconomy.com");
-            defaultReseller.setName("AnotherSocialEconomy.com");
-            defaultReseller.setUrl("http://anothersocialeconomy.com/");
+            defaultReseller.setTokenNb(1000000000L);
             return defaultReseller;
         }
         try {

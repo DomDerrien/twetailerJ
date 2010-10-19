@@ -49,9 +49,9 @@ public class Store extends Entity {
     public final static String PUBLISHED_PROPOSAL_NB = "publishedProposalNb";
 
     @Persistent
-    private Long resellerKey;
+    private Long registrarKey;
 
-    public final static String RESELLER_KEY = Reseller.RESELLER_KEY;
+    public final static String REGISTRAR_KEY = "registrarKey";
 
     @Persistent
     private Long reviewSystemKey;
@@ -130,12 +130,12 @@ public class Store extends Entity {
         this.publishedProposalNb = publishedProposalNb;
     }
 
-    public Long getResellerKey() {
-        return resellerKey;
+    public Long getRegistrarKey() {
+        return registrarKey;
     }
 
-    public void setResellerKey(Long resellerKey) {
-        this.resellerKey = resellerKey;
+    public void setRegistrarKey(Long registrarKey) {
+        this.registrarKey = registrarKey;
     }
 
     public Long getReviewSystemKey() {
@@ -163,8 +163,8 @@ public class Store extends Entity {
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
-        if (getResellerKey() != null) {
-            out.put(RESELLER_KEY, getResellerKey());
+        if (getRegistrarKey() != null) {
+            out.put(REGISTRAR_KEY, getRegistrarKey());
         }
         if (getReviewSystemKey() != null) {
             out.put(REVIEW_SYSTEM_KEY, getReviewSystemKey());
@@ -182,7 +182,7 @@ public class Store extends Entity {
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
-        // if (in.containsKey(RESELLER_KEY)) { setResellerKey(in.getLong(RESELLER_KEY)); } // Cannot be changed transparently
+        // if (in.containsKey(REGISTRAR_KEY)) { setRegistrarKey(in.getLong(REGISTRAR_KEY)); } // Cannot be changed transparently
         if (in.containsKey(REVIEW_SYSTEM_KEY)) { setReviewSystemKey(in.getLong(REVIEW_SYSTEM_KEY)); } // Store administrators can change it
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 

@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import twetailer.connector.BaseConnector;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import domderrien.jsontools.JsonObject;
@@ -342,5 +343,33 @@ public class LocaleValidator {
             numberFormats.put(locale, numberFormat);
         }
         return numberFormat.format(number);
+    }
+
+    /**
+     * Helper transforming the given command in a URL compliant format.
+     * Note that the TMX message separator is transform in the corresponding
+     * return-to-line sequence
+     *
+     * @param command Original command
+     * @return Transformed command
+     */
+    public static String encodeCommand(String command) {
+        int idx = 0, limit = command.length();
+        StringBuilder temp = new StringBuilder(2 * limit);
+        while (idx < limit) {
+            char c = command.charAt(idx);
+            if ('0' <= c &&  c <= '9' || 'A' <= c && c <= 'Z' || 'a' <= c && c <= 'z') {
+                temp.append(c);
+            }
+            else if (c == BaseConnector.SUGGESTED_MESSAGE_SEPARATOR) {
+                temp.append('%').append('0').append('A');
+            }
+            else {
+                int high = c / 16, low = c % 16;
+                temp.append('%').append((char) (high < 10 ? high + '0' : high - 10 + 'A')).append((char) (low < 10 ? low + '0' : low - 10 + 'A'));
+            }
+            ++idx;
+        }
+        return temp.toString();
     }
 }

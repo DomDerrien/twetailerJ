@@ -26,7 +26,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
-import twetailer.dto.Reseller;
+import twetailer.dto.Registrar;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
@@ -103,8 +103,8 @@ public class ProposalProcessor {
                         Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
                         RawCommand rawCommand = Source.mail.equals(demand.getSource()) ? BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId()) : null;
                         Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
-                        Reseller reseller = BaseSteps.getResellerOperations().getReseller(pm, store.getResellerKey());
-                        notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer, reseller);
+                        Registrar registrar = BaseSteps.getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
+                        notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer, registrar);
                     }
                 }
                 else {
@@ -171,11 +171,11 @@ public class ProposalProcessor {
      * @param demand Original demand for this proposal
      * @param rawCommand To be able to get the initial mail subject if it has been sent by e-mail
      * @param consumer Record of the demand owner
-     * @param reseller Descriptor of the entity who resells the service to the retailer (store owner)
+     * @param registrar Descriptor of the entity who resells the service to the retailer (store owner)
      *
      * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Proposal proposal, Store store, Location location, boolean initialProposal, Demand demand, RawCommand rawCommand, Consumer consumer, Reseller reseller) throws DataSourceException, CommunicationException {
+    public static void notifyAvailability(Proposal proposal, Store store, Location location, boolean initialProposal, Demand demand, RawCommand rawCommand, Consumer consumer, Registrar registrar) throws DataSourceException, CommunicationException {
 
         List<String> cc = demand.getCC();
         if (!Source.api.equals(consumer.getPreferredConnection()) || cc != null && 0 < cc.size()) {
@@ -190,7 +190,7 @@ public class ProposalProcessor {
                     fetch(store).
                     fetch(location, "store").
                     fetch(demand).
-                    fetch(reseller).
+                    fetch(registrar).
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                     put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
