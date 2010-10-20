@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="28"
+        value="29"
     />
 
     <property name="app.companyName"

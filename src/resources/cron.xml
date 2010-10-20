@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-    <url>/API/maelzel/loadTweets</url>
-    <description>Load the direct messages sent to the Twetailer account</description>
-    <schedule>every 5 minutes</schedule>
-  </cron>
-  <cron>
     <!-- Keep the configuration in sync with twetailer.task.DemandValidator#batchProcess() -->
     <url>/API/maelzel/processPublishedDemands</url>
     <description>Check if a new retailer can be notified about the published demands</description>

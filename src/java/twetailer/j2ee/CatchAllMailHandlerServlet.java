@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -20,11 +21,11 @@ import twetailer.connector.MailConnector;
 /**
  * Servlet receiving all unexpected e-mails. Do triage them in
  * order to dispatch the useful ones, and forward the remaining
- * ones to "catch-all@anothersocialeconomy.com".
+ * ones to "admins".
  *
- * The ability to compose e-mails to "catch-all@anothersocialeconomy.com"
- * is also used by the system to forward information about unexpected
- * errors (with stack traces).
+ * The ability to compose e-mails to "admins" is also used by the
+ * system to forward information about unexpected errors (with
+ * stack traces).
  *
  * @author Dom Derrien
  */
@@ -102,7 +103,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
     }
 
     /**
-     * Send the specified message to the recipients of the "catch-all" list
+     * Send the specified message to the recipients of the "aadmins" list
      *
      * @param from Message initiator
      * @param subject Message subject
@@ -120,12 +121,18 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         Session session = Session.getDefaultInstance(properties, null);
 
         MimeMessage messageToForward = new MimeMessage(session);
-        messageToForward.setFrom(MailConnector.twetailer);
-        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("catch-all@anothersocialeconomy.com"));
+        try {
+            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
+        }
+        catch (UnsupportedEncodingException ex) {
+            log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
+            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
+        }
+        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
         messageToForward.setSubject("Fwd: (" + from + ") " + subject);
         MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
 
-        log.warning("Reporting to catch-all@anothersocialeconomy.com (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+        log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
 
         Transport.send(messageToForward);
     }

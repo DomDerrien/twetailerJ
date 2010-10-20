@@ -1,5 +1,7 @@
 package twetailer.j2ee;
 
+import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +16,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+
 import twetailer.DataSourceException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
 import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twitter4j.TwitterException;
 
 /**
  * Entry point processing notifications sent by the
- * Twitter service. The main goal is to detect the
- * notifications about new followers and to follow
- * them back.
+ * Twitter service. The main goals are:<ul>
+ *   <li>detect the notifications about new followers
+ *   and to follow them back;</li>
+ *   <li>trigger the task loading DMs when one
+ *   corresponding notification is received.</li></ul>
  *
  * Unresolved notifications are forwarded to the
- * "catch-all@anothersocialeconomy.com" e-mail address.
+ * "admins" list.
  *
  * @see twetailer.j2ee.CatchAllMailHandlerServlet
  *
@@ -123,6 +131,13 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
             }
 
             if (!isAFollowingNotification) {
+                // Safe assumption: trigger a task to load the possibly just notified & waiting DMs
+                Queue queue = BaseSteps.getBaseOperations().getQueue();
+                queue.add(
+                        url(ApplicationSettings.get().getServletApiPath() + "/maelzel/loadTweets").
+                            method(Method.GET)
+                );
+                // Forward the message to the "admins" list
                 CatchAllMailHandlerServlet.composeAndPostMailMessage(followerName, subject, body);
             }
         }
