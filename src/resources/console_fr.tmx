@@ -1814,6 +1814,41 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="cw_step_6_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Ayez votre propre gadget!</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cw_step_6_progressBarItem" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg></seg>
+            </tuv>
+        </tu>
+        <tu tuid="cw_step_6_contextualInfo" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Faites vos achats depuis n'importe o sur le Web! Glisser le <i>bookmarklet</i> ci-dessous
+                    sur votre barre de raccourcis du navigateur. En l'activant, le gadget apparaitra pour
+                    recevoir votre demande. Notez que le texte préalablement sélectionné sera transféré dans
+                    le champs de saisie des détails dela demande.
+                    <div class="bookmarklet-container">
+                        <a class="bookmarklet-link" href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()">Gadget ASE!</a>
+                        <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Glissez-moi!</span></span>
+                    </div>
+                    <p>
+                        Vous pouvez aussi installé le gadget sur votre page personnalisée de iGoogle:
+                        <a href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml" onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()" target="_blank"><img alt="Ajouter à Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;" /></a>
+                    </p>
+                    <p>Pour plus d'informations, visitez notre page <a href="http://anothersocialeconomy.com/whats-with-widgets/" target="_blank">À propos des gadgets</a> (en anglais).</p>
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="cw_label_criteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1966,6 +2001,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Diffuser la requête</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cw_action_more" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Ayez votre propre gadget! »</seg>
             </tuv>
         </tu>
         <tu tuid="cw_helper_title" dataType="text">

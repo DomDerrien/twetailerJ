@@ -55,6 +55,10 @@
         %>
         @import "/css/widget.css";
         <jsp:include page="/_includes/widget_css_parameters.jsp" />
+        .bookmarklet-container {margin:1em 0;text-align:center}
+        .bookmarklet-container .bookmarklet-link{background-color:#ccc;border:1px solid #999;border-color:#bbb #999 #777;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;color:#333;font-weight:bold;padding:2px 10px;text-decoration:none}
+        .bookmarklet-container .bookmarklet-callout{background:url(/images/bookmarklet-callout-arrow.gif) no-repeat center left;color:#7f7f66;margin-left:-3px;padding-left:6px}
+        .bookmarklet-container .bookmarklet-callout-inner{background:#ffc;border:1px solid #fff1a8;border-left:0;padding:1px 5px}
     </style>
 
 </head>
@@ -397,6 +401,38 @@
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset", locale) %></button>
                         </td>
                     </tr>
+                    <tr>
+                        <td style="text-align:right;"><a href="#" onclick="localModule.switchPane(5, 6);"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_more", locale) %></a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="footer">
+                <div class="progressBar">
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_progressBarItem", locale) %></div>
+                    <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_progressBarItem", locale) %></div>
+                </div>
+                <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
+            </div>
+        </div>
+        <div id="pane6" style="display:none;">
+            <div class="content">
+                <% if (showBrand) {
+                %><div class="brand"><%= brand %></div><% }
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_6_title", locale) %></div>
+                <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_6_contextualInfo", new Object[] { brand }, locale) %></div>
+                <table cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="text-align:center;">
+                            <button
+                                dojoType="dijit.form.Button"
+                                onclick="localModule.switchPane(6, 1);"
+                                style="color:black;"
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset_hint", locale) %>"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset", locale) %></button>
+                        </td>
+                    </tr>
                 </table>
             </div>
             <div class="footer">
@@ -521,11 +557,13 @@
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
             var form = dijit.byId("form" + sourceIdx);
-            if (!form.validate()) {
-                return;
-            }
-            if (sourceIdx == 1 && !localModule.controlTagField()) {
-                return;
+            if (form != null) {
+                if (!form.validate()) {
+                    return;
+                }
+                if (sourceIdx == 1 && !localModule.controlTagField()) {
+                    return;
+                }
             }
         }
         // create two animations

@@ -6,7 +6,7 @@
         dm = 'http://anothersocialeconomy.appspot.com/widget/',
         id = "__ASE_wdgt",
         dc = document,
-        buyItHandler = function(){
+        installWidget = function(){
             var dv = dc.getElementById(id),
                 bd = lg == 'fr' ? 'Réseau d\'achat locaux?' : 'Local Buying Network?',
                 cl = lg == 'fr' ? 'Fermer [X]' : 'Close [X]',
@@ -37,21 +37,29 @@
                 dv.appendChild(ifr);
             }
         },
-        installTab = function(){
-            var hk = lg == 'fr' ? 'Achetez localement?' : 'Buy it locally?',
-                ac = dc.createElement('a'),
-                dv = dc.createElement('div'),
-                lk = dc.createElement('link');
+        installCSS = function() {
+            var lk = dc.createElement('link');
             lk.href = dm + 'widget-loader.css';
             lk.rel = 'stylesheet';
             lk.type = 'text/css';
             dc.getElementsByTagName('head')[0].appendChild(lk);
+        },
+        installTab = function(){
+            var hk = lg == 'fr' ? 'Achetez localement?' : 'Buy it locally?',
+                ac = dc.createElement('a'),
+                dv = dc.createElement('div');
             ac.href = '#';
-            ac.onclick = buyItHandler;
+            ac.onclick = installWidget;
             ac.appendChild(dc.createTextNode(hk));
             dv.setAttribute("class", 'ase_buyItTab');
             dv.appendChild(ac);
             dc.getElementsByTagName('body')[0].appendChild(dv);
         };
-    installTab();
+    installCSS();
+    if (typeof window.ase_showWidget == "undefined") {
+        installTab();
+    }
+    else {
+        installWidget();
+    }
 })();

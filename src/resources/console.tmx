@@ -427,7 +427,7 @@
                 <seg>
                     AnotherSocialEconomy.com does not require its users to create yet another set of credentials.
                     In addition of accepting connections verified by popular identity providers, ASE accepts users
-                    identified by any &lt;a href="http://openid.net/" target="_blank"&gt;OpendID&lt;/a&gt; provider.
+                    identified by any <a href="http://openid.net/" target="_blank">OpendID</a> provider.
                 </seg>
             </tuv>
         </tu>
@@ -567,14 +567,14 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    &lt;p&gt;
+                    <p>
                     AnotherSocialEconomy.com is a creation of Steven Milstein and Dom Derrien.
                     AnotherSocialEconomy.com is operated by Milstein &amp; Associates inc.
-                    &lt;/p&gt;
-                    &lt;p&gt;
+                    </p>
+                    <p>
                     For more information, you can join the AnotherSocialEconomy.com
-                    community at &lt;a href="http://twetailer.cyn.in/"&gt;twetailer.cyn.in&lt;/a&gt;.
-                    &lt;/p&gt;
+                    community at <a href="http://twetailer.cyn.in/">twetailer.cyn.in</a>.
+                    </p>
                 </seg>
             </tuv>
         </tu>
@@ -765,7 +765,7 @@
         <tu tuid="consumer_info_hint_jabber" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with &lt;a href="xmpp://anothersocialeconomy@appspot.com"&gt;anothersocialeconomy@appspot.com&lt;/a&gt; with your account.</seg></tuv>
+            <tuv xml:lang="en"><seg>Hint: to attach instant messages exchanged with <a href="xmpp://anothersocialeconomy@appspot.com">anothersocialeconomy@appspot.com</a> with your account.</seg></tuv>
         </tu>
 
         <tu tuid="consumer_info_label_twitter" datatype="Text">
@@ -779,8 +779,8 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    Hint: to attach direct messages exchanged with &lt;a href="http://twitter.com/ASEconomy" target="_blank"&gt;twitter.com/ASEconomy&lt;/a&gt; with your account.&lt;br/&gt;
-                    Note: you need to &lt;b&gt;follow @ASEconomy&lt;/b&gt; on Twitter in order to be able to get direct messages from us.
+                    Hint: to attach direct messages exchanged with <a href="http://twitter.com/ASEconomy" target="_blank">twitter.com/ASEconomy</a> with your account.<br/>
+                    Note: you need to <b>follow @ASEconomy</b> on Twitter in order to be able to get direct messages from us.
                 </seg>
             </tuv>
         </tu>
@@ -2263,6 +2263,50 @@
             </tuv>
         </tu>
 
+        <tu tuid="cw_step_6_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Get your own widget!</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cw_step_6_progressBarItem" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg></seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cw_step_6_contextualInfo" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    Buy from anywhere on the web! Just drag this bookmarklet to your browser's bookmark toolbar.
+                    Then activate it whenever you want to create a demand. Note: the selected text is used to preset
+                    the demand details.
+                    <div class="bookmarklet-container">
+                        <a
+                            class="bookmarklet-link"
+                            href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
+                        >ASE it!</a>
+                        <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Drag me!</span></span>
+                    </div>
+                    <p>
+                        You can also host our widget in your iGoogle page:
+                        <a
+                            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml"
+                            onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()"
+                            target="_blank"
+                        ><img alt="Add to Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;"/></a>
+                    </p>
+                    <p>For more information, please visit our <a href="http://anothersocialeconomy.com/whats-with-widgets/" target="_blank">What's with widgets</a> page.</p>
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cw_label_criteria" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -2436,6 +2480,14 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>Broadcast your Request</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cw_action_more" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Get your own widget! »</seg>
             </tuv>
         </tu>
 
