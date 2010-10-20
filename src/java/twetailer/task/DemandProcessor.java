@@ -192,18 +192,31 @@ public class DemandProcessor {
             // Push the updated demand into the data store
             demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
+            /***********
+             * TODO: re-enable this part when the corresponding message is updated
+             *
             // Notify the consumer about how many sale associates have been successfully contacted this time
             boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
             if (!isNewDemand && !Source.api.equals(demand.getSource())) {
+                Locale locale = owner.getLocale();
+                String subject = null;
+                if (Source.mail.equals(demand.getSource())) {
+                    RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
+                    subject = rawCommand.getSubject();
+                }
+                if (subject == null) {
+                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
+                    msgGen.put("demand>key", demand.getKey());
+                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                }
+                subject = MailConnector.prepareSubjectAsResponse(subject, locale);
                 try {
                     int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
-                    Locale locale = owner.getLocale();
                     if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
-                        RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                         String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
                         communicateToConsumer(
-                                rawCommand.getSource(),
-                                rawCommand.getSubject(),
+                                demand.getSource(),
+                                subject,
                                 owner,
                                 new String[] {
                                     LabelExtractor.get(
@@ -219,10 +232,9 @@ public class DemandProcessor {
                         );
                     }
                     else if (cronJob && initialNumberOfSaleAssociatesContacted == 0) {
-                        RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                         communicateToConsumer(
-                                rawCommand.getSource(),
-                                rawCommand.getSubject(),
+                                demand.getSource(),
+                                subject,
                                 owner,
                                 new String[] {
                                     LabelExtractor.get(
@@ -249,6 +261,7 @@ public class DemandProcessor {
                     }
                 }
             }
+            ***/
         }
     }
 
