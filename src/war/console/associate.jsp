@@ -348,6 +348,7 @@
                 delay: 50,
                 onEnd: function() {
                     dojo.style("introFlash", "display", "none");
+                    twetailer.Associate.readyToProcessParameters = true;
                 }
             }).play();<%
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>

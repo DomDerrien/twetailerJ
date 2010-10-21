@@ -33,6 +33,27 @@
         // Fetch
         var dfd = _globalCommon.loadRemoteDemands(null, 'demandListOverlay', _queryPointOfView, null); // No modificationDate means "load all active Demands" & no filter on hash tag
         dfd.addCallback(function(response) { _globalCommon.processDemandList(response.resources, _grid); });
+        dfd.addCallback(function(response) { setTimeout(_processConsoleParameters, 1000); });
+    };
+
+    module.readyToProcessParameters = false;
+
+    /**
+     * Helper trying to display the Proposal create pane for the specified demand.
+     * Can reschedule the pane openning if the console state is not yet stable.
+     * 
+     * TODO: fix a limit in the number of retries
+     */
+    var _processConsoleParameters = function() {
+        var parameters = location.search;
+        if (parameters == null) { return; }
+        if (parameters.length == 0) { return; }
+        if (!module.readyToProcessParameters) { setTimeout(_processConsoleParameters, 1000); }
+        if (parameters.indexOf('?') == 0) { parameters = parameters.substr(1); }
+        parameters = dojo.queryToObject(parameters);
+        if (parameters.demand == null) { return; }
+        if (_grid.store == null) { setTimeout(_processConsoleParameters, 1000); }
+        module.displayProposalForm(_grid.store._getItemByIdentity(parameters.demand)._0, null);
     };
 
     var _demandViewDecoration = "<span class='dijitReset dijitInline silkIcon silkIconDemandView'></span>${0}";

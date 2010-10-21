@@ -507,7 +507,7 @@
                     </ul>
                     <p>
                         Si <strong>vous pouvez fournir</strong> la demande, alors utilisez la
-                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
+                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr&amp;demand={demand>key}">Console pour Associés</a>
                         et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
                         Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
@@ -538,7 +538,7 @@
                     </ul>
                     <p>
                         Si <strong>vous pouvez offrir</strong> une heure de départ, alors utilisez la
-                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr">Console pour Associés</a>
+                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr&amp;demand={demand>key}">Console pour Associés</a>
                         et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
                         Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
