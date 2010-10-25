@@ -42,7 +42,7 @@
     /**
      * Helper trying to display the Proposal create pane for the specified demand.
      * Can reschedule the pane openning if the console state is not yet stable.
-     * 
+     *
      * TODO: fix a limit in the number of retries
      */
     var _processConsoleParameters = function() {

@@ -9,6 +9,11 @@
     </datastore-index>
 
     <datastore-index kind="Consumer" ancestor="false" source="manual">
+        <property name="facebookId" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
         <property name="jabberId" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>

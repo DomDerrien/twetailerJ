@@ -13,6 +13,7 @@
     import="domderrien.jsontools.JsonArray"
     import="domderrien.jsontools.JsonObject"
     import="domderrien.jsontools.JsonParser"
+    import="twetailer.connector.FacebookConnector"
     import="twetailer.dao.BaseOperations"
     import="twetailer.dao.SettingsOperations"
     import="twetailer.dto.HashTag"
@@ -161,9 +162,8 @@
                             <div class="openIdProviderList">
                                 <button
                                     class="shortcutButton"
-                                    disabled="true"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='/login?loginWith=facebook&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
+                                    onclick="window.location='https://graph.facebook.com/oauth/authorize?client_id=<%= FacebookConnector.ASE_FACEBOOK_APP_ID %>&redirect_uri=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_facebook", locale) %>"
                                 ><img src="/images/icons/FaceBook-32.png" width="32" height="32" /></button>
                                 <button
@@ -331,7 +331,7 @@
                 dojo.byId("useAdditionalInfoButton").click();
             }
         });
-        dojo.byId("fromPageURL").value = encodeURI(window.location);
+        dojo.byId("fromPageURL").value = escape(window.location); // encodeURI(window.location);
         dijit.byId("signInButton").attr("disabled", false);
     };
     localModule.cookOpenId = function(prefix, suffix) {

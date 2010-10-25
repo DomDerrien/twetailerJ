@@ -9,6 +9,7 @@ import javax.jdo.Query;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.FacebookConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.validator.LocaleValidator;
@@ -230,7 +231,7 @@ public class ConsumerOperations extends BaseOperations {
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
      *
-     * @param authenticatedUser user with his information has communicated by the OpenID provider
+     * @param authenticatedUser user with his information has been communicated by the OpenID provider
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
      * @see ConsumerOperations#createConsumer(PersistenceManager, com.dyuproject.openid.OpenIdUser)
@@ -249,7 +250,7 @@ public class ConsumerOperations extends BaseOperations {
      * Create the Consumer instance if it does not yet exist, or get the existing one
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param authenticatedUser user with his information has communicated by the OpenID provider
+     * @param authenticatedUser user with his information has been communicated by the OpenID provider
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
      * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
@@ -317,6 +318,80 @@ public class ConsumerOperations extends BaseOperations {
             }
         }
         newConsumer.setPreferredConnection(Source.mail);
+        return createConsumer(pm, newConsumer);
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param authenticatedUser user with his information has been communicated by Facebook or Twitter
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, domderrien.jsontools.JsonObject)
+     */
+    public Consumer createConsumer(domderrien.jsontools.JsonObject authenticatedUser) {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return createConsumer(pm, authenticatedUser);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Create the Consumer instance if it does not yet exist, or get the existing one
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param authenticatedUser user with his information has been communicated by Facebook or Twitter
+     * @return The just created Consumer instance, or the corresponding one loaded from the data source
+     *
+     * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
+     */
+    public Consumer createConsumer(PersistenceManager pm, domderrien.jsontools.JsonObject authenticatedUser) {
+        // Return consumer if it already exists
+        String facebookId = authenticatedUser.getString(FacebookConnector.ATTR_UID);
+        try {
+            // Try to retrieve the same consumer
+            List<Consumer> consumers = getConsumers(pm, Consumer.FACEBOOK_ID, facebookId, 1);
+            if (0 < consumers.size()) {
+                return consumers.get(0);
+            }
+        }
+        catch (DataSourceException ex) {}
+
+        // Get user information
+        String name = authenticatedUser.getString(FacebookConnector.ATTR_NAME);
+        String email = authenticatedUser.getString(FacebookConnector.ATTR_EMAIL);
+        String language = LocaleValidator.getLocale(authenticatedUser.getString(FacebookConnector.ATTR_LOCALE)).getLanguage();
+
+        // Return consumer if one has the same e-mail address after its update
+        if (email != null && 0 < email.length()) {
+            // Try to retrieve the same consumer
+            List<Consumer> consumers;
+            try {
+                consumers = getConsumers(pm, Consumer.EMAIL, email, 1);
+                if (0 < consumers.size()) {
+                    Consumer existingConsumer = consumers.get(0);
+                    existingConsumer.setFacebookId(facebookId);
+                    String existingName = existingConsumer.getName();
+                    if (existingName == null) { // setName("") reset the field to <code>null</code>
+                        existingConsumer.setName(name.length() == 0 ? email : name);
+                    }
+                    existingConsumer = updateConsumer(pm, existingConsumer);
+                    return existingConsumer;
+                }
+            }
+            catch (DataSourceException e) { }
+        }
+
+        // Creates new consumer record and persist it
+        Consumer newConsumer = new Consumer();
+        newConsumer.setName(name);
+        newConsumer.setEmail(email);
+        newConsumer.setFacebookId(facebookId);
+        newConsumer.setLanguage(language);
+        newConsumer.setPreferredConnection(Source.facebook);
         return createConsumer(pm, newConsumer);
     }
 

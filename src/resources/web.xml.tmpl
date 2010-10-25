@@ -35,6 +35,23 @@
     </filter-mapping>
 
     <filter>
+        <filter-name>authverifierfilter</filter-name>
+        <filter-class>twetailer.j2ee.AuthVerifierFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>authverifierfilter</filter-name>
+        <url-pattern>/_admin/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authverifierfilter</filter-name>
+        <url-pattern>/console/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authverifierfilter</filter-name>
+        <url-pattern>@app.servletApiPath@/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>openidfilter</filter-name>
         <filter-class>com.dyuproject.openid.OpenIdServletFilter</filter-class>
         <load-on-startup>1</load-on-startup>
@@ -53,7 +70,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>@app.servletApiPath@/</url-pattern>
+        <url-pattern>@app.servletApiPath@/*</url-pattern>
     </filter-mapping>
 
     <servlet>

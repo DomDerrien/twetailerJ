@@ -71,6 +71,11 @@ public class Consumer extends Entity {
     public final static String EMAIL_REGEXP_VALIDATOR = "[\\w\\._%+-]+@[\\w\\.-]+\\.\\w{2,4}";
 
     @Persistent
+    private String facebookId;
+
+    public final static String FACEBOOK_ID = "facebookId";
+
+    @Persistent
     private String jabberId;
 
     public final static String JABBER_ID = "jabberId";
@@ -163,6 +168,15 @@ public class Consumer extends Entity {
         this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
+    public String getFacebookId() {
+        return facebookId;
+    }
+
+    public void setFacebookId(String facebookId) {
+        // Note: no normalization because the Facebook identifier is case sensitive!
+        this.facebookId = facebookId == null || facebookId.length() == 0 ? null : facebookId;
+    }
+
     public String getJabberId() {
         return jabberId;
     }
@@ -193,11 +207,11 @@ public class Consumer extends Entity {
     }
 
     public String getOpenID() {
-        // Note: no normalization because the OpenID identifier is case sensitive!
         return openID;
     }
 
     public void setOpenID(String openID) {
+        // Note: no normalization because the OpenID identifier is case sensitive!
         this.openID = openID == null || openID.length() == 0 ? null : openID;
     }
 
@@ -245,7 +259,7 @@ public class Consumer extends Entity {
     }
 
     public void setTwitterId(String twitterId) {
-        // Note: no normalisation because the Twitter identifier is case sensitive!
+        // Note: no normalization because the Twitter identifier is case sensitive!
         this.twitterId = twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
@@ -255,6 +269,7 @@ public class Consumer extends Entity {
         out.put(AUTOMATIC_LOCALE_UPDATE, getAutomaticLocaleUpdate());
         out.put(CLOSED_DEMAND_NB, getClosedDemandNb() == null ? 0L : getClosedDemandNb());
         out.put(EMAIL, getEmail());
+        out.put(FACEBOOK_ID, getFacebookId());
         out.put(JABBER_ID, getJabberId());
         out.put(LANGUAGE, getLanguage());
         out.put(NAME, getName());
@@ -272,14 +287,12 @@ public class Consumer extends Entity {
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
         // if (in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely
-        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
-        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
+        // if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); } // Cannot be updated remotely
+        // if (in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); } // Cannot be updated remotely
+        // if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); } // Cannot be updated remotely
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (getKey() == null && in.containsKey(OPEN_ID)) {
-            // Cannot change once set at creation time
-            setOpenID(in.getString(OPEN_ID));
-        }
+        // if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); } // Cannot be updated remotely
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
         // if (in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); } // Cannot be updated remotely
@@ -287,7 +300,7 @@ public class Consumer extends Entity {
             // Cannot change once set at creation time
             setSaleAssociateKey(in.getLong(SALE_ASSOCIATE_KEY));
         }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
+        // if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); } // Cannot be updated remotely
 
         // Shortcut
         if (in.containsKey(CONSUMER_KEY)) { setKey(in.getLong(CONSUMER_KEY)); }
