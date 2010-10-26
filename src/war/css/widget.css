@@ -3,7 +3,11 @@
  */
 body, th, td, textarea {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
+}
+
+a, a:hover, a:visited, a:link, a:active {
+    color: #005e9d;
 }
 
 #introFlash {
@@ -15,7 +19,7 @@ body, th, td, textarea {
     margin: 0;
     border: 0 none;
     padding: 0;
-    background: white url('/images/loading.gif') no-repeat center center;
+    background: #fff000 url('/images/loading.gif') no-repeat center center;
     z-index: 999;
 }
 
@@ -66,7 +70,7 @@ body, th, td, textarea {
     right: 0;
     margin: 0;
     padding: 5px;
-    background-color: lightgrey;
+    background-color: #fff000;
     border-radius: 10px;
     -moz-border-radius: 10px;
 }
@@ -115,15 +119,17 @@ body, th, td, textarea {
 }
 
 .brand {
-    font-family: 'Arial Black', Gadget, sans-serif;
-    font-size: 14px;
-    color: darkred;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    color: #252525;
     text-align: center;
     padding-top: 10px;
 }
 
 .title {
-    font-family: 'Arial Black', Gadget, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #252525;
     padding: 10px 0 10px 0;
 }
 
@@ -132,7 +138,7 @@ body, th, td, textarea {
 }
 
 .form>tbody>tr:nth-child(2n+1) {
-    background-color: darkred;
+    background-color: #7f8082;
 }
 
 .form>tbody>tr:nth-child(2n+1) label {
