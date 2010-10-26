@@ -163,7 +163,7 @@
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
-                                    onclick="window.location='https://graph.facebook.com/oauth/authorize?client_id=<%= FacebookConnector.ASE_FACEBOOK_APP_ID %>&redirect_uri=' + dojo.byId('fromPageURL').value"
+                                    onclick="window.location='https://graph.facebook.com/oauth/authorize?client_id=<%= FacebookConnector.ASE_FACEBOOK_APP_ID %>&type=web_server&scope=<%= FacebookConnector.getTwetailerScope() %>&display=page&redirect_uri=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_facebook", locale) %>"
                                 ><img src="/images/icons/FaceBook-32.png" width="32" height="32" /></button>
                                 <button

@@ -73,6 +73,16 @@ public class FacebookConnector {
     public static final String ATTR_VERIFIED = "verified";
     public static final String ATTR_LOCALE = "locale";
 
+    public static final String getTwetailerRequestedFields() {
+        return ATTR_UID +
+        "," + ATTR_NAME +
+        "," + ATTR_EMAIL +
+        "," + ATTR_LOCALE +
+        "," + ATTR_TZ +
+        "," + ATTR_VERIFIED +
+        "";
+    }
+
     /* Supported scopes:
      * ads_management create_event create_note email export_stream friends_about_me friends_activities
      * friends_birthday friends_checkins friends_education_history friends_events friends_groups friends_hometown
@@ -152,27 +162,30 @@ public class FacebookConnector {
     public static final String SCOPE_VIDEO_UP = "video_upload";
     public static final String SCOPE_XMPP_LOG = "xmpp_login";
 
+    public static final String getTwetailerScope() {
+        return SCOPE_EMAIL +
+        // "," + SCOPE_OFF_ACC +
+        // "," + SCOPE_PHYS_LOG +
+        // "," + SCOPE_PUB_STR +
+        "," + SCOPE_RD_FRDLST +
+        // "," + SCOPE_STATUS +
+        // "," + SCOPE_USR_ABOUT +
+        // "," + SCOPE_USR_BRTHD +
+        // "," + SCOPE_USR_TOWN +
+        // "," + SCOPE_USR_LOC +
+        // "," + SCOPE_USR_PRES +
+        // "," + SCOPE_USR_STATUS +
+        "";
+    }
+
     public static JsonObject getAccessToken(String requestSource, String code) throws MalformedURLException, IOException {
         // Get the OAuth access token for this user
         code = URLEncoder.encode(code, "UTF-8");
-        String targetURL = URLEncoder.encode(requestSource, "UTF-8");
         String tokenURL = "https://graph.facebook.com/oauth/access_token" +
             "?client_id=" + FacebookConnector.ASE_FACEBOOK_APP_ID +
-            "&redirect_uri=" + targetURL +
             "&client_secret=" + FacebookConnector.ASE_FACEBOOK_APP_SECRET +
-            "&scope=" + FacebookConnector.SCOPE_EMAIL +
-                  "," + FacebookConnector.SCOPE_OFF_ACC +
-                  "," + FacebookConnector.SCOPE_PHYS_LOG +
-                  "," + FacebookConnector.SCOPE_PUB_STR +
-                  "," + FacebookConnector.SCOPE_RD_FRDLST +
-                  "," + FacebookConnector.SCOPE_STATUS +
-                  "," + FacebookConnector.SCOPE_USR_ABOUT +
-                  "," + FacebookConnector.SCOPE_USR_BRTHD +
-                  "," + FacebookConnector.SCOPE_USR_TOWN +
-                  "," + FacebookConnector.SCOPE_USR_LOC +
-                  "," + FacebookConnector.SCOPE_USR_PRES +
-            "&code=" + code +
-            "&display=page";
+            "&redirect_uri=" + URLEncoder.encode(requestSource, "UTF-8") +
+            "&code=" + code;
         log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(tokenURL));
         // log.warning("Generated response: " + dumpResponse(produced));
@@ -191,11 +204,13 @@ public class FacebookConnector {
     }
 
     public static JsonObject getUserInfo(String accessToken) throws MalformedURLException, IOException {
-        String infoURL = "https://graph.facebook.com/me?access_token=" + URLEncoder.encode(accessToken, "UTF-8");
+        String infoURL = "https://graph.facebook.com/me" +
+            "?access_token=" + URLEncoder.encode(accessToken, "UTF-8") +
+            "&fields=" + getTwetailerRequestedFields();
         log.warning("Calling Facebook to the logged user info -- url: " + infoURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(infoURL));
         // log.warning("Generated response: " + dumpResponse(produced));
-        
+
         try {
             if (getContentType(produced).contains("text/plain")) {
                 return new GenericJsonObject(processURLEncodedResponse(produced));

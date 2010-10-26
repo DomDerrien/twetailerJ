@@ -2,6 +2,8 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
@@ -58,14 +60,7 @@ public class AuthVerifierFilter implements Filter {
                     // Create only if does not yet exist, otherwise return the existing instance
                     Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(userInfo);
 
-                    // Attached the consumer identifier to the OpenID user record and inject it in the
-                    com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
-                            "http://www.facebook.com",
-                            YadisDiscovery.IDENTIFIER_SELECT,
-                            "http://www.facebook.com"
-                    );
-                    user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumer.getKey());
-                    request.setAttribute(OpenIdUser.ATTR_NAME, user);
+                    httpRequest.getSession(true).setAttribute(OpenIdUser.ATTR_NAME, prepareOpenIdUser(consumer));
 
                     // Redirect to clean the url
                     ((HttpServletResponse) response).sendRedirect(httpRequest.getRequestURL().toString());
@@ -87,6 +82,26 @@ public class AuthVerifierFilter implements Filter {
             log.severe("Unexpected exception while processing the request -- ex: " + ex.getMessage() + "\n" + dumpResponse(httpRequest));
             throw ex;
         }
+    }
+
+    protected static OpenIdUser prepareOpenIdUser(Consumer consumer) {
+        // Get initial OpenId record
+        OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
+                "http://www.facebook.com",        // Identifier
+                YadisDiscovery.IDENTIFIER_SELECT, // ClaimedId
+                "http://www.facebook.com"         // OpenId server
+        );
+
+        // Inject the Facebook identifier as the OpenId user identity
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+        json.put("b", "facebook://" + consumer.getFacebookId() + "/" + consumer.getName()); // Means user.isAuthenticated() == true
+        user.fromJSON(json);
+
+        // Attach the user consumer key to save future lookups
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumer.getKey());
+
+        return user;
     }
 
     protected static String dumpResponse(HttpServletRequest request) {
