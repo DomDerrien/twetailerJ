@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,8 +70,7 @@ public class AuthVerifierFilter implements Filter {
                     log.warning("The Facebook user refused to give credentials to ASE.com -- reason: " + produced.toString());
 
                     // Redirect to get a new token
-                    String facebookAuthVerifURL = "https://graph.facebook.com/oauth/authorize?client_id=" + FacebookConnector.ASE_FACEBOOK_APP_ID;
-                    facebookAuthVerifURL += "&redirect_uri=" + httpRequest.getRequestURL();
+                    String facebookAuthVerifURL = FacebookConnector.bootstrapAuthUrl(httpRequest) + URLEncoder.encode(httpRequest.getRequestURL().toString(), "UTF-8");
                     ((HttpServletResponse) response).sendRedirect(facebookAuthVerifURL);
                 }
             }
@@ -79,7 +79,7 @@ public class AuthVerifierFilter implements Filter {
             }
         }
         catch (IOException ex) {
-            log.severe("Unexpected exception while processing the request -- ex: " + ex.getMessage() + "\n" + dumpResponse(httpRequest));
+            log.severe("Unexpected exception while processing the request -- ex: " + ex.getMessage() + "\n" + dumpRequest(httpRequest));
             throw ex;
         }
     }
@@ -89,7 +89,7 @@ public class AuthVerifierFilter implements Filter {
         OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
                 "http://www.facebook.com",        // Identifier
                 YadisDiscovery.IDENTIFIER_SELECT, // ClaimedId
-                "http://www.facebook.com"         // OpenId server
+                "https://www.facebook.com/login"  // OpenId server
         );
 
         // Inject the Facebook identifier as the OpenId user identity
@@ -104,36 +104,36 @@ public class AuthVerifierFilter implements Filter {
         return user;
     }
 
-    protected static String dumpResponse(HttpServletRequest request) {
+    public static String dumpRequest(HttpServletRequest request) {
         StringBuilder out = new StringBuilder();
-        out.append("******\n");
-        out.append("remote address: ").append(request.getRemoteAddr()).append("\n");
-        out.append("remote host: ").append(request.getRemoteHost()).append("\n");
-        out.append("remote port: ").append(request.getRemotePort()).append("\n");
-        out.append("remote user: ").append(request.getRemoteUser()).append("\n");
-        out.append("******\n");
+        out.append("******\nremote coordinates:\n---\n");
+        out.append("address: ").append(request.getRemoteAddr()).append("\n");
+        out.append("host: ").append(request.getRemoteHost()).append("\n");
+        out.append("port: ").append(request.getRemotePort()).append("\n");
+        out.append("user: ").append(request.getRemoteUser()).append("\n");
+        out.append("******\nserver coordinates:\n---\n");
         out.append("protocol: ").append(request.getProtocol()).append("\n");
-        out.append("server name: ").append(request.getServerName()).append("\n");
-        out.append("server port: ").append(request.getServerPort()).append("\n");
+        out.append("name: ").append(request.getServerName()).append("\n");
+        out.append("port: ").append(request.getServerPort()).append("\n");
         out.append("request url: ").append(request.getRequestURL()).append("\n");
         out.append("query string: ").append(request.getQueryString()).append("\n");
         Enumeration<?> names = request.getAttributeNames();
-        out.append("******\n");
+        out.append("******\nattributes:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            out.append("attr '").append(name).append("': ").append(request.getAttribute(name)).append("\n");
+            out.append(name).append(": ").append(request.getAttribute(name)).append("\n");
         }
         names = request.getHeaderNames();
-        out.append("******\n");
+        out.append("******\nheaders:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            out.append("header '").append(name).append("': ").append(request.getHeader(name)).append("\n");
+            out.append(name).append(": ").append(request.getHeader(name)).append("\n");
         }
         names = request.getParameterNames();
-        out.append("******\n");
+        out.append("******\nparameters:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            out.append("param '").append(name).append("': ").append(request.getParameter(name)).append("\n");
+            out.append(name).append(": ").append(request.getParameter(name)).append("\n");
         }
         out.append("******\n");
         return out.toString();

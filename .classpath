@@ -67,5 +67,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/dyuproject/jetty-util-6.1.19.jar"/>
 	<classpathentry kind="lib" path="deps/lib/datanucleus/datanucleus-appengine-1.0.7.final.jar" sourcepath="deps/lib/datanucleus/datanucleus-appengine-1.0.7.final-src.zip"/>
+	<classpathentry kind="lib" path="deps/lib/commons/commons-codec-1.4.jar" sourcepath="deps/lib/commons/commons-codec-1.4-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/commons/commons-codec-1.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

@@ -123,16 +123,19 @@ public class TestConsumer {
         Consumer clone = new Consumer(object.toJson());
 
         assertEquals(address, clone.getAddress());
-        assertEquals(email, clone.getEmail());
-        assertEquals(imId, clone.getJabberId());
+        assertNull(clone.getClosedDemandNb()); // Cannot be overridden
+        assertNull(clone.getEmail()); // Cannot be overridden
+        assertNull(clone.getFacebookId()); // Cannot be overridden
+        assertNull(clone.getJabberId()); // Cannot be overridden
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(name, clone.getName());
-        assertEquals(openID, clone.getOpenID());
+        assertNull(clone.getOpenID()); // Cannot be overridden
         assertEquals(phoneNumber, clone.getPhoneNumber());
         assertEquals(preferredConnection, clone.getPreferredConnection());
-        assertEquals(saleAssociateKey, clone.getSaleAssociateKey());
-        assertEquals(twitterId, clone.getTwitterId());
+        assertNull(clone.getPublishedDemandNb()); // Cannot be overridden
+        assertEquals(saleAssociateKey, clone.getSaleAssociateKey()); // Cannot be overridden
+        assertNull(clone.getTwitterId()); // Cannot be overridden
     }
 
     @Test

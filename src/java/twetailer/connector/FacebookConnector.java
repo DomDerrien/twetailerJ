@@ -1,12 +1,23 @@
 package twetailer.connector;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPHeader;
@@ -23,7 +34,7 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
 /**
- * Definition of the methods specific to communication via Twitter
+ * Definition of the methods specific to communication via Facebook
  *
  * @author Dom Derrien
  */
@@ -41,12 +52,32 @@ public class FacebookConnector {
     public static final String ASE_FACEBOOK_APP_KEY = "ead60783729d9df1b84ed3eec87547bf";
     public static final String ASE_FACEBOOK_APP_SECRET = "a48c963252a56949b052f09af72e967c";
 
+    public static final String FB_GRAPH_AUTH_URL = "https://graph.facebook.com/oauth/authorize";
+
+    public static String bootstrapAuthUrl(HttpServletRequest request) throws UnsupportedEncodingException {
+        return FB_GRAPH_AUTH_URL +
+            "?client_id=" + ASE_FACEBOOK_APP_ID +
+            "&scope=" + getTwetailerScope() +
+            "&display=page" +
+            "&redirect_uri=";
+    }
+
+    public static final String FB_BUS_PAGE_URL = "http://www.facebook.com/pages/AnotherSocialEconomy/156908804326834";
+    public static final String FB_GROUP_URL = "http://www.facebook.com/group.php?gid=165456116817105";
+    public static final String FB_MAIN_APP_URL = "http://apps.facebook.com/anothersocialeconomy/";
+
+    public static final String ASE_MAIN_APP_URL = "http://anothersocialeconomy.appspot.com/widget/facebook/";
+    public static final String LCL_MAIN_APP_URL = "http://localhost:9999/widget/facebook/";
+
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
         log = mock;
     }
 
     public static final String ATTR_ACCESS_TOKEN = "access_token";
+    public static final String ATTR_OAUTH_TOKEN = "oauth_token";
+    public static final String ATTR_ALGORITHM = "algorithm";
+    public static final String ATTR_USER_ID = "user_id";
     public static final String ATTR_ERROR_REASON = "error_reason";
 
     /* User info: JsonObject: {
@@ -188,7 +219,7 @@ public class FacebookConnector {
             "&code=" + code;
         log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(tokenURL));
-        // log.warning("Generated response: " + dumpResponse(produced));
+        log.fine("Generated response: " + dumpResponse(produced));
 
         try {
             if (getContentType(produced).contains("text/plain")) {
@@ -209,7 +240,7 @@ public class FacebookConnector {
             "&fields=" + getTwetailerRequestedFields();
         log.warning("Calling Facebook to the logged user info -- url: " + infoURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(infoURL));
-        // log.warning("Generated response: " + dumpResponse(produced));
+        log.fine("Generated response: " + dumpResponse(produced));
 
         try {
             if (getContentType(produced).contains("text/plain")) {
@@ -274,5 +305,57 @@ public class FacebookConnector {
         }
         out.append("\n").append(new String(response.getContent()));
         return out.toString();
+    }
+
+    protected static final String ENCRYPTION_ALGORITHM_FACEBOOK_NAME = "HMAC-SHA256";
+    protected static final String ENCRYPTION_ALGORITHM_STANDARD_NAME = "HMACSHA256";
+
+    /**
+     * Study the passed 'signed_request' parameter, verify it's not been tampered, and
+     * extract the passed logged in user identifiers.
+     *
+     * @param request HTTP request instance containing the request information
+     * @return Json bag with the logged in user identifiers
+     *
+     * @throws ServletException If the content of the 'signed_request' parameter is corrupted
+     *
+     * @see http://developers.facebook.com/docs/authentication/canvas for the process details
+     * @see http://www.hammersoft.de/blog/?p=87 for the original implementation
+     */
+    public static JsonObject processSignedRequest(HttpServletRequest request) throws ServletException {
+        try {
+            String signedRequest = request.getParameter("signed_request");
+            String[] signedRequestParts = signedRequest.split("\\.");
+            String signature = signedRequestParts[0];
+
+            String encodedPayload = signedRequestParts[1];
+            String rawPayload = new String(new Base64(true).decode(encodedPayload.getBytes()));
+            JsonObject payload = new JsonParser(rawPayload).getJsonObject();
+            log.fine("Extracted payload: " + payload.toString());
+
+            if (!ENCRYPTION_ALGORITHM_FACEBOOK_NAME.equals(payload.getString(ATTR_ALGORITHM))) {
+                throw new ServletException("Unexpected encryption algorithm: " + payload.getString(ATTR_ALGORITHM));
+            }
+
+            try {
+                SecretKeySpec secretKeySpec = new SecretKeySpec(ASE_FACEBOOK_APP_SECRET.getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
+                Mac messageAuthenticationCode = Mac.getInstance(ENCRYPTION_ALGORITHM_STANDARD_NAME);
+                messageAuthenticationCode.init(secretKeySpec);
+                if (!Arrays.equals(new Base64(true).decode(signature.getBytes()), messageAuthenticationCode.doFinal(encodedPayload.getBytes()))) {
+                    throw new ServletException("Non-matching signature for request");
+                }
+            }
+            catch (NoSuchAlgorithmException ex) {
+                throw new ServletException("Unknown hash algorithm " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
+            }
+            catch (InvalidKeyException ex) {
+                throw new ServletException("Wrong key for " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
+            }
+
+            return payload;
+        }
+        catch (JsonException ex) {
+            throw new ServletException("Invalid JsonObject in the signed request payload", ex);
+        }
     }
 }

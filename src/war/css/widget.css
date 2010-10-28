@@ -37,31 +37,6 @@ a, a:hover, a:visited, a:link, a:active {
     line-height: 30px;
 }
 
-.progressBar {
-    height: 30px;
-}
-
-.progressBar .step {
-    font-weight: normal;
-    text-align: center;
-    height: 24px;
-    width: 25%;
-    float: left;
-}
-
-.progressBar .inactive {
-}
-
-.progressBar .active {
-    font-weight: bold;
-}
-
-.progressBar .inactive.goal {
-}
-
-.progressBar .active.goal {
-}
-
 #centerZone {
     position: absolute;
     top: 0;
@@ -69,10 +44,17 @@ a, a:hover, a:visited, a:link, a:active {
     left: 0;
     right: 0;
     margin: 0;
+    background-color: #fff000;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+}
+
+#centerZone>div {
     padding: 5px;
     background-color: #fff000;
     border-radius: 10px;
     -moz-border-radius: 10px;
+    min-height: 300px;
 }
 
 .silkIcon {
@@ -172,16 +154,39 @@ a, a:hover, a:visited, a:link, a:active {
 }
 
 .footer {
-    width: 100%;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
+    right: 0;
+}
+
+.progressBar {
+}
+
+.progressBar .step {
+    font-weight: normal;
+    text-align: center;
+    width: 25%;
+    float: left;
+}
+
+.progressBar .inactive {
+}
+
+.progressBar .active {
+    font-weight: bold;
+}
+
+.progressBar .inactive.goal {
+}
+
+.progressBar .active.goal {
 }
 
 .poweredBy {
+    margin-top: 20px;
     font-size: smaller;
     text-align: center;
-    margin-bottom: 5px;
 }
 
 .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {
