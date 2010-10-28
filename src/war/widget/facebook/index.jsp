@@ -39,10 +39,8 @@
     String urlToGo = request.getParameter("urlToGo");
     if (urlToGo != null) {
         response.sendRedirect(urlToGo);
-        System.err.println("&&&&&&&& ready to stop the process");
         return;
     }
-    System.err.println("&&&&&&&& process continuing");
 
     // Check the page parameters
     Exception capturedEx = null;
@@ -52,15 +50,14 @@
         String facebookId = requestParams.getString(FacebookConnector.ATTR_USER_ID);
         if (facebookId != null) {
             List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(Consumer.FACEBOOK_ID, facebookId, 1);
-            System.err.println("^^^^^^^^^ look up for ASE consumer with facebookId: " + facebookId);
             if (0 < consumers.size()) {
-                userName = "1. " + consumers.get(0).getName();
+                userName = consumers.get(0).getName();
             }
         }
         String oauthToken = requestParams.getString(FacebookConnector.ATTR_OAUTH_TOKEN);
         if (userName == null && oauthToken != null)  {
             JsonObject userInfo = FacebookConnector.getUserInfo(oauthToken);
-            userName = "2. " + userInfo.getString(FacebookConnector.ATTR_NAME);
+            userName = userInfo.getString(FacebookConnector.ATTR_NAME);
         }
     }
     catch (Exception ex) {
