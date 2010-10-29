@@ -41,7 +41,11 @@
     background-image: url('/images/golf/flag-small.png'), url('/images/golf/ball-green-small.png');
 }
 
-#centerZone {
+.dataZone {
+    background-color: #5ddc1e;
+}
+
+.dataZone>div {
     background-color: #5ddc1e;
 }
 

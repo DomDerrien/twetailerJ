@@ -2727,5 +2727,78 @@
             </tuv>
         </tu>
 
+        <!-- =============== -->
+        <!-- Facebook canvas -->
+        <!-- =============== -->
+
+        <tu tuid="fbc_welcome_loggedUser" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: user name</note>
+            <tuv xml:lang="en">
+                <seg>Welcome {0}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_welcome_unknownUser" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: Facebook authentication URL
+                {1}: ASE canvas URL
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Hi, Facebook has not been able to tell us who you are.<br/><br/>
+                    You might be logged out from Facebook or you has not yet
+                    <a href="{0}" onclick="this.href += escape(window.location + '&amp;urlToGo={1}');" target="_blank">authorized</a>
+                    our application.<br /><br />
+                    You can still use the <a href="http://anothersocialeconomy.com/" target="_blank">AnotherSocialEconomy.com</a>
+                    widget with your personal email address. Confirmations of your operations and notifications
+                    of proposals made by local retailers will be sent to your email account.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_menu_newDemand" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>New Demand...</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_menu_manageDemands" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Manage Demands</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_menu_manageWishes" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Manage Wishes</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_demandZone_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Demand List</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="fbc_wishZone_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Wish List</seg>
+            </tuv>
+        </tu>
+
     </body>
 </tmx>

@@ -282,30 +282,30 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dojox.analytics.Urchin");
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
-            if (1280 < parseInt(dojo.style("centerZone", "width"))) {
-                var currentBgImg = dojo.style("centerZone", "backgroundImage");
+            if (1280 < parseInt(dojo.style('centerZone', 'width'))) {
+                var currentBgImg = dojo.style('centerZone', 'backgroundImage');
                 if (currentBgImg != null && 15 < currentBgImg.length) {
                     var suffix = currentBgImg.substr(currentBgImg.length - 15);
-                    if (suffix.indexOf("-1024.png") != -1) {
-                        dojo.style("centerZone", "backgroundImage", currentBgImg.replace("-1024.png", "-2048.png"));
+                    if (suffix.indexOf('-1024.png') != -1) {
+                        dojo.style('centerZone', 'backgroundImage', currentBgImg.replace('-1024.png', '-2048.png'));
                     }
                 }
             }
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();
             localModule.init();<%
@@ -314,25 +314,23 @@
             } %>
         });
     });
-    </script>
 
-    <script type="text/javascript">
     var localModule = {};
     localModule.init = function() {
-        dijit.byId("openid_identifier").focus();
-        dojo.query("#signInButton").onclick(function(evt) {
-            dojo.query(".shortcutButton").forEach(function(node, index, arr){
+        dijit.byId('openid_identifier').focus();
+        dojo.query('#signInButton').onclick(function(evt) {
+            dojo.query('.shortcutButton').forEach(function(node, index, arr){
                 // dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
-                dijit.getEnclosingWidget(node).attr("disabled", true);
+                dijit.getEnclosingWidget(node).attr('disabled', true);
             });
         });
-        dojo.query("#openIdCustom").onkeypress(function(evt) {
+        dojo.query('#openIdCustom').onkeypress(function(evt) {
             if (evt.keyCode == dojo.keys.ENTER) {
-                dojo.byId("useAdditionalInfoButton").click();
+                dojo.byId('useAdditionalInfoButton').click();
             }
         });
-        dojo.byId("fromPageURL").value = escape(window.location); // encodeURI(window.location);
-        dijit.byId("signInButton").attr("disabled", false);
+        dojo.byId('fromPageURL').value = escape(window.location); // encodeURI(window.location);
+        dijit.byId('signInButton').attr('disabled', false);
     };
     localModule.cookOpenId = function(prefix, suffix) {
         dojo.byId('openIdPrefix').innerHTML = prefix;
@@ -342,10 +340,10 @@
     };
     localModule.reportCookedOpenId = function() {
         var prefix = dojo.byId('openIdPrefix').innerHTML;
-        var custom = dijit.byId('openIdCustom').attr("value");
+        var custom = dijit.byId('openIdCustom').attr('value');
         var suffix = dojo.byId('openIdSuffix').innerHTML;
-        dijit.byId("openid_identifier").attr("value", prefix + custom + suffix);
-        dojo.byId("signInButton").click();
+        dijit.byId('openid_identifier').attr('value', prefix + custom + suffix);
+        dojo.byId('signInButton').click();
     };
     </script>
 </body>

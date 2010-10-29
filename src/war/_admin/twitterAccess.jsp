@@ -293,29 +293,29 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        // dojo.require("dojo.data.ItemFileWriteStore");
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        // dojo.require("dijit.layout.TabContainer");
-        // dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Button");
-        // dojo.require("dijit.form.CheckBox");
-        // dojo.require("dijit.form.ComboBox");
-        // dojo.require("dijit.form.DateTextBox");
-        // dojo.require("dijit.form.FilteringSelect");
-        // dojo.require("dijit.form.NumberTextBox");
-        // dojo.require("dijit.form.Textarea");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dojox.analytics.Urchin");
+        // dojo.require('dojo.data.ItemFileWriteStore');
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        // dojo.require('dijit.layout.TabContainer');
+        // dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.Button');
+        // dojo.require('dijit.form.CheckBox');
+        // dojo.require('dijit.form.ComboBox');
+        // dojo.require('dijit.form.DateTextBox');
+        // dojo.require('dijit.form.FilteringSelect');
+        // dojo.require('dijit.form.NumberTextBox');
+        // dojo.require('dijit.form.Textarea');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();
         });<%
@@ -323,9 +323,7 @@
         new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
         } %>
     });
-    </script>
 
-    <script type="text/javascript">
     var localModule = new Object();
     </script>
 </body>

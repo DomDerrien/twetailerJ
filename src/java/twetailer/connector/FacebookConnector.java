@@ -52,11 +52,18 @@ public class FacebookConnector {
     public static final String ASE_FACEBOOK_APP_KEY = "ead60783729d9df1b84ed3eec87547bf";
     public static final String ASE_FACEBOOK_APP_SECRET = "a48c963252a56949b052f09af72e967c";
 
+    public static final String DEV_FACEBOOK_APP_ID = "164780320208648";
+    public static final String DEV_FACEBOOK_APP_KEY = "cc9933d240f333508cee8490711ce4c4";
+    public static final String DEV_FACEBOOK_APP_SECRET = "2213d315b21fa7d74e0ede71f4567f19";
+
     public static final String FB_GRAPH_AUTH_URL = "https://graph.facebook.com/oauth/authorize";
 
+    protected static boolean inLocalHost = false;
+
     public static String bootstrapAuthUrl(HttpServletRequest request) throws UnsupportedEncodingException {
+        inLocalHost = "localhost".equals(request.getServerName());
         return FB_GRAPH_AUTH_URL +
-            "?client_id=" + ASE_FACEBOOK_APP_ID +
+            "?client_id=" + (inLocalHost ? DEV_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
             "&scope=" + getTwetailerScope() +
             "&display=page" +
             "&redirect_uri=";
@@ -98,8 +105,8 @@ public class FacebookConnector {
      * }
      */
     public static final String ATTR_UID = "id";
-    public static final String ATTR_NAME = "name";
-    public static final String ATTR_EMAIL = "email";
+    public static final String ATTR_NAME = "name"; // == Consumer.NAME
+    public static final String ATTR_EMAIL = "email"; // == Consumer.EMAIL
     public static final String ATTR_TZ = "timezone";
     public static final String ATTR_VERIFIED = "verified";
     public static final String ATTR_LOCALE = "locale";
@@ -213,8 +220,8 @@ public class FacebookConnector {
         // Get the OAuth access token for this user
         code = URLEncoder.encode(code, "UTF-8");
         String tokenURL = "https://graph.facebook.com/oauth/access_token" +
-            "?client_id=" + FacebookConnector.ASE_FACEBOOK_APP_ID +
-            "&client_secret=" + FacebookConnector.ASE_FACEBOOK_APP_SECRET +
+            "?client_id=" + (inLocalHost ? DEV_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
+            "&client_secret=" + (inLocalHost ? DEV_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET) +
             "&redirect_uri=" + URLEncoder.encode(requestSource, "UTF-8") +
             "&code=" + code;
         log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
@@ -338,7 +345,8 @@ public class FacebookConnector {
             }
 
             try {
-                SecretKeySpec secretKeySpec = new SecretKeySpec(ASE_FACEBOOK_APP_SECRET.getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
+                inLocalHost = "localhost".equals(request.getServerName());
+                SecretKeySpec secretKeySpec = new SecretKeySpec((inLocalHost ? DEV_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET).getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 Mac messageAuthenticationCode = Mac.getInstance(ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 messageAuthenticationCode.init(secretKeySpec);
                 if (!Arrays.equals(new Base64(true).decode(signature.getBytes()), messageAuthenticationCode.doFinal(encodedPayload.getBytes()))) {

@@ -1213,28 +1213,28 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.data.ItemFileWriteStore");
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.ComboBox");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.Select");
-        dojo.require("dijit.form.Textarea");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dojox.analytics.Urchin");
+        dojo.require('dojo.data.ItemFileWriteStore');
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.CheckBox');
+        dojo.require('dijit.form.ComboBox');
+        dojo.require('dijit.form.DateTextBox');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.NumberTextBox');
+        dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.Textarea');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();<%
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
@@ -1242,121 +1242,119 @@
             } %>
         });
     });
-    </script>
 
-    <script type="text/javascript">
     var localModule = new Object();
     localModule.fetchEntity = function(keyFieldId, entityName, ownerKey) {
-        var key = dijit.byId(keyFieldId).get("value");
+        var key = dijit.byId(keyFieldId).get('value');
         if (isNaN(key)) {
-            alert("The key in the field '" + keyFieldId + "' is not a number!");
+            alert('The key in the field \'' + keyFieldId + '\' is not a number!');
             return;
         }
-        if (entityName == "Consumer" || entityName == "SaleAssociate") {
-            key = "current";
+        if (entityName == 'Consumer' || entityName == 'SaleAssociate') {
+            key = 'current';
         }
-        var ownrKey = dijit.byId("consumer.key").get("value");
+        var ownrKey = dijit.byId('consumer.key').get('value');
         if (isNaN(ownrKey)) {
-            alert("The key in the field 'consumer.key' is not a number!");
+            alert('The key in the field 'consumer.key' is not a number!');
             return;
         }
-        var pointOfView = "CONSUMER";
-        if (entityName == "Proposal" || entityName == "Store") {
-            pointOfView = "SALE_ASSOCIATE";
+        var pointOfView = 'CONSUMER';
+        if (entityName == 'Proposal' || entityName == 'Store') {
+            pointOfView = 'SALE_ASSOCIATE';
         }
         var prefix = entityName.toLowerCase();
         dojo.animateProperty({
-            node: prefix + "InformationFieldset",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: prefix + 'InformationFieldset',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrGet({
             content: null,
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    dijit.byId(prefix + "Information").reset();
+                    dijit.byId(prefix + 'Information').reset();
                     var resource = response.resource;
                     for (var attr in resource) {
                         var value = resource[attr];
-                        if (attr.indexOf("Date") != -1) {
+                        if (attr.indexOf('Date') != -1) {
                             value = dojo.date.stamp.fromISOString(value);
                         }
-                        if (attr == "criteria" || attr == "hashTags" || attr == "cc") {
+                        if (attr == 'criteria' || attr == 'hashTags' || attr == 'cc') {
                             value = value.join('\n');
                         }
-                        if (attr == "proposalKeys" || attr == "saleAssociateKeys") {
+                        if (attr == 'proposalKeys' || attr == 'saleAssociateKeys') {
                             var options = new dojo.data.ItemFileWriteStore({ data: { identifier: 'name', items: [] } })
                             var limit = value.length;
                             for (var idx = 0; idx < limit; idx++) {
                                 options.newItem({ name: value [idx] });
                             }
-                            dijit.byId(prefix + "." + attr).set("store", options);
-                            dijit.byId(prefix + "." + attr).set("value", value[0]);
+                            dijit.byId(prefix + '.' + attr).set('store', options);
+                            dijit.byId(prefix + '.' + attr).set('value', value[0]);
                         }
                         else {
-                            dijit.byId(prefix + "." + attr).set("value", value);
+                            dijit.byId(prefix + '.' + attr).set('value', value);
                         }
-                        if (attr == "state" && (entityName == "Demand" || entityName == "Proposal")) {
-                            var isNonModifiable = value == "closed" || value == "cancelled" || value == "markedForDeletion";
-                            dijit.byId(prefix + ".updateButton").set("disabled", isNonModifiable);
+                        if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
+                            var isNonModifiable = value == 'closed' || value == 'cancelled' || value == 'markedForDeletion';
+                            dijit.byId(prefix + '.updateButton').set('disabled', isNonModifiable);
                         }
                     }
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: prefix + "InformationFieldset",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: prefix + 'InformationFieldset',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/shortcut/" + entityName + "/" + key + "?shortId=" + ownrKey + "&pointOfView=" + pointOfView
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/shortcut/' + entityName + '/' + key + '?shortId=' + ownrKey + '&pointOfView=' + pointOfView
         });
     };
     localModule.saveEntity = function(entityName) {
         var prefix = entityName.toLowerCase();
-        var key = dijit.byId(prefix + ".key").get("value");
+        var key = dijit.byId(prefix + '.key').get('value');
         if (isNaN(key)) {
-            alert("The key in the field '" + keyFieldId + "' is not a number!");
+            alert('The key in the field \'' + keyFieldId + '\' is not a number!');
             return;
         }
-        if (entityName == "Consumer" || entityName == "SaleAssociate") {
-            key = "current";
+        if (entityName == 'Consumer' || entityName == 'SaleAssociate') {
+            key = 'current';
         }
-        var ownrKey = dijit.byId("consumer.key").get("value");
+        var ownrKey = dijit.byId('consumer.key').get('value');
         if (isNaN(ownrKey)) {
-            alert("The key in the field 'consumer.key' is not a number!");
+            alert('The key in the field 'consumer.key' is not a number!');
             return;
         }
         dojo.animateProperty({
-            node: prefix + "InformationFieldset",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: prefix + 'InformationFieldset',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
-        var data = localModule.formToObject(prefix + "Information");
-        if (data.cc != null) { data.cc = data.cc.split("\n"); }
-        if (data.criteria != null) { data.criteria = data.criteria.split("\n"); }
-        if (data.hashTags != null) { data.hashTags = data.hashTags.split("\n"); }
+        var data = localModule.formToObject(prefix + 'Information');
+        if (data.cc != null) { data.cc = data.cc.split('\n'); }
+        if (data.criteria != null) { data.criteria = data.criteria.split('\n'); }
+        if (data.hashTags != null) { data.hashTags = data.hashTags.split('\n'); }
         if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralized server-side, just removed for the bandwidth
         if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
         dojo.xhrPut({
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             putData: dojo.toJson(data),
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // No visual feedback
                 }
                 else {
-                    alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
+                    alert(response.exceptionMessage+'\nurl: '+ioArgs.url+'\n\n'+response.originalExceptionMessage);
                 }
                 dojo.animateProperty({
-                    node: prefix + "InformationFieldset",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: prefix + 'InformationFieldset',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/shortcut/" + entityName + "/" + key + "?shortId=" + ownrKey
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/shortcut/' + entityName + '/' + key + '?shortId=' + ownrKey
         });
     };
     localModule.formToObject = function(/*DOMNode||String*/formNode) {
@@ -1369,7 +1367,7 @@
                     data[_in] = true;
                 }
                 else {
-                    var _iv = item.get("value");
+                    var _iv = item.get('value');
                     if (_in && _iv) {
                         if (_iv instanceof Date) {
                             _iv = dojo.date.stamp.toISOString(_iv, {});
@@ -1382,32 +1380,32 @@
         return data;
     };
     localModule.decorationOfEntityLinks = [
-                "<a href='javascript:dijit.byId(\"entityKeysDialog\").hide();dijit.byId(\"", // entity class name, lower case
-                ".key\").set(\"value\",",      // entity key
-                ");localModule.fetchEntity(\"", // entity class name, lower case
-                ".key\",\"",                    // entity class name
-                "\");' title='Get the ",        // entity class name
-                ": ",                           // entity key
-                "'>",                           // entity key
-                "</a>, "
+                '<a href="javascript:dijit.byId(\'entityKeysDialog\').hide();dijit.byId(\'', // entity class name, lower case
+                '.key\').set(\'value\',',      // entity key
+                ');localModule.fetchEntity(\'', // entity class name, lower case
+                '.key\',\'',                    // entity class name
+                '\');" title="Get the ',        // entity class name
+                ': ',                           // entity key
+                '">',                           // entity key
+                '</a>, '
             ];
     localModule.loadEntityKeys = function(keyFieldId, entityName, parameters) {
-        var ownerKey = dijit.byId(keyFieldId).get("value");
+        var ownerKey = dijit.byId(keyFieldId).get('value');
         if (isNaN(ownerKey)) {
-            alert("The key in the field '" + keyFieldId + "' is not a number!");
+            alert('The key in the field \'' + keyFieldId + '\' is not a number!');
             return;
         }
-        var dialog = dijit.byId("entityKeysDialog");
-        dialog.set("title", entityName + " identifiers");
+        var dialog = dijit.byId('entityKeysDialog');
+        dialog.set('title', entityName + ' identifiers');
         dialog.show();
 
         dojo.animateProperty({
-            node: "keyZone",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: 'keyZone',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrGet({
             content: null,
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     var keys = response.resources;
@@ -1426,44 +1424,44 @@
                         out.push(deco[7]);
 
                     }
-                    dojo.byId("keyZone").innerHTML = out.join("");
+                    dojo.byId('keyZone').innerHTML = out.join('');
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: "keyZone",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: 'keyZone',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/shortcut/" + entityName + "?shortId=" + ownerKey + "&anyState=true&onlyKeys=true&" + parameters
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/shortcut/' + entityName + '?shortId=' + ownerKey + '&anyState=true&onlyKeys=true&' + parameters
         });
     };
     localModule.resolveLocation = function() {
         dojo.xhrGet({
             content: null,
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 localModule.fetchEntity('location.key', 'Location');
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/maelzel/validateLocation?countryCode=" + dijit.byId("location.countryCode").get("value") + "&postalCode=" + dijit.byId("location.postalCode").get("value") + "&consumerKey=0&key=0"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/maelzel/validateLocation?countryCode=' + dijit.byId('location.countryCode').get('value') + '&postalCode=' + dijit.byId('location.postalCode').get('value') + '&consumerKey=0&key=0'
         });
     };
     localModule.getLocationKeys = function() {
         var parameters =
-            "maximumResults=0" +
-            "&hasStore=" + (dijit.byId("locationFilter.hasStore").get("value") == "on") +
-            "&countryCode=" + dijit.byId("locationFilter.countryCode").get("value") +
-            "&range=" + dijit.byId("locationFilter.range").get("value") +
-            "&rangeUnit=" + dijit.byId("locationFilter.rangeUnit").get("value");
-        var postalCode = dijit.byId("locationFilter.postalCode").get("value");
+            'maximumResults=0' +
+            '&hasStore=' + (dijit.byId('locationFilter.hasStore').get('value') == 'on') +
+            '&countryCode=' + dijit.byId('locationFilter.countryCode').get('value') +
+            '&range=' + dijit.byId('locationFilter.range').get('value') +
+            '&rangeUnit=' + dijit.byId('locationFilter.rangeUnit').get('value');
+        var postalCode = dijit.byId('locationFilter.postalCode').get('value');
         if (0 < postalCode.length) {
-            parameters += "&postalCode=" + postalCode;
+            parameters += '&postalCode=' + postalCode;
         }
         else {
-            parameters += "&latitude=" + dijit.byId("locationFilter.latitude").get("value") + "&longitude=" + dijit.byId("locationFilter.longitude").get("value");
+            parameters += '&latitude=' + dijit.byId('locationFilter.latitude').get('value') + '&longitude=' + dijit.byId('locationFilter.longitude').get('value');
         }
         localModule.loadEntityKeys('consumer.key','Location', parameters);
     };

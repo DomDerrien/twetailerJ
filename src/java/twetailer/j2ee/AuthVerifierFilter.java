@@ -61,7 +61,7 @@ public class AuthVerifierFilter implements Filter {
                     // Create only if does not yet exist, otherwise return the existing instance
                     Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(userInfo);
 
-                    httpRequest.getSession(true).setAttribute(OpenIdUser.ATTR_NAME, prepareOpenIdUser(consumer));
+                    httpRequest.getSession(true).setAttribute(OpenIdUser.ATTR_NAME, prepareOpenIdRecord(consumer));
 
                     // Redirect to clean the url
                     ((HttpServletResponse) response).sendRedirect(httpRequest.getRequestURL().toString());
@@ -84,7 +84,7 @@ public class AuthVerifierFilter implements Filter {
         }
     }
 
-    protected static OpenIdUser prepareOpenIdUser(Consumer consumer) {
+    public static OpenIdUser prepareOpenIdRecord(Consumer consumer) {
         // Get initial OpenId record
         OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate(
                 "http://www.facebook.com",        // Identifier

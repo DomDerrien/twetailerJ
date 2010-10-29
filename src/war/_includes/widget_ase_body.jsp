@@ -66,7 +66,7 @@
     } // endif (useCDN)
     %>
 
-    <div id="centerZone"><div>
+    <div class="dataZone" id="widgetZone"><div>
         <div id="pane1">
             <div dojoType="dijit.form.Form" id="form1" class="content">
                 <% boolean showBrand = request.getParameter("hideBrand") == null;
@@ -419,39 +419,39 @@
        color="darkgrey"
        dojoType="dojox.widget.Standby"
        id="widgetOverlay"
-       target="centerZone"
+       target="widgetZone"
     ></div>
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.fx");
-        dojo.require("dojo.fx.easing");
-        dojo.require("dojo.parser");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.NumberSpinner");
-        // dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.Textarea");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.TimeTextBox");
-        dojo.require("dijit.form.ValidationTextBox");
-        dojo.require("dijit.TooltipDialog");
-        dojo.require("dojox.analytics.Urchin");
-        dojo.require("dojox.form.DropDownSelect");
-        dojo.require("dojox.widget.Standby");
-        dojo.require("twetailer.Common");
+        dojo.require('dojo.fx');
+        dojo.require('dojo.fx.easing');
+        dojo.require('dojo.parser');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.CheckBox');
+        dojo.require('dijit.form.DateTextBox');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.NumberSpinner');
+        // dojo.require('dijit.form.NumberTextBox');
+        dojo.require('dijit.form.Textarea');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.form.TimeTextBox');
+        dojo.require('dijit.form.ValidationTextBox');
+        dojo.require('dijit.TooltipDialog');
+        dojo.require('dojox.analytics.Urchin');
+        dojo.require('dojox.form.DropDownSelect');
+        dojo.require('dojox.widget.Standby');
+        dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
             dojo.extend(dijit._TimePicker,{
-                visibleRange: "T02:00:00",
+                visibleRange: 'T02:00:00',
             });
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();
             localModule.init();<%
@@ -464,31 +464,31 @@
     var localModule = {};
     localModule._getLabel = null;
     localModule.init = function() {
-        localModule._getLabel = twetailer.Common.init("<%= localeId %>", "detectLocationButton");
+        localModule._getLabel = twetailer.Common.init('<%= localeId %>', 'detectLocationButton');
 
         var yesterday = new Date();
         var inOneMonth = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         inOneMonth.setMonth(inOneMonth.getMonth() + 1);
-        var dateField = dijit.byId("date");
-        dateField.set("value", inOneMonth);
+        var dateField = dijit.byId('date');
+        dateField.set('value', inOneMonth);
         dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
-        // dijit.byId("tags").focus();
+        // dijit.byId('tags').focus();
 
         <%
         String postalCode = request.getParameter("postalCode");
         if (postalCode != null && 0 < postalCode.length()) {
-        %>dijit.byId("postalCode").set("value", "<%= postalCode %>");
+        %>dijit.byId('postalCode').set('value', '<%= postalCode %>');
         <% }
         String countryCode = request.getParameter("countryCode");
         if (countryCode != null && 0 < countryCode.length()) {
-        %>dijit.byId("countryCode").set("value", "<%= countryCode %>");<%
+        %>dijit.byId('countryCode').set('value', '<%= countryCode %>');<%
         } %>
     };
     localModule.controlTagField = function() {
-        var tagField = dijit.byId("tags");
-        var criteria = tagField.get("value").trim();
+        var tagField = dijit.byId('tags');
+        var criteria = tagField.get('value').trim();
         if (0 < criteria.length) {
             return true;
         }
@@ -497,17 +497,17 @@
         if (!tooltip) {
             tooltip = new dijit.Tooltip({
                 id: ttId,
-                connectId: ["tags"],
+                connectId: ['tags'],
                 label: localModule._getLabel('console', 'cw_alert_tag_missing'),
-                position: ["below", "above"],
+                position: ['below', 'above'],
                 showDelay: 0
             });
         }
-        dojo.style(tooltip.domNode, "visibility", "visible");
+        dojo.style(tooltip.domNode, 'visibility', 'visible');
         dojo.addClass(tagField.domNode, 'dijitError');
         var handle = dojo.connect(
             tagField,
-            "onKeyPress",
+            'onKeyPress',
             null, // no context required
             function() {
                 var tooltip = dijit.byId(ttId);
@@ -523,7 +523,7 @@
     };
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
-            var form = dijit.byId("form" + sourceIdx);
+            var form = dijit.byId('form' + sourceIdx);
             if (form != null) {
                 if (!form.validate()) {
                     return;
@@ -534,76 +534,75 @@
             }
         }
         // create two animations
-        var anim1 = dojo.fx.wipeOut({ node: "pane" + sourceIdx, easing: dojo.fx.easing.expoOut });
-        var anim2 = dojo.fx.wipeIn({ node: "pane" + targetIdx, easing: dojo.fx.easing.expoIn });
+        var anim1 = dojo.fx.wipeOut({ node: 'pane' + sourceIdx, easing: dojo.fx.easing.expoOut });
+        var anim2 = dojo.fx.wipeIn({ node: 'pane' + targetIdx, easing: dojo.fx.easing.expoIn });
         // and play them at the same moment
         dojo.fx.chain([anim1, anim2]).play();
         switch(targetIdx) {
-        case 1: dijit.byId("tags").focus(); break;
-        case 2: dijit.byId("postalCode").focus(); break;
-        case 3: dijit.byId("next3").focus(); break;
-        case 4: dijit.byId("email0").focus(); break;
+        case 1: dijit.byId('tags').focus(); break;
+        case 2: dijit.byId('postalCode').focus(); break;
+        case 3: dijit.byId('next3').focus(); break;
+        case 4: dijit.byId('email0').focus(); break;
         }
     };
     localModule.sendRequest = function() {
         // Last form validation
-        var form = dijit.byId("form4");
+        var form = dijit.byId('form4');
         if (!form.validate()) {
             return;
         }
         // Request preparation
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
-            referralId: "<%= referralId == null || referralId.length() == 0 ? "0" : referralId %>",
-            <%= Consumer.LANGUAGE %>: "<%= localeId %>",
-            <%= Consumer.EMAIL %>: dijit.byId("email0").get("value"),
-            <%= Location.POSTAL_CODE %>: dijit.byId("postalCode").get("value"),
-            <%= Location.COUNTRY_CODE %>: dijit.byId("countryCode").get("value"),
-            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId("date").get("value"), dijit.byId("time").get("value")),
-            <%= Demand.RANGE %>: dijit.byId("range").get("value"),
-            <%= Demand.RANGE_UNIT %>: "<%= LocaleValidator.DEFAULT_RANGE_UNIT %>",
-            <%= Demand.QUANTITY %>: dijit.byId("quantity").get("value"),
+            referralId: '<%= referralId == null || referralId.length() == 0 ? '0' : referralId %>',
+            <%= Consumer.LANGUAGE %>: '<%= localeId %>',
+            <%= Consumer.EMAIL %>: dijit.byId('email0').get('value'),
+            <%= Location.POSTAL_CODE %>: dijit.byId('postalCode').get('value'),
+            <%= Location.COUNTRY_CODE %>: dijit.byId('countryCode').get('value'),
+            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), dijit.byId('time').get('value')),
+            <%= Demand.RANGE %>: dijit.byId('range').get('value'),
+            <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
+            <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             // <%= Demand.HASH_TAGS %>: [], // No hash tag to communicate
-            // <%= Demand.META_DATA %>: "{}", // No metadata to communicate
-            <%= Demand.CRITERIA %>: dijit.byId("tags").get("value").split(/\s+/)
+            // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
+            <%= Demand.CRITERIA %>: dijit.byId('tags').get('value').split(/\s+/)
         };
-        if (dijit.byId("demoMode").get("value") !== false) {
-            console.log("demo mode: true");
-            parameters.<%= Demand.HASH_TAGS %> = ["<%= RegisteredHashTag.demo %>"];
+        if (dijit.byId('demoMode').get('value') !== false) {
+            console.log('demo mode: true');
+            parameters.<%= Demand.HASH_TAGS %> = ['<%= RegisteredHashTag.demo %>'];
         }
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;
         }
-        dijit.byId("widgetOverlay").show();
+        dijit.byId('widgetOverlay').show();
         var dfd = dojo.xhrPost({
-            headers: { "content-type": "application/json; charset=utf-8" },
+            headers: { 'content-type': 'application/json; charset=utf-8' },
             postData: dojo.toJson(parameters),
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // Update pane content
-                    var placeHolder = dojo.byId("sender.email");
+                    var placeHolder = dojo.byId('sender.email');
                     if (placeHolder) {
-                        placeHolder.innerHTML = ""; // Reset content
-                        placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId("email0").get("value"))); // Safe insert
+                        placeHolder.innerHTML = ''; // Reset content
+                        placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId('email0').get('value'))); // Safe insert
                     }
                     // Switch to pane
                     localModule.switchPane(4, 5);
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dijit.byId('widgetOverlay').hide();
             },
             error: function(message, ioArgs) {
-                dijit.byId("widgetOverlay").hide();
+                dijit.byId('widgetOverlay').hide();
                 twetailer.Common.handleError(message, ioArgs);
             },
-            url: "/3rdParty/Demand"
+            url: '/3rdParty/Demand'
         });
     };
     </script>
 
     <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
-

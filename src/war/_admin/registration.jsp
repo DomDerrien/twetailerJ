@@ -250,23 +250,23 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.layout.StackContainer");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.Select");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dojox.analytics.Urchin");
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        dojo.require('dijit.layout.StackContainer');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();<%
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
@@ -274,109 +274,107 @@
             } %>
         });
     });
-    </script>
 
-    <script type="text/javascript">
     var localModule = new Object();
     localModule.createLocation = function() {
         dojo.animateProperty({
-            node: "innerStep1",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: 'innerStep1',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrPost({
-            headers: { "content-type": "application/json" },
-            putData: dojo.formToJson("locationInformation"),
-            handleAs: "json",
+            headers: { 'content-type': 'application/json' },
+            putData: dojo.formToJson('locationInformation'),
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     dijit.byId('<%= Store.LOCATION_KEY %>').focus();
-                    dijit.byId("<%= Store.LOCATION_KEY %>").set("value", response.resource.<%= Location.KEY %>);
+                    dijit.byId('<%= Store.LOCATION_KEY %>').set('value', response.resource.<%= Location.KEY %>);
                     wizard.forward();
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: "innerStep1",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: 'innerStep1',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Location/"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/Location/'
         });
     };
     localModule.createStore = function() {
         dojo.animateProperty({
-            node: "innerStep2",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: 'innerStep2',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
-        var data = dojo.formToObject("storeInformation");
+        var data = dojo.formToObject('storeInformation');
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
         dojo.xhrPost({
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             putData: dojo.toJson(data),
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();
-                    dijit.byId("<%= SaleAssociate.STORE_KEY %>").set("value", response.resource.<%= Store.KEY %>);
+                    dijit.byId('<%= SaleAssociate.STORE_KEY %>').set('value', response.resource.<%= Store.KEY %>);
                     wizard.forward();
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: "innerStep2",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: 'innerStep2',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Store/"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/Store/'
         });
     };
     localModule.getStores = function() {
-        var locationKey = parseInt(dijit.byId("<%= Store.LOCATION_KEY %>").get("value"));
+        var locationKey = parseInt(dijit.byId('<%= Store.LOCATION_KEY %>').get('value'));
         if (locationKey.length == 0 || isNaN(locationKey)) {
-            alert("You need to specify a valid Location key");
-            dijit.byId("<%= Store.LOCATION_KEY %>").focus();
+            alert('You need to specify a valid Location key');
+            dijit.byId('<%= Store.LOCATION_KEY %>').focus();
             return;
         }
         dojo.xhrGet({
             content: { <%= Store.LOCATION_KEY %>: locationKey },
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    var placeHolder = dojo.byId("storeList");
-                    placeHolder.innerHTML = "";
+                    var placeHolder = dojo.byId('storeList');
+                    placeHolder.innerHTML = '';
                     dojo.forEach(response.resources, function(store, i) {
-                        var listItem = dojo.doc.createElement("li");
+                        var listItem = dojo.doc.createElement('li');
                         var onclickHandler =
-                            "var saKeyField = dijit.byId(\"<%= SaleAssociate.STORE_KEY %>\");" +
-                            "saKeyField.set(\"value\", \"" + store.<%= Store.KEY %> + "\");" +
-                            "saKeyField.focus();" +
-                            "wizard.forward();" +
-                            "return false;";
+                            'var saKeyField = dijit.byId(\'<%= SaleAssociate.STORE_KEY %>\');' +
+                            'saKeyField.set(\'value\', \'' + store.<%= Store.KEY %> + '\');' +
+                            'saKeyField.focus();' +
+                            'wizard.forward();' +
+                            'return false;';
                         listItem.innerHTML =
-                            "Name: <a href='#' onclick='" + onclickHandler + "'>" + store.<%= Store.NAME %> + "</a>, " +
-                            "Address: " + store.<%= Store.ADDRESS %> + ", " +
-                            "Phone Number: " + store.<%= Store.PHONE_NUMBER %>;
+                            'Name: <a href="#" onclick="' + onclickHandler + '">' + store.<%= Store.NAME %> + '</a>, " +
+                            'Address: ' + store.<%= Store.ADDRESS %> + ', ' +
+                            'Phone Number: ' + store.<%= Store.PHONE_NUMBER %>;
                         placeHolder.appendChild(listItem);
                     });
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Store/"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/Store/'
         });
     };
     localModule.createSaleAssociate = function() {
         dojo.animateProperty({
-            node: "innerStep3",
-            properties: { backgroundColor: { end: "yellow" } }
+            node: 'innerStep3',
+            properties: { backgroundColor: { end: 'yellow' } }
         }).play();
-        var data = dojo.formToObject("saleAssociateInformation");
+        var data = dojo.formToObject('saleAssociateInformation');
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
         if (data.consumerKey == null || isNaN(data.consumerKey) || data.consumerKey.length == 0) {
             delete data.consumerKey;
@@ -385,86 +383,86 @@
             data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
         }
         dojo.xhrPost({
-            headers: { "content-type": "application/json" },
+            headers: { 'content-type': 'application/json' },
             putData: dojo.toJson(data),
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // No visual feedback
                     wizard.forward();
                 }
                 else {
-                    alert(response.exceptionMessage+"\nurl: "+ioArgs.url+"\n\n"+response.originalExceptionMessage);
+                    alert(response.exceptionMessage+'\nurl: '+ioArgs.url+'\n\n'+response.originalExceptionMessage);
                 }
                 dojo.animateProperty({
-                    node: "innerStep3",
-                    properties: { backgroundColor: { end: "transparent" } }
+                    node: 'innerStep3',
+                    properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/SaleAssociate/"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/SaleAssociate/'
         });
     };
     localModule.getSaleAssociates = function() {
-        var storeKey = parseInt(dijit.byId("<%= SaleAssociate.STORE_KEY %>").get("value"));
+        var storeKey = parseInt(dijit.byId('<%= SaleAssociate.STORE_KEY %>').get('value'));
         if (storeKey.length == 0 || isNaN(storeKey)) {
-            alert("You need to specify a valid Store key");
-            dijit.byId("<%= SaleAssociate.STORE_KEY %>").focus();
+            alert('You need to specify a valid Store key');
+            dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();
             return;
         }
         dojo.xhrGet({
             content: { <%= SaleAssociate.STORE_KEY %>: storeKey },
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    var placeHolder = dojo.byId("saleAssociateList");
-                    placeHolder.innerHTML = "";
+                    var placeHolder = dojo.byId('saleAssociateList');
+                    placeHolder.innerHTML = '';
                     dojo.forEach(response.resources, function(saleAssociate, i) {
-                        var listItem = dojo.doc.createElement("li");
+                        var listItem = dojo.doc.createElement('li');
                         listItem.innerHTML =
-                            "Consumer key: " + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %>;
+                            'Consumer key: ' + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %>;
                         placeHolder.appendChild(listItem);
                     });
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/SaleAssociate/"
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/SaleAssociate/'
         });
     };
     localModule.getConsumer = function() {
-        var consumerKey = dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").get("value");
+        var consumerKey = dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').get('value');
         if (consumerKet.length == 0) {
-            alert("You need to specify a consumer key!");
-            dijit.byId("<%= SaleAssociate.CONSUMER_KEY %>").focus();
+            alert('You need to specify a consumer key!');
+            dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').focus();
             return;
         }
         var parameters = { <%= SaleAssociate.CONSUMER_KEY %>: consumerKey };
         dojo.xhrGet({
             content: parameters,
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    var placeHolder = dojo.byId("consumerList");
-                    placeHolder.innerHTML = "";
+                    var placeHolder = dojo.byId('consumerList');
+                    placeHolder.innerHTML = '';
                     var consumer = response.resource;
-                    var listItem = dojo.doc.createElement("li");
+                    var listItem = dojo.doc.createElement('li');
                     listItem.innerHTML =
-                        "Key: <a href='#' onclick='javascript:dijit.byId(\"<%= SaleAssociate.CONSUMER_KEY %>\").set(\"value\"," + consumer.<%= Consumer.KEY %> + ");return false;'>" + consumer.<%= Consumer.KEY %> + "</a>, " +
-                        "Name: " + consumer.<%= Consumer.NAME %> + ", " +
-                        "E-mail Address: <a href='mailto:" + consumer.<%= Consumer.EMAIL %> + "'>" + consumer.<%= Consumer.EMAIL %> + "</a>, " +
-                        "Jabber Id: <a href='xmpp:" + consumer.<%= Consumer.JABBER_ID %> + "'>" + consumer.<%= Consumer.JABBER_ID %> + "</a>, " +
-                        "Twitter Name: <a href='http://twitter.com/" + consumer.<%= Consumer.TWITTER_ID %> +"' target='_blank'>" + consumer.<%= Consumer.TWITTER_ID %> + "</a>";
+                        'Key: <a href="#" onclick="javascript:dijit.byId(\'<%= SaleAssociate.CONSUMER_KEY %>\').set(\'value\',' + consumer.<%= Consumer.KEY %> + ');return false;">' + consumer.<%= Consumer.KEY %> + '</a>, ' +
+                        'Name: ' + consumer.<%= Consumer.NAME %> + ', ' +
+                        'E-mail Address: <a href="mailto:' + consumer.<%= Consumer.EMAIL %> + '">' + consumer.<%= Consumer.EMAIL %> + '</a>, ' +
+                        'Jabber Id: <a href="xmpp:' + consumer.<%= Consumer.JABBER_ID %> + '">' + consumer.<%= Consumer.JABBER_ID %> + '</a>, ' +
+                        'Twitter Name: <a href="http://twitter.com/' + consumer.<%= Consumer.TWITTER_ID %> +'" target="_blank">' + consumer.<%= Consumer.TWITTER_ID %> + '</a>';
                     placeHolder.appendChild(listItem);
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
             },
-            error: function(message, ioArgs) { alert(message+"\nurl: "+ioArgs.url); },
-            url: "/API/Consumer/" + consumerKey
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/API/Consumer/' + consumerKey
         });
     };
     </script>

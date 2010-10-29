@@ -94,7 +94,7 @@
     } // endif (useCDN)
     %>
 
-    <div id="centerZone">
+    <div class="dataZone" id="widgetZone"><div>
         <div id="pane1">
             <div class="progressBar">
                 <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_1_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
@@ -334,44 +334,44 @@
             <div class="footer">
                 <div class="poweredBy"><%= LabelExtractor.get(ResourceFileId.third, "cw_poweredBy", locale) %></div>
             </div>
-    </div>
+    </div></div>
 
     <div
        color="darkgreen"
        dojoType="dojox.widget.Standby"
        id="widgetOverlay"
-       target="centerZone"
+       target="widgetZone"
     ></div>
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.fx");
-        dojo.require("dojo.fx.easing");
-        dojo.require("dojo.parser");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.CheckBox");
-        dojo.require("dijit.form.DateTextBox");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.NumberSpinner");
-        // dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.Textarea");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.TimeTextBox");
-        dojo.require("dijit.form.ValidationTextBox");
-        dojo.require("dojox.analytics.Urchin");
-        dojo.require("dojox.form.DropDownSelect");
-        dojo.require("dojox.widget.Standby");
-        dojo.require("twetailer.Common");
+        dojo.require('dojo.fx');
+        dojo.require('dojo.fx.easing');
+        dojo.require('dojo.parser');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.CheckBox');
+        dojo.require('dijit.form.DateTextBox');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.NumberSpinner');
+        // dojo.require('dijit.form.NumberTextBox');
+        dojo.require('dijit.form.Textarea');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.form.TimeTextBox');
+        dojo.require('dijit.form.ValidationTextBox');
+        dojo.require('dojox.analytics.Urchin');
+        dojo.require('dojox.form.DropDownSelect');
+        dojo.require('dojox.widget.Standby');
+        dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
             dojo.extend(dijit._TimePicker,{
-                visibleRange: "T02:00:00",
+                visibleRange: 'T02:00:00',
             });
             dojo.parser.parse();
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();
             localModule.init();<%
@@ -384,110 +384,110 @@
     var localModule = {};
     localModule._getLabel = null;
     localModule.init = function() {
-        localModule._getLabel = twetailer.Common.init("<%= localeId %>", "detectLocationButton");
+        localModule._getLabel = twetailer.Common.init('<%= localeId %>', 'detectLocationButton');
 
         var yesterday = new Date();
         var tomorrow = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
         tomorrow.setDate(tomorrow.getDate() + 1);
-        var dateField = dijit.byId("date");
-        dateField.set("value", tomorrow);
+        var dateField = dijit.byId('date');
+        dateField.set('value', tomorrow);
         dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
         <%
         String postalCode = request.getParameter("postalCode");
         if (postalCode == null || postalCode.length() == 0) {
-        %>dojo.style("postalCodeRow", "display", "");
-        dijit.byId("postalCode").focus();
-        dojo.style("countryCodeRow", "display", "");
+        %>dojo.style('postalCodeRow', 'display', '');
+        dijit.byId('postalCode').focus();
+        dojo.style('countryCodeRow', 'display', '');
         <% }
         else {
-        %>dijit.byId("postalCode").set("value", "<%= postalCode %>");
-        dijit.byId("quantity").focus();
+        %>dijit.byId('postalCode').set('value', '<%= postalCode %>');
+        dijit.byId('quantity').focus();
         <% }
         String countryCode = request.getParameter("countryCode");
         if (countryCode != null && 0 < countryCode.length()) {
-        %>dijit.byId("countryCode").set("value", "<%= countryCode %>");<%
+        %>dijit.byId('countryCode').set('value', '<%= countryCode %>');<%
         } %>
     };
     localModule.switchPane = function(sourceIdx, targetIdx) {
         if (sourceIdx < targetIdx) {
-            var form = dijit.byId("form" + sourceIdx);
+            var form = dijit.byId('form' + sourceIdx);
             if (!form.validate()) {
                 return;
             }
         }
         // create two animations
-        var anim1 = dojo.fx.wipeOut({ node: "pane" + sourceIdx, easing: dojo.fx.easing.expoOut });
-        var anim2 = dojo.fx.wipeIn({ node: "pane" + targetIdx, easing: dojo.fx.easing.expoIn });
+        var anim1 = dojo.fx.wipeOut({ node: 'pane' + sourceIdx, easing: dojo.fx.easing.expoOut });
+        var anim2 = dojo.fx.wipeIn({ node: 'pane' + targetIdx, easing: dojo.fx.easing.expoIn });
         // and play them at the same moment
         dojo.fx.chain([anim1, anim2]).play();
         switch(targetIdx) {
         case 1: <% if (postalCode == null || postalCode.length() == 0) {
-                    %>dijit.byId("postalCode").focus();<%
+                    %>dijit.byId('postalCode').focus();<%
                 }
                 else {
-                    %>dijit.byId("quantity").focus();<%
+                    %>dijit.byId('quantity').focus();<%
                 } %> break;
-        case 2: dijit.byId("email0").focus(); break;
-        case 3: dijit.byId("pullCart").focus(); break;
+        case 2: dijit.byId('email0').focus(); break;
+        case 3: dijit.byId('pullCart').focus(); break;
         }
     };
     localModule.sendRequest = function() {
         // Last form validation
-        var form = dijit.byId("form3");
+        var form = dijit.byId('form3');
         if (!form.validate()) {
             return;
         }
         // Request preparation
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
-            referralId: "<%= referralId == null || referralId.length() == 0 ? "0" : referralId %>",
-            <%= Consumer.LANGUAGE %>: "<%= localeId %>",
-            <%= Consumer.EMAIL %>: dijit.byId("email0").get("value"),
-            <%= Location.POSTAL_CODE %>: dijit.byId("postalCode").get("value"),
-            <%= Location.COUNTRY_CODE %>: dijit.byId("countryCode").get("value"),
-            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId("date").get("value"), dijit.byId("time").get("value")),
-            <%= Demand.RANGE %>: dijit.byId("range").get("value"),
-            <%= Demand.RANGE_UNIT %>: "<%= LocaleValidator.DEFAULT_RANGE_UNIT %>",
-            <%= Demand.QUANTITY %>: dijit.byId("quantity").get("value"),
-            <%= Demand.HASH_TAGS %>: ["<%= RegisteredHashTag.golf.toString() %>"],
-            <%= Demand.META_DATA %>:"{'pullCart':" + dijit.byId("pullCart").get("value") + ",'golfCart':" + dijit.byId("motorCart").get("value") + "}"
+            referralId: '<%= referralId == null || referralId.length() == 0 ? '0' : referralId %>',
+            <%= Consumer.LANGUAGE %>: '<%= localeId %>',
+            <%= Consumer.EMAIL %>: dijit.byId('email0').get('value'),
+            <%= Location.POSTAL_CODE %>: dijit.byId('postalCode').get('value'),
+            <%= Location.COUNTRY_CODE %>: dijit.byId('countryCode').get('value'),
+            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), dijit.byId('time').get('value')),
+            <%= Demand.RANGE %>: dijit.byId('range').get('value'),
+            <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
+            <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
+            <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.golf.toString() %>'],
+            <%= Demand.META_DATA %>:'{'pullCart':' + dijit.byId('pullCart').get('value') + ','golfCart':' + dijit.byId('motorCart').get('value') + '}'
         };
-        if (dijit.byId("demoMode").get("value") !== false) {
-            console.log("demo mode: true");
-            parameters.<%= Demand.HASH_TAGS %>.push("<%= RegisteredHashTag.demo %>");
+        if (dijit.byId('demoMode').get('value') !== false) {
+            console.log('demo mode: true');
+            parameters.<%= Demand.HASH_TAGS %>.push('<%= RegisteredHashTag.demo %>');
         }
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;
         }
-        dijit.byId("widgetOverlay").show();
+        dijit.byId('widgetOverlay').show();
         var dfd = dojo.xhrPost({
-            headers: { "content-type": "application/json; charset=utf-8" },
+            headers: { 'content-type': 'application/json; charset=utf-8' },
             postData: dojo.toJson(parameters),
-            handleAs: "json",
+            handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     // Update pane content
-                    var placeHolder = dojo.byId("sender.email");
+                    var placeHolder = dojo.byId('sender.email');
                     if (placeHolder) {
-                        placeHolder.innerHTML = ""; // Reset content
-                        placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId("email0").get("value"))); // Safe insert
+                        placeHolder.innerHTML = ''; // Reset content
+                        placeHolder.appendChild(dojo.doc.createTextNode(dijit.byId('email0').get('value'))); // Safe insert
                     }
                     // Switch to pane
                     localModule.switchPane(3, 4);
                 }
                 else {
-                    alert(response.message+"\nurl: "+ioArgs.url);
+                    alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dijit.byId('widgetOverlay').hide();
             },
             error: function(message, ioArgs) {
-                dijit.byId("widgetOverlay").hide();
+                dijit.byId('widgetOverlay').hide();
                 twetailer.Common.handleError(message, ioArgs);
             },
-            url: "/3rdParty/Demand"
+            url: '/3rdParty/Demand'
         });
     };
     </script>

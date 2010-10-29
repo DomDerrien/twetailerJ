@@ -675,13 +675,13 @@
         // Google Maps API for overlays: http://code.google.com/apis/maps/documentation/v3/overlays.html
 
         var image = new google.maps.MarkerImage(
-            '/images/logo/marker9.png',
+            '/images/logo/gmaps-marker.png',
             new google.maps.Size(38, 73),
             new google.maps.Point(0, 0),
             new google.maps.Point(28, 70)
         );
         var shadow = new google.maps.MarkerImage(
-            '/images/logo/marker9-shadow.png',
+            '/images/logo/gmaps-marker-shadow.png',
             new google.maps.Size(75, 73),
             new google.maps.Point(0, 0),
             new google.maps.Point(20, 70)

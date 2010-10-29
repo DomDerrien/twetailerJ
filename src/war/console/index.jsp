@@ -342,29 +342,29 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.form.Button");
-        dojo.require("dijit.form.Form");
-        dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.Select");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.ValidationTextBox");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.layout.TabContainer");
-        dojo.require("dojox.analytics.Urchin");
-        dojo.require("twetailer.Consumer");
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.form.Button');
+        dojo.require('dijit.form.Form');
+        dojo.require('dijit.form.NumberTextBox');
+        dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.form.ValidationTextBox');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        dojo.require('dijit.layout.TabContainer');
+        dojo.require('dojox.analytics.Urchin');
+        dojo.require('twetailer.Consumer');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            var userLocale = "<%= localeId %>";
+            var userLocale = '<%= localeId %>';
             twetailer.Consumer.init(userLocale);
             twetailer.Consumer.registerConsumer(<%= serializedConsumer.getStream() %>);
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();<%
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>

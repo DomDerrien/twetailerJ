@@ -504,51 +504,50 @@
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
-        dojo.require("dojo.data.ItemFileWriteStore");
-        dojo.require("dojo.date.locale");
-        // dojo.require("dojo.number");
-        dojo.require("dojo.parser");
-        dojo.require("dijit.Dialog");
-        dojo.require("dijit.layout.BorderContainer");
-        dojo.require("dijit.layout.ContentPane");
-        dojo.require("dijit.layout.TabContainer");
-        // dojo.require("dijit.form.CheckBox");
-        // dojo.require("dijit.form.ComboBox");
-        dojo.require("dijit.form.DateTextBox");
-        // dojo.require("dijit.form.FilteringSelect");
-        dojo.require("dijit.form.NumberSpinner");
-        // dojo.require("dijit.form.NumberTextBox");
-        dojo.require("dijit.form.Select");
-        dojo.require("dijit.form.Textarea");
-        dojo.require("dijit.form.TextBox");
-        dojo.require("dijit.form.TimeTextBox");
-        dojo.require("dijit.form.ValidationTextBox");
-        dojo.require("dojox.analytics.Urchin");
-        dojo.require("dojox.form.BusyButton");
-        // dojo.require("dojox.form.Rating");
-        dojo.require("dojox.grid.EnhancedGrid");
-        // dojo.require("dojox.grid.enhanced.plugins.NestedSorting");
-        // dojo.require("dojox.layout.ExpandoPane");
-        // dojo.require("dojox.secure");
-        // dojo.require("dojox.widget.Portlet");
-        dojo.require("dojox.widget.Standby");
-        dojo.require("twetailer.Consumer");
-        dojo.require("twetailer.golf.Consumer");
+        dojo.require('dojo.data.ItemFileWriteStore');
+        dojo.require('dojo.date.locale');
+        // dojo.require('dojo.number');
+        dojo.require('dojo.parser');
+        dojo.require('dijit.Dialog');
+        dojo.require('dijit.layout.BorderContainer');
+        dojo.require('dijit.layout.ContentPane');
+        dojo.require('dijit.layout.TabContainer');
+        // dojo.require('dijit.form.CheckBox');
+        // dojo.require('dijit.form.ComboBox');
+        dojo.require('dijit.form.DateTextBox');
+        // dojo.require('dijit.form.FilteringSelect');
+        dojo.require('dijit.form.NumberSpinner');
+        // dojo.require('dijit.form.NumberTextBox');
+        dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.Textarea');
+        dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.form.TimeTextBox');
+        dojo.require('dijit.form.ValidationTextBox');
+        dojo.require('dojox.analytics.Urchin');
+        dojo.require('dojox.form.BusyButton');
+        // dojo.require('dojox.form.Rating');
+        dojo.require('dojox.grid.EnhancedGrid');
+        // dojo.require('dojox.grid.enhanced.plugins.NestedSorting');
+        // dojo.require('dojox.layout.ExpandoPane');
+        // dojo.require('dojox.secure');
+        // dojo.require('dojox.widget.Portlet');
+        dojo.require('dojox.widget.Standby');
+        dojo.require('twetailer.Consumer');
+        dojo.require('twetailer.golf.Consumer');
         dojo.addOnLoad(function() {
             dojo.parser.parse();
-            twetailer.golf.Consumer.init("<%= localeId %>");
+            twetailer.golf.Consumer.init('<%= localeId %>');
             dojo.fadeOut({
-                node: "introFlash",
+                node: 'introFlash',
                 delay: 50,
                 onEnd: function() {
-                    dojo.style("introFlash", "display", "none");
+                    dojo.style('introFlash', 'display', 'none');
                 }
             }).play();<%
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
         });
-        // http://archive.dojotoolkit.org/nightly/dojotoolkit/dojox/image/tests/test_SlideShow.html
     });
     </script>
 
