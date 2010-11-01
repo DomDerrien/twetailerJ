@@ -23,7 +23,7 @@
     </filter>
     <filter-mapping>
         <filter-name>appstats</filter-name>
-        <url-pattern>@app.servletApiPath@/*</url-pattern>
+        <url-pattern>/API/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>appstats</filter-name>
@@ -33,6 +33,14 @@
         <filter-name>appstats</filter-name>
         <url-pattern>/3rdParty/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/console/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/widget/*</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>authverifierfilter</filter-name>
@@ -40,15 +48,11 @@
     </filter>
     <filter-mapping>
         <filter-name>authverifierfilter</filter-name>
-        <url-pattern>/_admin/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>authverifierfilter</filter-name>
         <url-pattern>/console/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>authverifierfilter</filter-name>
-        <url-pattern>@app.servletApiPath@/*</url-pattern>
+        <url-pattern>/API/*</url-pattern>
     </filter-mapping>
 
     <filter>
@@ -62,15 +66,11 @@
     </filter>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>/_admin/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>openidfilter</filter-name>
         <url-pattern>/console/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
-        <url-pattern>@app.servletApiPath@/*</url-pattern>
+        <url-pattern>/API/*</url-pattern>
     </filter-mapping>
 
     <servlet>
@@ -100,7 +100,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>maelzel</servlet-name>
-        <url-pattern>@app.servletApiPath@/maelzel/*</url-pattern>
+        <url-pattern>/_admin/maelzel/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -130,7 +130,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>consumer</servlet-name>
-        <url-pattern>@app.servletApiPath@/Consumer/*</url-pattern>
+        <url-pattern>/API/Consumer/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -140,7 +140,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>demand</servlet-name>
-        <url-pattern>@app.servletApiPath@/Demand/*</url-pattern>
+        <url-pattern>/API/Demand/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -150,7 +150,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>location</servlet-name>
-        <url-pattern>@app.servletApiPath@/Location/*</url-pattern>
+        <url-pattern>/API/Location/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -160,7 +160,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>payment</servlet-name>
-        <url-pattern>@app.servletApiPath@/Payment/*</url-pattern>
+        <url-pattern>/API/Payment/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -170,7 +170,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>proposal</servlet-name>
-        <url-pattern>@app.servletApiPath@/Proposal/*</url-pattern>
+        <url-pattern>/API/Proposal/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -180,7 +180,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>saleassociate</servlet-name>
-        <url-pattern>@app.servletApiPath@/SaleAssociate/*</url-pattern>
+        <url-pattern>/API/SaleAssociate/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -190,7 +190,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>store</servlet-name>
-        <url-pattern>@app.servletApiPath@/Store/*</url-pattern>
+        <url-pattern>/API/Store/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

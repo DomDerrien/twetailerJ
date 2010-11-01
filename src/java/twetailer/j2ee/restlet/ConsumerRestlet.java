@@ -17,7 +17,6 @@ import twetailer.j2ee.LoginServlet;
 import twetailer.j2ee.MaelzelServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.ConsumerSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings.Action;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -225,7 +224,7 @@ public class ConsumerRestlet extends BaseRestlet {
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             queue.add(
-                                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/consolidateConsumerAccounts").
+                                    url("/_admin/maelzel/consolidateConsumerAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, consumerKey.toString()).
                                     method(Method.GET)

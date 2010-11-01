@@ -17,7 +17,6 @@ import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
 import twetailer.task.step.BaseSteps;
-import twetailer.validator.ApplicationSettings;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 
@@ -30,7 +29,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
  * account on Twitter.
  *
  * Each DM is used to create a RawCommand that is
- * scheduled for the task "/maelzel/processCommand".
+ * scheduled for the task "/_admin/maelzel/processCommand".
  *
  * @author Dom Derrien
  */
@@ -128,7 +127,7 @@ public class TweetLoader {
 
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
+                    url("/_admin/maelzel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

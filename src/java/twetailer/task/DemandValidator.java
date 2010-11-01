@@ -31,7 +31,6 @@ import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 
@@ -45,7 +44,7 @@ import domderrien.i18n.LabelExtractor.ResourceFileId;
 /**
  * Define the task with is invoked by methods in DemandSteps
  * every time a Demand is updated significantly. If the Demand
- * instance is valid, the task "/maelzel/processPublishedDemand"
+ * instance is valid, the task "/_admin/maelzel/processPublishedDemand"
  * is scheduled to broadcast it to the matching SaleAssociate
  * in the area.
  *
@@ -215,7 +214,7 @@ public class DemandValidator {
                     // Create a task for that demand
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedDemand").
+                            url("/_admin/maelzel/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).
                                 method(Method.GET).
                                 countdownMillis(5000)

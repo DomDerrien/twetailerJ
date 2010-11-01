@@ -23,7 +23,6 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
@@ -37,7 +36,7 @@ import domderrien.i18n.LabelExtractor;
 /**
  * Entry point processing XMPP messages.
  * Received information are stored in a RawCommand instance
- * that the task "/maelzel/processCommand" will process
+ * that the task "/_admin/maelzel/processCommand" will process
  * asynchronously.
  *
  * @see twetailer.dto.RawCommand
@@ -95,7 +94,7 @@ public class JabberResponderServlet extends HttpServlet {
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processCommand").
+                    url("/_admin/maelzel/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

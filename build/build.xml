@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="33"
+        value="34"
     />
 
     <property name="app.companyName"
@@ -60,11 +60,6 @@
     <property name="app.contextRoot"
         description="Application context root for the containers"
         value="${app.packageName}"
-    />
-
-    <property name="app.servletApiPath"
-        description="Prefix for the API access"
-        value="/API"
     />
 
     <property name="app.languageListFilename"
@@ -390,7 +385,6 @@
             <token key="app.appEngineId" value="${app.appEngineId}" />
             <token key="app.packageName" value="${app.packageName}" />
             <token key="app.contextRoot" value="${app.contextRoot}" />
-            <token key="app.servletApiPath" value="${app.servletApiPath}" />
             <token key="dd2tu.languageListFilename" value="${app.languageListFilename}" />
             <token key="dd2tu.masterLocalizedLabelBaseFilename" value="${app.masterLocalizedLabelBaseFilename}" />
             <token key="dd2tu.secondLocalizedLabelBaseFilename" value="${app.secondLocalizedLabelBaseFilename}" />

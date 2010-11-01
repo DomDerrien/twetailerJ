@@ -29,7 +29,6 @@ import twetailer.task.step.DemandSteps;
 import twetailer.task.step.LocationSteps;
 import twetailer.task.step.ProposalSteps;
 import twetailer.task.step.StoreSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 
@@ -327,7 +326,7 @@ public class ListCommandProcessor {
         // Schedule the validation task that will resolve the location geo-coordinates
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(
-                url(ApplicationSettings.get().getServletApiPath() + "/maelzel/validateLocation").
+                url("/_admin/maelzel/validateLocation").
                     param(Location.POSTAL_CODE, postalCode).
                     param(Location.COUNTRY_CODE, countryCode).
                     param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).

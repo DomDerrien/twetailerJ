@@ -37,7 +37,6 @@ import twetailer.dto.Store;
 import twetailer.j2ee.CatchAllMailHandlerServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -50,7 +49,7 @@ import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
- * Define the task with is invoked by the task "/maelzel/validateOpenDemand"
+ * Define the task with is invoked by the task "/_admin/maelzel/validateOpenDemand"
  * in order to broadcast the valid Demand to matching sale associates
  * in the area.
  *
@@ -96,7 +95,7 @@ public class DemandProcessor {
                 for (Demand demand: demands) {
                     // Create a task for that demand
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedDemand").
+                            url("/_admin/maelzel/processPublishedDemand").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );
@@ -149,7 +148,7 @@ public class DemandProcessor {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processDemandForRobot").
+                            url("/_admin/maelzel/processDemandForRobot").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );

@@ -19,7 +19,6 @@ import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.task.step.BaseSteps;
-import twetailer.validator.ApplicationSettings;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
@@ -81,7 +80,7 @@ public class RobotResponder {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url(ApplicationSettings.get().getServletApiPath() + "/maelzel/processPublishedProposal").
+                            url("/_admin/maelzel/processPublishedProposal").
                                 param(Proposal.KEY, proposal.getKey().toString()).
                                 method(Method.GET).
                                 countdownMillis(30*1000)

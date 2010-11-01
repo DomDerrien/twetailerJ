@@ -13,7 +13,7 @@ import com.google.appengine.api.datastore.Text;
 
 /**
  * Collect the attributes produced by asynchronous connectors, an
- * object that will process by the task "/maelzel/processCommand"
+ * object that will process by the task "/_admin/maelzel/processCommand"
  *
  * @see twetailer.task.CommandProcessor
  * @see twetailer.j2ee.MaelzelServlet
