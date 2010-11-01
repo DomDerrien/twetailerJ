@@ -452,7 +452,7 @@
             <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
             <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.golf.toString() %>'],
-            <%= Demand.META_DATA %>:'{'pullCart':' + dijit.byId('pullCart').get('value') + ','golfCart':' + dijit.byId('motorCart').get('value') + '}'
+            <%= Demand.META_DATA %>:'{\'pullCart\':' + dijit.byId('pullCart').get('value') + ',\'golfCart\':' + dijit.byId('motorCart').get('value') + '}'
         };
         if (dijit.byId('demoMode').get('value') !== false) {
             console.log('demo mode: true');

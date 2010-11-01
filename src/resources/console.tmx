@@ -2784,6 +2784,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="fbc_menu_footer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/">AnotherSocialEconomy.com</a>.</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="fbc_demandZone_title" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

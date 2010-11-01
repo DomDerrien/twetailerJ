@@ -104,6 +104,12 @@ public class AuthVerifierFilter implements Filter {
         return user;
     }
 
+    /**
+     * Serialize the request fields (headers, attributes, parameters) and its content
+     *
+     * @param request Servlet request
+     * @return String for logging purposes
+     */
     public static String dumpRequest(HttpServletRequest request) {
         StringBuilder out = new StringBuilder();
         out.append("******\nremote coordinates:\n---\n");

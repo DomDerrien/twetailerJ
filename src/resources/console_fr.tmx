@@ -2256,6 +2256,13 @@
                 <seg>Manage Wishes</seg>
             </tuv>
         </tu>
+        <tu tuid="fbc_menu_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/">AnotherSocialEconomy.com</a>.</seg>
+            </tuv>
+        </tu>
         <tu tuid="fbc_demandZone_title" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

@@ -297,10 +297,52 @@
     //
 
     /**
+     * Get the reference of the cache of demand.
+     * Should be handled carefully, only in read-only mode
+     * as the system can update it asynchronously.
+     *
+     * @return {Object} Map of Demand instances indexed by their key
+     */
+    module.getDemandCache = function() {
+        return _demands;
+    };
+
+    /**
+     * Local helper comparing to Entity modification date, in
+     * the decreasing order
+     *
+     * @param {Object} a Entity (can be Demand, Wish, Proposal)
+     * @param {Object} b Entity (can be Demand, Wish, Proposal)
+     * @return A value in [-1, 0, 1] which depends on the Entity order
+     */
+    var _sortByModificationDateDecreasing = function(a, b) {
+        a = a.modificationDate;
+        b = b.modificationDate;
+        if (a < b) return 1;
+        if (b < a) return -1;
+        return 0;
+    };
+
+    /**
+     * Get the list of demands ordered by their modification date decreasing.
+     * Should be handled carefully, only in read-only mode
+     * as the system can update it asynchronously.
+     *
+     * @return {Array} Array of Demand instances
+     */
+    module.getOrderedDemands = function() {
+        var out = [], key;
+        for (key in _demands) {
+            out.push(_demands[key]);
+        }
+        return out.sort(_sortByModificationDateDecreasing);
+    };
+
+    /**
      * Get the specified demand from the cache.
      *
      * @param {String} demandKey Identifier of the demand to load.
-     * @return {Demand} Identified demand if it exists, <code>null</code> otherwise;.
+     * @return {Demand} Identified demand if it exists, <code>null</code> otherwise.
      */
     module.getCachedDemand = function(demandKey) {
         return _demands[demandKey];
@@ -319,7 +361,7 @@
      * Get the specified proposal from the cache.
      *
      * @param {String} proposalKey Identifier of the proposal to load.
-     * @return {Proposal} Identified proposal if it exists, <code>null</code> otherwise;.
+     * @return {Proposal} Identified proposal if it exists, <code>null</code> otherwise.
      */
     module.getCachedProposal = function(proposalKey) {
         return _proposals[proposalKey];

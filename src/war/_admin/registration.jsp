@@ -355,7 +355,7 @@
                             'wizard.forward();' +
                             'return false;';
                         listItem.innerHTML =
-                            'Name: <a href="#" onclick="' + onclickHandler + '">' + store.<%= Store.NAME %> + '</a>, " +
+                            'Name: <a href="#" onclick="' + onclickHandler + '">' + store.<%= Store.NAME %> + '</a>, ' +
                             'Address: ' + store.<%= Store.ADDRESS %> + ', ' +
                             'Phone Number: ' + store.<%= Store.PHONE_NUMBER %>;
                         placeHolder.appendChild(listItem);

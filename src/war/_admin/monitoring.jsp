@@ -1255,7 +1255,7 @@
         }
         var ownrKey = dijit.byId('consumer.key').get('value');
         if (isNaN(ownrKey)) {
-            alert('The key in the field 'consumer.key' is not a number!');
+            alert('The key in the field \'consumer.key\' is not a number!');
             return;
         }
         var pointOfView = 'CONSUMER';
@@ -1324,7 +1324,7 @@
         }
         var ownrKey = dijit.byId('consumer.key').get('value');
         if (isNaN(ownrKey)) {
-            alert('The key in the field 'consumer.key' is not a number!');
+            alert('The key in the field \'consumer.key\' is not a number!');
             return;
         }
         dojo.animateProperty({

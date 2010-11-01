@@ -284,7 +284,6 @@ public class DemandValidator {
      * @throws CommunicationException If the communication with the demand owner fails
      */
     public static void confirmUpdate(RawCommand rawCommand, Demand demand, Location location, Consumer owner, Influencer influencer) throws CommunicationException {
-
         List<String> cc = demand.getCC();
         if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
             boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();

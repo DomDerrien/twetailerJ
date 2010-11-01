@@ -32,7 +32,6 @@ import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
-import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.CatchAllMailHandlerServlet;

@@ -17,7 +17,7 @@ Locale locale = LocaleController.getLocale(localeId);
                     <img
                         alt="<%= LabelExtractor.get("product_name", locale) %>"
                         id="logo"
-                        src="/images/logo/twitter-bird-and-cart-toLeft.png"
+                        src="/images/logo/network-48.jpg"
                         title="<%= LabelExtractor.get("product_name", locale) %>"
                     />
                     <a
