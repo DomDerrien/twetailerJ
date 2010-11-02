@@ -150,6 +150,34 @@
             </tuv>
         </tu>
 
+        <tu tuid="currencySymbol_CAD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>$</seg></tuv>
+        </tu>
+
+        <tu tuid="currencyName_CAD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>Canadian Dollars</seg></tuv>
+        </tu>
+
+        <tu tuid="currencySymbol_USD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>$</seg></tuv>
+        </tu>
+
+        <tu tuid="currencyName_USD" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en"><seg>American (USA) Dollars</seg></tuv>
+        </tu>
+
         <!-- ======================= -->
         <!-- Core engine definitions -->
         <!-- ======================= -->

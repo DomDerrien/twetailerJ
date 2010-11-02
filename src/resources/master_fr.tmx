@@ -70,6 +70,38 @@
                 <seg>{0} {1}</seg>
             </tuv>
         </tu>
+        <tu tuid="currencySymbol_CAD" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>$</seg>
+            </tuv>
+        </tu>
+        <tu tuid="currencyName_CAD" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Dollars canadiens</seg>
+            </tuv>
+        </tu>
+        <tu tuid="currencySymbol_USD" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>$</seg>
+            </tuv>
+        </tu>
+        <tu tuid="currencyName_USD" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Dollars américains</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_state_opened" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>

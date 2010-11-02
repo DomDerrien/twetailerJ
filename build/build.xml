@@ -295,7 +295,7 @@
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the TMXConverter code -->
         <pathelement path="src/war/WEB-INF/classes"/> <!-- For the existing ${app.languageListFilename}.properties file -->
         <filelist dir="deps/lib">
-            <file name="domderrien/domderrien-1.5.0.jar" />
+            <file name="domderrien/domderrien-1.5.1.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
             <file name="xml/xml-apis-1.3.02.jar" />
@@ -315,7 +315,7 @@
             <file name="appengine/appengine-testing.jar" />
             <file name="commons/commons-codec-1.4.jar" />
             <file name="datanucleus/datanucleus-appengine-1.0.7.final.jar" />
-            <file name="domderrien/domderrien-1.5.0.jar" />
+            <file name="domderrien/domderrien-1.5.1.jar" />
             <file name="dyuproject/dyuproject-openid-1.1.7.jar" />
             <file name="dyuproject/dyuproject-util-1.1.7.jar" />
             <file name="dyuproject/dyuproject-web-1.1.7.jar" />

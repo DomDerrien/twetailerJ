@@ -14,34 +14,6 @@
                 <seg>Français</seg>
             </tuv>
         </tu>
-        <tu tuid="common_currencySymbol_CAD" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>$</seg>
-            </tuv>
-        </tu>
-        <tu tuid="common_currencyName_CAD" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Dollars canadiens</seg>
-            </tuv>
-        </tu>
-        <tu tuid="common_currencySymbol_USD" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>$</seg>
-            </tuv>
-        </tu>
-        <tu tuid="common_currencyName_USD" dataType="text">
-            <prop type="x-tier">javarb</prop>
-            <prop type="x-version">1</prop>
-            <tuv xml:lang="fr">
-                <seg>Dollars américains</seg>
-            </tuv>
-        </tu>
         <tu tuid="common_message_subject_default" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

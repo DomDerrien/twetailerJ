@@ -29,30 +29,6 @@
         <!-- Fixed general purpose definitions -->
         <!-- ================================= -->
 
-        <tu tuid="common_currencySymbol_CAD" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>$</seg></tuv>
-        </tu>
-
-        <tu tuid="common_currencyName_CAD" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>Canadian Dollars</seg></tuv>
-        </tu>
-
-        <tu tuid="common_currencySymbol_USD" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>$</seg></tuv>
-        </tu>
-
-        <tu tuid="common_currencyName_USD" datatype="Text">
-            <prop type="x-version">1</prop>
-            <prop type="x-tier">javarb</prop>
-            <tuv xml:lang="en"><seg>American (USA) Dollars</seg></tuv>
-        </tu>
-
         <tu tuid="common_message_subject_default" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
