@@ -22,6 +22,8 @@
     import="twetailer.dto.HashTag.RegisteredHashTag"
     import="twetailer.dto.Location"
     import="twetailer.j2ee.AuthVerifierFilter"
+    import="twetailer.j2ee.BaseRestlet"
+    import="twetailer.j2ee.LoginServlet"
     import="twetailer.task.step.BaseSteps"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
@@ -49,20 +51,32 @@
     Exception capturedEx = null;
     Consumer consumer = null;
     try {
-        JsonObject requestParams = twetailer.connector.FacebookConnector.processSignedRequest(request);
-        String facebookId = requestParams.getString(FacebookConnector.ATTR_USER_ID);
-        if (facebookId != null) {
-            List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(Consumer.FACEBOOK_ID, facebookId, 1);
-            if (0 < consumers.size()) {
-                consumer = consumers.get(0);
+        OpenIdUser user = BaseRestlet.getLoggedUser(request);
+        if (user != null) {
+            // Get the already logged-in user
+            consumer = LoginServlet.getConsumer(user);
+        }
+        else {
+            // Log the Facebook user in
+            // 1. Get the logged in user information
+            JsonObject requestParams = twetailer.connector.FacebookConnector.processSignedRequest(request);
+            String facebookId = requestParams.getString(FacebookConnector.ATTR_USER_ID);
+            // 2. Get the user if already registered
+            if (facebookId != null) {
+                List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(Consumer.FACEBOOK_ID, facebookId, 1);
+                if (0 < consumers.size()) {
+                    consumer = consumers.get(0);
+                }
             }
+            // 3. Create the user if not already registered
+            String oauthToken = requestParams.getString(FacebookConnector.ATTR_OAUTH_TOKEN);
+            if (consumer == null && oauthToken != null)  {
+                JsonObject userInfo = FacebookConnector.getUserInfo(oauthToken);
+                consumer = BaseSteps.getConsumerOperations().createConsumer(userInfo);
+            }
+            // 4. Propose the OpenId user record to the OpenId servlet filter process control, which authenticates the Facebook user
+            RelyingParty.getInstance().getOpenIdUserManager().saveUser(AuthVerifierFilter.prepareOpenIdRecord(consumer), request, response);
         }
-        String oauthToken = requestParams.getString(FacebookConnector.ATTR_OAUTH_TOKEN);
-        if (consumer == null && oauthToken != null)  {
-            JsonObject userInfo = FacebookConnector.getUserInfo(oauthToken);
-            consumer = BaseSteps.getConsumerOperations().createConsumer(userInfo);
-        }
-        request.getSession(true).setAttribute(OpenIdUser.ATTR_NAME, AuthVerifierFilter.prepareOpenIdRecord(consumer));
     }
     catch (Exception ex) {
         capturedEx = ex;
@@ -214,6 +228,8 @@
         </div>
         <div class="divider">&nbsp;</div>
         <div id="info"><%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_footer", locale) %></div>
+        <div class="divider">&nbsp;</div>
+        <div id="info" style="text-align:center;"><button dojoType="dijit.form.Button" onclick="window.location.reload();">Reload page</button></div>
     </div>
 
     <div class="dataZone fbListZone" id="demandZone" style="display:none;"><div>
@@ -313,7 +329,7 @@
     };
     localModule._demandItem =
         '<div class="fbEntityIntro">' +
-            '<div class="fbActionButtons" style="display:none;">' +
+            '<div class="fbActionButtons fbTopActions" style="display:none;">' +
                 '<a href="#" onclick="localModule.editDemand(${0});return false;"><img src="/images/page_white_go_edit.png" title="Edit demand" /></a>' +
                 '<a href="#" onclick="localModule.cancelDemand(${0});return false;"><img src="/images/page_white_go_cancel.png" title="Cancel demand" /></a>' +
             '</div>' +
@@ -324,9 +340,11 @@
             '<span class="fbEntitylabel">Quantity:</span> ${9}<br />' +
             '<span class="fbEntitylabel">Due date:</span> ${3}<br />' +
             '<span class="fbEntitylabel">Within:</span> ${10} ${11} of ${6}<br />' +
-            '<span class="fbEntitylabel">Number of received proposals:</span> ${14}<br />' +
         '</div>' +
-        '<ul class="fbResponses"></ul>';
+        '<ul class="fbResponses">' +
+            '<li class="fbResponseTopMarker"><i></i></li>' +
+            '<li class="fbListItem"><span class="">Number of received proposals:</span> ${14}</li>' +
+        '</ul>';
     localModule.fetchDemandList = function() {
         var placeHolder = dojo.byId('demandList');
         if (placeHolder.firstChild != null) {
@@ -340,13 +358,11 @@
                     {
                         id: 'demand' + demand.key,
                         'class': 'fbListItem',
-                        onmouseover: 'dojo.query(\'#' + demand.key + ' .fbActionButtons\').style(\'display\', \'\');',
-                        onmouseout: 'dojo.query(\'#' + demand.key + ' .fbActionButtons\').style(\'display\', \'none\');'
+                        onmouseover: 'dojo.query(\'#demand' + demand.key + ' .fbTopActions\').style(\'display\', \'\');',
+                        onmouseout: 'dojo.query(\'#demand' + demand.key + ' .fbTopActions\').style(\'display\', \'none\');'
                     },
                     ul
             );
-            /* ddd * /  demand.proposalKeys = [idx+0]; } / * ddd */
-            li.innerHTML = demand.key
             li.innerHTML = dojo.string.substitute(localModule._demandItem, [
                 demand.key,              // 0
                 demand.cc ? demand.cc.join(', ') : '',                    // 1
@@ -366,17 +382,34 @@
                 '' // last, just to prevent the error reported because of a trailing comma
             ]);
             if (dojo.isArray(demand.proposalKeys)) {
-                setTimeout(localModule._getDetachedFuction(demand.key), 100);
+                setTimeout(localModule._getDetachedFuction(demand.key, demand.proposalKeys), 100);
             }
             idx++;
         }
     };
-    localModule._getDetachedFuction = function(demandKey) {
-        return function() { localModule.insertProposals(demandKey) };
+    localModule._getDetachedFuction = function(demandKey, proposalKeys) {
+        return function() {
+            if (0 < proposalKeys.length) {
+                var requiredProposalKeys = [], limit = proposalKeys.length, idx = 0;
+                while (idx < limit) {
+                    if (twetailer.Common.getCachedProposal(proposalKeys[idx]) == null) {
+                        requiredProposalKeys.push(proposalKeys[idx]);
+                    }
+                    idx ++;
+                }
+                if (requiredProposalKeys.length == 0) {
+                    localModule.insertProposals(demandKey);
+                }
+                else {
+                    var dfd = twetailer.Common.loadRemoteProposals(requiredProposalKeys, null, twetailer.Common.POINT_OF_VIEWS.CONSUMER);
+                    dfd.addCallback(function(response) { localModule.insertProposals(demandKey); });
+                }
+            }
+        };
     };
     localModule._proposalResponse =
         '<div class="fbResponseIntro">' +
-            '<div class="fbActionButtons" style="display:none;">' +
+            '<div class="fbActionButtons fbSubActions" style="display:none;">' +
                 '<a href="#" onclick="localModule.confirmProposal(${0});return false;"><img src="/images/page_white_come_accept.png" title="Confirm proposal" /></a>' +
                 '<a href="#" onclick="localModule.declineProposal(${0});return false;"><img src="/images/page_white_come_cancel.png" title="Decline proposal" /></a>' +
             '</div>' +
@@ -391,41 +424,106 @@
             '<span class="fbEntitylabel">Store closing rate:</span> ${10}<br />' +
             '<span class="fbEntitylabel">Store registered by:</span> ${10}<br />' +
         '</div>';
-    localModule.insertProposals = function(key) {
-        var demand = twetailer.Common.getCachedDemand(key);
-        var keys = demand.proposalKeys, limit = keys.length, idx = 0, proposal, ul = dojo.query('#demand' + key + ' .fbResponse')[0], li;
+    localModule.insertProposals = function(demandKey) {
+        var demand = twetailer.Common.getCachedDemand(demandKey), proposalKeys = demand.proposalKeys, limit = proposalKeys.length, idx = 0, proposal, ul = dojo.query('#demand' + demandKey + ' .fbResponses')[0], li;
         while (idx < limit) {
-            proposal = twetailer.Common.getCachedProposal(keys[idx]);
-            /* ddd */ proposal = {id: key*12, criteria: [idx,'essai','miraculeux'], price:32.43, total:5465.3, currencyCode:'CAD', quantity:1, storeKey: key*324}; /* ddd */
+            proposal = twetailer.Common.getCachedProposal(proposalKeys[idx]);
             li = dojo.create(
                     'li',
                     {
-                        id: demand.key,
+                        id: 'proposal' + proposal.key,
                         'class': 'fbListItem',
-                        onmouseover: 'dojo.query(\'#' + proposal.key + ' .fbActionButtons\').style(\'display\', \'\');',
-                        onmouseout: 'dojo.query(\'#' + proposal.key + ' .fbActionButtons\').style(\'display\', \'none\');'
+                        onmouseover: 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'\');',
+                        onmouseout: 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'none\');'
                     },
                     ul
             );
-            /* ddd */ demand.proposalKeys = [idx+0]; /* ddd */
+            var currencySymbol = localModule._getLabel('master', 'currencySymbol_' + proposal.currencyCode);
             li.innerHTML = dojo.string.substitute(localModule._proposalResponse, [
-                proposal.key,          // 0
+                proposal.key,      // 0
                 proposal.criteria ? proposal.criteria.join(' ') : '',         // 1
-                proposal.currencyCode, // 2
-                proposal.dueDate,      // 3
+                currencySymbol,    // 2
+                proposal.dueDate,  // 3
                 proposal.hashTags ? '#' + proposal.hashTags.join(', #') : '', // 3
-                proposal.metadata,     // 4
-                proposal.price,        // 6
-                proposal.quantity,     // 7
-                proposal.source,       // 8
-                proposal.state,        // 9
-                proposal.storeKey,     // 10
-                proposal.total,        // 11
+                proposal.metadata, // 4
+                proposal.price,    // 6
+                proposal.quantity, // 7
+                proposal.source,   // 8
+                proposal.state,    // 9
+                proposal.storeKey, // 10
+                proposal.total,    // 11
                 '' // last, just to prevent the error reported because of a trailing comma
             ]);
             idx++;
         }
-        console.log('demand key: ' + key);
+    };
+    localModule.editDemand = function(demandKey) { alert('Not yet implemented ;)'); };
+    localModule.cancelDemand = function(demandKey) {
+        var demand = twetailer.Common.getCachedDemand(demandKey);
+
+        if (demand.state == twetailer.Common.STATES.CONFIRMED) {
+            var messageId = 'alert_cancelConfirmedDemand';
+
+            var proposalKey = demand.proposalKeys[0];
+            if (!confirm(_getLabel('console', messageId, [demandKey, proposalKey]))) {
+                return;
+            }
+        }
+
+        var data = { state: twetailer.Common.STATES.CANCELLED };
+
+        var dfd = twetailer.Common.updateRemoteDemand(data, demandKey, null /* overlayId */);
+        dfd.addCallback(function(response) {
+            twetailer.Common.removeDemandFromCache(demandKey);
+            // Fetch demands
+            var pov = twetailer.Common.POINT_OF_VIEWS.CONSUMER;
+            var dfd = twetailer.Common.loadRemoteDemands(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
+            dfd.addCallback(function(response) { dojo.byId('demandList').innerHTML = ''; localModule.fetchDemandList(); });
+        });
+    };
+    localModule.confirmProposal = function(proposalKey) {
+        var data = {
+            state: twetailer.Common.STATES.CONFIRMED,
+            pointOfView: twetailer.Common.POINT_OF_VIEWS.CONSUMER
+        };
+
+        var dfd = twetailer.Common.updateRemoteProposal(data, proposalKey, null /* overlayId */);
+        dfd.addCallback(function(response) { 
+            var proposal = twetailer.Common.getCachedProposal(proposalKey), demand = twetailer.Common.getCachedDemand(proposal.demandKey), limit = demand.proposalKeys.length, idx = 0;
+            while (idx < limit) {
+                var movingProposalKey = demand.proposalKeys[idx];
+                if (movingProposalKey != proposalKey) {
+                    dojo.query('#proposal' + movingProposalKey).style('display', 'none');
+                }
+                idx ++;
+            }
+        });
+    };
+    localModule.declineProposal = function(proposalKey) {
+        var proposal = twetailer.Common.getCachedProposal(proposalKey);
+
+        if (proposal.state == twetailer.Common.STATES.CONFIRMED) {
+            var messageId = 'alert_cancelConfirmedProposal';
+
+            var demandKey = proposal.demandKey;
+            if (!confirm(_getLabel('console', messageId, [demandKey, proposalKey]))) {
+                return;
+            }
+        }
+
+        var data = { state: twetailer.Common.STATES.CANCELLED };
+
+        var dfd = twetailer.Common.updateRemoteProposal(data, proposalKey, null /* overlayId */);
+        dfd.addCallback(function(response) {
+            twetailer.Common.removeProposalFromCache(proposalKey);
+            // Fetch demands
+            var pov = twetailer.Common.POINT_OF_VIEWS.CONSUMER;
+            var dfd = twetailer.Common.loadRemoteDemands(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
+            dfd.addCallback(function(response) { 
+                dojo.byId('demandList').innerHTML = ''; 
+                localModule.fetchDemandList();
+            });
+        });
     };
     --></script>
     <style type="text/css">
@@ -437,13 +535,12 @@
         .fbListItem {
             border-bottom: 1px solid lightgrey;
             line-height: 24px;
-            min-height: 34px;
         }
         .fbEntityIntro {
         }
         .fbEntityDetails {
-            line-height: 16px;
             font-size: 11px;
+            line-height: 16px;
             margin-left: 40px;
         }
         .fbEntitylabel {
@@ -459,6 +556,24 @@
         }
         .fbHashTags {
             padding-left: 10px;
+        }
+        .fbResponses {
+            list-style-type: none;
+            margin: 0 40px 10px 40px;
+            padding: 0;
+        }
+        .fbResponses .fbListItem {
+            line-height: 16px;
+            font-size: 11px;
+            background-color: #EDEFF4;
+            padding: 2px 5px;
+            margin-bottom: 1px;
+        }
+        .fbResponseTopMarker {
+            background-image: url(/images/facebook/response-intro.png);
+            background-repeat: no-repeat;
+            height: 5px;
+            margin-left: 17px;
         }
     </style>
 </body>

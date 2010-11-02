@@ -5,6 +5,7 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -119,9 +120,19 @@ public class ProposalSteps extends BaseSteps {
         if (QueryPointOfView.CONSUMER.equals(pointOfView)) {
             queryParameters.put(Proposal.CONSUMER_KEY, ownerKey);
 
-            output = getProposalOperations().getProposals(pm, queryParameters, maximumResults);
-
-            throw new RuntimeException("Not yet implemented!");
+            boolean withKeySet = parameters.containsKey(Entity.KEY);
+            if (withKeySet) {
+                JsonArray intialKeys = parameters.getJsonArray(Entity.KEY);
+                List<Long> convertedKeys = new ArrayList<Long>();
+                int limit = intialKeys.size();
+                for (int idx=0; idx<limit; idx++) {
+                    convertedKeys.add(Long.valueOf(intialKeys.getString(idx)));
+                }
+                output = getProposalOperations().getProposals(pm, convertedKeys);
+            }
+            else {
+                output = getProposalOperations().getProposals(pm, queryParameters, maximumResults);
+            }
         }
         else if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
             if (saleAssociateKey == null) {

@@ -335,7 +335,7 @@
         var data = { state: _globalCommon.STATES.CANCELLED };
 
         var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
-        dfd.addCallback(function(response) { module.loadNewDemands() });
+        dfd.addCallback(function(response) { module.loadNewDemands(); });
     };
 
     /**
@@ -348,7 +348,7 @@
         var data = { state: _globalCommon.STATES.CLOSED };
 
         var dfd = _globalCommon.updateRemoteProposal(data, proposalKey, 'demandListOverlay');
-        dfd.addCallback(function(response) { module.loadNewDemands() });
+        dfd.addCallback(function(response) { module.loadNewDemands(); });
     }
 
     /**

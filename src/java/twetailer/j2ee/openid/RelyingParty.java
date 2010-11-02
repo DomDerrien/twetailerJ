@@ -1,4 +1,4 @@
-package twetailer.j2ee;
+package twetailer.j2ee.openid;
 
 //========================================================================
 //Copyright 2007-2008 David Yu dyuproject@gmail.com

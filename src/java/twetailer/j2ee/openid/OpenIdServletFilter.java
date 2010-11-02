@@ -1,4 +1,4 @@
-package twetailer.j2ee;
+package twetailer.j2ee.openid;
 
 //========================================================================
 //Copyright 2007-2009 David Yu dyuproject@gmail.com
@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.dyuproject.openid.OpenIdUser;
-import twetailer.j2ee.RelyingParty;
 import com.dyuproject.util.ClassLoaderUtil;
 
 /**
@@ -161,13 +160,14 @@ public class OpenIdServletFilter implements Filter
           RelyingParty relyingParty, ForwardUriHandler forwardUriHandler, String forwardUri)
           throws IOException, ServletException
   {
+      System.err.println("^^^^^^ JSessionID: " + request.getSession().getId());
       String errorMsg = DEFAULT_ERROR_MSG;
       try
       {
           OpenIdUser user = relyingParty.discover(request);
           if(user==null)
           {
-              System.err.println("^^^^^^ OpenIdServletFilter: user.isDiscovered() == false //// " + request.getSession().getId());
+              System.err.println("^^^^^^ OpenIdServletFilter: user.isDiscovered() == false");
               if(RelyingParty.isAuthResponse(request))
               {
                   // authentication timeout

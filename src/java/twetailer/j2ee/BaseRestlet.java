@@ -165,7 +165,6 @@ public abstract class BaseRestlet extends HttpServlet {
     private static final String ROOT = "/";
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
@@ -177,7 +176,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
-            in = new GenericJsonObject(request.getParameterMap());
+            in = new GenericJsonObject(request);
 
             OpenIdUser loggedUser = getLoggedUser(request);
             if (loggedUser == null) {

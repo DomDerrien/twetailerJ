@@ -211,7 +211,7 @@
                                         %>,<%
                                     }
                                 }
-                                %>], "<%= localeId %>", null, function() {}) });
+                                %>], "<%= localeId %>", null, function() {}); });
                             </script><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_language", locale) %></span>
                         </div>

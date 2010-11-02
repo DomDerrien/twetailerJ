@@ -20,6 +20,7 @@
         _locations = {},
         _demands = {},
         _proposals = {},
+        _stores = {},
         _lastDemand,
         _lastProposal;
 
@@ -297,17 +298,6 @@
     //
 
     /**
-     * Get the reference of the cache of demand.
-     * Should be handled carefully, only in read-only mode
-     * as the system can update it asynchronously.
-     *
-     * @return {Object} Map of Demand instances indexed by their key
-     */
-    module.getDemandCache = function() {
-        return _demands;
-    };
-
-    /**
      * Local helper comparing to Entity modification date, in
      * the decreasing order
      *
@@ -358,6 +348,15 @@
     };
 
     /**
+     * Remove the specified demand from the cache.
+     *
+     * @param {String} demandKey Identifier of the demand to nuke.
+     */
+    module.removeDemandFromCache = function(demandKey) {
+        delete _demands[demandKey];
+    };
+
+    /**
      * Get the specified proposal from the cache.
      *
      * @param {String} proposalKey Identifier of the proposal to load.
@@ -374,6 +373,15 @@
      */
     module.getLastProposal = function(proposalKey) {
         return _lastProposal;
+    };
+
+    /**
+     * Remove the specified proposal from the cache.
+     *
+     * @param {String} proposalKey Identifier of the proposal to nuke.
+     */
+    module.removeProposalFromCache = function(proposalKey) {
+        delete _proposals[proposalKey];
     };
 
     //
@@ -509,7 +517,9 @@
                 else {
                     alert(response.message + '\nurl: '+ ioArgs.url);
                 }
-                dijit.byId('demandListOverlay').hide();
+                if (overlayId) {
+                    dijit.byId(overlayId).hide();
+                }
             },
             error: function(message, ioArgs) {
                 if (overlayId) {
@@ -560,6 +570,68 @@
                 module.handleError(message, ioArgs);
             },
             url: '/API/Proposal/' + proposalKey
+        });
+        return dfd;
+    };
+
+    /**
+     * Load the proposal identified with the keys from the remote back-end.
+     *
+     * @param {String} proposalKeys Array of the identifiers of the proposal to load.
+     * @param {String} overlayId (Optional) Identifier of the overlay to display during the transaction
+     * @param {String} pointOfView (Optional) operation initiator point of view, default to SALE_ASSOCIATE.
+     * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks.
+     */
+    module.loadRemoteProposals = function(proposalKeys, overlayId, pointOfView) {
+        if (overlayId) {
+            dijit.byId(overlayId).show();
+        }
+        var dfd = dojo.xhrGet({
+            content: {
+                key: proposalKeys,
+                pointOfView: pointOfView || module.POINT_OF_VIEWS.SALE_ASSOCIATE,
+                related: ['Store']
+            },
+            handleAs: 'json',
+            load: function(response, ioArgs) {
+                if (response && response.success) {
+                    var resources = response.resources;
+                    var resourceNb = resources ? resources.length : 0;
+                    if (0 < resourceNb) {
+                        _lastProposal = resources[0];
+                        for (var i = 0; i < resourceNb; ++i) {
+                            // Add the updated proposal into the cache
+                            var resource = resources[i];
+                            _proposals[resource.key] = resource;
+                        }
+                    }
+                    if (0 < resourceNb) {
+                        // Add the stores to the cache
+                        var resource = resources[0];
+                        var stores = resource.related ? resource.related.Store : null;
+                        var storeNb = stores ? stores.length : 0;
+                        for (var k = 0; k < storeNb; k++) {
+                            var store = stores[k];
+                            _stores[store.key] = store;
+                        }
+                        delete resource.related;
+                    }
+                }
+                else {
+                    alert(response.message + '\nurl: '+ ioArgs.url);
+                }
+                if (overlayId) {
+                    dijit.byId(overlayId).hide();
+                }
+                return response;
+            },
+            error: function(message, ioArgs) {
+                if (overlayId) {
+                    dijit.byId(overlayId).hide();
+                }
+                module.handleError(message, ioArgs);
+            },
+            url: '/API/Proposal/'
         });
         return dfd;
     };
