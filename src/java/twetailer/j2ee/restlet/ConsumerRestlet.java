@@ -3,6 +3,7 @@ package twetailer.j2ee.restlet;
 import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -35,16 +36,19 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class ConsumerRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(ConsumerRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Consumer consumer = null;
             if ("current".equals(resourceId)) {
                 consumer = LoginServlet.getConsumer(loggedUser, pm);
             }
-            else if (isAPrivilegedUser(loggedUser)) {
+            else if (isUserAdmin) {
                 consumer = ConsumerSteps.getConsumer(pm, Long.valueOf(resourceId));
             }
             else {
@@ -60,10 +64,10 @@ public class ConsumerRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            if (!isAPrivilegedUser(loggedUser)) {
+            if (!isUserAdmin) {
                 throw new ReservedOperationException("Restricted access!");
             }
 
@@ -86,22 +90,21 @@ public class ConsumerRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ReservedOperationException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException {
         // Consumer instances are created automatically when users log in
         throw new ReservedOperationException("Consumer instances are created automatically by the connectors");
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long consumerKey = null;
-            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
             if ("current".equals(resourceId)) {
                 // Get the sale associate
                 consumerKey = LoginServlet.getConsumer(loggedUser, pm).getKey();
             }
-            else if (isAPrivilegedUser) {
+            else if (isUserAdmin) {
                 consumerKey = Long.valueOf(resourceId);
             }
             else {
@@ -124,8 +127,8 @@ public class ConsumerRestlet extends BaseRestlet {
     /**** Dom: refactoring limit ***/
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException {
-        if (isAPrivilegedUser(loggedUser)) {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException {
+        if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long consumerKey = Long.valueOf(resourceId);

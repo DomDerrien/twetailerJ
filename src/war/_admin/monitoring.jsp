@@ -29,10 +29,6 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-
-    // Consumer attributes
-    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
-    Consumer consumer = LoginServlet.getConsumer(loggedUser);
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Monitoring Console</title>
@@ -95,7 +91,7 @@
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
-            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+            <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div
             dojoType="dijit.layout.ContentPane"
@@ -107,10 +103,10 @@
                 <a href="http://appengine.google.com/">hosted</a> --
                 <a href="http://127.0.0.1:9999/_ah/admin">local</a>;
                 Registration console:
-                <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
+                <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
                 <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;
                 Monitoring console:
-                <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
+                <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
                 <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.
             </p>
             <fieldset class="entityInformation" id="consumerInformationFieldset" style="float:left;margin:5px;">
@@ -1240,6 +1236,7 @@
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
+            dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
         });
     });
 

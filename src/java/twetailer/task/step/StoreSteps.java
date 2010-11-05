@@ -88,6 +88,9 @@ public class StoreSteps extends BaseSteps {
         }
 
         Store store = getStoreOperations().createStore(pm, parameters);
+        if (parameters.containsKey(Store.REGISTRAR_KEY)) {
+            store.setRegistrarKey(parameters.getLong(Store.REGISTRAR_KEY));
+        }
 
         Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
         if (Boolean.FALSE.equals(location.hasStore())) {
@@ -113,6 +116,10 @@ public class StoreSteps extends BaseSteps {
 
         store.fromJson(parameters);
         store = getStoreOperations().updateStore(pm, store);
+
+        if (isPrivileged && parameters.containsKey(Store.REGISTRAR_KEY)) {
+            store.setRegistrarKey(parameters.getLong(Store.REGISTRAR_KEY));
+        }
 
         Long newLocationKey = store.getLocationKey();
         if (!newLocationKey.equals(initialLocationKey)) {

@@ -384,6 +384,25 @@
         delete _proposals[proposalKey];
     };
 
+    /**
+     * Get the specified store from the cache.
+     *
+     * @param {String} storeKey Identifier of the store to load.
+     * @return {Store} Identified store if it exists, <code>null</code> otherwise.
+     */
+    module.getCachedStore = function(storeKey) {
+        return _stores[storeKey];
+    };
+
+    /**
+     * Remove the specified store from the cache.
+     *
+     * @param {String} storeKey Identifier of the store to nuke.
+     */
+    module.removeStoreFromCache = function(storeKey) {
+        delete _stores[storeKey];
+    };
+
     //
     // Helpers loading instances from the server and fetching the corresponding grids
     //

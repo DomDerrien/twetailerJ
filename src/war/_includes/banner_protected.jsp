@@ -67,7 +67,7 @@
                     } %>
                     <!--  Reverse order because they are right aligned -->
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
-                    <li class="subItem"><a href="/logout?<%= LoginServlet.FROM_PAGE_URL_KEY %>=<%= fromPageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
+                    <li class="subItem"><a href="/logout?<%= LoginServlet.FROM_PAGE_URL_KEY %>=<%= fromPageURL %>" id="logoutLink" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
                     <li class="subItem" style="color: orange; font-weight: bold; padding: 0 20px;">
                         <a href="/console/#profile" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_username_editIt", locale) %>">
                             <span style="color:orange;"><%= LabelExtractor.get(ResourceFileId.third, "navigation_welcome_user", new Object[] { consumerName}, locale) %></span>

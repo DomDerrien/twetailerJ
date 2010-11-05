@@ -96,6 +96,8 @@ public class AuthVerifierFilter implements Filter {
         Map<String, Object> json = new HashMap<String, Object>();
         // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
         json.put("b", "facebook://" + consumer.getFacebookId() + "/" + consumer.getName()); // Means user.isAuthenticated() == true
+        json.put("a", json.get("b")); // Simple copy
+        json.put("h", json.get("b")); // Simple copy
         user.fromJSON(json);
 
         // Attach the user consumer key to save future lookups

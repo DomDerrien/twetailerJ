@@ -22,6 +22,8 @@ import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.RelyingParty;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
@@ -52,28 +54,32 @@ public abstract class BaseRestlet extends HttpServlet {
     public static final String MAXIMUM_RESULTS_PARAMETER_KEY = "maximumResults";
     public static final String RELATED_RESOURCE_NAMES = "related";
 
+    protected abstract Logger getLogger();
+
     /**
      * Create the resource with the given attributes
      *
      * @param parameters HTTP request parameters
      * @param loggedUser System identity of the logged user
+     * @param isUserAdmin Boolean flag that unblock reserved operations
      * @return Newly created resource
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException;
+    abstract protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException;
 
     /**
      * Delete the identified resource
      *
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
+     * @param isUserAdmin Boolean flag that unblock reserved operations
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException;
+    abstract protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException;
 
     /**
      * Get the detailed information on the identified resource
@@ -81,12 +87,13 @@ public abstract class BaseRestlet extends HttpServlet {
      * @param parameters HTTP request parameters
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
+     * @param isUserAdmin Boolean flag that unblock reserved operations
      * @return ready to be serialized object
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser)
+    abstract protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin)
             throws DataSourceException, ClientException;
 
     /**
@@ -94,12 +101,13 @@ public abstract class BaseRestlet extends HttpServlet {
      *
      * @param parameters HTTP request parameters
      * @param loggedUser System identity of the logged user
+     * @param isUserAdmin Boolean flag that unblock reserved operations
      * @return ready to be serialized list of object list
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException;
+    abstract protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException;
 
     /**
      * Update the identified resource with the given attributes
@@ -107,12 +115,13 @@ public abstract class BaseRestlet extends HttpServlet {
      * @param parameters HTTP request parameters
      * @param resourceId Identifier of the concerned resource
      * @param loggedUser System identity of the logged user
+     * @param isUserAdmin Boolean flag that unblock reserved operations
      * @return Updated resource
      *
      * @throws DataSourceException If something goes wrong when getting data from the back-end or if the data are invalid
      * @throws ClientException If the proposed data are invalid
      */
-    abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser)
+    abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin)
             throws DataSourceException, ClientException;
 
     public void init(ServletConfig config) throws ServletException {
@@ -131,6 +140,10 @@ public abstract class BaseRestlet extends HttpServlet {
         return RelyingParty.getInstance().discover(request);
     }
 
+    protected UserService getUserService() {
+        return UserServiceFactory.getUserService();
+    }
+
     /**
      * Helper returning <code>true if the logged user is one with top privileges
      *
@@ -138,16 +151,14 @@ public abstract class BaseRestlet extends HttpServlet {
      * @return <code>true</code> if the user has top privileges
      */
     @SuppressWarnings("unchecked")
-    public static boolean isAPrivilegedUser(OpenIdUser loggedUser) {
-        //
-        // TODO: replace this verification by checking if the user is an administrator for App Engine?
-        //
-        if (loggedUser.getAttribute("info") != null) {
+    public boolean isUserAdministrator(OpenIdUser loggedUser) {
+        UserService userService = getUserService();
+        if (userService.isUserLoggedIn()) {
+            return userService.isUserAdmin();
+        }
+        if (loggedUser != null && loggedUser.getAttribute("info") != null) {
             Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
-            if (info.get("email") != null) {
-                String email = info.get("email");
-                return ("dominique.derrien@gmail.com".equals(email) || "steven.milstein@gmail.com".equals(email));
-            }
+            return ("dominique.derrien@gmail.com".equals(info.get("email")));
         }
         return false;
     }
@@ -179,18 +190,21 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new GenericJsonObject(request);
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            if (loggedUser == null) {
+            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+
+            if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
             }
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Get selected resources
-                out.put("resources", selectResources(in, loggedUser));
+                out.put("resources", selectResources(in, loggedUser, isUserAdmin));
             }
             else if ("/current".equals(pathInfo)) {
                 // Get current resource
-                out.put("resource", getResource(in, "current", loggedUser));
+                out.put("resource", getResource(in, "current", loggedUser, isUserAdmin));
             }
             else {
                 Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
@@ -198,7 +212,7 @@ public abstract class BaseRestlet extends HttpServlet {
                     // Get the key
                     String key = keyMatcher.group(1);
                     // Get resource by key
-                    out.put("resource", getResource(in, key, loggedUser));
+                    out.put("resource", getResource(in, key, loggedUser, isUserAdmin));
                 }
                 else {
                     throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
@@ -233,14 +247,17 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            if (loggedUser == null) {
+            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+
+            if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
             }
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 // Create the resource
-                out.put("resource", createResource(in, loggedUser));
+                out.put("resource", createResource(in, loggedUser, isUserAdmin));
             }
             else {
                 throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
@@ -274,7 +291,10 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream()).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            if (loggedUser == null) {
+            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+
+            if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
@@ -288,7 +308,7 @@ public abstract class BaseRestlet extends HttpServlet {
                     // Get the key
                     String key = keyMatcher.group(1);
                     // Update the identified resource
-                    out.put("resource", updateResource(in, key, loggedUser));
+                    out.put("resource", updateResource(in, key, loggedUser, isUserAdmin));
                 }
                 else {
                     throw new RuntimeException("Unsupported URL format, pathInfo: " + request.getPathInfo());
@@ -318,7 +338,10 @@ public abstract class BaseRestlet extends HttpServlet {
 
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
-            if (loggedUser == null) {
+            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+
+            if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
                 out.put("success", false);
                 out.put("reason", "Unauthorized");
@@ -332,7 +355,7 @@ public abstract class BaseRestlet extends HttpServlet {
                     // Get the key
                     String key = keyMatcher.group(1);
                     // Delete the resource
-                    deleteResource(key, loggedUser);
+                    deleteResource(key, loggedUser, isUserAdmin);
                     out.put("resourceId", key);
                 }
                 else {

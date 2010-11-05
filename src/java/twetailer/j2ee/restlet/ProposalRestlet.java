@@ -2,6 +2,7 @@ package twetailer.j2ee.restlet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -37,9 +38,12 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class ProposalRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(ProposalRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long proposalKey = Long.valueOf(resourceId);
@@ -86,7 +90,7 @@ public class ProposalRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, DataSourceException, ReservedOperationException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, DataSourceException, ReservedOperationException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
@@ -148,7 +152,7 @@ public class ProposalRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Create the Proposal
@@ -164,7 +168,7 @@ public class ProposalRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Update the proposal
@@ -188,8 +192,8 @@ public class ProposalRestlet extends BaseRestlet {
     /**** Dom: refactoring limit ***/
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (isAPrivilegedUser(loggedUser)) {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long proposalKey = Long.valueOf(resourceId);

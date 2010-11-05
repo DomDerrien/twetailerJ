@@ -58,17 +58,17 @@ public class TestLocationRestlet {
                 return new Location();
             }
         });
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     @Test(expected=RuntimeException.class)
     public void testDeleteResource() throws DataSourceException {
-        ops.deleteResource("resourceId", user);
+        ops.deleteResource("resourceId", user, false);
     }
 
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws InvalidIdentifierException {
-        ops.getResource(null, "resourceId", user);
+        ops.getResource(null, "resourceId", user, false);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TestLocationRestlet {
                 return null;
             }
         });
-        JsonArray response = ops.selectResources(new GenericJsonObject(), null);
+        JsonArray response = ops.selectResources(new GenericJsonObject(), null, false);
         assertEquals(0, response.size());
     }
 
@@ -105,12 +105,12 @@ public class TestLocationRestlet {
         });
         JsonObject parameters = new GenericJsonObject();
         parameters.put(BaseRestlet.ONLY_KEYS_PARAMETER_KEY, Boolean.TRUE);
-        JsonArray response = ops.selectResources(parameters, null);
+        JsonArray response = ops.selectResources(parameters, null, false);
         assertEquals(0, response.size());
     }
 
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException {
-        ops.updateResource(new GenericJsonObject(), "resourceId", user);
+        ops.updateResource(new GenericJsonObject(), "resourceId", user, false);
     }
 }

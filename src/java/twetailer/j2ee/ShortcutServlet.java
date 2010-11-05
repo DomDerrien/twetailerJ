@@ -72,7 +72,7 @@ public class ShortcutServlet extends HttpServlet {
 
         Map<String, Object> json = new HashMap<String, Object>();
 
-        json.put("a", "http://shortcut.twetailer.com/" + consumerKey);
+        json.put("a", "http://shortcut.anothersocialeconomy.com/" + consumerKey);
 
         Map<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("info", new HashMap<String, String>());

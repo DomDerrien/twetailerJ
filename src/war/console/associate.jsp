@@ -92,7 +92,13 @@
         isDebug: false,
         useXDomain: true,
         baseUrl: './',
-        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        modulePaths: {
+            dojo: '<%= cdnBaseURL %>/dojo',
+            dijit: '<%= cdnBaseURL %>/dijit',
+            dojox: '<%= cdnBaseURL %>/dojox',
+            twetailer: '/js/twetailer',
+            domderrien: '/js/domderrien'
+        },
         dojoBlankHtmlUrl: '/blank.html',
         locale: '<%= localeId %>'
     };
@@ -204,15 +210,15 @@
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "core_demandInfo", locale) %></legend>
             <table width="100%">
-                <tr>
+                <tr id="proposalForm.demand.hashTags">
                     <td align="right"><label for="demand.hashTags"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandHashTags", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.visibleHashTags" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
-                <tr>
+                <tr id="proposalForm.demand.criteria">
                     <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCriteria", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.criteria" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
-                <tr>
+                <tr id="proposalForm.demand.metadata">
                     <td align="right"><label for="demand.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandMetadata", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.metadata" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
@@ -256,7 +262,7 @@
                         ></textarea><br/>
                     </td>
                 </tr>
-                <tr>
+                <tr id="proposalForm.proposal.metadata">
                     <td align="right"><label for="proposal.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalMetadata", locale) %></label></td>
                     <td>
                         <textarea

@@ -69,7 +69,7 @@ public class TestProposalRestlet {
             }
         });
 
-        ops.createResource(proposedParameters, user);
+        ops.createResource(proposedParameters, user, false);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class TestProposalRestlet {
             }
         });
 
-        JsonObject returnedProposal = ops.createResource(proposedParameters, user);
+        JsonObject returnedProposal = ops.createResource(proposedParameters, user, false);
         assertNotNull(returnedProposal);
         assertTrue(returnedProposal.containsKey(Entity.KEY));
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), returnedProposal.getLong(Entity.KEY));
@@ -120,16 +120,15 @@ public class TestProposalRestlet {
 
     @Test(expected=ClientException.class)
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
-        ops.deleteResource("12345", user);
+        ops.deleteResource("12345", user, false);
     }
 
     /***** ddd
     @Test
     @Ignore
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long proposalKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
             public List<Long> getSaleAssociateKeys(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
@@ -148,21 +147,20 @@ public class TestProposalRestlet {
                 return saleAssociate;
             }
         });
-        ops.deleteResource(proposalKey.toString(), user);
+        ops.deleteResource(proposalKey.toString(), user, true);
         new ProposalRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key, SaleAssociate saleAssociate, boolean stopRecursion) {
                 assertEquals(proposalKey, key);
                 assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, saleAssociate.getConsumerKey());
             }
-        }.deleteResource(proposalKey.toString(), user);
+        }.deleteResource(proposalKey.toString(), user, false);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceII() throws DataSourceException, ClientException {
         final Long proposalKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         final Long saleAssociateKey = 34567L;
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
@@ -188,14 +186,13 @@ public class TestProposalRestlet {
                 assertEquals(proposalKey, key);
                 assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, saleAssociate.getConsumerKey());
             }
-        }.deleteResource(proposalKey.toString(), user);
+        }.deleteResource(proposalKey.toString(), user, true);
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceIII() throws DataSourceException, ClientException {
         final Long proposalKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new ProposalRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key, SaleAssociate saleAssociate, boolean stopRecursion) {
@@ -203,7 +200,7 @@ public class TestProposalRestlet {
                 assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY, saleAssociate.getConsumerKey());
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.deleteResource(proposalKey.toString(), user);
+        }.deleteResource(proposalKey.toString(), user, true);
     }
 
     @Test
@@ -332,7 +329,7 @@ public class TestProposalRestlet {
     @Ignore
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException, ClientException {
-        ops.updateResource(null, "12345", user);
+        ops.updateResource(null, "12345", user, false);
     }
 
     @Test
@@ -367,11 +364,10 @@ public class TestProposalRestlet {
             }
         });
 
-        ops.getResource(null, proposalKey.toString(), user);
+        ops.getResource(null, proposalKey.toString(), user, false);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testGetResourceII() throws DataSourceException, ClientException {
         //
         // Proposal queried by the Demand owner (Consumer)
@@ -415,12 +411,10 @@ public class TestProposalRestlet {
             }
         };
 
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        ops.getResource(null, proposalKey.toString(), user);
+        ops.getResource(null, proposalKey.toString(), user, truee);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testGetResourceIII() throws DataSourceException, ClientException {
         //
         // Proposal queried by the Demand owner (Consumer, who is also a SaleAssociate but who did not create the Proposal)
@@ -466,12 +460,10 @@ public class TestProposalRestlet {
             }
         };
 
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        ops.getResource(null, proposalKey.toString(), user);
+        ops.getResource(null, proposalKey.toString(), user, truee);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testGetResourceIV() throws DataSourceException, ClientException {
         //
         // Proposal queried by the Demand owner (Consumer)
@@ -515,11 +507,9 @@ public class TestProposalRestlet {
             }
         };
 
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        ops.getResource(null, proposalKey.toString(), user);
+        ops.getResource(null, proposalKey.toString(), user, true);
     }
 
-    @SuppressWarnings("unchecked")
     @Test(expected=DataSourceException.class)
     public void testGetResourceV() throws DataSourceException, ClientException {
         //
@@ -570,8 +560,7 @@ public class TestProposalRestlet {
             }
         };
 
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        ops.getResource(null, proposalKey.toString(), user);
+        ops.getResource(null, proposalKey.toString(), user, true);
     }
     ddd *****/
 }

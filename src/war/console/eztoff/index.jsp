@@ -92,7 +92,13 @@
         isDebug: false,
         useXDomain: true,
         baseUrl: './',
-        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
+        modulePaths: {
+            dojo: '<%= cdnBaseURL %>/dojo',
+            dijit: '<%= cdnBaseURL %>/dijit',
+            dojox: '<%= cdnBaseURL %>/dojox',
+            twetailer: '/js/twetailer',
+            domderrien: '/js/domderrien'
+        },
         dojoBlankHtmlUrl: '/blank.html',
         locale: '<%= localeId %>'
     };

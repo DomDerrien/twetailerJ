@@ -697,7 +697,7 @@
                     Merci de magasiner avec AnotherSocialEconony.|
                     |
                     Si vous n'avez pas demandé ce code de confirmation, il est possible que quelqu'un s'est trompé en assignant votre compte au sien.
-                    Si vous pensez que quelqu'un essaye de détourner votre compte, transmettez ce message à abusive-notification@anothersocialeconomy.appspot.com.
+                    Si vous pensez que quelqu'un essaye de détourner votre compte, transmettez ce message à abusive-notification@anothersocialeconomy.appspotmail.com.
                 </seg>
             </tuv>
         </tu>
@@ -1838,12 +1838,12 @@
                     recevoir votre demande. Notez que le texte préalablement sélectionné sera transféré dans
                     le champs de saisie des détails dela demande.
                     <div class="bookmarklet-container">
-                        <a class="bookmarklet-link" href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()">Gadget ASE!</a>
+                        <a class="bookmarklet-link" href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()">Gadget ASE!</a>
                         <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Glissez-moi!</span></span>
                     </div>
                     <p>
                         Vous pouvez aussi installé le gadget sur votre page personnalisée de iGoogle:
-                        <a href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml" onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()" target="_blank"><img alt="Ajouter à Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;" /></a>
+                        <a href="http://fusion.google.com/add?source=atgs&amp;moduleurl=https%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml" onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()" target="_blank"><img alt="Ajouter à Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;" /></a>
                     </p>
                     <p>Pour plus d'informations, visitez notre page <a href="http://anothersocialeconomy.com/whats-with-widgets/" target="_blank">À propos des gadgets</a> (en anglais).</p>
                 </seg>
@@ -2260,7 +2260,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/">AnotherSocialEconomy.com</a>.</seg>
+                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/" target="ase.com">AnotherSocialEconomy.com</a>.</seg>
             </tuv>
         </tu>
         <tu tuid="fbc_demandZone_title" dataType="text">

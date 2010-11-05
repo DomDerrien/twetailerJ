@@ -206,7 +206,7 @@
         In the example below, the &lt;iframe/&gt; background color is set to 'transparent' and color is applied to the &lt;iframe/&gt; itself, with drop-shadow.
     </p>
     <textarea id="cdsnppt" rows="5" style="border: 1px solid gray; width: 100%;">&nbsp;&nbsp;&lt;iframe
-&nbsp;&nbsp;&nbsp;&nbsp;src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
+&nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
 &nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
 &nbsp;&nbsp;&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"
 &nbsp;&nbsp;&gt;&lt;/iframe&gt;</textarea>
@@ -243,7 +243,7 @@
     <ul>
         <li>
             <a
-                href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
+                href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
                 style="border:1px solid grey;background-color:#fff000;padding:3px 5px;"
             >ASE floating tab</a>
             &mdash; ready to be dropped on your bookmark toolbar
@@ -323,7 +323,7 @@
     };
     var generateCodeSnippet = function() {
         var code = '&nbsp;&nbsp;&lt;iframe\n' +
-                   '&nbsp;&nbsp;&nbsp;&nbsp;src="http://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
+                   '&nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
                    '&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
                    '&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"\n' +
                    '&nbsp;&nbsp;&gt;&lt;/iframe&gt;';
@@ -338,7 +338,7 @@
             dc = document,
             dv = dc.getElementById(id),
             txt = window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : '',
-            src = 'http://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]&criteria=' + escape(txt),
+            src = 'https://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]&criteria=' + escape(txt),
             ifr;
         if (dv) {
             dv.style.display = '';
@@ -415,7 +415,7 @@
     <h1>Live widgets &amp; associated consoles</h1>
 
     <ul>
-        <li>This documentation on <a href="http://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
+        <li>This documentation on <a href="https://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
         <li>ASE widget alone: <a href="/widget/ase.jsp">normal</a> -- <a href="/widget/ase.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
         <li>ezToff page alone: <a href="/widget/eztoff.jsp">normal</a> -- <a href="/widget/eztoff.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
         <li>ASE console: <a href="/console/">Consumer</a> -- <a href="/console/associate.jsp">Associate</a>.</li>

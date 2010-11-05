@@ -1,5 +1,7 @@
 package twetailer.j2ee.restlet;
 
+import java.util.logging.Logger;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -24,9 +26,12 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class LocationRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(LocationRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long locationKey = Long.valueOf(resourceId);
@@ -39,7 +44,7 @@ public class LocationRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
@@ -67,17 +72,17 @@ public class LocationRestlet extends BaseRestlet {
     /**** Dom: refactoring limit ***/
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         return BaseSteps.getLocationOperations().createLocation(parameters).toJson();
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 }

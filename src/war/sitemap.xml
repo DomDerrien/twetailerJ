@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
    <url>
-      <loc>http://anothersocialeconomy.appspot.com/console/</loc>
+      <loc>https://anothersocialeconomy.appspot.com/console/</loc>
       <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>http://anothersocialeconomy.appspot.com/console/eztoff/</loc>
+      <loc>https://anothersocialeconomy.appspot.com/widget/sample.jsp</loc>
       <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>http://anothersocialeconomy.appspot.com/widget/ase.jsp</loc>
+      <loc>https://anothersocialeconomy.appspot.com/widget/ase.jsp</loc>
       <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>http://anothersocialeconomy.appspot.com/widget/eztoff.jsp</loc>
-      <lastmod>2010-10-10</lastmod>
-      <changefreq>weekly</changefreq>
-      <priority>0.8</priority>
-   </url>
-   <url>
-      <loc>http://anothersocialeconomy.appspot.com/widget/sample.jsp</loc>
+      <loc>https://anothersocialeconomy.appspot.com/widget/facebook/</loc>
       <lastmod>2010-10-10</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>

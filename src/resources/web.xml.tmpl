@@ -18,7 +18,7 @@
         <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
         <init-param>
             <param-name>logMessage</param-name>
-            <param-value>Appstats available: http://anothersocialeconomy.appspot.com/_admin/stats/details?time={ID}</param-value>
+            <param-value>Appstats available: https://anothersocialeconomy.appspot.com/_admin/stats/details?time={ID}</param-value>
         </init-param>
     </filter>
     <filter-mapping>
@@ -68,10 +68,6 @@
     <filter-mapping>
         <filter-name>openidfilter</filter-name>
         <url-pattern>/console/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>openidfilter</filter-name>
-        <url-pattern>/API/*</url-pattern>
     </filter-mapping>
 
     <servlet>
@@ -234,12 +230,45 @@
 
     <security-constraint>
         <web-resource-collection>
+            <web-resource-name>Consoles</web-resource-name>
+            <url-pattern>/console/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Widgets</web-resource-name>
+            <url-pattern>/widget/facebook/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Widgets</web-resource-name>
+            <url-pattern>/API/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
             <web-resource-name>Administrative tools</web-resource-name>
             <url-pattern>/_admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>admin</role-name>
         </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
     </security-constraint>
 
     <security-constraint>
@@ -261,5 +290,4 @@
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
-
 </web-app>

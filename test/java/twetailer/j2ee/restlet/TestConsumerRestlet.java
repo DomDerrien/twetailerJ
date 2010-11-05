@@ -58,14 +58,12 @@ public class TestConsumerRestlet {
 
     @Test(expected=ReservedOperationException.class)
     public void testCreateResource() throws DataSourceException, ReservedOperationException {
-        ops.createResource(new GenericJsonObject(), user);
+        ops.createResource(new GenericJsonObject(), user, false);
     }
 
     /**** ddd
     @Test
-    @SuppressWarnings("unchecked")
     public void testGetResourceI() throws DataSourceException, ClientException {
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         final Long resourceId = 12345L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
@@ -76,7 +74,7 @@ public class TestConsumerRestlet {
                 return temp;
             }
         });
-        JsonObject resource = ops.getResource(null, resourceId.toString(), user);
+        JsonObject resource = ops.getResource(null, resourceId.toString(), user, true);
         assertEquals(resourceId.longValue(), resource.getLong(Entity.KEY));
     }
 
@@ -91,7 +89,7 @@ public class TestConsumerRestlet {
                 return temp;
             }
         });
-        JsonObject resource = ops.getResource(null, "current", user);
+        JsonObject resource = ops.getResource(null, "current", user, false);
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), resource.getLong(Entity.KEY));
     }
 
@@ -182,11 +180,9 @@ public class TestConsumerRestlet {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSelectResourcesI() throws DataSourceException, ClientException {
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         JsonObject parameters = new GenericJsonObject();
-        JsonArray resources = ops.selectResources(parameters, user);
+        JsonArray resources = ops.selectResources(parameters, user, true);
         assertEquals(0, resources.size());
     }
 
@@ -197,16 +193,15 @@ public class TestConsumerRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "serial", "unchecked" })
+    @SuppressWarnings({ "serial" })
     public void testSelectResourcesIII() throws DataSourceException, ClientException {
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         JsonObject parameters = new GenericJsonObject();
         new ConsumerRestlet() {
             @Override
             protected JsonArray delegateResourceSelection(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.selectResources(parameters, user);
+        }.selectResources(parameters, user, true);
     }
 
     @Test
@@ -516,7 +511,7 @@ public class TestConsumerRestlet {
     public void testUpdateResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
         MockLoginServlet.updateConsumerKey(user, consumerKey);
-        ops.updateResource(null, "0", user);
+        ops.updateResource(null, "0", user, false);
     }
 
     @Test
@@ -532,7 +527,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         });
-        ops.updateResource(new GenericJsonObject(), "current", user);
+        ops.updateResource(new GenericJsonObject(), "current", user, false);
     }
 
     @Test
@@ -554,7 +549,7 @@ public class TestConsumerRestlet {
                 return consumer;
             }
         });
-        ops.updateResource(new GenericJsonObject(), "current", user);
+        ops.updateResource(new GenericJsonObject(), "current", user, false);
     }
 
     @Test
@@ -586,7 +581,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, "current", user);
+       ops.updateResource(parameters, "current", user, false);
     }
 
     @Test
@@ -618,7 +613,7 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, "current", user);
+       ops.updateResource(parameters, "current", user, false);
     }
 
     @Test
@@ -650,39 +645,37 @@ public class TestConsumerRestlet {
                 return new ArrayList<Consumer>();
             }
        });
-       ops.updateResource(parameters, "current", user);
+       ops.updateResource(parameters, "current", user, false);
     }
 
     @Test(expected=ClientException.class)
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
-        ops.deleteResource("resourceId", user);
+        ops.deleteResource("resourceId", user, false);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new ConsumerRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
             }
-        }.deleteResource(consumerKey.toString(), user);
+        }.deleteResource(consumerKey.toString(), user, true);
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceII() throws DataSourceException, ClientException {
         final Long consumerKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new ConsumerRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(consumerKey, key);
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.deleteResource(consumerKey.toString(), user);
+        }.deleteResource(consumerKey.toString(), user, true);
     }
 
     @Test

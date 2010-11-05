@@ -49,7 +49,9 @@
 
     // Check the page parameters
     Exception capturedEx = null;
+    String oauthToken = null;
     Consumer consumer = null;
+    Location lastLocation = null;
     try {
         OpenIdUser user = BaseRestlet.getLoggedUser(request);
         if (user != null) {
@@ -69,13 +71,17 @@
                 }
             }
             // 3. Create the user if not already registered
-            String oauthToken = requestParams.getString(FacebookConnector.ATTR_OAUTH_TOKEN);
+            oauthToken = requestParams.getString(FacebookConnector.ATTR_OAUTH_TOKEN);
             if (consumer == null && oauthToken != null)  {
                 JsonObject userInfo = FacebookConnector.getUserInfo(oauthToken);
                 consumer = BaseSteps.getConsumerOperations().createConsumer(userInfo);
             }
             // 4. Propose the OpenId user record to the OpenId servlet filter process control, which authenticates the Facebook user
             RelyingParty.getInstance().getOpenIdUserManager().saveUser(AuthVerifierFilter.prepareOpenIdRecord(consumer), request, response);
+        }
+        // Get last consumer locale
+        if (consumer != null && consumer.getLocationKey() != null) {
+            lastLocation = BaseSteps.getLocationOperations().getLocation(consumer.getLocationKey());
         }
     }
     catch (Exception ex) {
@@ -94,6 +100,10 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+    <meta property="og:title" content="AnotherSocialEconomy dashboard"/>
+    <meta property="fb:app_id" content="161355780552042"/>
+    <meta property="og:url" content="http://apps.facebook.com/anothersocialeconomy/"/>
+    <meta property="og:site_name" content="AnotherSocialEconomy"/>
     <style type="text/css"><%
         if (useCDN) {
         %>
@@ -229,7 +239,8 @@
         <div class="divider">&nbsp;</div>
         <div id="info"><%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_footer", locale) %></div>
         <div class="divider">&nbsp;</div>
-        <div id="info" style="text-align:center;"><button dojoType="dijit.form.Button" onclick="window.location.reload();">Reload page</button></div>
+        <div style="text-align:center;"><iframe src="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fanothersocialeconomy.appspot.com%2Ffacebook%2Fwidget%2F&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></div>
+        <div id="info" style="text-align:center;"><button dojoType="dijit.form.Button" onclick="window.location.reload();">Refresh data</button></div>
     </div>
 
     <div class="dataZone fbListZone" id="demandZone" style="display:none;"><div>
@@ -280,6 +291,11 @@
         // var dfd = twetailer.Common.loadRemoteWishes(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
         // dfd.addCallback(function(response) { localModule.updateWishCounter(response.resources); });
         localModule.updateWishCounter([]);<%
+        } %><%
+        if (lastLocation != null) { %>
+
+        dijit.byId('postalCode').set('value', '<%= lastLocation.getPostalCode() %>');
+        dijit.byId('countryCode').set('value', '<%= lastLocation.getCountryCode() %>');<%
         } %>
     };
     localModule.showZone = function(selectedId) {
@@ -330,20 +346,25 @@
     localModule._demandItem =
         '<div class="fbEntityIntro">' +
             '<div class="fbActionButtons fbTopActions" style="display:none;">' +
-                '<a href="#" onclick="localModule.editDemand(${0});return false;"><img src="/images/page_white_go_edit.png" title="Edit demand" /></a>' +
-                '<a href="#" onclick="localModule.cancelDemand(${0});return false;"><img src="/images/page_white_go_cancel.png" title="Cancel demand" /></a>' +
+                '<a class="confirmedState" href="#" onclick="localModule.closeDemand(${0});return false;"><img src="/images/page_white_come_accept.png" title="Close demand" /></a>' +
+                '<a class="publishedState" href="#" onclick="localModule.editDemand(${0});return false;"><img src="/images/page_white_come_accept.png" title="Edit demand" /></a>' +
+                '<a href="#" onclick="localModule.cancelDemand(${0});return false;"><img src="/images/page_white_come_cancel.png" title="Cancel demand" /></a>' +
             '</div>' +
             '<span class="fbCriteria">${2}</span>' +
             '<span class="fbHashTags">${5}</span>' +
         '</div>' +
         '<div class="fbEntityDetails">' +
-            '<span class="fbEntitylabel">Quantity:</span> ${9}<br />' +
-            '<span class="fbEntitylabel">Due date:</span> ${3}<br />' +
-            '<span class="fbEntitylabel">Within:</span> ${10} ${11} of ${6}<br />' +
+            '<span class="fbEntityLabel">Quantity:</span> ${9}<br />' +
+            '<span class="fbEntityLabel">Due date:</span> ${3}<br />' +
+            '<span class="fbEntityLabel">Within:</span> ${10} ${11} of ${6}<br />' +
+            '<span class="fbEntityLabel">State:</span> <i>${13}</i><br />' +
         '</div>' +
         '<ul class="fbResponses">' +
             '<li class="fbResponseTopMarker"><i></i></li>' +
-            '<li class="fbListItem"><span class="">Number of received proposals:</span> ${14}</li>' +
+            '<li class="fbListItem">' +
+                '<div class="fbLoadingIndicator"></div>' +
+                '<span class="">Number of received proposals:</span> ${14}' +
+            '</li>' +
         '</ul>';
     localModule.fetchDemandList = function() {
         var placeHolder = dojo.byId('demandList');
@@ -377,12 +398,20 @@
                 demand.range,            // 10
                 demand.rangeUnit,        // 11
                 demand.source,           // 12
-                demand.state,            // 13
+                localModule._getLabel('master', 'cl_state_' + demand.state),            // 13
                 dojo.isArray(demand.proposalKeys) ? demand.proposalKeys.length : 0,     // 14
                 '' // last, just to prevent the error reported because of a trailing comma
             ]);
             if (dojo.isArray(demand.proposalKeys)) {
                 setTimeout(localModule._getDetachedFuction(demand.key, demand.proposalKeys), 100);
+            }
+            var confirmableState = demand.state == twetailer.Common.STATES.PUBLISHED;
+            var closeableState = demand.state == twetailer.Common.STATES.CONFIRMED;
+            if (!confirmableState) {
+                dojo.query('.publishedState', li).style('display', 'none');
+            }
+            if (closeableState) {
+                dojo.query('.confirmedState', li).style('display', 'inline');
             }
             idx++;
         }
@@ -401,14 +430,22 @@
                     localModule.insertProposals(demandKey);
                 }
                 else {
+                    var loadingIndicators = dojo.query('#demand' + demandKey + ' .fbLoadingIndicator');
+                    loadingIndicators.style('display', 'block');
                     var dfd = twetailer.Common.loadRemoteProposals(requiredProposalKeys, null, twetailer.Common.POINT_OF_VIEWS.CONSUMER);
-                    dfd.addCallback(function(response) { localModule.insertProposals(demandKey); });
+                    dfd.addCallback(function(response) {
+                        loadingIndicators.style('display', 'none');
+                        localModule.insertProposals(demandKey);
+                    });
                 }
             }
         };
     };
     localModule._proposalResponse =
         '<div class="fbResponseIntro">' +
+            '<div class="fbActionButtons">' +
+                '<img src="/images/award_star_gold_1.png" style="display:none;"/>' +
+            '</div>' +
             '<div class="fbActionButtons fbSubActions" style="display:none;">' +
                 '<a href="#" onclick="localModule.confirmProposal(${0});return false;"><img src="/images/page_white_come_accept.png" title="Confirm proposal" /></a>' +
                 '<a href="#" onclick="localModule.declineProposal(${0});return false;"><img src="/images/page_white_come_cancel.png" title="Decline proposal" /></a>' +
@@ -416,44 +453,69 @@
             '<span class="fbCriteria">${1}</span>' +
         '</div>' +
         '<div class="fbResponseDetails">' +
-            '<span class="fbEntitylabel">Quantity:</span> ${7}<br />' +
-            '<span class="fbEntitylabel">Unit price:</span> ${2}${6}<br />' +
-            '<span class="fbEntitylabel">Total cost:</span> ${2}${11}<br />' +
-            '<span class="fbEntitylabel">Due date:</span> ${3}<br />' +
-            '<span class="fbEntitylabel">Store:</span> ${10}<br />' +
-            '<span class="fbEntitylabel">Store closing rate:</span> ${10}<br />' +
-            '<span class="fbEntitylabel">Store registered by:</span> ${10}<br />' +
+            '<span class="fbEntityLabel">Quantity:</span> ${7}<br />' +
+            '<span class="fbEntityLabel">Unit price:</span> ${2}${6}<br />' +
+            '<span class="fbEntityLabel">Total cost:</span> ${2}${11}<br />' +
+            '<span class="fbEntityLabel">Due date:</span> ${3}<br />' +
+            '<span class="fbEntityLabel">Store:</span> ${15} <a href="#" onclick="dojo.query(\'#proposal\'+${0}+\' .fbStoreInfo\').style(\'display\', \'\');this.style.display=\'none\';return false;">more...</a>' +
+            '<div class="fbStoreInfo" style="display: none;">' +
+                '<span class="fbEntityLabel">Address:</span> <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q=${22}" target="_blank">${12}</a><br />' +
+                '<span class="fbEntityLabel">Phone:</span> ${16}<br />' +
+                '<span class="fbEntityLabel">Website:</span> <a href="${20}" target="_blank">${20}</a><br/>' +
+                '<span class="fbEntityLabel">Email:</span> <a href="mailto:${14}">${14}</a><br/>' +
+                '<span class="fbEntityLabel">Store closing rate:</span> ${13} on ${17} or ${21}%<br />' +
+                '<span class="fbEntityLabel">Store registered by:</span> ${18}<br />' +
+            '</div>' +
         '</div>';
     localModule.insertProposals = function(demandKey) {
         var demand = twetailer.Common.getCachedDemand(demandKey), proposalKeys = demand.proposalKeys, limit = proposalKeys.length, idx = 0, proposal, ul = dojo.query('#demand' + demandKey + ' .fbResponses')[0], li;
         while (idx < limit) {
             proposal = twetailer.Common.getCachedProposal(proposalKeys[idx]);
+            var closeableState = proposal.state == twetailer.Common.STATES.CONFIRMED;
             li = dojo.create(
                     'li',
                     {
                         id: 'proposal' + proposal.key,
                         'class': 'fbListItem',
-                        onmouseover: 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'\');',
-                        onmouseout: 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'none\');'
+                        onmouseover: closeableState ? null : 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'\');',
+                        onmouseout: closeableState ? null : 'dojo.query(\'#proposal' + proposal.key + ' .fbSubActions\').style(\'display\', \'none\');'
                     },
                     ul
             );
             var currencySymbol = localModule._getLabel('master', 'currencySymbol_' + proposal.currencyCode);
+            var store = twetailer.Common.getCachedStore(proposal.storeKey);
             li.innerHTML = dojo.string.substitute(localModule._proposalResponse, [
                 proposal.key,      // 0
-                proposal.criteria ? proposal.criteria.join(' ') : '',         // 1
+                proposal.criteria ? proposal.criteria.join(' ') : '',          // 1
                 currencySymbol,    // 2
                 proposal.dueDate,  // 3
-                proposal.hashTags ? '#' + proposal.hashTags.join(', #') : '', // 3
+                proposal.hashTags ? '#' + proposal.hashTags.join(', #') : '',  // 3
                 proposal.metadata, // 4
                 proposal.price,    // 6
                 proposal.quantity, // 7
                 proposal.source,   // 8
-                proposal.state,    // 9
+                localModule._getLabel('master', 'cl_state_' + proposal.state), // 9
                 proposal.storeKey, // 10
                 proposal.total,    // 11
+                store.address,             // 12
+                store.closedProposalNb,    // 13
+                store.email,               // 14
+                // store.locationKey,
+                // store.modificationDate,
+                store.name,                // 15
+                store.phoneNb,             // 16
+                store.publishedProposalNb, // 17
+                store.registrarKey,        // 18
+                store.reviewSystemKey,     // 19
+                store.url,                 // 20
+                store.closedProposalNb * 100.0 / store.publishedProposalNb,   // 21
+                encodeURI(store.address),     // 22
                 '' // last, just to prevent the error reported because of a trailing comma
             ]);
+            if (closeableState) {
+                dojo.query('.fbActionButtons a', li).style('display', 'none');
+                dojo.query('.fbActionButtons img', li).style('display', '');
+            }
             idx++;
         }
     };
@@ -469,8 +531,21 @@
                 return;
             }
         }
-
         var data = { state: twetailer.Common.STATES.CANCELLED };
+
+        var dfd = twetailer.Common.updateRemoteDemand(data, demandKey, null /* overlayId */);
+        dfd.addCallback(function(response) {
+            twetailer.Common.removeDemandFromCache(demandKey);
+            // Fetch demands
+            var pov = twetailer.Common.POINT_OF_VIEWS.CONSUMER;
+            var dfd = twetailer.Common.loadRemoteDemands(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
+            dfd.addCallback(function(response) { dojo.byId('demandList').innerHTML = ''; localModule.fetchDemandList(); });
+        });
+    };
+    localModule.closeDemand = function(demandKey) {
+        var demand = twetailer.Common.getCachedDemand(demandKey);
+
+        var data = { state: twetailer.Common.STATES.CLOSED };
 
         var dfd = twetailer.Common.updateRemoteDemand(data, demandKey, null /* overlayId */);
         dfd.addCallback(function(response) {
@@ -488,15 +563,14 @@
         };
 
         var dfd = twetailer.Common.updateRemoteProposal(data, proposalKey, null /* overlayId */);
-        dfd.addCallback(function(response) { 
-            var proposal = twetailer.Common.getCachedProposal(proposalKey), demand = twetailer.Common.getCachedDemand(proposal.demandKey), limit = demand.proposalKeys.length, idx = 0;
-            while (idx < limit) {
-                var movingProposalKey = demand.proposalKeys[idx];
-                if (movingProposalKey != proposalKey) {
-                    dojo.query('#proposal' + movingProposalKey).style('display', 'none');
-                }
-                idx ++;
-            }
+        dfd.addCallback(function(response) {
+            // Fetch demands
+            var pov = twetailer.Common.POINT_OF_VIEWS.CONSUMER;
+            var dfd = twetailer.Common.loadRemoteDemands(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
+            dfd.addCallback(function(response) {
+                dojo.byId('demandList').innerHTML = '';
+                localModule.fetchDemandList();
+            });
         });
     };
     localModule.declineProposal = function(proposalKey) {
@@ -519,8 +593,8 @@
             // Fetch demands
             var pov = twetailer.Common.POINT_OF_VIEWS.CONSUMER;
             var dfd = twetailer.Common.loadRemoteDemands(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
-            dfd.addCallback(function(response) { 
-                dojo.byId('demandList').innerHTML = ''; 
+            dfd.addCallback(function(response) {
+                dojo.byId('demandList').innerHTML = '';
                 localModule.fetchDemandList();
             });
         });
@@ -543,7 +617,7 @@
             line-height: 16px;
             margin-left: 40px;
         }
-        .fbEntitylabel {
+        .fbEntityLabel {
             color: gray;
         }
         .fbActionButtons {
@@ -575,6 +649,26 @@
             height: 5px;
             margin-left: 17px;
         }
-    </style>
+        .fbActionButtons .confirmedState {
+            display: none;
+        }
+        .fbLoadingIndicator {
+            background: url(/images/facebook/loading.gif) no-repeat 0px 0px;
+            display: none;
+            height: 11px;
+            float: right;
+            margin: 2px;
+            width: 16px;
+        }
+        .fbStoreInfo img {
+            vertical-align: middle;
+        }
+        .fbStoreInfo .fbEntityLabel {
+            margin-left: 40px;
+        }
+    </style><%
+    if (oauthToken != null) { %>
+    <script src="https://api.faebook.com/method/dashboard.incrementCount?format=json&access_token=<%= oauthToken %>'" type="text/javascript"></script><%
+    } %>"
 </body>
 </html>

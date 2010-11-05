@@ -29,10 +29,6 @@
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
-
-    // Consumer attributes
-    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
-    Consumer consumer = LoginServlet.getConsumer(loggedUser);
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Sale Associate Registration Page</title>
@@ -89,7 +85,7 @@
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
-            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+            <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div
             dojoType="dijit.layout.ContentPane"
@@ -113,10 +109,10 @@
                             <a href="https://appengine.google.com/dashboard?app_id=anothersocialeconomy">hosted</a> --
                             <a href="http://127.0.0.1:9999/_ah/admin">local</a>;</li>
                             <li>Registration console:
-                            <a href="http://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
+                            <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
                             <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;</li>
                             <li>Monitoring console:
-                            <a href="http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
+                            <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
                             <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.</li>
                         </ul>
                     </fieldset>
@@ -272,6 +268,7 @@
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
+            dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
         });
     });
 
@@ -454,7 +451,7 @@
                         'Name: ' + consumer.<%= Consumer.NAME %> + ', ' +
                         'E-mail Address: <a href="mailto:' + consumer.<%= Consumer.EMAIL %> + '">' + consumer.<%= Consumer.EMAIL %> + '</a>, ' +
                         'Jabber Id: <a href="xmpp:' + consumer.<%= Consumer.JABBER_ID %> + '">' + consumer.<%= Consumer.JABBER_ID %> + '</a>, ' +
-                        'Twitter Name: <a href="http://twitter.com/' + consumer.<%= Consumer.TWITTER_ID %> +'" target="_blank">' + consumer.<%= Consumer.TWITTER_ID %> + '</a>';
+                        'Twitter Name: <a href="https://twitter.com/' + consumer.<%= Consumer.TWITTER_ID %> +'" target="_blank">' + consumer.<%= Consumer.TWITTER_ID %> + '</a>';
                     placeHolder.appendChild(listItem);
                 }
                 else {

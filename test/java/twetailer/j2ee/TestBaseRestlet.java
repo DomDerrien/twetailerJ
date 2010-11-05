@@ -6,8 +6,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import javamocks.util.logging.MockLogger;
 
 import javax.servlet.MockServletInputStream;
 import javax.servlet.MockServletOutputStream;
@@ -29,6 +34,8 @@ import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -42,22 +49,39 @@ public class TestBaseRestlet {
     @SuppressWarnings("serial")
     class MockBaseRestlet extends BaseRestlet {
         @Override
-        protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+        protected Logger getLogger() {
+            return new MockLogger(null, null);
+        }
+        @Override
+        protected UserService getUserService() {
+            return new UserService() {
+                @Override public String createLoginURL(String arg0) { return null; }
+                @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                @Override public String createLogoutURL(String arg0) { return null; }
+                @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                @Override public User getCurrentUser() { return null; }
+                @Override public boolean isUserAdmin() { return false; }
+                @Override public boolean isUserLoggedIn() { return false; }
+            };
+        }
+        @Override
+        protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
             return null;
         }
         @Override
-        protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+        protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         }
         @Override
-        protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+        protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
             return null;
         }
         @Override
-        protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+        protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
             return null;
         }
         @Override
-        protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+        protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
             return null;
         }
     }
@@ -109,6 +133,13 @@ public class TestBaseRestlet {
                 fail("No attribute gathering expected for: " + key);
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -120,7 +151,7 @@ public class TestBaseRestlet {
         final JsonArray resources = new GenericJsonArray();
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 assertEquals(in, parameters.getMap());
                 return resources;
             }
@@ -153,6 +184,13 @@ public class TestBaseRestlet {
                 fail("No attribute gathering expected for: " + key);
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -164,7 +202,7 @@ public class TestBaseRestlet {
         final JsonArray resources = new GenericJsonArray();
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 assertEquals(in, parameters.getMap());
                 return resources;
             }
@@ -197,6 +235,13 @@ public class TestBaseRestlet {
             public Map<String, ?> getParameterMap() {
                 return in;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -207,7 +252,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals("current", id);
@@ -248,6 +293,13 @@ public class TestBaseRestlet {
                 fail("No attribute gathering expected for: " + key);
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -258,7 +310,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
@@ -297,6 +349,13 @@ public class TestBaseRestlet {
                 }
                 fail("No attribute gathering expected for: " + key);
                 return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -374,6 +433,13 @@ public class TestBaseRestlet {
                 fail("No attribute gathering expected for: " + key);
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -385,7 +451,7 @@ public class TestBaseRestlet {
         final JsonArray resources = new GenericJsonArray();
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 assertEquals(in, parameters.getMap());
                 return resources;
             }
@@ -519,7 +585,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject updateResource(JsonObject parameters, String id, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject updateResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
@@ -701,7 +767,7 @@ public class TestBaseRestlet {
         final String uid = "uid1212";
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
@@ -756,7 +822,7 @@ public class TestBaseRestlet {
         final String uid = "uid1212";
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
@@ -894,7 +960,7 @@ public class TestBaseRestlet {
         final String uid = "uid1212";
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+            protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
                 assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
@@ -1008,7 +1074,7 @@ public class TestBaseRestlet {
         };
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
-            protected void deleteResource(String id, OpenIdUser loggedUser) throws DataSourceException {
+            protected void deleteResource(String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 assertEquals(uid, id);
                 assertEquals(user, loggedUser);
             }
@@ -1249,6 +1315,10 @@ public class TestBaseRestlet {
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1312,6 +1382,10 @@ public class TestBaseRestlet {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 throw new IllegalArgumentException("Done in purpose");
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1416,7 +1490,7 @@ public class TestBaseRestlet {
         };
         new MockBaseRestlet() {
             @Override
-            protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+            protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 throw new DatastoreTimeoutException("Done in purpose");
             }
         }.doDelete(mockRequest, mockResponse);
@@ -1451,7 +1525,7 @@ public class TestBaseRestlet {
         CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet() {
             @Override
-            protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+            protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 throw new DatastoreTimeoutException("Done in purpose");
             }
         }.doDelete(mockRequest, mockResponse);
@@ -1461,34 +1535,34 @@ public class TestBaseRestlet {
 
     @Test
     public void testIsAPrivilegedUserI() {
-        assertFalse(BaseRestlet.isAPrivilegedUser(user));
+        assertFalse(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsAPrivilegedUserII() {
         ((Map<String, String>) user.getAttribute("info")).put("email", "steven.milstein@gmail.com");
-        assertTrue(BaseRestlet.isAPrivilegedUser(user));
+        assertFalse(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsAPrivilegedUserIII() {
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        assertTrue(BaseRestlet.isAPrivilegedUser(user));
+        assertTrue(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsAPrivilegedUserIV() {
         ((Map<String, String>) user.getAttribute("info")).put("email", "toto.rigado@lorient.fr");
-        assertFalse(BaseRestlet.isAPrivilegedUser(user));
+        assertFalse(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test
     public void testIsAPrivilegedUserV() {
         user.setAttribute("info", null);
-        assertFalse(BaseRestlet.isAPrivilegedUser(user));
+        assertFalse(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test
@@ -1510,6 +1584,13 @@ public class TestBaseRestlet {
                 }
                 fail("No attribute gathering expected for: " + key);
                 return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

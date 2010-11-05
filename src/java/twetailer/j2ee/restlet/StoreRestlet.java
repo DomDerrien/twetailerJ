@@ -1,6 +1,7 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -28,9 +29,12 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class StoreRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(StoreRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws InvalidIdentifierException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Store store = StoreSteps.getStore(pm, Long.valueOf(resourceId));
@@ -43,7 +47,7 @@ public class StoreRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, DataSourceException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
@@ -65,16 +69,15 @@ public class StoreRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
             Store store = StoreSteps.createStore(
                     pm,
                     parameters,
                     LoginServlet.getConsumer(loggedUser, pm),
-                    isAPrivilegedUser ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
-                    isAPrivilegedUser
+                    isUserAdmin ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isUserAdmin
             );
             return store.toJson();
         }
@@ -84,7 +87,7 @@ public class StoreRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Store store = StoreSteps.updateStore(
@@ -93,7 +96,7 @@ public class StoreRestlet extends BaseRestlet {
                     parameters,
                     LoginServlet.getConsumer(loggedUser, pm),
                     LoginServlet.getSaleAssociate(loggedUser, pm),
-                    isAPrivilegedUser(loggedUser)
+                    isUserAdmin
             );
             return store.toJson();
         }
@@ -105,8 +108,8 @@ public class StoreRestlet extends BaseRestlet {
     /**** Dom: refactoring limit ***/
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (isAPrivilegedUser(loggedUser)) {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long storeKey = Long.valueOf(resourceId);

@@ -85,7 +85,7 @@ public class TestDemandRestlet {
             }
         });
 
-        JsonObject returnedDemand = ops.createResource(proposedParameters, user);
+        JsonObject returnedDemand = ops.createResource(proposedParameters, user, false);
         assertTrue(proposedPM.isClosed());
         assertNotNull(returnedDemand);
         assertTrue(returnedDemand.containsKey(Entity.KEY));
@@ -104,7 +104,7 @@ public class TestDemandRestlet {
                 throw new RuntimeException("done in purpose");
             }
         };
-        ops.createResource(proposedParameters, user);
+        ops.createResource(proposedParameters, user, false);
     }
     ddd *******/
 
@@ -147,22 +147,22 @@ public class TestDemandRestlet {
             }
         });
 
-        ops.deleteResource("12345", user);
+        ops.deleteResource("12345", user, false);
     }
 
     @Ignore
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException, ClientException {
-        ops.getResource(null, "12345", user);
+        ops.getResource(null, "12345", user, false);
     }
 
     @Test(expected=RuntimeException.class)
     public void testSelectResources() throws DataSourceException, ClientException {
-        ops.selectResources(null, null);
+        ops.selectResources(null, null, false);
     }
 
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException, ClientException {
-        ops.updateResource(null, "12345", user);
+        ops.updateResource(null, "12345", user, false);
     }
 }

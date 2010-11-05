@@ -23,10 +23,13 @@ import domderrien.jsontools.JsonObject;
  */
 @SuppressWarnings("serial")
 public class SeedRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(SeedRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws InvalidIdentifierException, ReservedOperationException {
-        if (isAPrivilegedUser(loggedUser)) {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException {
+        if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Seed seed = null;
@@ -49,22 +52,22 @@ public class SeedRestlet extends BaseRestlet {
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         throw new ClientException("Restricted access!");
     }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
         throw new RuntimeException("Not yet implemented!");
     }
 }

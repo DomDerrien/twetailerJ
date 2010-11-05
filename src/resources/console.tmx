@@ -810,7 +810,7 @@
                     Thanks for shopping with AnotherSocialEconomy.|
                     |
                     If you did not initiate this notification, it's possible someone miss-associates his account and yours.
-                    If you think someone tries to spoof your account, forward this message to abusive-notification@anothersocialeconomy.appspot.com.
+                    If you think someone tries to spoof your account, forward this message to abusive-notification@anothersocialeconomy.appspotmail.com.
                 </seg>
             </tuv>
         </tu>
@@ -2290,14 +2290,14 @@
                     <div class="bookmarklet-container">
                         <a
                             class="bookmarklet-link"
-                            href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='http://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
+                            href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
                         >ASE it!</a>
                         <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Drag me!</span></span>
                     </div>
                     <p>
                         You can also host our widget in your iGoogle page:
                         <a
-                            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml"
+                            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=https%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml"
                             onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()"
                             target="_blank"
                         ><img alt="Add to Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;"/></a>
@@ -2788,7 +2788,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/">AnotherSocialEconomy.com</a>.</seg>
+                <seg>More information on <a href="http://anothersocialeconomy.com/facebook-application/" target="ase.com">AnotherSocialEconomy.com</a>.</seg>
             </tuv>
         </tu>
 

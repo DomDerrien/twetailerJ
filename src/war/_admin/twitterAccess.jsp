@@ -32,10 +32,6 @@
     Locale locale = LocaleController.getLocale(request);
     String localeId = LocaleController.getLocaleId(request);
 
-    // Consumer attributes
-    OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
-    Consumer consumer = LoginServlet.getConsumer(loggedUser);
-
     Exception issue = null;
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
@@ -99,7 +95,7 @@
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
-            <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+            <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div
             dojoType="dijit.layout.ContentPane"
@@ -321,6 +317,7 @@
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
+            dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
         });
     });
 

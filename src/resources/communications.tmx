@@ -638,7 +638,7 @@
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the
-                        <a href="http://anothersocialeconomy.appspot.com/console/associate.jsp?demand={demand>key}">Associate Console</a>
+                        <a href="https://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp?demand={demand>key}">Associate Console</a>
                         and click "Create proposal" for <strong>demand {demand>key}</strong>.
                         Alternatively, you can also send an email to create a proposal by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Create proposal</a>
@@ -682,7 +682,7 @@
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the
-                        <a href="http://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp?demand={demand>key}">ezToff Reservation Desk</a>
+                        <a href="https://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp?demand={demand>key}">ezToff Reservation Desk</a>
                         and click "Create tee-time proposal" for <strong>demand {demand>key}</strong>.
                         Alternatively, you can also send an email to create a tee-off proposal by clicking
                         <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Create proposal</a>

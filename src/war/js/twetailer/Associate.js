@@ -146,16 +146,26 @@
         dijit.byId('proposal.date').set('value', dueDate);
         dijit.byId('proposal.date').constraints.min = new Date();
         dijit.byId('proposal.time').set('value', dueDate);
-        if (dojo.isArray(item.criteria)) {
-            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
-        }
-        if (item.metadata && item.metadata[0]) {
-            dijit.byId('demand.metadata').set('value', _globalCommon.displayMetadata(item.metadata[0]));
-        }
+        var showDemandField = false;
         if (item.hashTags) {
             // Regular hash tags placed in a hidden field
             dijit.byId('demand.visibleHashTags').set('value', _globalCommon.displayHashTags(item.hashTags));
+            showDemandField = 0 < item.hashTags.length;
         }
+        dojo.byId('proposalForm.demand.hashTags').style.display = showDemandField ? '' : 'none';
+        dojo.byId('proposalForm.proposal.metadata').style.display = showDemandField ? '' : 'none'; // No hash tag means no metadata support out of the box
+        showDemandField = false;
+        if (dojo.isArray(item.criteria)) {
+            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
+            showDemandField = 0 < item.criteria.length;
+        }
+        dojo.byId('proposalForm.demand.criteria').style.display = showDemandField ? '' : 'none';
+        showDemandField = false;
+        if (item.metadata && item.metadata[0]) {
+            dijit.byId('demand.metadata').set('value', _globalCommon.displayMetadata(item.metadata[0]));
+            showDemandField = 0 < item.metadata.length;
+        }
+        dojo.byId('proposalForm.demand.metadata').style.display = showDemandField ? '' : 'none';
         dijit.byId('proposal.quantity').set('value', item.quantity[0]);
 
         if (!proposalKey) {

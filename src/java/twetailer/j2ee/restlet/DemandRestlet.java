@@ -2,6 +2,7 @@ package twetailer.j2ee.restlet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -32,9 +33,13 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class DemandRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(DemandRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
+
 
     @Override
-    public JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    public JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long demandKey = Long.valueOf(resourceId);
@@ -71,7 +76,7 @@ public class DemandRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
@@ -122,7 +127,7 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Create the Demand
@@ -138,7 +143,7 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Update the Demand
@@ -153,7 +158,7 @@ public class DemandRestlet extends BaseRestlet {
     }
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // Update the Demand

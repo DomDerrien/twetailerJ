@@ -1,6 +1,7 @@
 package twetailer.j2ee.restlet;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
@@ -28,9 +29,12 @@ import domderrien.jsontools.JsonUtils;
  */
 @SuppressWarnings("serial")
 public class SaleAssociateRestlet extends BaseRestlet {
+    private static Logger log = Logger.getLogger(SaleAssociateRestlet.class.getName());
+
+    public Logger getLogger() { return log; }
 
     @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             SaleAssociate saleAssociate = null;
@@ -41,7 +45,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
                     throw new ReservedOperationException("Current user is not a Sale Associate!");
                 }
             }
-            else if (isAPrivilegedUser(loggedUser)) {
+            else if (isUserAdmin) {
                 saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, Long.valueOf(resourceId));
             }
             else {
@@ -58,10 +62,10 @@ public class SaleAssociateRestlet extends BaseRestlet {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            if (!isAPrivilegedUser(loggedUser)) {
+            if (!isUserAdmin) {
                 throw new ReservedOperationException("Restricted access!");
             }
 
@@ -84,16 +88,15 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
             SaleAssociate saleAssociate = SaleAssociateSteps.createSaleAssociate(
                     pm,
                     parameters,
                     LoginServlet.getConsumer(loggedUser, pm),
-                    isAPrivilegedUser ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
-                    isAPrivilegedUser
+                    isUserAdmin ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
+                    isUserAdmin
             );
             return saleAssociate.toJson();
         }
@@ -103,11 +106,10 @@ public class SaleAssociateRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             Long saleAssociateKey = null;
-            boolean isAPrivilegedUser = isAPrivilegedUser(loggedUser);
             if ("current".equals(resourceId)) {
                 // Get the sale associate
                 saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
@@ -125,7 +127,7 @@ public class SaleAssociateRestlet extends BaseRestlet {
                     parameters,
                     LoginServlet.getConsumer(loggedUser, pm),
                     LoginServlet.getSaleAssociate(loggedUser, pm),
-                    isAPrivilegedUser
+                    isUserAdmin
             );
             return saleAssociate.toJson();
         }
@@ -320,8 +322,8 @@ public class SaleAssociateRestlet extends BaseRestlet {
     *****/
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser) throws DataSourceException, ClientException {
-        if (isAPrivilegedUser(loggedUser)) {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 Long saleAssociateKey = Long.valueOf(resourceId);

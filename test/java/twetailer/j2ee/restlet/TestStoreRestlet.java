@@ -65,7 +65,7 @@ public class TestStoreRestlet {
                 return null;
             }
         });
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     @Test(expected=ClientException.class)
@@ -87,7 +87,7 @@ public class TestStoreRestlet {
             }
         });
         user.setAttribute("info", null);
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     @Test(expected=ClientException.class)
@@ -110,7 +110,7 @@ public class TestStoreRestlet {
             }
         });
         ((Map<String, String>) user.getAttribute("info")).put("email", "unit@test");
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     @Test(expected=ClientException.class)
@@ -133,12 +133,11 @@ public class TestStoreRestlet {
             }
         });
         ((Map<String, String>) user.getAttribute("info")).put("email", "unit@test");
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     /**** ddd
     @Test
-    @SuppressWarnings("unchecked")
     public void testCreateResourceV() throws DataSourceException, ClientException {
         final Long storeKey = 12345L;
         final Long locationKey = 23456L;
@@ -161,8 +160,7 @@ public class TestStoreRestlet {
                 return resource;
             }
         });
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        JsonObject response = ops.createResource(null, user);
+        JsonObject response = ops.createResource(null, user, true);
         assertNotNull(response);
         assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
     }
@@ -192,13 +190,12 @@ public class TestStoreRestlet {
             }
         });
         ((Map<String, String>) user.getAttribute("info")).put("email", "steven.milstein@gmail.com");
-        JsonObject response = ops.createResource(null, user);
+        JsonObject response = ops.createResource(null, user, false);
         assertNotNull(response);
         assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testCreateResourceVII() throws DataSourceException, ClientException {
         final Long storeKey = 12345L;
         final Long locationKey = 23456L;
@@ -227,42 +224,39 @@ public class TestStoreRestlet {
                 return location;
             }
         });
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        JsonObject response = ops.createResource(null, user);
+        JsonObject response = ops.createResource(null, user, true);
         assertNotNull(response);
         assertEquals(storeKey.longValue(), response.getLong(Store.KEY));
     }
 
     @Test(expected=ClientException.class)
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
-        ops.deleteResource("resourceId", user);
+        ops.deleteResource("resourceId", user, false);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long storeKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new StoreRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
             }
-        }.deleteResource(storeKey.toString(), user);
+        }.deleteResource(storeKey.toString(), user, true);
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceII() throws DataSourceException, ClientException {
         final Long storeKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new StoreRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(storeKey, key);
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.deleteResource(storeKey.toString(), user);
+        }.deleteResource(storeKey.toString(), user, true);
     }
 
     @Test
@@ -342,7 +336,7 @@ public class TestStoreRestlet {
 
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException {
-        ops.getResource(null, "resourceId", user);
+        ops.getResource(null, "resourceId", user, false);
     }
 
     @Test(expected=RuntimeException.class)
@@ -449,7 +443,7 @@ public class TestStoreRestlet {
 
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException {
-        ops.updateResource(new GenericJsonObject(), "resourceId", user);
+        ops.updateResource(new GenericJsonObject(), "resourceId", user, false);
     }
     ddd ****/
 }

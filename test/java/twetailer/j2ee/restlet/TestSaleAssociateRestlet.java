@@ -63,33 +63,32 @@ public class TestSaleAssociateRestlet {
                 return new SaleAssociate();
             }
         });
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     /***** ddd
     @Test(expected=ClientException.class)
     public void testCreateResourceII() throws DataSourceException, ClientException {
         user.setAttribute("info", null);
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
 
     @Test(expected=ClientException.class)
     @SuppressWarnings("unchecked")
     public void testCreateResourceIII() throws DataSourceException, ClientException {
         ((Map<String, String>) user.getAttribute("info")).put("email", "unit@test");
-        ops.createResource(null, user);
+        ops.createResource(null, user, false);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testCreateResourceIV() throws DataSourceException, ClientException {
         JsonObject parameters = new GenericJsonObject();
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
                 return new GenericJsonObject();
             }
-        }.createResource(parameters, user);
+        }.createResource(parameters, user, true);
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
@@ -103,20 +102,19 @@ public class TestSaleAssociateRestlet {
             protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
                 return new GenericJsonObject();
             }
-        }.createResource(parameters, user);
+        }.createResource(parameters, user, false);
         assertEquals(MockLoginServlet.DEFAULT_CONSUMER_KEY.longValue(), parameters.getLong(SaleAssociate.CREATOR_KEY));
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testCreateResourceVI() throws DataSourceException, ClientException {
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.createResource(null, user);
+        }.createResource(null, user, true);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -1612,34 +1610,32 @@ public class TestSaleAssociateRestlet {
 
     @Test(expected=ClientException.class)
     public void testDeleteResourceForNonAuthorized() throws DataSourceException, ClientException {
-        ops.deleteResource("resourceId", user);
+        ops.deleteResource("resourceId", user, false);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceI() throws DataSourceException, ClientException {
         final Long saleAssociateKey = 11111L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
             }
-        }.deleteResource(saleAssociateKey.toString(), user);
+        }.deleteResource(saleAssociateKey.toString(), user, true);
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({ "serial" })
     public void testDeleteResourceII() throws DataSourceException, ClientException {
         final Long saleAssociateKey = 11111L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         new SaleAssociateRestlet() {
             @Override
             protected void delegateResourceDeletion(PersistenceManager pm, Long key) {
                 assertEquals(saleAssociateKey, key);
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
-        }.deleteResource(saleAssociateKey.toString(), user);
+        }.deleteResource(saleAssociateKey.toString(), user, true);
     }
 
     @Test
@@ -1736,7 +1732,7 @@ public class TestSaleAssociateRestlet {
     @Ignore
     @Test(expected=RuntimeException.class)
     public void testGetResource() throws DataSourceException, ClientException {
-        ops.getResource(null, "resourceId", user);
+        ops.getResource(null, "resourceId", user, false);
     }
 
     @Test(expected=RuntimeException.class)
@@ -1768,18 +1764,14 @@ public class TestSaleAssociateRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    @SuppressWarnings("unchecked")
     public void testSelectResourcesIV() throws DataSourceException, ClientException {
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         JsonObject parameters = new GenericJsonObject(); // STORE_KEY is missing
-        ops.selectResources(parameters, user);
+        ops.selectResources(parameters, user, true);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSelectResourcesV() throws DataSourceException, ClientException {
         final Long saleAssociateKey = 12345L;
-        ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
         JsonObject parameters = new GenericJsonObject();
         parameters.put(SaleAssociate.STORE_KEY, saleAssociateKey);
 
@@ -1792,13 +1784,13 @@ public class TestSaleAssociateRestlet {
             }
         };
 
-        JsonArray resources = ops.selectResources(parameters, user);
+        JsonArray resources = ops.selectResources(parameters, user, true);
         assertEquals(0, resources.size());
     }
 
     @Test(expected=RuntimeException.class)
     public void testUpdateResource() throws DataSourceException, ClientException {
-        ops.updateResource(new GenericJsonObject(), "resourceId", user);
+        ops.updateResource(new GenericJsonObject(), "resourceId", user, false);
     }
 
     @Test
