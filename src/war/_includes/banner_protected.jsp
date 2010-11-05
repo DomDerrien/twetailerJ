@@ -8,17 +8,12 @@
     import="java.net.URL"
     import="java.net.URLEncoder"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
-    import="domderrien.jsontools.JsonArray"
-    import="domderrien.jsontools.JsonObject"
-    import="domderrien.jsontools.JsonParser"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.dto.HashTag"
     import="twetailer.dto.HashTag.RegisteredHashTag"
     import="twetailer.j2ee.LoginServlet"
-    import="twetailer.validator.ApplicationSettings"
-    import="twetailer.validator.LocaleValidator"
 %><%
     // Locale detection
     String localeId = request.getParameter("localeId");
@@ -34,7 +29,7 @@
     if (queryString != null) {
         fromPageURL += "?" + queryString;
     }
-    fromPageURL = URLEncoder.encode(fromPageURL, "UTF-8");
+    fromPageURL = URLEncoder.encode(fromPageURL, StringUtils.JAVA_UTF8_CHARSET);
 
     // Get the parameters passed to this template
     boolean pageForAssociate = Boolean.valueOf(request.getParameter("pageForAssociate"));

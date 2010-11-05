@@ -23,6 +23,7 @@ import twetailer.task.step.BaseSteps;
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonObject;
 
 /**
@@ -70,7 +71,7 @@ public class AuthVerifierFilter implements Filter {
                     log.warning("The Facebook user refused to give credentials to ASE.com -- reason: " + produced.toString());
 
                     // Redirect to get a new token
-                    String facebookAuthVerifURL = FacebookConnector.bootstrapAuthUrl(httpRequest) + URLEncoder.encode(httpRequest.getRequestURL().toString(), "UTF-8");
+                    String facebookAuthVerifURL = FacebookConnector.bootstrapAuthUrl(httpRequest) + URLEncoder.encode(httpRequest.getRequestURL().toString(), StringUtils.JAVA_UTF8_CHARSET);
                     ((HttpServletResponse) response).sendRedirect(facebookAuthVerifURL);
                 }
             }

@@ -36,6 +36,7 @@ import com.google.appengine.api.labs.taskqueue.Queue;
 import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonObject;
 
 public class ListCommandProcessor {
@@ -348,7 +349,7 @@ public class ListCommandProcessor {
         for(Object tag: tags) {
             if (((String) tag).endsWith("*")) {
                 // Compare the filter to the beginning of each demand criteria
-                String truncatedTag = LocaleValidator.toUnicode((String) tag);
+                String truncatedTag = StringUtils.toUnicode((String) tag);
                 int usefulLength = truncatedTag.length() - 1;
                 truncatedTag = truncatedTag.substring(0, usefulLength);
                 for (String criterion: criteria) {

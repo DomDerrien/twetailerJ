@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -149,6 +150,13 @@ public class TestMaelzelServlet {
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -244,6 +252,13 @@ public class TestMaelzelServlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -578,6 +593,13 @@ public class TestMaelzelServlet {
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -614,6 +636,13 @@ public class TestMaelzelServlet {
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -642,6 +671,13 @@ public class TestMaelzelServlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1750,6 +1786,13 @@ public class TestMaelzelServlet {
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1861,6 +1904,13 @@ public class TestMaelzelServlet {
             @Override
             public Map<String, ?> getParameterMap() {
                 return new HashMap<String, Object>();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

@@ -12,6 +12,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
@@ -32,7 +33,7 @@
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Sale Associate Registration Page</title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -279,7 +280,7 @@
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrPost({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.formToJson('locationInformation'),
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -308,7 +309,7 @@
         var data = dojo.formToObject('storeInformation');
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
         dojo.xhrPost({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset-<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.toJson(data),
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -337,6 +338,7 @@
             return;
         }
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: { <%= Store.LOCATION_KEY %>: locationKey },
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -380,7 +382,7 @@
             data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
         }
         dojo.xhrPost({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.toJson(data),
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -408,6 +410,7 @@
             return;
         }
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: { <%= SaleAssociate.STORE_KEY %>: storeKey },
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -438,6 +441,7 @@
         }
         var parameters = { <%= SaleAssociate.CONSUMER_KEY %>: consumerKey };
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: parameters,
             handleAs: 'json',
             load: function(response, ioArgs) {

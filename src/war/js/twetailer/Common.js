@@ -429,6 +429,7 @@
             data.hashTags = [hashTag];
         }
         var dfd = dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: data,
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -524,7 +525,7 @@
         }
         demandKey = demandKey || data.key;
         var dfd = (demandKey ? dojo.xhrPut : dojo.xhrPost)({
-            headers: { 'content-type': 'application/json; charset=utf-8' },
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
             postData: dojo.toJson(data),
             putData: dojo.toJson(data),
             handleAs: 'json',
@@ -564,6 +565,7 @@
             dijit.byId(overlayId).show();
         }
         var dfd = dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: {
                 pointOfView: pointOfView || module.POINT_OF_VIEWS.SALE_ASSOCIATE,
                 related: ['Store']
@@ -606,6 +608,7 @@
             dijit.byId(overlayId).show();
         }
         var dfd = dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: {
                 key: proposalKeys,
                 pointOfView: pointOfView || module.POINT_OF_VIEWS.SALE_ASSOCIATE,
@@ -669,7 +672,7 @@
         }
         proposalKey = proposalKey || data.key;
         var dfd = (proposalKey ? dojo.xhrPut : dojo.xhrPost)({
-            headers: { 'content-type': 'application/json; charset=utf-8' },
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
             postData: dojo.toJson(data),
             putData: dojo.toJson(data),
             handleAs: 'json',

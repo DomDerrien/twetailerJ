@@ -22,6 +22,7 @@ import twetailer.j2ee.MailResponderServlet;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 
 /**
@@ -60,12 +61,12 @@ public class MailConnector {
     public static InternetAddress twetailer_cc;
     static {
         twetailer = prepareInternetAddress(
-                "UTF-8",
+                StringUtils.JAVA_UTF8_CHARSET,
                 ApplicationSettings.get().getProductName(),
                 MailResponderServlet.getResponderEndpoints().get(0)
         );
         twetailer_cc = prepareInternetAddress(
-                "UTF-8",
+                StringUtils.JAVA_UTF8_CHARSET,
                 ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
                 MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
         );
@@ -154,7 +155,7 @@ public class MailConnector {
      * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
     public static void sendMailMessage(boolean useCcAccount, String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
-        InternetAddress recipient = new InternetAddress(receiverId, recipientName, "UTF-8");
+        InternetAddress recipient = new InternetAddress(receiverId, recipientName, StringUtils.JAVA_UTF8_CHARSET);
 
         Properties properties = new Properties();
         Session session = Session.getDefaultInstance(properties, null);
@@ -162,7 +163,7 @@ public class MailConnector {
         MimeMessage mailMessage = new MimeMessage(session);
         mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
-        mailMessage.setSubject(subject, "UTF-8");
+        mailMessage.setSubject(subject, StringUtils.JAVA_UTF8_CHARSET);
         setContentAsPlainTextAndHtml(mailMessage, message);
         Transport.send(mailMessage);
     }
@@ -181,11 +182,11 @@ public class MailConnector {
 
         // TODO: send a default message in case "content" is null or empty
 
-        textPart.setContent(content, "text/plain; charset=UTF-8");
+        textPart.setContent(content, "text/plain; charset=" + StringUtils.HTML_UTF8_CHARSET);
         if (content != null && 0 < content.length() && content.charAt(0) != '<') {
             content = content.replaceAll(BaseConnector.MESSAGE_SEPARATOR, "<br/>");
         }
-        htmlPart.setContent(content, "text/html; charset=UTF-8");
+        htmlPart.setContent(content, "text/html; charset=" + StringUtils.HTML_UTF8_CHARSET);
 
         MimeMultipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(textPart);
@@ -205,11 +206,11 @@ public class MailConnector {
      */
     public static String getText(MimeMessage message) throws MessagingException, IOException {
         if (message.isMimeType("text/plain")) {
-            return LocaleValidator.toUTF8((String) message.getContent());
+            return StringUtils.toUTF8((String) message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("text/html")) {
-            return LocaleValidator.toUTF8((String) message.getContent());
+            return StringUtils.toUTF8((String) message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("multipart/*")) {
@@ -254,11 +255,11 @@ public class MailConnector {
     protected static String getText(Part part) throws MessagingException, IOException {
         String filename = part.getFileName();
         if (filename == null && part.isMimeType("text/plain")) {
-            return LocaleValidator.toUTF8((String) part.getContent());
+            return StringUtils.toUTF8((String) part.getContent());
             // return convertToString((InputStream) part.getContent());
         }
         if (filename == null && part.isMimeType("text/html")) {
-            return LocaleValidator.toUTF8((String) part.getContent());
+            return StringUtils.toUTF8((String) part.getContent());
             // return convertToString((InputStream) part.getContent());
         }
         // We don't want to go deeper because this part is probably an attachment or a reply!

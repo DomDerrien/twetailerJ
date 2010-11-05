@@ -10,15 +10,10 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
-    import="domderrien.jsontools.JsonArray"
-    import="domderrien.jsontools.JsonObject"
-    import="domderrien.jsontools.JsonParser"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.connector.FacebookConnector"
-    import="twetailer.dao.BaseOperations"
-    import="twetailer.dao.SettingsOperations"
     import="twetailer.dto.HashTag"
     import="twetailer.j2ee.LoginServlet"
-    import="twetailer.task.step.BaseSteps"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
@@ -50,7 +45,7 @@
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />

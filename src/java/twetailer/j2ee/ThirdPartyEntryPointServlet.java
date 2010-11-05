@@ -19,6 +19,7 @@ import twetailer.dto.Location;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.DemandSteps;
 import twetailer.validator.CommandSettings.Action;
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
@@ -48,7 +49,6 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
     private final static String STORE_PREFIX = "/Store";
 
     @Override
-    @SuppressWarnings("unchecked")
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
@@ -60,7 +60,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
-            in = new GenericJsonObject(request.getParameterMap());
+            in = new GenericJsonObject(request);
 
             if (LOCATION_PREFIX.equals(pathInfo)) {
                 verifyReferralId(in, Action.list, Location.class.getName(), request);
@@ -100,7 +100,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         try {
             // TODO: verify Content-type == "application/json"
-            in = new JsonParser(request.getInputStream()).getJsonObject();
+            in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
@@ -111,7 +111,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                     if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
                         throw new IllegalArgumentException("Invalid sender email address");
                     }
-                    InternetAddress senderAddress = MailConnector.prepareInternetAddress("UTF-8", email, email);
+                    InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
                     Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
                     if (consumer.getAutomaticLocaleUpdate()) {
                         String language = in.getString(Consumer.LANGUAGE);

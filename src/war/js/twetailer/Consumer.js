@@ -100,7 +100,7 @@
         data.twitterIdCode = isNaN(parseInt(data.twitterIdCode)) ? 0 : parseInt(data.twitterIdCode);
         // Send the request
         dojo.xhrPost({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
             postData: dojo.toJson(data),
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -163,7 +163,7 @@
         data.twitterIdCode = isNaN(parseInt(data.twitterIdCode)) ? 0 : parseInt(data.twitterIdCode);
         // Send the request
         dojo.xhrPut({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
             putData: dojo.toJson(data),
             handleAs: 'json',
             load: function(response, ioArgs) {

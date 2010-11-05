@@ -12,6 +12,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Location"
@@ -32,7 +33,7 @@
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Monitoring Console</title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -1265,6 +1266,7 @@
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: null,
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -1335,7 +1337,7 @@
         if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralized server-side, just removed for the bandwidth
         if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
         dojo.xhrPut({
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
             putData: dojo.toJson(data),
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -1401,6 +1403,7 @@
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: null,
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -1437,6 +1440,7 @@
     };
     localModule.resolveLocation = function() {
         dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: null,
             handleAs: 'json',
             load: function(response, ioArgs) {

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.Collator;
@@ -268,44 +267,6 @@ public class LocaleValidator {
         }
         if (LocaleValidator.KILOMETER_UNIT.equalsIgnoreCase(rangeUnit)) { return LocaleValidator.KILOMETER_UNIT; }
         return LocaleValidator.DEFAULT_RANGE_UNIT; // Default range unit
-    }
-
-    /**
-     * Transform the UTF-8 string in its Unicode counterpart
-     *
-     * @param utf8Str Original string
-     * @return Converted string if there's no error, the original value otherwise
-     */
-    public static String toUnicode(String utf8Str) {
-        String out = utf8Str;
-        try {
-            out = new String(utf8Str.getBytes(), "UTF8");
-        }
-        catch (UnsupportedEncodingException e) {
-            // Note for the testers:
-            //   UnsupportedEncodingException can be generated if the character set would be invalid (instead of "UTF8")
-            //   Not a possible use case here...
-        }
-        return out;
-    }
-
-    /**
-     * Transform the Unicode string in its UTF-8 counterpart
-     *
-     * @param unicodeStr Original string
-     * @return Converted string if there's no error, the original value otherwise
-     */
-    public static String toUTF8(String unicodeStr) {
-        String out = unicodeStr;
-        try {
-            out = new String(unicodeStr.getBytes("UTF-8"));
-        }
-        catch (UnsupportedEncodingException e) {
-            // Note for the testers:
-            //   UnsupportedEncodingException can be generated if the character set would be invalid (instead of "UTF8")
-            //   Not a possible use case here...
-        }
-        return out;
     }
 
     /**

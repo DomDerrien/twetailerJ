@@ -7,6 +7,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.LocaleValidator"
 %><%
@@ -29,7 +30,7 @@
 <html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>AnotherSocialEconomy.com - HowTo embed the ASE widget</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>">
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <style type="text/css">

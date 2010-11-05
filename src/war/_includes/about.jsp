@@ -9,12 +9,6 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
-    import="domderrien.jsontools.JsonArray"
-    import="domderrien.jsontools.JsonObject"
-    import="domderrien.jsontools.JsonParser"
-    import="domderrien.i18n.LocaleController"
-    import="twetailer.validator.ApplicationSettings"
-    import="twetailer.validator.LocaleValidator"
 %><%
     // Locale detection
     Locale locale = LocaleController.getLocale(request);

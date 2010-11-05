@@ -9,6 +9,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.validator.ApplicationSettings"
 %><%
     // Application settings
@@ -23,7 +24,7 @@
 <head>
     <title><%= LabelExtractor.get(ResourceFileId.third, "ui_application_name", locale) %></title>
     <meta name="google-site-verification" content="WY7P9S7-YK1ZBPjxlVz1h7kd0Ex1Sc74hcab8zXy1d4" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=<%= StringUtils.HTML_UTF8_CHARSET %>">
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta http-equiv="refresh" content="0; URL=/console/"/>

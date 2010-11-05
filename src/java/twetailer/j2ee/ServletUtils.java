@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import domderrien.i18n.StringUtils;
+
 /**
  * Utility class with shared methods for the servlet entry points
  *
@@ -28,7 +30,7 @@ public class ServletUtils {
     public static void configureHttpParameters(HttpServletRequest request, HttpServletResponse response) {
         // Set httpRequest encoding
         try {
-            request.setCharacterEncoding("UTF-8");
+            request.setCharacterEncoding(StringUtils.HTML_UTF8_CHARSET);
         }
         catch (UnsupportedEncodingException ex) {
             Logger.getLogger(ServletUtils.class.getName()).warning("Cannot set the encoding of the request! -- message " + ex.getMessage());
@@ -36,8 +38,8 @@ public class ServletUtils {
         }
 
         // Set httpResponse format
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/javascript;charset=UTF-8");
+        response.setCharacterEncoding(StringUtils.HTML_UTF8_CHARSET);
+        response.setContentType("text/javascript; charset=" + StringUtils.HTML_UTF8_CHARSET);
 
         // FIXME: introduce a strategy that is going to detect future expiration dates
         response.setHeader("Cache-Control","no-cache"); // HTTP 1.1

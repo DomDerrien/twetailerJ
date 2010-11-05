@@ -51,6 +51,7 @@ import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
@@ -264,7 +265,7 @@ public class MaelzelServlet extends HttpServlet {
             }
             /* legacy *
             else if ("/cbuiEndPoint".equals(pathInfo)) {
-                if (amazonFPS.verifyCoBrandedServiceResponse(request.getParameterMap())) {
+                if (amazonFPS.verifyCoBrandedServiceResponse(request)) {
                     Payment payment = new Payment();
                     payment.setAuthorizationId(request.getParameter(AmazonFPS.TOKEN_ID));
                     payment.setReference(request.getParameter(AmazonFPS.CALLER_REFERENCE));
@@ -331,7 +332,7 @@ public class MaelzelServlet extends HttpServlet {
                 CatchAllMailHandlerServlet.composeAndPostMailMessage(
                         "error-notifier",
                         "Unexpected error caught in " + MaelzelServlet.class.getName(),
-                        "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request.getParameterMap()).toString() + "\n\n--\n\n" + stackTrace.toString()
+                        "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request).toString() + "\n\n--\n\n" + stackTrace.toString()
                 );
             }
             catch (MessagingException ex2) {
@@ -362,10 +363,10 @@ public class MaelzelServlet extends HttpServlet {
                 //
 
                 // TODO: verify Content-type = "application/x-www-form-urlencoded"
-                // JsonObject in = new GenericJsonObject(request.getParameterMap());
+                // JsonObject in = new GenericJsonObject(request);
 
                 // TODO: verify Content-type == "application/json"
-                in = new JsonParser(request.getInputStream()).getJsonObject();
+                in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
                 OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
                 String openId = loggedUser.getClaimedId();

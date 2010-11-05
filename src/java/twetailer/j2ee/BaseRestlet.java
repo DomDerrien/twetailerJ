@@ -25,6 +25,7 @@ import com.dyuproject.openid.RelyingParty;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonException;
@@ -244,7 +245,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         try {
             // TODO: verify Content-type == "application/json"
-            in = new JsonParser(request.getInputStream()).getJsonObject();
+            in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
             boolean isUserAdmin = isUserAdministrator(loggedUser);
@@ -288,7 +289,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         try {
             // TODO: verify Content-type == "application/json"
-            in = new JsonParser(request.getInputStream()).getJsonObject();
+            in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
             boolean isUserAdmin = isUserAdministrator(loggedUser);

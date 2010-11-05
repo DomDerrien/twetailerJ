@@ -12,6 +12,7 @@
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="domderrien.i18n.StringUtils"
     import="domderrien.jsontools.JsonObject"
     import="org.apache.commons.codec.binary.Base64"
     import="twetailer.connector.FacebookConnector"
@@ -95,7 +96,7 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>">
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />

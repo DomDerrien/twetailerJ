@@ -10,6 +10,7 @@
     import="com.dyuproject.openid.RelyingParty"
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
+    import="domderrien.i18n.StringUtils"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
     import="twetailer.dto.HashTag.RegisteredHashTag"
@@ -583,7 +584,7 @@
         }
         dijit.byId('widgetOverlay').show();
         var dfd = dojo.xhrPost({
-            headers: { 'content-type': 'application/json; charset=utf-8' },
+            headers: { 'content-type': 'application/json; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             postData: dojo.toJson(parameters),
             handleAs: 'json',
             load: function(response, ioArgs) {

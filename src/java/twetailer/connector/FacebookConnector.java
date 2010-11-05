@@ -244,11 +244,11 @@ public class FacebookConnector {
      */
     public static JsonObject getAccessToken(String requestSource, String code) throws MalformedURLException, IOException {
         // Get the OAuth access token for this user
-        code = URLEncoder.encode(code, "UTF-8");
+        code = URLEncoder.encode(code, StringUtils.JAVA_UTF8_CHARSET);
         String tokenURL = "https://graph.facebook.com/oauth/access_token" +
             "?client_id=" + (inLocalHost ? DEV_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
             "&client_secret=" + (inLocalHost ? DEV_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET) +
-            "&redirect_uri=" + URLEncoder.encode(requestSource, "UTF-8") +
+            "&redirect_uri=" + URLEncoder.encode(requestSource, StringUtils.JAVA_UTF8_CHARSET) +
             "&code=" + code;
         log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(tokenURL));
@@ -279,7 +279,7 @@ public class FacebookConnector {
      */
     public static JsonObject getUserInfo(String accessToken) throws MalformedURLException, IOException {
         String infoURL = "https://graph.facebook.com/me" +
-            "?access_token=" + URLEncoder.encode(accessToken, "UTF-8") +
+            "?access_token=" + URLEncoder.encode(accessToken, StringUtils.JAVA_UTF8_CHARSET) +
             "&fields=" + getTwetailerRequestedFields();
         log.warning("Calling Facebook to the logged user info -- url: " + infoURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(infoURL));

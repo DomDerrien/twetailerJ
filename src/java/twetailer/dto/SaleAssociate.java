@@ -8,7 +8,7 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import twetailer.validator.LocaleValidator;
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -141,9 +141,9 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        String normalizedCriterion = LocaleValidator.toUnicode(criterion);
+        String normalizedCriterion = StringUtils.toUnicode(criterion);
         for(String item: criteria) {
-            String normalizedItem = LocaleValidator.toUnicode(item);
+            String normalizedItem = StringUtils.toUnicode(item);
             if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
                 return;
             }
@@ -163,9 +163,9 @@ public class SaleAssociate extends Entity {
         if (criteria == null || criterion == null || criterion.length() == 0) {
             return;
         }
-        String normalizedCriterion = LocaleValidator.toUnicode(criterion);
+        String normalizedCriterion = StringUtils.toUnicode(criterion);
         for(String item: criteria) {
-            String normalizedItem = LocaleValidator.toUnicode(item);
+            String normalizedItem = StringUtils.toUnicode(item);
             if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
                 criteria.remove(item);
                 break;

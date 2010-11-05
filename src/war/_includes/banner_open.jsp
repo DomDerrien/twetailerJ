@@ -5,18 +5,11 @@
     import="java.util.Enumeration"
     import="java.util.Locale"
     import="java.util.ResourceBundle"
-    import="java.net.URL"
     import="domderrien.i18n.LabelExtractor"
-    import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
-    import="domderrien.jsontools.JsonArray"
-    import="domderrien.jsontools.JsonObject"
-    import="domderrien.jsontools.JsonParser"
     import="domderrien.i18n.LocaleController"
     import="twetailer.dto.HashTag"
     import="twetailer.dto.HashTag.RegisteredHashTag"
-    import="twetailer.validator.ApplicationSettings"
-    import="twetailer.validator.LocaleValidator"
 %><%
     // Locale detection
     String localeId = request.getParameter("localeId");
