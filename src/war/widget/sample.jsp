@@ -47,7 +47,7 @@
         .params>tbody>tr>td { border: 1px solid; black; padding: 3px 5px; }
         .params>tbody>tr>td:first-child { color: green; }
         .params>tbody>tr>td>input { color: blue; border: 0 none; width: 20em; }
-        .params>tbody>tr>td>input:hover { background-color: #fff000; }
+        .params>tbody>tr>td>input:hover { background-color: #fff800; }
         .params>tbody>tr>td:last-child { color: brown; }
    </style>
 </head>
@@ -208,12 +208,12 @@
     </p>
     <textarea id="cdsnppt" rows="5" style="border: 1px solid gray; width: 100%;">&nbsp;&nbsp;&lt;iframe
 &nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
-&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
+&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff800; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
 &nbsp;&nbsp;&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"
 &nbsp;&nbsp;&gt;&lt;/iframe&gt;</textarea>
     <p>
         You can also <a href="javascript:generateCodeSnippet()">update the code snippet</a> with parameters loaded from the table above
-        (<a href="javascript:setupParametersForYPG();">shortcut for a YPG setup</a>).
+        (<a href="javascript:setupParametersForYellowScheme();">shortcut for the Yellow scheme</a>).
         Reminder: you can update each <span style="color: blue;">blue value</span> with a simple click to edit them.
     </p>
     <p>
@@ -231,7 +231,7 @@
     </p>
     <p>
         To activate the widget with the parameters from the table above
-        (<a href="javascript:setupParametersForYPG();">shortcut for a YPG setup</a>),
+        (<a href="javascript:setupParametersForYellowScheme();">shortcut for the Yellow scheme</a>),
         you have <b>first</b> to <b><a href="javascript:compressRawCode();">trigger the bookmarklet code generation</a></b>.
         Then you can 'drag and drop' the updated link on your bookmark toolbar.
     </p>
@@ -245,7 +245,7 @@
         <li>
             <a
                 href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
-                style="border:1px solid grey;background-color:#fff000;padding:3px 5px;"
+                style="border:1px solid grey;background-color:#fff800;padding:3px 5px;"
             >ASE floating tab</a>
             &mdash; ready to be dropped on your bookmark toolbar
         </li>
@@ -253,7 +253,7 @@
     <p>
         The widget can be also added to popular portal as <a href="http://www.google.com/ig" target="ig">iGoogle</a> , for example, with standard buttons as
         <a
-            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//domderrien.github.com/ase-ypg-igoogle.xml"
+            href="http://fusion.google.com/add?source=atgs&amp;moduleurl=http%3A//anothersocialeconomy.appspot.com/widget/igoogle/ase.xml"
             onclick="javascript:pageTracker._trackPageview('/outbound/article/fusion.google.com');"
         >
             <img src="http://gmodules.com/ig/images/plus_google.gif" border="0" alt="Add to Google" />
@@ -261,7 +261,7 @@
     </p>
 
     <script type="text/javascript">
-    var setupParametersForYPG = function() {
+    var setupParametersForYellowScheme = function() {
         document.getElementById('lg').value = 'en';
         document.getElementById('referralId').value = '223001-68747561-00';
         document.getElementById('hideBrand').value = '';
@@ -279,10 +279,10 @@
         document.getElementById('color-odd-row').value = 'white';
         document.getElementById('color-brand').value = '#252525';
         document.getElementById('color-title').value = '#252525';
-        document.getElementById('color-link').value = '#005e9d';
+        document.getElementById('color-link').value = '#008080';
         document.getElementById('background-image').value = '';
-        document.getElementById('background-color').value = '#fff000';
-        document.getElementById('background-color-odd-row').value = '#7f8082';
+        document.getElementById('background-color').value = '#fff800';
+        document.getElementById('background-color-odd-row').value = '#808080';
     };
     var addParameterSequence = function(parameters, name) {
         var value = document.getElementById(name).value;
@@ -325,7 +325,7 @@
     var generateCodeSnippet = function() {
         var code = '&nbsp;&nbsp;&lt;iframe\n' +
                    '&nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
-                   '&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff000; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
+                   '&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff800; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
                    '&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"\n' +
                    '&nbsp;&nbsp;&gt;&lt;/iframe&gt;';
 
@@ -368,7 +368,7 @@
             hd = dc.createElement('span');
             hd.innerHTML = '<a href="#" onclick="document.getElementById(\''+id+'\').style.display=\'none\';return false;" style="color:white;font-weight:bold;">Close [X]<a>';
             st = hd.style;
-            st.backgroundColor = '#7f8082';
+            st.backgroundColor = '#808080';
             st.fontFamily = 'arial,sans-serif';
             st.fontSize = 'smaller';
             st.color = '#fff';

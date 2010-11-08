@@ -12,7 +12,7 @@
     position: fixed;
     top: 35%;
     left: -5px;
-    background-color: #fff000;
+    background-color: #fff800;
     -webkit-transform-origin: left top;
     -webkit-transform: rotate(-90deg);
     -moz-transform-origin: left top;
@@ -44,7 +44,7 @@
     z-index: 999;
 }
 .ase_buyItWidget>span {
-    background-color: #7f8082;
+    background-color: #808080;
     padding: 5px;
     border-radius: 5px;
     -moz-border-radius: 5px;

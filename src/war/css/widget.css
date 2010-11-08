@@ -7,7 +7,7 @@ body, th, td, textarea {
 }
 
 a, a:hover, a:visited, a:link, a:active {
-    color: #005e9d;
+    color: #008080;
 }
 
 #introFlash {
@@ -19,7 +19,7 @@ a, a:hover, a:visited, a:link, a:active {
     margin: 0;
     border: 0 none;
     padding: 0;
-    background: #fff000 url('/images/loading.gif') no-repeat center center;
+    background: #fff800 url('/images/loading.gif') no-repeat center center;
     z-index: 999;
 }
 
@@ -44,14 +44,14 @@ a, a:hover, a:visited, a:link, a:active {
     left: 0;
     right: 0;
     margin: 0;
-    background-color: #fff000;
+    background-color: #fff800;
     border-radius: 10px;
     -moz-border-radius: 10px;
 }
 
 .dataZone>div {
     padding: 5px;
-    background-color: #fff000;
+    background-color: #fff800;
     border-radius: 10px;
     -moz-border-radius: 10px;
     min-height: 300px;
@@ -120,7 +120,7 @@ a, a:hover, a:visited, a:link, a:active {
 }
 
 .form>tbody>tr:nth-child(2n+1) {
-    background-color: #7f8082;
+    background-color: #808080;
 }
 
 .form>tbody>tr:nth-child(2n+1) label {

@@ -101,7 +101,9 @@
     } // endif (useCDN)
     %>
 
-    <div class="dataZone" id="widgetZone"><div>
+    <div class="dataZone" id="widgetZone">
+    <div style="position:absolute;bottom:20px;right:10px;min-height:14px;z-index:10;font-size:8pt;padding:2px;color:white;font-weight:bold;-moz-border-radius:4px;border-radius:4px;background-color:red;border:2px solid orange;">beta</div>
+    <div>
         <div id="pane1">
             <div class="progressBar">
                 <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_1_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>

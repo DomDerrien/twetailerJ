@@ -13,6 +13,7 @@
 String localeId = request.getParameter("localeId");
 Locale locale = LocaleController.getLocale(localeId);
 %>
+                <div style="position:absolute;top:10px;left:160px;z-index:10;font-size:8pt;padding:2px;color:white;font-weight:bold;-moz-border-radius:4px;border-radius:4px;background-color:red;border:2px solid orange;">beta</div>
                 <h1>
                     <a
                         href="http://ezToff.com/"

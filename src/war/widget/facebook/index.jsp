@@ -101,8 +101,8 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <meta property="og:title" content="AnotherSocialEconomy dashboard"/>
     <meta property="fb:app_id" content="161355780552042"/>
+    <meta property="og:title" content="AnotherSocialEconomy dashboard"/>
     <meta property="og:url" content="http://apps.facebook.com/anothersocialeconomy/"/>
     <meta property="og:site_name" content="AnotherSocialEconomy"/>
     <style type="text/css"><%
@@ -188,7 +188,6 @@
         .dataZone {
             left: 179px;
             border-left: 1px solid lightgrey;
-            padding-left: 10px;
         }
         .dataZone>div {
             min-height: 0;
@@ -669,7 +668,7 @@
         }
     </style><%
     if (oauthToken != null) { %>
-    <script src="https://api.faebook.com/method/dashboard.incrementCount?format=json&access_token=<%= oauthToken %>'" type="text/javascript"></script><%
-    } %>"
+    <script src="https://api.faebook.com/method/dashboard.incrementCount?format=json&access_token=<%= oauthToken %>" type="text/javascript"></script><%
+    } %>
 </body>
 </html>

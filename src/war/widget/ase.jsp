@@ -61,6 +61,7 @@
 
 </head>
 <body class="tundra">
+    <div style="position:absolute;z-index:10;top:30px;right:5px;font-size:8pt;color:orange !important;font-weight:bold;">beta</div>
     <jsp:include page="/_includes/widget_ase_body.jsp" />
 </body>
 </html>

@@ -11,7 +11,7 @@
                 bd = lg == 'fr' ? 'Réseau d\'achat locaux?' : 'Local Buying Network?',
                 cl = lg == 'fr' ? 'Fermer [X]' : 'Close [X]',
                 txt = window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : '',
-                src = dm + 'ase.jsp?lg=' + lg + '&brand=' + bd + '&countryCode=CA&font-family=arial%2Chelvetica%2Csans-serif&font-family-brand=arial%2Chelvetica%2Csans-serif&font-family-title=arial%2Chelvetica%2Csans-serif&font-size=12px&font-size-brand=18px&font-size-title=14px&color=%23252525&color-odd-row=white&color-brand=%23252525&color-title=%23252525&color-link=005e9d&background-color=%23fff000&background-color-odd-row=%237f8082&criteria=' + escape(txt),
+                src = dm + 'ase.jsp?lg=' + lg + '&brand=' + bd + '&countryCode=CA&criteria=' + escape(txt),
                 ifr;
             if (dv) {
                 ifr = dc.getElementById(id + '_ifr');
