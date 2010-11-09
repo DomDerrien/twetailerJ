@@ -1,16 +1,10 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.mail.Address;
 import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -93,56 +87,12 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             body.append("Subject: ").append(subject).append('\n');
             body.append('\n').append(MailConnector.getText(mailMessage));
 
-            composeAndPostMailMessage(from.toString(), "Unexpected e-mail!", body.toString());
+            MailConnector.reportErrorToAdmins(from.toString(), "Unexpected e-mail!", body.toString());
         }
         // catch (MessagingException ex) {
         // catch (IOException ex) {
         catch (Exception ex) {
             log.severe("Error while processing e-mail from: " + fromName + " -- message: " + ex.getMessage());
         }
-    }
-
-    /**
-     * Send the specified message to the recipients of the "aadmins" list
-     *
-     * @param from Message initiator
-     * @param subject Message subject
-     * @param body Message content
-     *
-     * @throws MessagingException If the message sending fails
-     */
-    public static void composeAndPostMailMessage(String from, String subject, String body) throws MessagingException {
-        if (foolMessagePost) {
-            foolMessagePost = false;
-            throw new MessagingException("Done in purpose!");
-        }
-
-        Properties properties = new Properties();
-        Session session = Session.getDefaultInstance(properties, null);
-
-        MimeMessage messageToForward = new MimeMessage(session);
-        try {
-            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
-        }
-        catch (UnsupportedEncodingException ex) {
-            log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
-            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
-        }
-        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
-        messageToForward.setSubject("Fwd: (" + from + ") " + subject);
-        MailConnector.setContentAsPlainTextAndHtml(messageToForward, body);
-
-        log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
-
-        Transport.send(messageToForward);
-    }
-
-    private static boolean foolMessagePost = false;
-
-    /**
-     * Made available for unit tests
-     */
-    public static void foolNextMessagePost() {
-        foolMessagePost = true;
     }
 }

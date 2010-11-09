@@ -33,6 +33,7 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.JabberConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
 import twetailer.dao.DemandOperations;
@@ -688,7 +689,7 @@ public class TestMaelzelServlet {
             }
         };
 
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
 
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
@@ -805,7 +806,7 @@ public class TestMaelzelServlet {
             }
         };
 
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
 
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
@@ -1802,7 +1803,7 @@ public class TestMaelzelServlet {
             }
         };
 
-        CatchAllMailHandlerServlet.foolNextMessagePost();
+        MailConnector.foolNextMessagePost();
 
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));

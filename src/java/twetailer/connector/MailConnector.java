@@ -18,9 +18,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 
+import twetailer.CommunicationException;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Consumer;
 import twetailer.j2ee.MailResponderServlet;
 import twetailer.validator.ApplicationSettings;
-import twetailer.validator.LocaleValidator;
+import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -31,6 +34,8 @@ import domderrien.i18n.LabelExtractor.ResourceFileId;
  * @author Dom Derrien
  */
 public class MailConnector {
+    private static Logger log = Logger.getLogger(MailConnector.class.getName());
+
     //
     // Mail properties (transparently handled by App Engine)
     //
@@ -291,4 +296,110 @@ public class MailConnector {
         return LocaleValidator.toUTF8(out.toString());
     }
     */
+
+    public static boolean foolMessagePost = false;
+
+    /**
+     * Made available for unit tests
+     */
+    public static void foolNextMessagePost() {
+        foolMessagePost = true;
+    }
+
+    /**
+     * Send the specified message to the recipients of the "administrators" list
+     *
+     * @param subject Message subject
+     * @param body Message content
+     *
+     * @throws MessagingException If the message sending fails
+     */
+    public static void reportErrorToAdmins(String subject, String body) throws MessagingException {
+        reportErrorToAdmins(null, subject, body);
+    }
+
+    /**
+     * Send the specified message to the recipients of the "administrators" list
+     *
+     * @param from Message initiator
+     * @param subject Message subject
+     * @param body Message content
+     *
+     * @throws MessagingException If the message sending fails
+     */
+    public static void reportErrorToAdmins(String from, String subject, String body) throws MessagingException {
+        if (foolMessagePost) {
+            foolMessagePost = false;
+            throw new MessagingException("Done in purpose!");
+        }
+
+        Properties properties = new Properties();
+        Session session = Session.getDefaultInstance(properties, null);
+
+        MimeMessage messageToForward = new MimeMessage(session);
+        try {
+            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
+        }
+        catch (UnsupportedEncodingException ex) {
+            log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
+            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
+        }
+        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
+        messageToForward.setSubject((from == null ? "" : "Fwd: (" + from + ") ") + subject);
+        setContentAsPlainTextAndHtml(messageToForward, body);
+
+        log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+
+        Transport.send(messageToForward);
+    }
+
+    private final static String[] tableParts = new String[] {
+        "<tr><th style=\"border:1px solid black;vertical-align:top;\">",
+        "</th><td style=\"border:1px solid black;\">",
+        "</td></tr>"
+    };
+
+    public static void sendCopyToAdmins(Source source, Consumer consumer, String subject, String[] messages) throws CommunicationException {
+        if (foolMessagePost) {
+            foolMessagePost = false;
+            throw new CommunicationException("Done in purpose!");
+        }
+
+        try {
+            Properties properties = new Properties();
+            Session session = Session.getDefaultInstance(properties, null);
+
+            MimeMessage messageToForward = new MimeMessage(session);
+            try {
+                messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
+            }
+            catch (UnsupportedEncodingException ex) {
+                log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
+                messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
+            }
+            messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
+            messageToForward.setSubject("Silent copy");
+
+            StringBuilder body = new StringBuilder();
+            body.append("<table border=\"1\" style=\"border:1px solid black;\">");
+            body.append(tableParts[0]).append("Recipient").append(tableParts[1]).append(consumer.getName()).append(tableParts[2]);
+            body.append(tableParts[0]).append("Subject").append(tableParts[1]).append(subject).append(tableParts[2]);
+            body.append(tableParts[0]).append("Date").append(tableParts[1]).append(DateUtils.dateToISO(DateUtils.getNowDate())).append(tableParts[2]);
+            body.append(tableParts[0]).append("Message").append(tableParts[1]);
+            for (int idx = 0; idx < messages.length; idx ++) {
+                body.append(messages[idx]);
+            }
+            body.append(tableParts[2]);
+            body.append(tableParts[0]).append("Recipient info").append(tableParts[1]).append("<pre>").append(consumer.toJson().toString()).append("</pre>").append(tableParts[2]);
+            body.append("</table>");
+            setContentAsPlainTextAndHtml(messageToForward, body.toString());
+
+            log.warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
+
+            Transport.send(messageToForward);
+        }
+        catch (MessagingException ex) {
+            throw new CommunicationException("Cannot communicate a copy to the adminis", ex);
+        }
+    }
 }

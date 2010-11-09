@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
+import twetailer.connector.MailConnector;
 import twetailer.task.CommandProcessor;
 import twetailer.task.step.BaseSteps;
 
@@ -1299,7 +1300,7 @@ public class TestBaseRestlet {
                 return stream;
             }
         };
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet().doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
@@ -1367,7 +1368,7 @@ public class TestBaseRestlet {
                 return stream;
             }
         };
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet().doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
@@ -1435,7 +1436,7 @@ public class TestBaseRestlet {
                 return stream;
             }
         };
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet().doPut(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
@@ -1522,7 +1523,7 @@ public class TestBaseRestlet {
                 return stream;
             }
         };
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
+        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet() {
             @Override
             protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {

@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import twetailer.connector.BaseConnector;
 import twetailer.connector.JabberConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.TestJabberConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
@@ -472,7 +473,7 @@ public class TestJabberResponderServlet {
         mock.setPresence(jabberId, false);
         JabberConnector.injectMockXMPPService(mock);
 
-        CatchAllMailHandlerServlet.foolNextMessagePost();
+        MailConnector.foolNextMessagePost();
 
         servlet.doPost(request, null);
 

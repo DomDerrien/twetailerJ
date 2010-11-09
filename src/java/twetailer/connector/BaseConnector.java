@@ -114,6 +114,7 @@ public class BaseConnector {
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
             communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
+            MailConnector.sendCopyToAdmins(source, consumer, subject, messages);
         }
     }
 
@@ -180,7 +181,7 @@ public class BaseConnector {
             try {
                 StringBuilder mailMessage = new StringBuilder();
                 for (String message: messages) {
-                    List<String> messageParts = checkMessageLength(message, 8192);
+                    List<String> messageParts = checkMessageLength(message, 16394);
                     for (String part: messageParts) {
                         mailMessage.append(part).append(MESSAGE_SEPARATOR);
                     }

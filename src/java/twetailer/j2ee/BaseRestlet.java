@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.MailConnector;
 import twetailer.task.CommandProcessor;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -390,8 +391,7 @@ public abstract class BaseRestlet extends HttpServlet {
         MockOutputStream stackTrace = new MockOutputStream();
         ex.printStackTrace(new PrintStream(stackTrace));
         try {
-            CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                    "error-notifier",
+            MailConnector.reportErrorToAdmins(
                     "Unexpected error caught in BaseRestlet." + methodName + "()",
                     "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
             );

@@ -26,6 +26,7 @@ import org.junit.Test;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
@@ -46,7 +47,6 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
-import twetailer.j2ee.CatchAllMailHandlerServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -1562,7 +1562,7 @@ public class TestDemandProcessor {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        CatchAllMailHandlerServlet.foolNextMessagePost(); // To generate a MessagingException while trying to send an e-mail
+        MailConnector.foolNextMessagePost(); // To generate a MessagingException while trying to send an e-mail
 
         BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
             @Override
@@ -2095,7 +2095,7 @@ public class TestDemandProcessor {
         });
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
 
-        CatchAllMailHandlerServlet.foolNextMessagePost();
+        MailConnector.foolNextMessagePost();
 
         DemandProcessor.process(demandKey, true);
     }

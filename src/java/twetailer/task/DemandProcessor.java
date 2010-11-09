@@ -34,7 +34,6 @@ import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
-import twetailer.j2ee.CatchAllMailHandlerServlet;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
 import twetailer.validator.CommandSettings;
@@ -174,8 +173,7 @@ public class DemandProcessor {
                         MockOutputStream stackTrace = new MockOutputStream();
                         ex.printStackTrace(new PrintStream(stackTrace));
                         try {
-                            CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                                    "error-notifier",
+                            MailConnector.reportErrorToAdmins(
                                     "Unexpected error caught in " + DemandProcessor.class.getName(),
                                     "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
                             );

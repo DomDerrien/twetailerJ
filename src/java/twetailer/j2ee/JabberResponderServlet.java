@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.ClientException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.JabberConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
@@ -160,8 +161,7 @@ public class JabberResponderServlet extends HttpServlet {
             MockOutputStream stackTrace = new MockOutputStream();
             exception.printStackTrace(new PrintStream(stackTrace));
             try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
+                MailConnector.reportErrorToAdmins(
                         "Unexpected error caught in " + this.getClass().getName() + ".doPost()",
                         "IM sender: " + jabberId + "\nIM content: " + command + "\n\n--\n\n" + stackTrace.toString()
                 );

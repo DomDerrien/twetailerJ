@@ -261,8 +261,7 @@ public class MailResponderServlet extends HttpServlet {
             MockOutputStream stackTrace = new MockOutputStream();
             exception.printStackTrace(new PrintStream(stackTrace));
             try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
+                MailConnector.reportErrorToAdmins(
                         "Unexpected error caught in " + MailResponderServlet.class.getName() + ".doPost()",
                         "Mail sender: " + name + "<" + email + ">" + "\nMail subject: " + subject + "\nMail filtered content: " + command + "\n\n--\n\n" + stackTrace.toString()
                 );

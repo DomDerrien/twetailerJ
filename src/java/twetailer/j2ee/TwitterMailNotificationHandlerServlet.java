@@ -137,7 +137,7 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                             method(Method.GET)
                 );
                 // Forward the message to the "admins" list
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(followerName, subject, body);
+                MailConnector.reportErrorToAdmins(followerName, subject, body);
             }
         }
         catch (MessagingException ex) {

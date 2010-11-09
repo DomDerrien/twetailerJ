@@ -329,8 +329,7 @@ public class MaelzelServlet extends HttpServlet {
             MockOutputStream stackTrace = new MockOutputStream();
             ex.printStackTrace(new PrintStream(stackTrace));
             try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
+                MailConnector.reportErrorToAdmins(
                         "Unexpected error caught in " + MaelzelServlet.class.getName(),
                         "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request).toString() + "\n\n--\n\n" + stackTrace.toString()
                 );
@@ -467,8 +466,7 @@ public class MaelzelServlet extends HttpServlet {
             MockOutputStream stackTrace = new MockOutputStream();
             ex.printStackTrace(new PrintStream(stackTrace));
             try {
-                CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                        "error-notifier",
+                MailConnector.reportErrorToAdmins(
                         "Unexpected error caught in " + MaelzelServlet.class.getName(),
                         "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
                 );

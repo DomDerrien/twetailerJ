@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.connector.MailConnector;
 import twetailer.connector.TestMailConnector;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
@@ -646,7 +647,7 @@ public class TestMailResponderServlet {
             }
         });
 
-        CatchAllMailHandlerServlet.foolNextMessagePost();
+        MailConnector.foolNextMessagePost();
 
         new MailResponderServlet().doPost(request, null);
     }

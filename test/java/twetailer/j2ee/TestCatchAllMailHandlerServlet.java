@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.connector.MailConnector;
 import twetailer.connector.TestMailConnector;
 import twetailer.task.step.BaseSteps;
 
@@ -43,7 +44,7 @@ public class TestCatchAllMailHandlerServlet {
 
     @Test
     public void testComposeAndPostMailMessage() throws MessagingException {
-        CatchAllMailHandlerServlet.composeAndPostMailMessage(
+        MailConnector.reportErrorToAdmins(
                 "unit@test.ca",
                 "subject",
                 "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************"
