@@ -10,7 +10,7 @@
     -no-moz-box-shadow: -3px 3px 10px #aaa;
     padding: 5px;
     position: fixed;
-    top: 35%;
+    top: 50%;
     left: -5px;
     background-color: #fff800;
     -webkit-transform-origin: left top;
@@ -30,6 +30,7 @@
 }
 .ase_buyItTab a, .ase_buyItTab a:hover, .ase_buyItTab a:visited {
     text-decoration: none !important;
+    padding: 10px;
     color: #222;
 }
 .ase_buyItWidget {

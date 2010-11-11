@@ -2121,6 +2121,14 @@
         <!-- Core widget -->
         <!-- =========== -->
 
+        <tu tuid="cw_redirection_information" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Connecting to <strong>AnotherSocialEconomy</strong> server, your confidential link between <strong>Online shopping</strong> and <strong>Offline buying</strong>...</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cw_brand" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -2724,6 +2732,74 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>« Schedule another tee-off</seg>
+            </tuv>
+        </tu>
+
+        <!-- ================= -->
+        <!-- Car dealer widget -->
+        <!-- ================= -->
+
+        <tu tuid="cdw_step_1_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>What vehicule are you looking for?</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_label_make" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Make</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_placeholder_make" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Volkswagen</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_label_model" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Model</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_placeholder_model" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Jetta TDI</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_label_year" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Year</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_placeholder_year" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>New or 2006</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cdw_helper_text" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg><li>VW Jetta TDI 3 doors</li><li>2006 Subaru Legacy Wagon GT blue</li><li>Michelin Alpin tires 215/50 R17</li></seg>
             </tuv>
         </tu>
 

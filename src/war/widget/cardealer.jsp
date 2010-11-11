@@ -1,3 +1,4 @@
+<!doctype html>
 <%@page
     language="java"
     contentType="text/html; charset=UTF-8"
@@ -32,7 +33,39 @@
 
     // Regular expression for e-mail address validation
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
-%>  <div id="introFlash">
+%><html dir="ltr" lang="<%= localeId %>">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>">
+    <meta http-equiv="content-language" content="<%= localeId %>" />
+    <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+    <style type="text/css"><%
+        if (useCDN) {
+        %>
+        @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";<%
+        }
+        else { // elif (!useCDN)
+        %>
+        @import "/js/dojo/dojo/resources/dojo.css";
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
+        } // endif (useCDN)
+        %>
+        @import "/css/widget.css";
+        <jsp:include page="/_includes/widget_css_parameters.jsp" />
+        .bookmarklet-container {margin:1em 0;text-align:center}
+        .bookmarklet-container .bookmarklet-link{background-color:#ccc;border:1px solid #999;border-color:#bbb #999 #777;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;color:#333;font-weight:bold;padding:2px 10px;text-decoration:none}
+        .bookmarklet-container .bookmarklet-callout{background:url(/images/bookmarklet-callout-arrow.gif) no-repeat center left;color:#7f7f66;margin-left:-3px;padding-left:6px}
+        .bookmarklet-container .bookmarklet-callout-inner{background:#ffc;border:1px solid #fff1a8;border-left:0;padding:1px 5px}
+    </style>
+
+</head>
+<body class="tundra">
+    <div style="position:absolute;z-index:10;top:30px;right:5px;font-size:8pt;color:orange !important;font-weight:bold;">beta</div>
+    <div id="introFlash">
         <div><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
         <span><%= LabelExtractor.get(ResourceFileId.third, "cw_redirection_information", locale) %></span>
     </div>
@@ -84,8 +117,20 @@
                 }
                 if (showBrand) {
                 %><div class="brand"><%= brand %></div><% }
-                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_title", locale) %></div>
+                %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cdw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
+                    <tr>
+                        <td><label for="metadata.make"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %></label></td>
+                        <td><input dojoType="dijit.form.TextBox" id="metadata.make" name="metadata.make" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_make", locale) %>" style="width:100%;" required="true" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
+                        <td><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" /></td>
+                    </tr>
+                    <tr>
+                        <td><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_year", locale) %></label></td>
+                        <td><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_year", locale) %>" style="width:100%;" type="text" /></td>
+                    </tr>
                     <tr>
                         <td style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
                         <td>
@@ -93,6 +138,7 @@
                                 dojoType="dijit.form.Textarea"
                                 id="tags"
                                 name="tags"
+                                placeholder="3 doors"
                                 rows="3"
                                 style="width:100%;min-height:48px;"
                             ><%
@@ -110,7 +156,7 @@
                                 <div
                                     dojoType="dijit.TooltipDialog"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "cw_helper_title", locale) %>"
-                                ><%= LabelExtractor.get(ResourceFileId.third, "cw_helper_text", locale) %></div>
+                                ><%= LabelExtractor.get(ResourceFileId.third, "cdw_helper_text", locale) %></div>
                             </div>
                         </td>
                     </tr>
@@ -502,7 +548,7 @@
     localModule.controlTagField = function() {
         var tagField = dijit.byId('tags');
         var criteria = tagField.get('value').trim();
-        if (0 < criteria.length) {
+        if (0 < criteria.length || 0 < dijit.byId('metadata.make').get('value').trim().length || 0 < dijit.byId('metadata.model').get('value').trim().length) {
             return true;
         }
         var ttId = 'tooltipId';
@@ -565,6 +611,19 @@
             return;
         }
         // Request preparation
+        var criteria = [];
+        if (0 < dijit.byId('metadata.make').get('value').trim().length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>:' + dijit.byId('metadata.make').get('value').trim());
+        }
+        if (0 < dijit.byId('metadata.model').get('value').trim().length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>:' + dijit.byId('metadata.model').get('value').trim());
+        }
+        if (0 < dijit.byId('metadata.year').get('value').trim().length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_year", locale) %>:' + dijit.byId('metadata.year').get('value').trim());
+        }
+        if (0 < dijit.byId('tags').get('value').trim().length) {
+            criteria = criteria.concat(dijit.byId('tags').get('value').trim().split(/\s+/));
+        }
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
             referralId: '<%= referralId == null || referralId.length() == 0 ? '0' : referralId %>',
@@ -578,7 +637,7 @@
             <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             // <%= Demand.HASH_TAGS %>: [], // No hash tag to communicate
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
-            <%= Demand.CRITERIA %>: dijit.byId('tags').get('value').split(/\s+/)
+            <%= Demand.CRITERIA %>: criteria
         };
         if (dijit.byId('demoMode').get('value') !== false) {
             console.log('demo mode: true');
@@ -619,3 +678,5 @@
     </script>
 
     <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
+</body>
+</html>

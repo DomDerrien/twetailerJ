@@ -1689,6 +1689,13 @@
                 <seg>Identifiant du club:</seg>
             </tuv>
         </tu>
+        <tu tuid="cw_redirection_information" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Connection au serveur de <strong>AnotherSocialEconomy</strong>, votre lien confidentiel entre le <strong>Magasinage en ligne</strong> et les <strong>Achats en boutique</strong>...</seg>
+            </tuv>
+        </tu>
         <tu tuid="cw_brand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1721,7 +1728,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous notifierons leurs propositions.</seg>
+                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous communiquerons leurs propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_2_title" dataType="text">
@@ -2211,6 +2218,62 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>« Programmer un autre départ</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_step_1_title" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Quel véhicule cherchez-vous?</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_label_make" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Constructeur</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_placeholder_make" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Volkswagen</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_label_model" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Modèle</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_placeholder_model" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Jetta TDI</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_label_year" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Année</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_placeholder_year" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Nouvelle ou 2006</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_helper_text" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg><li>VW Jetta TDI 3 portes</li><li>2006 Subaru Legacy familiale GT bleue</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
             </tuv>
         </tu>
         <tu tuid="fbc_welcome_loggedUser" dataType="text">

@@ -8,26 +8,26 @@
     String colorLink = request.getParameter("color-link");
     String colorTitle = request.getParameter("color-title");
     String colorBrand = request.getParameter("color-brand");%>
-        body, #centerZone, .hint, .comment, label {<%
+        body, .dataZone, .hint, .comment, label {<%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #centerZone .title, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
+        #introFlash>span, .dataZone .title, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
         if (colorTitle != null && 0 < colorTitle.length()) { %>color:<%= colorTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #centerZone .brand {<%
+        .dataZone .brand {<%
         if (colorBrand != null && 0 < colorBrand.length()) { %>color:<%= colorBrand.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         a, a:hover, a:visited {<%
         if (colorLink != null && 0 < colorLink.length()) { %>color:<%= colorLink.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        .form>tbody>tr:nth-child(2n+1) label {<%
+        #introFlash>div>span, .form>tbody>tr:nth-child(2n+1) label {<%
         if (colorOddRow != null && 0 < colorOddRow.length()) { %>color:<%= colorOddRow.replaceAll(";|<|>|\\:", "") %>;<% } %> }
 <%
     String backgroundImage = request.getParameter("background-image");
     String backgroundColor = request.getParameter("background-color");
     String backgroundColorOddRow = request.getParameter("background-color-odd-row");
 %>
-        #centerZone {<%
+        .dataZone {<%
         if (backgroundImage != null && 0 < backgroundImage.length()) { %>background-image:url(<%= backgroundImage.replaceAll(";|<|>", "") %>);<% } %> }
-        #centerZone, .form>tbody>tr:nth-child(2n) {<%
+        #introFlash, .dataZone, .dataZone>div, .form>tbody>tr:nth-child(2n) {<%
         if (backgroundColor != null && 0 < backgroundColor.length()) { %>background-color:<%= backgroundColor.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        .form>tbody>tr:nth-child(2n+1) {<%
+        #introFlash>div>span, .form>tbody>tr:nth-child(2n+1) {<%
         if (backgroundColorOddRow != null && 0 < backgroundColorOddRow.length()) { %>background-color:<%= backgroundColorOddRow.replaceAll(";|<|>|\\:", "") %>;<% } %> }
 <%
     String fontSize = request.getParameter("font-size");
@@ -40,9 +40,9 @@
         body, th, td, textarea {<%
         if (fontFamily != null && 0 < fontFamily.length()) { %>font-family:<%= fontFamily.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSize != null && 0 < fontSize.length()) { %>font-size:<%= fontSize.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        .title {<%
+        #introFlash>span, .title {<%
         if (fontFamilyTitle != null && 0 < fontFamilyTitle.length()) { %>font-family:<%= fontFamilyTitle.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSizeTitle != null && 0 < fontSizeTitle.length()) { %>font-size:<%= fontSizeTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        .brand {<%
+        .dataZone .brand {<%
         if (fontFamilyBrand != null && 0 < fontFamilyBrand.length()) { %>font-family:<%= fontFamilyBrand.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSizeBrand != null && 0 < fontSizeBrand.length()) { %>font-size:<%= fontSizeBrand.replaceAll(";|<|>|\\:", "") %>;<% } %> }

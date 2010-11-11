@@ -10,15 +10,20 @@
             var dv = dc.getElementById(id),
                 bd = lg == 'fr' ? 'Réseau d\'achat locaux?' : 'Local Buying Network?',
                 cl = lg == 'fr' ? 'Fermer [X]' : 'Close [X]',
-                txt = window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : '',
-                src = dm + 'ase.jsp?lg=' + lg + '&brand=' + bd + '&countryCode=CA&criteria=' + escape(txt),
+                txt = escape(window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : ''),
+                src = dm + 'ase.jsp?lg=' + lg + '&brand=' + bd + '&countryCode=CA&criteria=' + txt + '&',
                 ifr;
             if (dv) {
                 ifr = dc.getElementById(id + '_ifr');
-                ifr.src = src;
-                dv.style.display = '';
+                if (txt == '' || ifr.src.indexOf('criteria=' + txt + '&') != -1) {
+                    dv.style.display = '';
+                }
+                else {
+                    dv.parentNode.removeChild(dv);
+                    dv = null;
+                }
             }
-            else {
+            if (!dv) {
                 var cpc = '100%',
                     hd;
                 dv = dc.createElement('div');
@@ -36,6 +41,7 @@
                 ifr.src = src;
                 dv.appendChild(ifr);
             }
+            return false;
         },
         installCSS = function() {
             var lk = dc.createElement('link');
