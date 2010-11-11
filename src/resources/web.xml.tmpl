@@ -97,7 +97,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>maelzel</servlet-name>
-        <url-pattern>/_admin/maelzel/*</url-pattern>
+        <url-pattern>/_tasks/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -191,6 +191,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>wish</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.WishRestlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>wish</servlet-name>
+        <url-pattern>/API/Wish/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>jabberresponder</servlet-name>
         <servlet-class>twetailer.j2ee.JabberResponderServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
@@ -266,9 +276,19 @@
         <auth-constraint>
             <role-name>admin</role-name>
         </auth-constraint>
-        <!--user-data-constraint> // Commented out because of the Maelzel tasks
+        <user-data-constraint>
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint-->
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Administrative tools</web-resource-name>
+            <url-pattern>/_tasks/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
     </security-constraint>
 
     <security-constraint>

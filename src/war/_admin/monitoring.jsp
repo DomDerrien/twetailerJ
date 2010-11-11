@@ -1447,7 +1447,7 @@
                 localModule.fetchEntity('location.key', 'Location');
             },
             error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
-            url: '/_admin/maelzel/validateLocation?countryCode=' + dijit.byId('location.countryCode').get('value') + '&postalCode=' + dijit.byId('location.postalCode').get('value') + '&consumerKey=0&key=0'
+            url: '/_tasks/validateLocation?countryCode=' + dijit.byId('location.countryCode').get('value') + '&postalCode=' + dijit.byId('location.postalCode').get('value') + '&consumerKey=0&key=0'
         });
     };
     localModule.getLocationKeys = function() {

@@ -38,7 +38,7 @@ import domderrien.i18n.LabelExtractor.ResourceFileId;
 /**
  * Define the task with is invoked by methods in ProposalSteps
  * every time a Proposal is updated significantly. If the Proposal
- * instance is valid, the task "/_admin/maelzel/processPublishedProposal"
+ * instance is valid, the task "/_tasks/processPublishedProposal"
  * is scheduled to broadcast it to the corresponding Demand owner.
  *
  * @see twetailer.dto.Proposal
@@ -97,7 +97,7 @@ public class ProposalValidator {
                 String message = null;
 
                 // Temporary filter
-                filterHashTags(pm, saConsumerRecord, proposal);
+                RequestValidator.filterHashTags(pm, saConsumerRecord, proposal, "proposal");
 
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
                 if ((proposal.getCriteria() == null || proposal.getCriteria().size() == 0) && (proposal.getHashTags() == null || proposal.getHashTags().size() == 0)) {
@@ -157,7 +157,7 @@ public class ProposalValidator {
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_admin/maelzel/processPublishedProposal").
+                            url("/_tasks/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).
                                 method(Method.GET).
                                 countdownMillis(5000)
@@ -171,42 +171,6 @@ public class ProposalValidator {
             }
             catch (ClientException ex) {
                 log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
-            }
-        }
-    }
-
-    // Temporary method filtering out non #demo tags
-    protected static void filterHashTags(PersistenceManager pm, Consumer saConsumerRecord, Proposal proposal) throws ClientException, DataSourceException {
-        if (proposal.getHashTags() != null) {
-            List<String> hashTags = proposal.getHashTags();
-            if (hashTags.size() != 0) {
-                String serializedHashTags = "";
-                String hashTag = hashTags.get(0);
-                if (hashTags.size() == 1 && !HashTag.isSupportedHashTag(hashTag)) {
-                    serializedHashTags = hashTag;
-                }
-                else { // if (1 < hashTags.size()) {
-                    for(int i = 0; i < hashTags.size(); ++i) {
-                        hashTag = hashTags.get(i);
-                        if (!HashTag.isSupportedHashTag(hashTag)) {
-                            serializedHashTags += " " + hashTag;
-                        }
-                    }
-                }
-                if (0 < serializedHashTags.length()) {
-                    Locale locale = saConsumerRecord.getLocale();
-                    String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                    String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { serializedHashTags.trim() }, locale);
-                    communicateToConsumer(
-                            proposal.getSource(), // TODO: maybe pass the initial RawCommand to be able to reuse the subject
-                            "To be fixed!", // FIXME
-                            saConsumerRecord,
-                            new String[] { LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, locale) }
-                    );
-                    for (String tag: serializedHashTags.split(" ")) {
-                        proposal.removeHashTag(tag);
-                    }
-                }
             }
         }
     }

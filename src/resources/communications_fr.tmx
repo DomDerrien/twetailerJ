@@ -189,6 +189,42 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="command_message_body_wish_create" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    wish qty:X due-date:X tags:X {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_update" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    wish wish:{wish>key} qty:{wish>quantity} due-date:{wish>dueDate} locale:{wish>location>postalCode} {wish>location>countryCode} tags:{wish>criteria} hashtags:{wish>hashTags} metadata:{wish>metadata} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_cancel" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    cancel wish:{wish>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_transform" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    transform wish:{wish>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="command_message_body_demand_create" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -276,6 +312,281 @@
             <tuv xml:lang="fr">
                 <seg>
                     compléter proposition:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {wish>owner>name}, listing newly created wish:{wish>key}...|
+                    wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
+                    locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
+                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    cc:{wish>cc}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi <strong>{wish>owner>name}</strong></p>
+                    <p>Your wish has just been created with:</p>
+                    <ul>
+                        <li>Details: {wish>criteria} HashTags:{wish>hashTags}</li>
+                        <li>Quantity: {wish>quantity};</li>
+                        <li>Due date: {wish>dueDate};</li>
+                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a>;</li>
+                        <li>Range: {wish>range} {wish>rangeUnit};</li>
+                    </ul>
+                    <p>
+                        We're keeping your wish {wish>key} between you and <strong>{wish>cc}</strong>.
+                        Anytime you can transform your wish in a demand that will be broadcasted to relevant stores in your area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in this wish, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelWish}&amp;subject={command>threadSubject}">Cancel wish</a>,
+                        or, if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    FYI: You have been CC'ed by {wish>owner>name} regarding the following wish creation...|
+                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} due-date:{wish>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>
+                        <strong>{wish>owner>name}</strong> has chosen to notify you of their new wish for:
+                    </p>
+                    <ul>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>Due date: <strong>{wish>dueDate}</strong></li>
+                        <li>Expiration date: {wish>expirationDate}</li>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Within: <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong></li>
+                    </ul>
+                    <p>
+                        The new wish {wish>key} is going to be kept private.
+                        Anytime you can transform this wish in a demand that will be broadcasted to relevant stores in the area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in being notified, you can send an email by clicking
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">Please remove</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {wish>owner>name}, listing your updated wish:{wish>key}...|
+                    wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
+                    locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
+                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    cc:{wish>cc}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi <strong>{wish>owner>name}</strong>,</p>
+                    <p>
+                        We're confirming your <strong>update</strong> of the wish within <strong>{wish>range} {wish>rangeUnit}</strong> of
+                        <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        on <strong>{wish>dueDate}</strong>. You've also requested:
+                    </p>
+                    <ul>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>More options: <strong>{wish>metadata}</strong></li>
+                    </ul>
+                    <p>
+                        We're keeping your wish {wish>key} between you and <strong>{wish>cc}</strong>.
+                        Anytime you can transform your wish in a demand that will be broadcasted to relevant stores in your area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in this wish, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelWish}&amp;subject={command>threadSubject}">Cancel wish</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    FYI: You have been CC'ed by {wish>owner>name} regarding the following wish update...|
+                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} dueDate:{wish>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>
+                        <strong>{wish>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> wish
+                        within <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        on <strong>{wish>dueDate}</strong>. Also requested:
+                    </p>
+                    <ul>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>More options: <strong>{wish>metadata}</strong></li>
+                    </ul>
+                    <p>
+                        The updated wish {wish>key} is still going to be kept private.
+                        Anytime you can transform this wish in a demand that will be broadcasted to relevant stores in the area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in being notified, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">Please remove</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully canceled.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi {wish>owner>name},</p>
+                    <p>Your <strong>wish {wish>key}</strong> has been <strong>canceled</strong>.</p>
+                    <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your friends, or, simply CC them next time.</p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToInitiator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {user>name}, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed.
+                    The new demand is going to be validated and you'll receive an update shortly.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToInitiator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi {user>name},</p>
+                    <p>
+                        The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong> into a demand.
+                        The new demand is going to be validated band you'll receive an update shortly.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully transformed.
+                    The new demand is going to be validated and you'll receive an update shortly.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi {wish>owner>name},</p>
+                    <p>
+                        Your <strong>wish {wish>key}</strong> has been <strong>transformed</strong> into a demand.
+                        The new demand is going to be validated band you'll receive an update shortly.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed
+                    by {user>name} into a demand that will be broadcasted to relevant stores.
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi,</p>
+                    <p>
+                        The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong>.
+                        by {user>name} into a demand that will be broadcasted to relevant stores.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
                 </seg>
             </tuv>
         </tu>

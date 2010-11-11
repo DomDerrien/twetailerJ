@@ -14,6 +14,7 @@ import twetailer.dao.ReviewSystemOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
+import twetailer.dao.WishOperations;
 
 public class BaseSteps {
 
@@ -31,6 +32,7 @@ public class BaseSteps {
     private static SaleAssociateOperations saleAssociateOperations;
     private static SettingsOperations settingsOperations;
     private static StoreOperations storeOperations;
+    private static WishOperations wishOperations;
 
     public static void resetOperationControllers(boolean forUnitTests) {
         baseOperations = forUnitTests ? null : new BaseOperations();
@@ -47,6 +49,7 @@ public class BaseSteps {
         saleAssociateOperations = forUnitTests ? null : new SaleAssociateOperations();
         settingsOperations = forUnitTests ? null : new SettingsOperations();
         storeOperations = forUnitTests ? null : new StoreOperations();
+        wishOperations = forUnitTests ? null : new WishOperations();
     }
 
     static {
@@ -67,6 +70,7 @@ public class BaseSteps {
     public static SaleAssociateOperations getSaleAssociateOperations() { return saleAssociateOperations; }
     public static SettingsOperations getSettingsOperations() { return settingsOperations; }
     public static StoreOperations getStoreOperations() { return storeOperations; }
+    public static WishOperations getWishOperations() { return wishOperations; }
 
     public static void setMockBaseOperations(BaseOperations baseOperations) { BaseSteps.baseOperations = baseOperations; }
     public static void setMockConsumerOperations(ConsumerOperations consumerOperations) { BaseSteps.consumerOperations = consumerOperations; }
@@ -82,4 +86,5 @@ public class BaseSteps {
     public static void setMockSaleAssociateOperations(SaleAssociateOperations saleAssociateOperations) { BaseSteps.saleAssociateOperations = saleAssociateOperations; }
     public static void setMockSettingsOperations(SettingsOperations settingsOperations) { BaseSteps.settingsOperations = settingsOperations; }
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
+    public static void setMockWishOperations(WishOperations wishOperations) { BaseSteps.wishOperations = wishOperations; }
 }

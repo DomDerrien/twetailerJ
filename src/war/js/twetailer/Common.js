@@ -18,9 +18,11 @@
         _getPostalCountryEventName,
         _friendRowNb = 1,
         _locations = {},
+        _wishes = {},
         _demands = {},
         _proposals = {},
         _stores = {},
+        _lastWish,
         _lastDemand,
         _lastProposal;
 
@@ -314,6 +316,49 @@
     };
 
     /**
+     * Get the list of wishes ordered by their modification date decreasing.
+     * Should be handled carefully, only in read-only mode
+     * as the system can update it asynchronously.
+     *
+     * @return {Array} Array of Wish instances
+     */
+    module.getOrderedWishes = function() {
+        var out = [], key;
+        for (key in _wishes) {
+            out.push(_wishes[key]);
+        }
+        return out.sort(_sortByModificationDateDecreasing);
+    };
+
+    /**
+     * Get the specified wish from the cache.
+     *
+     * @param {String} wishKey Identifier of the wish to load.
+     * @return {Wish} Identified wish if it exists, <code>null</code> otherwise.
+     */
+    module.getCachedWish = function(wishKey) {
+        return _wishes[wishKey];
+    };
+
+    /**
+     * Return the last modified wish.
+     *
+     * @return {Wish} Identified wish if it exists, <code>null</code> otherwise.
+     */
+    module.getLastWish = function() {
+        return _lastWish;
+    };
+
+    /**
+     * Remove the specified wish from the cache.
+     *
+     * @param {String} wishKey Identifier of the wish to nuke.
+     */
+    module.removeWishFromCache = function(wishKey) {
+        delete _wishes[wishKey];
+    };
+
+    /**
      * Get the list of demands ordered by their modification date decreasing.
      * Should be handled carefully, only in read-only mode
      * as the system can update it asynchronously.
@@ -343,7 +388,7 @@
      *
      * @return {Demand} Identified demand if it exists, <code>null</code> otherwise.
      */
-    module.getLastDemand = function(demandKey) {
+    module.getLastDemand = function() {
         return _lastDemand;
     };
 
@@ -371,7 +416,7 @@
      *
      * @return {Proposal} Identified proposal if it exists, <code>null</code> otherwise.
      */
-    module.getLastProposal = function(proposalKey) {
+    module.getLastProposal = function() {
         return _lastProposal;
     };
 
@@ -408,6 +453,76 @@
     //
 
     /**
+     * Load the wishes modified after the given date from the back-end.
+     *
+     * @param {Date} lastModificationDate (Optional) Date to considered before returning the wishes (ISO formatted).
+     * @param {String} overlayId (Optional) Identifier of the overlay to display during the transaction
+     * @param {String} pointOfView (Optional) operation initiator point of view, default to CONSUMER server-side.
+     * @param {String} hashTag (Optional) hash tag used to filter out the wishes.
+     * @return {dojo.Deferred} Object that callers can use to attach callbacks and errbacks.
+     */
+    module.loadRemoteWishes = function(lastModificationISODate, overlayId, pointOfView, hashTag) {
+        if (overlayId) {
+            dijit.byId(overlayId).show();
+        }
+        var data = {
+            pointOfView: pointOfView || module.POINT_OF_VIEWS.CONSUMER,
+            lastModificationDate: lastModificationISODate,
+            related: ['Location']
+        };
+        if (hashTag) {
+            data.hashTags = [hashTag];
+        }
+        var dfd = dojo.xhrGet({
+            headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            content: data,
+            handleAs: 'json',
+            load: function(response, ioArgs) {
+                if (response && response.success) {
+                    // Deferred callback will process the list
+                    var resources = response.resources;
+                    var resourceNb = resources ? resources.length : 0;
+                    if (0 < resourceNb) {
+                        _lastWish = resources[0];
+                        for (var i = 0; i < resourceNb; ++i) {
+                            // Add the updated wish into the cache
+                            var resource = resources[i];
+                            _wishes[resource.key] = resource;
+                        }
+                    }
+                    if (0 < resourceNb) {
+                        // Add the locations to the cache
+                        var resource = resources[0];
+                        var locations = resource.related ? resource.related.Location : null;
+                        var locationNb = locations ? locations.length : 0;
+                        for (var k = 0; k < locationNb; k++) {
+                            var location = locations[k];
+                            _locations[location.key] = location;
+                        }
+                        delete resource.related;
+                    }
+                }
+                else {
+                    alert(response.message + '\nurl: '+ ioArgs.url);
+                }
+                if (overlayId) {
+                    dijit.byId(overlayId).hide();
+                }
+                return response;
+            },
+            error: function(message, ioArgs) {
+                if (overlayId) {
+                    dijit.byId(overlayId).hide();
+                }
+                module.handleError(message, ioArgs);
+            },
+            preventCache: true,
+            url: '/API/Wish/'
+        });
+        return dfd;
+    };
+
+    /**
      * Load the demands modified after the given date from the back-end.
      *
      * @param {Date} lastModificationDate (Optional) Date to considered before returning the demands (ISO formatted).
@@ -435,7 +550,6 @@
             load: function(response, ioArgs) {
                 if (response && response.success) {
                     // Deferred callback will process the list
-                    _lastDemand = null;
                     var resources = response.resources;
                     var resourceNb = resources ? resources.length : 0;
                     if (0 < resourceNb) {

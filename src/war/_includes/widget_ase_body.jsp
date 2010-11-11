@@ -119,6 +119,11 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
+                            <!-- ddd for the Wish implementation to come
+                            <input dojoType="dijit.form.CheckBox" id="wishMode" type="checkbox" />
+                            <label for="demoMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
+                            <br/>
+                            -->
                             <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
                             <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                         </td>

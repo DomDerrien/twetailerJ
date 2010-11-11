@@ -80,7 +80,7 @@ public class RobotResponder {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_admin/maelzel/processPublishedProposal").
+                            url("/_tasks/processPublishedProposal").
                                 param(Proposal.KEY, proposal.getKey().toString()).
                                 method(Method.GET).
                                 countdownMillis(30*1000)

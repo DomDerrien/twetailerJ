@@ -227,7 +227,7 @@ public class ConsumerRestlet extends BaseRestlet {
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             queue.add(
-                                    url("/_admin/maelzel/consolidateConsumerAccounts").
+                                    url("/_tasks/consolidateConsumerAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, consumerKey.toString()).
                                     method(Method.GET)

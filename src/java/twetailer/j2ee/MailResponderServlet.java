@@ -42,7 +42,7 @@ import domderrien.jsontools.JsonObject;
 /**
  * Entry point processing IMAP messages.
  * Received information are stored in a RawCommand instance
- * that the task "/_admin/maelzel/processCommand" will process
+ * that the task "/_tasks/processCommand" will process
  * asynchronously.
  *
  * @see twetailer.dto.RawCommand
@@ -192,7 +192,7 @@ public class MailResponderServlet extends HttpServlet {
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url("/_admin/maelzel/processCommand").
+                    url("/_tasks/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

@@ -327,7 +327,7 @@ public class ListCommandProcessor {
         // Schedule the validation task that will resolve the location geo-coordinates
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(
-                url("/_admin/maelzel/validateLocation").
+                url("/_tasks/validateLocation").
                     param(Location.POSTAL_CODE, postalCode).
                     param(Location.COUNTRY_CODE, countryCode).
                     param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).

@@ -15,8 +15,10 @@ import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Registrar;
+import twetailer.dto.Request;
 import twetailer.dto.ReviewSystem;
 import twetailer.dto.Store;
+import twetailer.dto.Wish;
 import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.validator.CommandSettings;
 import domderrien.i18n.DateUtils;
@@ -53,6 +55,30 @@ public class MessageGenerator {
         messageSubject ("message_subject"),
         messageFooter ("message_footer"),
         robotAutomatedResponse ("robot_automatedResponse"),
+
+        /// W1. Consumer creates a wish -- CC'ed and associates are notified
+        /** For message sent to the wish owner to confirm the wish creation */
+        WISH_CREATION_OK_TO_CONSUMER ("wish_creation_ackToConsumer"),
+        /** For message sent to CC'ed users to inform about the wish creation */
+        WISH_CREATION_OK_TO_CCED ("wish_creation_ackToCCed"),
+
+        /// W2. Consumer updates his wish -- CC'ed are notified
+        /** For message sent to the wish owner to confirm the wish update */
+        WISH_UPDATE_OK_TO_CONSUMER ("wish_update_ackToConsumer"),
+        /** For message sent to CC'ed users to inform about the wish update */
+        WISH_UPDATE_OK_TO_CCED ("wish_update_ackToCCed"),
+
+        /// W3. Consumer cancels his wish
+        /** For message sent to the wish owner to confirm the wish cancellation */
+        WISH_CANCELLATION_OK_TO_CONSUMER ("wish_cancellation_ackToConsumer"),
+
+        /// W4. Someone transforms the wish in a demand
+        /** For message sent to the wish owner to confirm the wish cancellation */
+        WISH_TRANSFORMATION_OK_TO_INITIATOR ("wish_transformation_ackToInitiator"),
+        /** For message sent to the wish owner to confirm the wish cancellation */
+        WISH_TRANSFORMATION_OK_TO_CONSUMER ("wish_transformation_ackToConsumer"),
+        /** For message sent to the wish owner to confirm the wish cancellation */
+        WISH_TRANSFORMATION_OK_TO_CCED ("wish_transformation_ackToCCed"),
 
         /// C1. Consumer creates a demand -- CC'ed and associates are notified
         /** For message sent to the demand owner to confirm the demand creation */
@@ -251,6 +277,21 @@ public class MessageGenerator {
     /**
      * Extracts non null attributes and keeps them into the local parameter map
      *
+     * @param wish Object to scan
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetch(Wish wish) {
+        if (wish != null) {
+            final String prefix = "wish" + FIELD_SEPARATOR;
+            // Wish
+            fetchRequest(wish, prefix);
+        }
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
      * @param demand Object to scan
      * @return The object instance, ready to be chained to another <code>fetch()</code> call
      */
@@ -258,13 +299,29 @@ public class MessageGenerator {
         if (demand != null) {
             final String emptyListIndicator = getAlternateMessage(MessageId.emptyListIndicator);
             final String prefix = "demand" + FIELD_SEPARATOR;
-            // Command
-            fetchCommand(demand, prefix);
+            // Wish
+            fetchRequest(demand, prefix);
             // Demand
-            parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(demand.getExpirationDate(), userLocale));
             parameters.put(prefix + Demand.PROPOSAL_KEYS, demand.getSerializedProposalKeys(emptyListIndicator));
-            parameters.put(prefix + Demand.RANGE, demand.getRange());
-            parameters.put(prefix + Demand.RANGE_UNIT, demand.getRangeUnit());
+        }
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
+     * @param request Object to scan
+     * @param prefix Identifier of the object
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetchRequest(Request request, String prefix) {
+        if (request != null) {
+            // Command
+            fetchCommand(request, prefix);
+            // Demand
+            parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(request.getExpirationDate(), userLocale));
+            parameters.put(prefix + Demand.RANGE, request.getRange());
+            parameters.put(prefix + Demand.RANGE_UNIT, request.getRangeUnit());
         }
         return this;
     }

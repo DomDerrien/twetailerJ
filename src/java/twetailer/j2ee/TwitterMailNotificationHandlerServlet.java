@@ -133,7 +133,7 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                 // Safe assumption: trigger a task to load the possibly just notified & waiting DMs
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
                 queue.add(
-                        url("/_admin/maelzel/loadTweets").
+                        url("/_tasks/loadTweets").
                             method(Method.GET)
                 );
                 // Forward the message to the "admins" list

@@ -224,15 +224,15 @@
                     <img src="/images/page_white_go_add.png" />
                     <%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_newDemand", locale) %>
                 </li><% if (userName != null) { %>
+                <li id="wishZoneMI" onclick="localModule.showZone('wishZone');">
+                    <span id="openWishCount" class="countValue">?</span>
+                    <img src="/images/page_white_love_list.png" />
+                    <%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_manageWishes", locale) %>
+                </li>
                 <li id="demandZoneMI" onclick="localModule.showZone('demandZone');">
                     <span id="openDemandCount" class="countValue">?</span>
                     <img src="/images/page_white_go_list.png" />
                     <%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_manageDemands", locale) %>
-                </li>
-                <li class="disabled" id="wishZoneMI">
-                    <span id="openWishCount" class="countValue">?</span>
-                    <img src="/images/page_white_love_list.png" />
-                    <%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_manageWishes", locale) %>
                 </li><% } %>
             </ul>
         </div>
@@ -288,9 +288,8 @@
         dfd.addCallback(function(response) { localModule.updateDemandCounter(response.resources); });
 
         // Fetch wishes
-        // var dfd = twetailer.Common.loadRemoteWishes(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
-        // dfd.addCallback(function(response) { localModule.updateWishCounter(response.resources); });
-        localModule.updateWishCounter([]);<%
+        var dfd = twetailer.Common.loadRemoteWishes(null /* lastModificationDate */, null /* overlayId */, pov, null /* hashtags */); // No modificationDate means "load all active Demands"
+        dfd.addCallback(function(response) { localModule.updateWishCounter(response.resources); });<%
         } %><%
         if (lastLocation != null) { %>
 
@@ -299,7 +298,7 @@
         } %>
     };
     localModule.showZone = function(selectedId) {
-        var zoneIds = ['widgetZone', 'demandZone'], idx = zoneIds.length, zoneId;
+        var zoneIds = ['widgetZone', 'demandZone', 'wishZone'], idx = zoneIds.length, zoneId;
         while (0 < idx) {
             -- idx;
             zoneId = zoneIds[idx];
@@ -314,7 +313,7 @@
         switch(selectedId) {
             case 'widgetZone': break;
             case 'demandZone': localModule.fetchDemandList(); break;
-            case 'wishZone': break;
+            case 'wishZone': localModule.fetchWishList(); break;
         }
     };
     localModule.updateDemandCounter = function(resources) {
@@ -598,6 +597,8 @@
                 localModule.fetchDemandList();
             });
         });
+    };
+    localModule.fetchWishList = function() {
     };
     --></script>
     <style type="text/css">

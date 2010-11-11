@@ -1850,14 +1850,14 @@ public class TestDemandValidator {
                 return null;
             }
         };
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertNull(demand.getHashTags());
     }
 
     @Test
     public void testFilterHashTagsII() throws ClientException, DataSourceException {
         Demand demand = new Demand();
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertNotNull(demand.getHashTags());
         assertEquals(0, demand.getHashTags().size());
     }
@@ -1866,7 +1866,7 @@ public class TestDemandValidator {
     public void testFilterHashTagsIII() throws ClientException, DataSourceException {
         Demand demand = new Demand();
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertEquals(1, demand.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
     }
@@ -1877,7 +1877,7 @@ public class TestDemandValidator {
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertEquals(1, demand.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
     }
@@ -1889,7 +1889,7 @@ public class TestDemandValidator {
         demand.setKey(demandKey);
         demand.setSource(Source.simulated);
         demand.addHashTag("test");
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertEquals(0, demand.getHashTags().size());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
@@ -1907,7 +1907,7 @@ public class TestDemandValidator {
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         demand.addHashTag("unit");
         demand.addHashTag("test");
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertEquals(1, demand.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
 
@@ -1926,7 +1926,7 @@ public class TestDemandValidator {
         demand.addHashTag("unit");
         demand.addHashTag("test");
         demand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        DemandValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), demand, "demand");
         assertEquals(1, demand.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, demand.getHashTags().get(0));
 

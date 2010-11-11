@@ -252,6 +252,16 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_state_expired" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>One of the possible states a command can have - canceled should be an accepted equivalent</note>
+            <tuv xml:lang="en">
+                <seg>expired</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_state_markedForDeletion" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

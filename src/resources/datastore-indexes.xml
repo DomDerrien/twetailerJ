@@ -29,6 +29,62 @@
     </datastore-index>
 
     <!--
+     Wish
+      -->
+    <!-- To get all wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all active wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all active wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="hashTags" direction="asc"/>
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all recently updated wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
+        <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all recently updated and still active wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all recently updated wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="hashTags" direction="asc"/>
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!-- To get all recently updated and still active wishes for the user -->
+    <datastore-index kind="Wish" ancestor="false" source="manual">
+        <property name="hashTags" direction="asc"/>
+        <property name="ownerKey" direction="asc"/>
+        <property name="stateCmdList" direction="asc"/>
+        <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <!--
      Demand
       -->
     <!-- To get all demands for the user -->

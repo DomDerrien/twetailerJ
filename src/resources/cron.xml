@@ -2,7 +2,7 @@
 <cronentries>
   <cron>
     <!-- Keep the configuration in sync with twetailer.task.DemandValidator#batchProcess() -->
-    <url>/_admin/maelzel/processPublishedDemands</url>
+    <url>/_tasks/processPublishedDemands</url>
     <description>Check if a new retailer can be notified about the published demands</description>
     <schedule>every 24 hours</schedule>
   </cron>

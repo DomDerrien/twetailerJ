@@ -215,6 +215,46 @@
             </tuv>
         </tu>
 
+        <tu tuid="command_message_body_wish_create" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    wish qty:X due-date:X tags:X {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_wish_update" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    wish wish:{wish>key} qty:{wish>quantity} due-date:{wish>dueDate} locale:{wish>location>postalCode} {wish>location>countryCode} tags:{wish>criteria} hashtags:{wish>hashTags} metadata:{wish>metadata} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_wish_cancel" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    cancel wish:{wish>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="command_message_body_wish_transform" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    transform wish:{wish>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="command_message_body_demand_create" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -319,6 +359,435 @@
         <!-- Customizable feedback messages -->
         <!-- ============================== -->
 
+        <tu tuid="short_core_wish_creation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>threadSubject}
+                {command>cancelWish}
+                {command>updateWish}
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {wish>owner>name}, listing newly created wish:{wish>key}...|
+                    wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
+                    locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
+                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    cc:{wish>cc}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_creation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {influencer>*}: influencer attributes
+                {command>threadSubject}
+                {command>cancelWish}
+                {command>updateWish}
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{wish>owner>name}</strong></p>
+                    <p>Your wish has just been created with:</p>
+                    <ul>
+                        <li>Details: {wish>criteria} HashTags:{wish>hashTags}</li>
+                        <li>Quantity: {wish>quantity};</li>
+                        <li>Due date: {wish>dueDate};</li>
+                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a>;</li>
+                        <li>Range: {wish>range} {wish>rangeUnit};</li>
+                    </ul>
+                    <p>
+                        We're keeping your wish {wish>key} between you and <strong>{wish>cc}</strong>.
+                        Anytime you can transform your wish in a demand that will be broadcasted to relevant stores in your area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in this wish, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelWish}&amp;subject={command>threadSubject}">Cancel wish</a>,
+                        or, if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {wish>owner>name} regarding the following wish creation...|
+                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} due-date:{wish>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_creation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {influencer>*}: influencer attributes
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>
+                        <strong>{wish>owner>name}</strong> has chosen to notify you of their new wish for:
+                    </p>
+                    <ul>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>Due date: <strong>{wish>dueDate}</strong></li>
+                        <li>Expiration date: {wish>expirationDate}</li>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Within: <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong></li>
+                    </ul>
+                    <p>
+                        The new wish {wish>key} is going to be kept private.
+                        Anytime you can transform this wish in a demand that will be broadcasted to relevant stores in the area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in being notified, you can send an email by clicking
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">Please remove</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_update_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful wish update.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>threadSubject}
+                {command>cancelWish}
+                {command>updateWish}
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {wish>owner>name}, listing your updated wish:{wish>key}...|
+                    wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
+                    locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
+                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    cc:{wish>cc}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_update_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>threadSubject}
+                {command>cancelWish}
+                {command>updateWish}
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{wish>owner>name}</strong>,</p>
+                    <p>
+                        We're confirming your <strong>update</strong> of the wish within <strong>{wish>range} {wish>rangeUnit}</strong> of
+                        <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        on <strong>{wish>dueDate}</strong>. You've also requested:
+                    </p>
+                    <ul>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>More options: <strong>{wish>metadata}</strong></li>
+                    </ul>
+                    <p>
+                        We're keeping your wish {wish>key} between you and <strong>{wish>cc}</strong>.
+                        Anytime you can transform your wish in a demand that will be broadcasted to relevant stores in your area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in this wish, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelWish}&amp;subject={command>threadSubject}">Cancel wish</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {demand>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the wish update.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    FYI: You have been CC'ed by {wish>owner>name} regarding the following wish update...|
+                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} dueDate:{wish>dueDate}.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_update_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message informing CC'ed users about the wish creation.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>location>*}: wish's location attributes
+                {wish>metadata>*}: optional meta data from the wish (vertical dependent)
+                {command>transformWish}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>
+                        <strong>{wish>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> wish
+                        within <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        on <strong>{wish>dueDate}</strong>. Also requested:
+                    </p>
+                    <ul>
+                        <li>Quantity: <strong>{wish>quantity}</strong></li>
+                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>More options: <strong>{wish>metadata}</strong></li>
+                    </ul>
+                    <p>
+                        The updated wish {wish>key} is still going to be kept private.
+                        Anytime you can transform this wish in a demand that will be broadcasted to relevant stores in the area
+                        by sending this email <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>transformWish}&amp;subject={command>threadSubject}">Transform wish</a>,
+                        by using our <a href="http://aps.facebook.com/anothersocialeconomy/">Facebook application</a> (if you're a Facebook user), or by
+                        using our <a href="http://anothersocialeconomy.appspot.com/console/">Console</a>.
+                    </p>
+                    <p>
+                        If for any reason, you're no longer interested in being notified, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">Please remove</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_cancellation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the consumer.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully canceled.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_cancellation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the consumer.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {wish>owner>name},</p>
+                    <p>Your <strong>wish {wish>key}</strong> has been <strong>canceled</strong>.</p>
+                    <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your friends, or, simply CC them next time.</p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_transformation_ackToInitiator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the transformation initiator.|
+                {wish>*}: wish attributes
+                {user>name}: name of the transformation initiator
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {user>name}, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed.
+                    The new demand is going to be validated and you'll receive an update shortly.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_transformation_ackToInitiator" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the transformation initiator.|
+                {user>name}: name of the transformation initiator
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {user>name},</p>
+                    <p>
+                        The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong> into a demand.
+                        The new demand is going to be validated band you'll receive an update shortly.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_transformation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the consumer.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully transformed.
+                    The new demand is going to be validated and you'll receive an update shortly.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_transformation_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the consumer.|
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi {wish>owner>name},</p>
+                    <p>
+                        Your <strong>wish {wish>key}</strong> has been <strong>transformed</strong> into a demand.
+                        The new demand is going to be validated band you'll receive an update shortly.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_wish_transformation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the cc'ed users.|
+                {wish>*}: wish attributes
+                {user>name}: name of the transformation initiator
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed
+                    by {user>name} into a demand that will be broadcasted to relevant stores.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_wish_transformation_ackToCCed" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming the wish canceling to the cc'ed users.|
+                {user>name}: name of the transformation initiator
+                {wish>*}: wish attributes
+                {wish>owner>name}: name of the wish owner
+                {wish>metadata>*}: optional meta data from the proposal (vertical dependent)
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi,</p>
+                    <p>
+                        The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong>.
+                        by {user>name} into a demand that will be broadcasted to relevant stores.
+                    </p>
+                    {message>footer}
+                    <p>Wish: {wish>key}.</p>
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="short_core_demand_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -330,6 +799,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -353,6 +823,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -378,6 +849,7 @@
                 {influencer>*}: influencer attributes
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -392,7 +864,7 @@
                         <li>Range: {demand>range} {demand>rangeUnit};</li>
                     </ul>
                     <p>
-                        We're anonymously broadcasting your demand {demand>key}, to relevant stores
+                        We're anonymously broadcasting your demand {demand>key} to relevant stores
                         and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.
                     </p>
                     <p>
@@ -419,6 +891,7 @@
                 {influencer>*}: influencer attributes
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -436,7 +909,7 @@
                         <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
-                        We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
+                        We're anonymously broadcasting your demand {demand>key} to relevant golf courses
                         and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.
                     </p>
                     <p>
@@ -552,7 +1025,7 @@
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
+                    <p>We're anonymously broadcasting their demand {demand>key} to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:support@ezToff.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
@@ -709,6 +1182,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -733,6 +1207,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -757,6 +1232,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -773,7 +1249,7 @@
                         <li>More options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>
-                        We're anonymously broadcasting your demand {demand>key}, to relevant stores
+                        We're anonymously broadcasting your demand {demand>key} to relevant stores
                         and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.
                     </p>
                     <p>
@@ -799,6 +1275,7 @@
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
                 {command>threadSubject}
                 {command>cancelDemand}
+                {command>updateDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -816,7 +1293,7 @@
                         <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
                     <p>
-                        We're anonymously broadcasting your demand {demand>key}, to relevant golf courses
+                        We're anonymously broadcasting your demand {demand>key} to relevant golf courses
                         and will communicate their proposals, as soon as possible, to you and <strong>{demand>cc}</strong> on your behalf.
                     </p>
                     <p>
@@ -892,7 +1369,7 @@
                         <li>Details: <strong>{demand>criteria}</strong></li>
                         <li>More options: <strong>{demand>metadata}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant stores and will communicate their proposals, as soon as possible.</p>
+                    <p>We're anonymously broadcasting their demand {demand>key} to relevant stores and will communicate their proposals, as soon as possible.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
@@ -929,7 +1406,7 @@
                         <li>Golf carts: <strong>{demand>metadata>golfCart}</strong></li>
                         <li>Details: <strong>{demand>criteria}</strong></li>
                     </ul>
-                    <p>We're anonymously broadcasting their demand {demand>key}, to relevant golf courses and will communicate their proposals, as soon as possible.</p>
+                    <p>We're anonymously broadcasting their demand {demand>key} to relevant golf courses and will communicate their proposals, as soon as possible.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">Please remove</a>, or,
@@ -952,6 +1429,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -973,6 +1451,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -994,6 +1473,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1030,6 +1510,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1066,6 +1547,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1087,6 +1569,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1108,6 +1591,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -1144,6 +1628,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {command>threadSubject}
                 {command>cancelProposal}
+                {command>updateProposal}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -2234,7 +2719,7 @@
             <note>
                 Message inviting the associate to close its proposal.|
                 {proposal>*}: proposal attributes
-                {proposal>owner>name}: name of the proposal owner
+                {proposal>owner>name}: name of the demand owner
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
@@ -2254,7 +2739,7 @@
             <note>
                 Message inviting the associate to close its proposal.|
                 {proposal>*}: proposal attributes
-                {proposal>owner>name}: name of the proposal owner
+                {proposal>owner>name}: name of the demand owner
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
@@ -2283,7 +2768,7 @@
             <note>
                 Message inviting the associate to close its proposal.|
                 {proposal>*}: proposal attributes
-                {proposal>owner>name}: name of the proposal owner
+                {proposal>owner>name}: name of the demand owner
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
@@ -2458,7 +2943,7 @@
             <note>
                 Message confirming the demand canceling to the consumer.|
                 {demand>*}: demand attributes
-                {demand>owner>name}: name of the proposal owner
+                {demand>owner>name}: name of the demand owner
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
             </note>
             <tuv xml:lang="en">
@@ -2474,7 +2959,7 @@
             <note>
                 Message confirming the demand canceling to the consumer.|
                 {demand>*}: demand attributes
-                {demand>owner>name}: name of the proposal owner
+                {demand>owner>name}: name of the demand owner
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
             </note>
             <tuv xml:lang="en">
@@ -2494,7 +2979,7 @@
             <note>
                 Message confirming the proposal canceling to the sale associate.|
                 {proposal>*}: proposal attributes
-                {proposal>owner>name}: name of the proposal owner
+                {proposal>owner>name}: name of the demand owner
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
@@ -2513,7 +2998,7 @@
             <note>
                 Message confirming the proposal canceling to the sale associate.|
                 {proposal>*}: proposal attributes
-                {proposal>owner>name}: name of the proposal owner
+                {proposal>owner>name}: name of the demand owner
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {demand>*}: demand attributes
                 {demand>metadata>*}: optional meta data from the proposal (vertical dependent)

@@ -1072,14 +1072,14 @@ public class TestProposalValidator {
                 return null;
             }
         };
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertNull(proposal.getHashTags());
     }
 
     @Test
     public void testFilterHashTagsII() throws ClientException, DataSourceException {
         Proposal proposal = new Proposal();
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertNotNull(proposal.getHashTags());
         assertEquals(0, proposal.getHashTags().size());
     }
@@ -1088,7 +1088,7 @@ public class TestProposalValidator {
     public void testFilterHashTagsIII() throws ClientException, DataSourceException {
         Proposal proposal = new Proposal();
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
     }
@@ -1099,7 +1099,7 @@ public class TestProposalValidator {
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
     }
@@ -1111,13 +1111,13 @@ public class TestProposalValidator {
         proposal.setKey(proposalKey);
         proposal.setSource(Source.simulated);
         proposal.addHashTag("test");
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertEquals(0, proposal.getHashTags().size());
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "test" }, Locale.ENGLISH);
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1129,14 +1129,14 @@ public class TestProposalValidator {
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
         proposal.addHashTag("unit");
         proposal.addHashTag("test");
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 
     @Test
@@ -1148,13 +1148,13 @@ public class TestProposalValidator {
         proposal.addHashTag("unit");
         proposal.addHashTag("test");
         proposal.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        ProposalValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal);
+        RequestValidator.filterHashTags(new MockPersistenceManager(), new Consumer(), proposal, "proposal");
         assertEquals(1, proposal.getHashTags().size());
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, proposal.getHashTags().get(0));
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, Locale.ENGLISH);
         String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { "unit test" }, Locale.ENGLISH);
-        assertEquals(LabelExtractor.get("pv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("dv_report_hashtag_warning", new Object[] { proposalRef, tags }, Locale.ENGLISH), sentText);
     }
 }

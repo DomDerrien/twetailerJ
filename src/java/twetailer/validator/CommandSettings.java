@@ -119,6 +119,7 @@ public class CommandSettings {
         closed,
         declined,
         cancelled,
+        expired,
         markedForDeletion
     }
 
