@@ -60,6 +60,7 @@
             dv.setAttribute("class", 'ase_buyItTab');
             dv.appendChild(ac);
             dc.getElementsByTagName('body')[0].appendChild(dv);
+            if (document.all) { dv.style.top = '100px'; }
         };
     installCSS();
     if (typeof window.ase_showWidget == "undefined") {

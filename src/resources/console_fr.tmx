@@ -1728,7 +1728,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous communiquerons leurs propositions.</seg>
+                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous enverrons leurs propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_2_title" dataType="text">
@@ -2227,11 +2227,18 @@
                 <seg>Quel véhicule cherchez-vous?</seg>
             </tuv>
         </tu>
+        <tu tuid="cdw_label_criteria" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Commentaires:</seg>
+            </tuv>
+        </tu>
         <tu tuid="cdw_label_make" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Constructeur</seg>
+                <seg>Constructeur:</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_placeholder_make" dataType="text">
@@ -2245,7 +2252,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Modèle</seg>
+                <seg>Modèle:</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_placeholder_model" dataType="text">
@@ -2255,23 +2262,23 @@
                 <seg>Jetta TDI</seg>
             </tuv>
         </tu>
-        <tu tuid="cdw_label_year" dataType="text">
+        <tu tuid="cdw_label_transmission" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Année</seg>
+                <seg>Vitesses:</seg>
             </tuv>
         </tu>
-        <tu tuid="cdw_placeholder_year" dataType="text">
+        <tu tuid="cdw_placeholder_transmission" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Nouvelle ou 2006</seg>
+                <seg>Automatique ou manuelle</seg>
             </tuv>
         </tu>
-        <tu tuid="cdw_helper_text" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="cdw_helper_text" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg><li>VW Jetta TDI 3 portes</li><li>2006 Subaru Legacy familiale GT bleue</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
             </tuv>

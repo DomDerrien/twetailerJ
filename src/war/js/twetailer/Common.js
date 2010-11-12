@@ -69,9 +69,11 @@
         _getLabel = domderrien.i18n.LabelExtractor.getFrom;
 
         _supportGeoLocation = navigator.geolocation;
-        var getCoordinatesButton = dijit.byId(getGeoButtonId);
-        if (getCoordinatesButton) {
-            getCoordinatesButton.set('disabled', !_supportGeoLocation);
+        if (!_supportGeoLocation) {
+            var getCoordinatesButton = dijit.byId(getGeoButtonId);
+            if (getCoordinatesButton) {
+                getCoordinatesButton.set('disabled', true);
+            }
         }
 
         return _getLabel;

@@ -66,8 +66,8 @@
 <body class="tundra">
     <div style="position:absolute;z-index:10;top:30px;right:5px;font-size:8pt;color:orange !important;font-weight:bold;">beta</div>
     <div id="introFlash">
-        <div><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
-        <span><%= LabelExtractor.get(ResourceFileId.third, "cw_redirection_information", locale) %></span>
+        <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
+        <div id="introFlashInfo"><%= LabelExtractor.get(ResourceFileId.third, "cw_redirection_information", locale) %></div>
     </div>
 
     <%
@@ -109,7 +109,7 @@
 
     <div class="dataZone" id="widgetZone"><div>
         <div id="pane1">
-            <div dojoType="dijit.form.Form" id="form1" class="content">
+            <div dojoType="dijit.form.Form" id="form1" class="content" onsubmit="return false;">
                 <% boolean showBrand = request.getParameter("hideBrand") == null;
                 String brand = request.getParameter("brand");
                 if (brand == null) {
@@ -119,21 +119,21 @@
                 %><div class="brand"><%= brand %></div><% }
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cdw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr>
-                        <td><label for="metadata.make"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %></label></td>
-                        <td><input dojoType="dijit.form.TextBox" id="metadata.make" name="metadata.make" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_make", locale) %>" style="width:100%;" required="true" type="text" /></td>
+                    <tr class="firstRow oddRow">
+                        <td class="firstCell"><label for="metadata.make"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %></label></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.make" name="metadata.make" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_make", locale) %>" style="width:100%;" required="true" type="text" /></td>
                     </tr>
-                    <tr>
-                        <td><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
-                        <td><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" /></td>
+                    <tr class="evenRow">
+                        <td class="firstCell"><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" /></td>
                     </tr>
-                    <tr>
-                        <td><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_year", locale) %></label></td>
-                        <td><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_year", locale) %>" style="width:100%;" type="text" /></td>
+                    <tr class="oddRow">
+                        <td class="firstCell"><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" /></td>
                     </tr>
-                    <tr>
-                        <td style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
-                        <td>
+                    <tr class="evenRow">
+                        <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
+                        <td class="lastCell">
                             <textarea
                                 dojoType="dijit.form.Textarea"
                                 id="tags"
@@ -160,12 +160,8 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_quantity", locale) %></label></td>
-                        <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
+                    <tr class="lastRow oddRow">
+                        <td class="firstCell lastCell" colspan="2" align="center">
                             <!-- ddd for the Wish implementation to come
                             <input dojoType="dijit.form.CheckBox" id="wishMode" type="checkbox" />
                             <label for="demoMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
@@ -204,13 +200,13 @@
             </div>
         </div>
         <div id="pane2" style="display:none;">
-            <div dojoType="dijit.form.Form" id="form2" class="content">
+            <div dojoType="dijit.form.Form" id="form2" class="content" onsubmit="return false;">
                 <% if (showBrand) {
                 %><div class="brand"><%= brand %></div><% }
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_2_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr>
-                        <td><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
+                    <tr class="firstRow oddRow">
+                        <td class="firstCell"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
                         <td>
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
@@ -224,7 +220,7 @@
                                 type="text"
                             />
                         </td>
-                            <td style="width:20px;padding-right:0px !important;">
+                        <td class="lastCell" style="width:20px;padding-right:0px !important;">
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconGPS"
@@ -235,9 +231,9 @@
                             ></button>
                         </td>
                     </tr>
-                    <tr>
-                        <td><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
-                        <td colspan="2">
+                    <tr class="evenRow">
+                        <td class="firstCell"><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
+                        <td class="lastCell" colspan="2">
                             <select
                                 dojoType="dojox.form.DropDownSelect"
                                 id="countryCode"
@@ -252,9 +248,9 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_range", locale) %></label></td>
-                        <td colspan="2">
+                    <tr class="lastRow oddRow">
+                        <td class="firstCell"><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_range", locale) %></label></td>
+                        <td class="lastCell" colspan="2">
                             <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" />
                         </td>
                     </tr>
@@ -288,18 +284,18 @@
             </div>
         </div>
         <div id="pane3" style="display:none;">
-            <div dojoType="dijit.form.Form" id="form3" class="content">
+            <div dojoType="dijit.form.Form" id="form3" class="content" onsubmit="return false;">
                 <% if (showBrand) {
                 %><div class="brand"><%= brand %></div><% }
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr>
-                        <td><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_date", locale) %></label></td>
-                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
+                    <tr class="firstRow oddRow">
+                        <td class="firstCell"><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_date", locale) %></label></td>
+                        <td class="lastCell"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
                     </tr>
-                    <tr>
-                        <td><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
-                        <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T00:00" /></td>
+                    <tr class="lastRow evenRow">
+                        <td class="firstCell"><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
+                        <td class="lastCell"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T00:00" /></td>
                     </tr>
                 </table>
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
@@ -331,15 +327,15 @@
             </div>
         </div>
         <div id="pane4" style="display:none;">
-            <div dojoType="dijit.form.Form" id="form4" class="content">
+            <div dojoType="dijit.form.Form" id="form4" class="content" onsubmit="return false;">
                 <% if (showBrand) {
                 %><div class="brand"><%= brand %></div><% }
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_4_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
-                        <tr id="friendRow0">
-                            <td style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
-                            <td style="text-align: right;" colspan="2">
+                        <tr class="firstRow oddRow" id="friendRow0">
+                            <td class="firstCell" style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
+                            <td class="lastCell" style="text-align: right;" colspan="2">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
                                     id="email0"
@@ -354,8 +350,8 @@
                                 />
                             </td>
                         </tr>
-                        <tr id="friendRow1">
-                            <td><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
+                        <tr class="lastRow evenRow" id="friendRow1">
+                            <td class="firstCell"><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
                             <td style="text-align: right;">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
@@ -370,7 +366,7 @@
                                     type="text"
                                 />
                             </td>
-                            <td style="width:20px;padding-right:0px !important;">
+                            <td class="lastCell" style="width:20px;padding-right:0px !important;">
                                 <button
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
@@ -514,7 +510,7 @@
                 }
             }).play();
             localModule.init();<%
-            if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
+            if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName()) && !"10.0.2.2".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
         });
@@ -547,8 +543,8 @@
     };
     localModule.controlTagField = function() {
         var tagField = dijit.byId('tags');
-        var criteria = tagField.get('value').trim();
-        if (0 < criteria.length || 0 < dijit.byId('metadata.make').get('value').trim().length || 0 < dijit.byId('metadata.model').get('value').trim().length) {
+        var criteria = dojo.trim(tagField.get('value'));
+        if (0 < criteria.length || 0 < dojo.trim(dijit.byId('metadata.make').get('value')).length || 0 < dojo.trim(dijit.byId('metadata.model').get('value')).length) {
             return true;
         }
         var ttId = 'tooltipId';
@@ -571,7 +567,7 @@
             function() {
                 var tooltip = dijit.byId(ttId);
                 if (tooltip) {
-                tooltip.destroy();
+                    tooltip.destroy();
                 }
                 dojo.removeClass(tagField.domNode, 'dijitError');
                 dojo.disconnect(handle);
@@ -585,10 +581,10 @@
             var form = dijit.byId('form' + sourceIdx);
             if (form != null) {
                 if (!form.validate()) {
-                    return;
+                    return false;
                 }
                 if (sourceIdx == 1 && !localModule.controlTagField()) {
-                    return;
+                    return false;
                 }
             }
         }
@@ -603,6 +599,7 @@
         case 3: dijit.byId('next3').focus(); break;
         case 4: dijit.byId('email0').focus(); break;
         }
+        return false;
     };
     localModule.sendRequest = function() {
         // Last form validation
@@ -612,17 +609,17 @@
         }
         // Request preparation
         var criteria = [];
-        if (0 < dijit.byId('metadata.make').get('value').trim().length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>:' + dijit.byId('metadata.make').get('value').trim());
+        if (0 < dojo.trim(dijit.byId('metadata.make').get('value')).length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>:' + dojo.trim(dijit.byId('metadata.make').get('value')));
         }
-        if (0 < dijit.byId('metadata.model').get('value').trim().length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>:' + dijit.byId('metadata.model').get('value').trim());
+        if (0 < dojo.trim(dijit.byId('metadata.model').get('value')).length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>:' + dojo.trim(dijit.byId('metadata.model').get('value')));
         }
-        if (0 < dijit.byId('metadata.year').get('value').trim().length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_year", locale) %>:' + dijit.byId('metadata.year').get('value').trim());
+        if (0 < dojo.trim(dijit.byId('metadata.year').get('value')).length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>:' + dojo.trim(dijit.byId('metadata.year').get('value')));
         }
-        if (0 < dijit.byId('tags').get('value').trim().length) {
-            criteria = criteria.concat(dijit.byId('tags').get('value').trim().split(/\s+/));
+        if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
+            criteria = dojo.trim(criteria.concat(dijit.byId('tags').get('value')).split(/\s+/));
         }
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
@@ -634,7 +631,7 @@
             <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), dijit.byId('time').get('value')),
             <%= Demand.RANGE %>: dijit.byId('range').get('value'),
             <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
-            <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
+            <%= Demand.QUANTITY %>: 1, // Fixed to 1
             // <%= Demand.HASH_TAGS %>: [], // No hash tag to communicate
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
             <%= Demand.CRITERIA %>: criteria

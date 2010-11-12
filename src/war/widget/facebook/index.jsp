@@ -215,7 +215,7 @@
         <% if (userName != null) {
         %><div id="welcome"><%= LabelExtractor.get(ResourceFileId.third, "fbc_welcome_loggedUser", new Object[] { userName }, locale) %></div><%
         } else {
-        %><div id="errorMsg"><%= LabelExtractor.get(ResourceFileId.third, "fbc_welcome_unknownUser", new Object[] { FacebookConnector.bootstrapAuthUrl(request), FacebookConnector.FB_MAIN_APP_URL }, locale) %></div><%
+        %><div id="errorMsg"><%= LabelExtractor.get(ResourceFileId.third, "fbc_welcome_unknownUser", new Object[] { FacebookConnector.bootstrapAuthUrl(request), FacebookConnector.getAppUrl(request) }, locale) %></div><%
         } %>
         <div class="divider">&nbsp;</div>
         <div id="navigation">

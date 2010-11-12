@@ -41,14 +41,14 @@ body {
     z-index: 999;
 }
 
-#introFlash>div {
+#introFlashWait {
     position: absolute;
     top: 40%;
     width: 100%;
     text-align: center;
 }
 
-#introFlash>div>span {
+#introFlashWait>span {
     background-color: #F9F9F9;
     border: 1px solid #BFBFBF;
     padding: 4px;

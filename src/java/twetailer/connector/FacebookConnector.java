@@ -52,29 +52,45 @@ public class FacebookConnector {
     public static final String ASE_FACEBOOK_APP_KEY = "ead60783729d9df1b84ed3eec87547bf";
     public static final String ASE_FACEBOOK_APP_SECRET = "a48c963252a56949b052f09af72e967c";
 
-    public static final String DEV_FACEBOOK_APP_ID = "164780320208648";
-    public static final String DEV_FACEBOOK_APP_KEY = "cc9933d240f333508cee8490711ce4c4";
-    public static final String DEV_FACEBOOK_APP_SECRET = "2213d315b21fa7d74e0ede71f4567f19";
+    public static final String DEV_LCLHOST_FACEBOOK_APP_ID = "164780320208648";
+    public static final String DEV_LCLHOST_FACEBOOK_APP_KEY = "cc9933d240f333508cee8490711ce4c4";
+    public static final String DEV_LCLHOST_FACEBOOK_APP_SECRET = "2213d315b21fa7d74e0ede71f4567f19";
+
+    public static final String DEV_VRTBOX_FACEBOOK_APP_ID = "166483420039607";
+    public static final String DEV_VRTBOX_FACEBOOK_APP_KEY = "494d72d784a39564207a581437459a28";
+    public static final String DEV_VRTBOX_FACEBOOK_APP_SECRET = "aa54e00527e5d60dcff95c32edd12d7b";
 
     public static final String FB_GRAPH_AUTH_URL = "https://graph.facebook.com/oauth/authorize";
 
     protected static boolean inLocalHost = false;
+    protected static boolean inVirtualBox = false;
 
     public static String bootstrapAuthUrl(HttpServletRequest request) throws UnsupportedEncodingException {
-        inLocalHost = "localhost".equals(request.getServerName());
+        inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
+        inVirtualBox = "10.0.2.2".equals(request.getServerName());
         return FB_GRAPH_AUTH_URL +
-            "?client_id=" + (inLocalHost ? DEV_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
+            "?client_id=" + (inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_ID : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
             "&scope=" + getTwetailerScope() +
             "&display=page" +
             "&redirect_uri=";
     }
 
+    public static String getAppUrl(HttpServletRequest request) throws UnsupportedEncodingException {
+        inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
+        inVirtualBox = "10.0.2.2".equals(request.getServerName());
+        return inLocalHost ? FB_LCLHOST_APP_URL : inVirtualBox ? FB_VRTBOX_APP_URL : FB_ASE_APP_URL;
+    }
+
     public static final String FB_BUS_PAGE_URL = "http://www.facebook.com/pages/AnotherSocialEconomy/156908804326834";
     public static final String FB_GROUP_URL = "http://www.facebook.com/group.php?gid=165456116817105";
-    public static final String FB_MAIN_APP_URL = "http://apps.facebook.com/anothersocialeconomy/";
+
+    public static final String FB_ASE_APP_URL = "http://apps.facebook.com/anothersocialeconomy/";
+    public static final String FB_LCLHOST_APP_URL = "http://apps.facebook.com/ase-localhost/";
+    public static final String FB_VRTBOX_APP_URL = "http://apps.facebook.com/ase-virtualbox/";
 
     public static final String ASE_MAIN_APP_URL = "http://anothersocialeconomy.appspot.com/widget/facebook/";
-    public static final String LCL_MAIN_APP_URL = "http://localhost:9999/widget/facebook/";
+    public static final String LCLHOST_MAIN_APP_URL = "http://localhost:9999/widget/facebook/";
+    public static final String VRTBOX_MAIN_APP_URL = "http://10.0.2.2:9999/widget/facebook/";
 
     // Setter for injection of a MockLogger at test time
     protected static void setLogger(Logger mock) {
@@ -246,8 +262,8 @@ public class FacebookConnector {
         // Get the OAuth access token for this user
         code = URLEncoder.encode(code, StringUtils.JAVA_UTF8_CHARSET);
         String tokenURL = "https://graph.facebook.com/oauth/access_token" +
-            "?client_id=" + (inLocalHost ? DEV_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
-            "&client_secret=" + (inLocalHost ? DEV_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET) +
+            "?client_id=" + (inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_ID : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_ID : ASE_FACEBOOK_APP_ID) +
+            "&client_secret=" + (inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_SECRET : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET) +
             "&redirect_uri=" + URLEncoder.encode(requestSource, StringUtils.JAVA_UTF8_CHARSET) +
             "&code=" + code;
         log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
@@ -421,8 +437,9 @@ public class FacebookConnector {
             }
 
             try {
-                inLocalHost = "localhost".equals(request.getServerName());
-                SecretKeySpec secretKeySpec = new SecretKeySpec((inLocalHost ? DEV_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET).getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
+                inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
+                inVirtualBox = "10.0.2.2".equals(request.getServerName());
+                SecretKeySpec secretKeySpec = new SecretKeySpec((inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_SECRET : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET).getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 Mac messageAuthenticationCode = Mac.getInstance(ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 messageAuthenticationCode.init(secretKeySpec);
                 if (!Arrays.equals(new Base64(true).decode(signature.getBytes()), messageAuthenticationCode.doFinal(encodedPayload.getBytes()))) {

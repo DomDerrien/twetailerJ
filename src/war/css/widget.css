@@ -25,24 +25,25 @@ a, a:hover, a:visited, a:link, a:active {
     z-index: 999;
 }
 
-#introFlash>div {
+#introFlashWait {
     position: absolute;
     top: 40%;
     width: 100%;
     text-align: center;
 }
 
-#introFlash>div>span {
+#introFlashWait>span {
     background-color: #F9F9F9;
     border: 1px solid #BFBFBF;
     padding: 4px;
     line-height: 30px;
 }
 
-#introFlash>span {
+#introFlashInfo {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     color: #252525;
+    max-width: 300px;
 }
 
 .dataZone {
@@ -127,33 +128,33 @@ a, a:hover, a:visited, a:link, a:active {
     color: black;
 }
 
-.form>tbody>tr:nth-child(2n+1) {
+.form .oddRow {
     background-color: #808080;
 }
 
-.form>tbody>tr:nth-child(2n+1) label {
+.form .oddRow label {
     color: white;
 }
 
-.form>tbody>tr:nth-child(2n) td {
+.form .evenRow td {
 }
 
-.form>tbody>tr>td {
+.form td {
     border-top: 1px solid black;
     padding: 3px 0 3px 3px;
     vertical-align: middle;
 }
 
-.form>tbody>tr>td:first-child {
+.form .firstCell {
     border-left: 1px solid black;
 }
 
-.form>tbody>tr>td:last-child {
+.form .lastCell {
     border-right: 1px solid black;
     padding-right: 10px;
 }
 
-.form>tbody>tr:last-child td {
+.form .lastRow td {
     border-bottom: 1px solid black;
 }
 

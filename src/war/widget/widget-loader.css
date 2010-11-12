@@ -10,7 +10,7 @@
     -no-moz-box-shadow: -3px 3px 10px #aaa;
     padding: 5px;
     position: fixed;
-    top: 50%;
+    top: 300px;
     left: -5px;
     background-color: #fff800;
     -webkit-transform-origin: left top;
@@ -20,7 +20,6 @@
     -o-transform-origin: left top;
     -o-transform: rotate(-90deg);
     transform: rotate(90deg);
-    writing-mode: tb-rl;
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
     color:red;

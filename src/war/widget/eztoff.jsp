@@ -61,7 +61,8 @@
 </head>
 <body class="tundra">
     <div id="introFlash">
-        <div><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
+        <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
+        <div id="introFlashInfo"><%= LabelExtractor.get(ResourceFileId.third, "cw_redirection_information", locale) %></div>
     </div>
 
     <%
@@ -111,7 +112,7 @@
                 <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
                 <div class="step inactive goal"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_4_progressBarItem", locale) %></div>
             </div>
-            <div dojoType="dijit.form.Form" id="form1" class="content">
+            <div dojoType="dijit.form.Form" id="form1" class="content" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr id="postalCodeRow" style="display:none;">
@@ -208,7 +209,7 @@
                 <div class="step inactive"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
                 <div class="step inactive goal"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_4_progressBarItem", locale) %></div>
             </div>
-            <div dojoType="dijit.form.Form" id="form2" class="content">
+            <div dojoType="dijit.form.Form" id="form2" class="content" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_2_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr>
@@ -289,7 +290,7 @@
                 <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
                 <div class="step inactive goal"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_4_progressBarItem", locale) %></div>
             </div>
-            <div dojoType="dijit.form.Form" id="form3" class="form">
+            <div dojoType="dijit.form.Form" id="form3" class="form" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_title", locale) %></div>
                 <div style="margin-left:20px;">
                     <div>
@@ -384,7 +385,7 @@
                 }
             }).play();
             localModule.init();<%
-            if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName())) { %>
+            if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName()) && !"10.0.2.2".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
         });

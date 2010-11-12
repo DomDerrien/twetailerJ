@@ -10,13 +10,13 @@
     String colorBrand = request.getParameter("color-brand");%>
         body, .dataZone, .hint, .comment, label {<%
         if (color != null && 0 < color.length()) { %>color:<%= color.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #introFlash>span, .dataZone .title, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
+        #introFlashInfo, .dataZone .title, .progressBar .active, .poweredBy a, .poweredBy a:hover, .poweredBy a:visited {<%
         if (colorTitle != null && 0 < colorTitle.length()) { %>color:<%= colorTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         .dataZone .brand {<%
         if (colorBrand != null && 0 < colorBrand.length()) { %>color:<%= colorBrand.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         a, a:hover, a:visited {<%
         if (colorLink != null && 0 < colorLink.length()) { %>color:<%= colorLink.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #introFlash>div>span, .form>tbody>tr:nth-child(2n+1) label {<%
+        #introFlashWait>span, .oddRow label {<%
         if (colorOddRow != null && 0 < colorOddRow.length()) { %>color:<%= colorOddRow.replaceAll(";|<|>|\\:", "") %>;<% } %> }
 <%
     String backgroundImage = request.getParameter("background-image");
@@ -25,9 +25,9 @@
 %>
         .dataZone {<%
         if (backgroundImage != null && 0 < backgroundImage.length()) { %>background-image:url(<%= backgroundImage.replaceAll(";|<|>", "") %>);<% } %> }
-        #introFlash, .dataZone, .dataZone>div, .form>tbody>tr:nth-child(2n) {<%
+        #introFlash, .dataZone, .dataZone>div, .evenRow {<%
         if (backgroundColor != null && 0 < backgroundColor.length()) { %>background-color:<%= backgroundColor.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #introFlash>div>span, .form>tbody>tr:nth-child(2n+1) {<%
+        #introFlashWait>span, .oddRow {<%
         if (backgroundColorOddRow != null && 0 < backgroundColorOddRow.length()) { %>background-color:<%= backgroundColorOddRow.replaceAll(";|<|>|\\:", "") %>;<% } %> }
 <%
     String fontSize = request.getParameter("font-size");
@@ -40,7 +40,7 @@
         body, th, td, textarea {<%
         if (fontFamily != null && 0 < fontFamily.length()) { %>font-family:<%= fontFamily.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSize != null && 0 < fontSize.length()) { %>font-size:<%= fontSize.replaceAll(";|<|>|\\:", "") %>;<% } %> }
-        #introFlash>span, .title {<%
+        #introFlashInfo, .title {<%
         if (fontFamilyTitle != null && 0 < fontFamilyTitle.length()) { %>font-family:<%= fontFamilyTitle.replaceAll(";|<|>|\\:", "") %>;<% }
         if (fontSizeTitle != null && 0 < fontSizeTitle.length()) { %>font-size:<%= fontSizeTitle.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         .dataZone .brand {<%

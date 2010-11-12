@@ -2747,11 +2747,19 @@
             </tuv>
         </tu>
 
+        <tu tuid="cdw_label_criteria" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Comments:</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cdw_label_make" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Make</seg>
+                <seg>Make:</seg>
             </tuv>
         </tu>
 
@@ -2767,7 +2775,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Model</seg>
+                <seg>Model:</seg>
             </tuv>
         </tu>
 
@@ -2779,19 +2787,19 @@
             </tuv>
         </tu>
 
-        <tu tuid="cdw_label_year" datatype="Text">
+        <tu tuid="cdw_label_transmission" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Year</seg>
+                <seg>Transmission:</seg>
             </tuv>
         </tu>
 
-        <tu tuid="cdw_placeholder_year" datatype="Text">
+        <tu tuid="cdw_placeholder_transmission" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>New or 2006</seg>
+                <seg>Standard or Manual</seg>
             </tuv>
         </tu>
 
