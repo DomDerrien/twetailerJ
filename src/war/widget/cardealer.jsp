@@ -619,7 +619,7 @@
             criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>:' + dojo.trim(dijit.byId('metadata.year').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
-            criteria = dojo.trim(criteria.concat(dijit.byId('tags').get('value')).split(/\s+/));
+            criteria = criteria.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
         }
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {

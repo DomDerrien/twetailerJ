@@ -2125,7 +2125,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Connecting to <strong>AnotherSocialEconomy</strong> server, your confidential link between <strong>Online shopping</strong> and <strong>Offline buying</strong>...</seg>
+                <seg>Connecting to <strong>AnotherSocialEconomy</strong>'s server...<br/><br/>Your <strong>confidential</strong> missing link between <strong>shopping</strong> online and <strong> buying</strong> offline.</seg>
             </tuv>
         </tu>
 

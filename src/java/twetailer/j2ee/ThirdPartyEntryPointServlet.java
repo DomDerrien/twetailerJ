@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
@@ -13,8 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import twetailer.ReservedOperationException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.InfluencerOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.DemandSteps;
@@ -43,6 +46,13 @@ import domderrien.jsontools.JsonParser;
  */
 @SuppressWarnings("serial")
 public class ThirdPartyEntryPointServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger(ThirdPartyEntryPointServlet.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
 
     private final static String DEMAND_PREFIX = "/Demand";
     private final static String LOCATION_PREFIX = "/Location";
@@ -58,16 +68,17 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         out.put("success", true);
         JsonObject in = null;
 
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
             in = new GenericJsonObject(request);
 
             if (LOCATION_PREFIX.equals(pathInfo)) {
-                verifyReferralId(in, Action.list, Location.class.getName(), request);
+                verifyReferralId(pm, in, Action.list, Location.class.getName(), request);
                 // TODO
             }
             else if (STORE_PREFIX.equals(pathInfo)) {
-                verifyReferralId(in, Action.list, Store.class.getName(), request);
+                verifyReferralId(pm, in, Action.list, Store.class.getName(), request);
                 // TODO
             }
             else {
@@ -85,6 +96,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             response.setStatus(500); // Internal Server Error
             out = BaseRestlet.processException(ex, "doGet", pathInfo);
         }
+        finally {
+            pm.close();
+        }
 
         out.toStream(response.getOutputStream(), false);
     }
@@ -98,40 +112,35 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         out.put("success", true);
         JsonObject in = null;
 
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // TODO: verify Content-type == "application/json"
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                if (DEMAND_PREFIX.equals(pathInfo)) {
-                    verifyReferralId(in, Action.demand, Demand.class.getName(), request);
+            if (DEMAND_PREFIX.equals(pathInfo)) {
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName(), request);
 
-                    String email = in.getString(Consumer.EMAIL);
-                    if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
-                        throw new IllegalArgumentException("Invalid sender email address");
+                String email = in.getString(Consumer.EMAIL);
+                if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
+                    throw new IllegalArgumentException("Invalid sender email address");
+                }
+                InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
+                Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
+                if (consumer.getAutomaticLocaleUpdate()) {
+                    String language = in.getString(Consumer.LANGUAGE);
+                    if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
+                        consumer.setLanguage(language);
+                        BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
                     }
-                    InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
-                    Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
-                    if (consumer.getAutomaticLocaleUpdate()) {
-                        String language = in.getString(Consumer.LANGUAGE);
-                        if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
-                            consumer.setLanguage(language);
-                            BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
-                        }
-                    }
+                }
 
-                    in.put(Demand.SOURCE, Source.widget.toString());
-                    DemandSteps.createDemand(pm, in, consumer);
-                }
-                else {
-                    response.setStatus(404); // Not Found
-                    out.put("success", false);
-                    out.put("reason", "URL not supported");
-                }
+                in.put(Demand.SOURCE, Source.widget.toString());
+                DemandSteps.createDemand(pm, in, consumer);
             }
-            finally {
-                pm.close();
+            else {
+                response.setStatus(404); // Not Found
+                out.put("success", false);
+                out.put("reason", "URL not supported");
             }
         }
         catch (ReservedOperationException ex) {
@@ -142,6 +151,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
             out = BaseRestlet.processException(ex, "doPost", pathInfo);
+        }
+        finally {
+            pm.close();
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -169,9 +181,16 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         out.toStream(response.getOutputStream(), false);
     }
 
-    protected void verifyReferralId(JsonObject parameters, Action action, String entityName, HttpServletRequest request) throws ReservedOperationException {
-        if (!parameters.containsKey("referralId")) {
+    public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName, HttpServletRequest request) throws ReservedOperationException {
+        if (!parameters.containsKey("referralId")) { // Missing parameter
+            log.warning("Missing referralId");
             throw new ReservedOperationException(action, entityName);
         }
+        String referralId = parameters.getString(Influencer.REFERRAL_ID).trim();
+        if (referralId.length() != 0 && !referralId.equals("0") && !InfluencerOperations.verifyReferralIdValidity(pm, referralId)) {
+            log.warning("Invalid referralId: " + referralId);
+            throw new ReservedOperationException(action, entityName);
+        }
+        log.warning("Valid referralId: " + referralId);
     }
 }

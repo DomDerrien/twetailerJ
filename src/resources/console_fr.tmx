@@ -1693,7 +1693,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Connection au serveur de <strong>AnotherSocialEconomy</strong>, votre lien confidentiel entre le <strong>Magasinage en ligne</strong> et les <strong>Achats en boutique</strong>...</seg>
+                <seg>Connection au serveur de <strong>AnotherSocialEconomy</strong>...<br /><br />Votre lien <strong>confidentiel</strong> entre le <strong>magasinage</strong> en ligne et les <strong>achats</strong> en boutique.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_brand" dataType="text">

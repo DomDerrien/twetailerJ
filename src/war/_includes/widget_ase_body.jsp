@@ -578,7 +578,7 @@
             <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             // <%= Demand.HASH_TAGS %>: [], // No hash tag to communicate
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
-            <%= Demand.CRITERIA %>: dijit.byId('tags').get('value').split(/\s+/)
+            <%= Demand.CRITERIA %>: dojo.trim(dijit.byId('tags').get('value')).split(/\s+/)
         };
         if (dijit.byId('demoMode').get('value') !== false) {
             console.log('demo mode: true');

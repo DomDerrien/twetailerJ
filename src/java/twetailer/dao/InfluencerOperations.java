@@ -4,6 +4,8 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.Influencer;
+import twetailer.task.step.BaseSteps;
+import domderrien.i18n.DateUtils;
 
 /**
  * Controller defining various methods used for the CRUD operations on Influencer entities
@@ -38,7 +40,10 @@ public class InfluencerOperations extends BaseOperations {
      * @return Just created resource
      */
     public Influencer createInfluencer(PersistenceManager pm, Influencer influencer) {
-        return pm.makePersistent(influencer);
+        influencer = pm.makePersistent(influencer);
+        influencer.setReferralId(generateReferralId(influencer.getKey()));
+        influencer = pm.makePersistent(influencer);
+        return influencer;
     }
 
     /**
@@ -115,5 +120,48 @@ public class InfluencerOperations extends BaseOperations {
      */
     public Influencer updateInfluencer(PersistenceManager pm, Influencer influencer) {
         return pm.makePersistent(influencer);
+    }
+
+    public static String generateReferralId(Long influencerKey) {
+        Long salt = 435422321L;
+        Long reducedNow = DateUtils.getNowCalendar().getTimeInMillis() % salt;
+        Long signature = influencerKey * reducedNow * influencerKey.hashCode();
+        return influencerKey.toString() + "-" + signature.toString();
+    }
+
+    public static boolean verifyReferralIdValidity(PersistenceManager pm, String referralId) {
+        int limit = referralId.length();
+        int idx = 0, firstDash = -1, secondDash = -1;
+        while (idx < limit) {
+            char digit = referralId.charAt(idx);
+            if (digit == '-') {
+                if (firstDash == -1) { firstDash = idx; }
+                else if (secondDash == -1) { secondDash = idx; }
+                else { // More than two dashes
+                    return false;
+                }
+            }
+            else if (digit < '0' || '9' < digit) { // Not a digit
+                return false;
+            }
+            idx ++;
+        }
+        if (secondDash == -1) { // Not exactly two dashes
+            return false;
+        }
+        if (referralId.length() - secondDash != 3) { // Not exactly two variable digits
+            return false;
+        }
+        try {
+            Long influencerKey = Long.valueOf(referralId.substring(0, firstDash));
+            Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, influencerKey);
+            if (!influencer.getReferralId().equals(referralId.substring(0, secondDash))) {
+                return false;
+            }
+        }
+        catch(Exception ex) {
+            return false;
+        }
+        return true;
     }
 }
