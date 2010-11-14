@@ -2227,6 +2227,13 @@
                 <seg>Quel véhicule cherchez-vous?</seg>
             </tuv>
         </tu>
+        <tu tuid="cdw_carMakers" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Volkswagen,BMW,Audi,Subaru,Suzuki,GM,Buick,Honda,Toyota</seg>
+            </tuv>
+        </tu>
         <tu tuid="cdw_label_criteria" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

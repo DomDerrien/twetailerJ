@@ -563,7 +563,7 @@
                         <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Wish:{wish>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Wish: {demand>key}.</p>
+                    <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1259,7 +1259,7 @@
                         <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1303,7 +1303,7 @@
                         <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1377,7 +1377,7 @@
                         <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
@@ -1414,7 +1414,7 @@
                         <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>

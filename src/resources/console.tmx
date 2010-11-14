@@ -2747,6 +2747,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cdw_carMakers" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Volkswagen,BMW,Audi,Subaru,Suzuki,GM,Buick,Honda,Toyota</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cdw_label_criteria" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

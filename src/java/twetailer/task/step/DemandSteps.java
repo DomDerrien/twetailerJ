@@ -23,10 +23,12 @@ import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
+import twetailer.dao.InfluencerOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
@@ -331,6 +333,11 @@ public class DemandSteps extends BaseSteps {
         }
 
         Demand demand = getDemandOperations().createDemand(pm, parameters, owner.getKey());
+
+        if (parameters.containsKey(Influencer.REFERRAL_ID)) {
+            demand.setInfluencerKey(InfluencerOperations.getInfluencerKey(parameters.getString(Influencer.REFERRAL_ID)));
+            demand = getDemandOperations().createDemand(pm, demand);
+        }
 
         // Related workflow step
         MaelzelServlet.triggerValidationTask(demand);

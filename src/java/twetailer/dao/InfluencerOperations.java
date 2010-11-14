@@ -129,12 +129,14 @@ public class InfluencerOperations extends BaseOperations {
         return influencerKey.toString() + "-" + signature.toString();
     }
 
+    public static final char INFORMATION_SEPARATOR = '-';
+
     public static boolean verifyReferralIdValidity(PersistenceManager pm, String referralId) {
         int limit = referralId.length();
         int idx = 0, firstDash = -1, secondDash = -1;
         while (idx < limit) {
             char digit = referralId.charAt(idx);
-            if (digit == '-') {
+            if (digit == INFORMATION_SEPARATOR) {
                 if (firstDash == -1) { firstDash = idx; }
                 else if (secondDash == -1) { secondDash = idx; }
                 else { // More than two dashes
@@ -163,5 +165,15 @@ public class InfluencerOperations extends BaseOperations {
             return false;
         }
         return true;
+    }
+
+    public static Long getInfluencerKey(String referralId) {
+        // Assume the referralId is valid
+        return Long.valueOf(referralId.substring(0, referralId.indexOf(InfluencerOperations.INFORMATION_SEPARATOR)));
+    }
+
+    public static Long getReferralVariableIndex(String referralId) {
+        // Assume the referralId is valid
+        return Long.valueOf(referralId.substring(referralId.lastIndexOf(InfluencerOperations.INFORMATION_SEPARATOR) + 1));
     }
 }
