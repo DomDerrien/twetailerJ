@@ -80,7 +80,7 @@ public class SaleAssociateSteps extends BaseSteps {
         if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin()) {
             throw new ReservedOperationException("SaleAssociate instances can only be created by Store admins");
         }
-        parameters.put(SaleAssociate.CREATOR_KEY, loggedConsumer.getKey());
+        parameters.put(SaleAssociate.CREATOR_KEY, isPrivileged ? 0L : loggedConsumer.getKey());
 
         // Verify the consumerKey existence
         if (!parameters.containsKey(SaleAssociate.CONSUMER_KEY)) {

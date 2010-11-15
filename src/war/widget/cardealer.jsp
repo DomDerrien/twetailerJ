@@ -118,21 +118,36 @@
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr class="firstRow oddRow">
                         <td class="firstCell"><label for="metadata.make"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %></label></td>
-                        <td class="lastCell">
-                            <% String[] carMakers = LabelExtractor.get(ResourceFileId.third, "cdw_carMakers", locale).split(",");
-                            %><select class="selectbox" dojoType="dijit.form.Select" id="metadata.make" name="metadata.make"><%
+                        <td class="lastCell"><%
+                            String carMaker = request.getParameter("metadata.make");
+                            if (carMaker == null) {
+                                carMaker = "";
+                            }
+                            String[] carMakers = LabelExtractor.get(ResourceFileId.third, "cdw_carMakers", locale).split(",");
+                            %>
+                            <select class="selectbox" dojoType="dijit.form.Select" id="metadata.make" name="metadata.make"><%
                             for (int i=0, carMakerNb = carMakers.length; i < carMakerNb; i++) { %>
-                                <option value="<%= carMakers[i] %>"><%= carMakers[i] %></option><%
+                                <option value="<%= carMakers[i] %>"<% if (carMakers[i].equals(carMaker)) { out.write(" selected=true"); } %>><%= carMakers[i] %></option><%
                             } %></select>
                         </td>
                     </tr>
-                    <tr class="evenRow">
+                    <tr class="evenRow"><%
+                        String model = request.getParameter("metadata.model");
+                        if (model == null) {
+                            model = "";
+                        }
+                        %>
                         <td class="firstCell"><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
-                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" /></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" value="<%= model %>" /></td>
                     </tr>
-                    <tr class="oddRow">
+                    <tr class="oddRow"><%
+                        String transmission = request.getParameter("metadata.transmission");
+                        if (transmission == null) {
+                          transmission = "";
+                        }
+                        %>
                         <td class="firstCell"><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
-                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" /></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" value="<%= transmission %>" /></td>
                     </tr>
                     <tr class="evenRow">
                         <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>

@@ -75,7 +75,7 @@ public class StoreRestlet extends BaseRestlet {
             Store store = StoreSteps.createStore(
                     pm,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser, pm),
+                    isUserAdmin ? null : LoginServlet.getConsumer(loggedUser, pm),
                     isUserAdmin ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
                     isUserAdmin
             );

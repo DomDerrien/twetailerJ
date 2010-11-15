@@ -434,7 +434,7 @@
     };
     localModule.getConsumer = function() {
         var consumerKey = dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').get('value');
-        if (consumerKet.length == 0) {
+        if (consumerKey.length == 0) {
             alert('You need to specify a consumer key!');
             dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').focus();
             return;
