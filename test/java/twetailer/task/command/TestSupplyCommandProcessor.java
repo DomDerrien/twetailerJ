@@ -343,7 +343,7 @@ public class TestSupplyCommandProcessor {
         Locale locale = Locale.ENGLISH;
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag }, Locale.ENGLISH), sentText);
+        assertEquals(LabelExtractor.get("cp_command_supply_updated_1_tag_list", new Object[] { newTag.toLowerCase() }, Locale.ENGLISH), sentText);
 
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -407,7 +407,7 @@ public class TestSupplyCommandProcessor {
         Locale locale = Locale.ENGLISH;
         String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
         assertNotNull(sentText);
-        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 + " " + newTag }, locale);
+        String tags = LabelExtractor.get("cp_tweet_tags_part", new Object[] { tag1 + " " + tag2 + " " + tag3 + " " + newTag.toLowerCase() }, locale);
         assertEquals(LabelExtractor.get("cp_command_supply_updated_n_tag_list", new Object[] { tags, 4 }, locale), sentText);
 
         sentText = BaseConnector.getLastCommunicationInSimulatedMode();

@@ -1111,7 +1111,7 @@
                     </ul>
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the
-                        <a href="https://anothersocialeconomy.appspot.com/console/eztoff/associate.jsp?demand={demand>key}">Associate Console</a>
+                        <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp?demand={demand>key}">Associate Console</a>
                         and click "Create proposal" for <strong>demand {demand>key}</strong>.
                         Alternatively, you can also send an email to create a proposal by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Create proposal</a>
@@ -1710,7 +1710,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
@@ -1741,7 +1741,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -1764,7 +1764,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
@@ -1794,7 +1794,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -1855,7 +1855,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {message>footer}
@@ -1879,7 +1879,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -1902,7 +1902,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {message>footer}
@@ -1927,7 +1927,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -1996,7 +1996,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
@@ -2027,7 +2027,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -2050,7 +2050,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {command>threadSubject}
@@ -2084,7 +2084,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -2145,7 +2145,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {message>footer}
@@ -2169,7 +2169,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -2192,7 +2192,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>*}: demand attributes
                 {message>footer}
@@ -2217,7 +2217,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -2290,7 +2290,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: store location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
@@ -2315,7 +2315,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -2338,7 +2338,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: store location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
@@ -2363,7 +2363,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
@@ -2438,7 +2438,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: store location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
@@ -2455,7 +2455,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
@@ -2478,7 +2478,7 @@
                 {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
                 {store>*}: store attributes
                 {store>location>*}: store location attributes
-                {reseller>*}: reseller attributes
+                {registrar>*}: registrar attributes
                 {demand>*}: demand attributes
                 {demand>owner>name}: name of the proposal owner
                 {demand>metadata>*}: optional meta data from the demand (vertical dependent)
@@ -2497,7 +2497,7 @@
                         <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Golf course registered by <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking

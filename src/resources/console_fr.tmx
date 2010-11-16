@@ -2231,7 +2231,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Volkswagen,BMW,Audi,Subaru,Suzuki,GM,Buick,Honda,Toyota</seg>
+                <seg>Acura,Alfa Romeo,Aston Martin,Audi,Bentley,BMW,Buick,Cadillac,Chevrolet,Chrysler,Citroën,Daihatsu,Dodge,Ferrari,Fiat,Ford,GMC,Holden,Honda,HUMMER,Hyundai,Infiniti,Isuzu,Jaguar,Jeep,KIA,Lada,Lancia,Land Rover,Lexus,Lincoln,Maserati,Mazda,Mercedes-Benz,MG,MINI,Mitsubish,Nissan,Oldsmobile,Opel,Peugeot,Pontiac,Porsche,Renault,Saab,Samsung,Saturn,Scion,Seat,Škoda,Smart,Ssangyong,Subaru,Suzuki,Toyota,Vauxhall,Volkswagen,Volvo</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_label_criteria" dataType="text">

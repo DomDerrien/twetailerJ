@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
@@ -126,25 +127,26 @@ public class SaleAssociateSteps extends BaseSteps {
 
         // Handle manually the supplied tags update
         if (parameters.containsKey(SaleAssociate.CRITERIA) || parameters.containsKey(SaleAssociate.CRITERIA_ADD) || parameters.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
-            Collator collator = LocaleValidator.getCollator(loggedConsumer.getLocale());
+            Locale locale = loggedConsumer.getLocale();
+            Collator collator = LocaleValidator.getCollator(locale);
             if (parameters.containsKey(SaleAssociate.CRITERIA)) {
                 loggedSaleAssociate.resetCriteria();
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.addCriterion(jsonArray.getString(i), collator);
+                    loggedSaleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             Command.removeDuplicates(parameters, SaleAssociate.CRITERIA_ADD, SaleAssociate.CRITERIA_REMOVE);
             if (parameters.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA_REMOVE);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.removeCriterion(jsonArray.getString(i), collator);
+                    loggedSaleAssociate.removeCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             if (parameters.containsKey(SaleAssociate.CRITERIA_ADD)) {
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA_ADD);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.addCriterion(jsonArray.getString(i), collator);
+                    loggedSaleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             parameters.remove(SaleAssociate.CRITERIA);

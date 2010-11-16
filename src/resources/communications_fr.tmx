@@ -1198,7 +1198,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1236,7 +1236,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1294,7 +1294,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1330,7 +1330,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1390,7 +1390,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1431,7 +1431,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1488,7 +1488,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1524,7 +1524,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1576,7 +1576,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1608,7 +1608,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1657,7 +1657,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Commerce enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
@@ -1686,7 +1686,7 @@
                         <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Téléphone: {store>phoneNb}</li>
                         <li>Taux de transactions complétées par le club de golf: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
-                        <li>Club de golf enregistré par <a href="{reseller>url}">{reseller>name}</a></li>
+                        <li>Club de golf enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant

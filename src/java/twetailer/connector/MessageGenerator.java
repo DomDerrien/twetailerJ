@@ -359,9 +359,11 @@ public class MessageGenerator {
             fetchEntity(store, prefix);
             // Store
             parameters.put(prefix + Store.ADDRESS, store.getAddress());
+            parameters.put(prefix + Store.CLOSED_PROPOSAL_NB, store.getClosedProposalNb());
             parameters.put(prefix + Store.EMAIL, store.getEmail());
             parameters.put(prefix + Store.NAME, store.getName());
             parameters.put(prefix + Store.PHONE_NUMBER, store.getPhoneNumber());
+            parameters.put(prefix + Store.PUBLISHED_PROPOSAL_NB, store.getPublishedProposalNb());
             parameters.put(prefix + Store.URL, store.getUrl());
         }
         return this;
@@ -458,7 +460,7 @@ public class MessageGenerator {
      */
     public MessageGenerator fetch(Registrar registrar) {
         if (registrar != null) {
-            final String prefix = "reseller" + FIELD_SEPARATOR;
+            final String prefix = "registrar" + FIELD_SEPARATOR;
             // Entity
             fetchEntity(registrar, prefix);
             // Reseller
@@ -477,7 +479,7 @@ public class MessageGenerator {
      */
     public MessageGenerator fetch(ReviewSystem reviewSystem) {
         if (reviewSystem != null) {
-            final String prefix = "reseller" + FIELD_SEPARATOR;
+            final String prefix = "reviewSystem" + FIELD_SEPARATOR;
             // Entity
             fetchEntity(reviewSystem, prefix);
             // ReviewSystem

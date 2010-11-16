@@ -597,13 +597,16 @@
         // Request preparation
         var criteria = [];
         if (0 < dojo.trim(dijit.byId('metadata.make').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>:' + dojo.trim(dijit.byId('metadata.make').get('value')));
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>');
+            criteria.push(dojo.trim(dijit.byId('metadata.make').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.model').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>:' + dojo.trim(dijit.byId('metadata.model').get('value')));
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
+            criteria.push(dojo.trim(dijit.byId('metadata.model').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.year').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>:' + dojo.trim(dijit.byId('metadata.year').get('value')));
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>');
+            criteria.push(dojo.trim(dijit.byId('metadata.year').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
             criteria = criteria.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));

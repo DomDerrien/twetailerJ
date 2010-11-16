@@ -245,11 +245,11 @@
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalPrice", locale) %></label></td>
-                    <td>$<input constraints="{min:0,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" style="width:7em;" type="text" value="0.00"/></td>
+                    <td>$<input constraints="{min:0,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" placeholder="10.00" style="width:7em;" type="text"/></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.total"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalTotal", locale) %></label></td>
-                    <td>$<input constraints="{min:5.00,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" required="true" style="width:7em;" type="text" value="0.00" /></td>
+                    <td>$<input constraints="{min:5.00,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" placeholder="11.57" required="true" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalCriteria", locale) %></label></td>
