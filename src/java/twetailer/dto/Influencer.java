@@ -40,6 +40,8 @@ public class Influencer extends Entity {
     private String referralId;
 
     public final static String REFERRAL_ID = "referralId";
+    public final static String DEFAULT_REFERRAL_ID = "0";
+
     @Persistent
     private String url;
 

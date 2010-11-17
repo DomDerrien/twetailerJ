@@ -124,7 +124,7 @@ a, a:hover, a:visited, a:link, a:active {
     padding: 10px 0 10px 0;
 }
 
-.form input, .form .dijitSelect, .form .dijitButtonText, .form .dijitTextBox, .comment input {
+.form input, .form .dijitSelect, .form .dijitButtonText, .form .dijitTextBox, .comment input, .dijitCalendarPopup, .dijitTimePickerPopup {
     color: black;
 }
 

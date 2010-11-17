@@ -77,7 +77,7 @@ public class InfluencerOperations extends BaseOperations {
      * @throws InvalidIdentifierException If the given identifier does not match a valid Influencer record
      */
     public Influencer getInfluencer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-        if (key == null || key == 0L) {
+        if (key == null || key.equals(Long.valueOf(Influencer.DEFAULT_REFERRAL_ID))) {
             Influencer defaultInfluencer = new Influencer();
             defaultInfluencer.setEmail("influencer-program@anothersocialeconomy.com");
             defaultInfluencer.setName("AnotherSocialEconomy.com");
@@ -168,11 +168,17 @@ public class InfluencerOperations extends BaseOperations {
     }
 
     public static Long getInfluencerKey(String referralId) {
+        if (referralId == null || referralId.length() < 2) {
+            return Long.valueOf(Influencer.DEFAULT_REFERRAL_ID);
+        }
         // Assume the referralId is valid
         return Long.valueOf(referralId.substring(0, referralId.indexOf(InfluencerOperations.INFORMATION_SEPARATOR)));
     }
 
     public static Long getReferralVariableIndex(String referralId) {
+        if (referralId == null || referralId.length() < 2) {
+            return Long.valueOf(Influencer.DEFAULT_REFERRAL_ID);
+        }
         // Assume the referralId is valid
         return Long.valueOf(referralId.substring(referralId.lastIndexOf(InfluencerOperations.INFORMATION_SEPARATOR) + 1));
     }

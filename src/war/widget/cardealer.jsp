@@ -125,7 +125,7 @@
                             }
                             String[] carMakers = LabelExtractor.get(ResourceFileId.third, "cdw_carMakers", locale).split(",");
                             %>
-                            <select class="selectbox" dojoType="dijit.form.Select" id="metadata.make" name="metadata.make"><%
+                            <select class="selectbox" dojoType="dijit.form.FilteringSelect" id="metadata.make" name="metadata.make" style="width:auto;"><%
                             for (int i=0, carMakerNb = carMakers.length; i < carMakerNb; i++) { %>
                                 <option value="<%= carMakers[i] %>"<% if (carMakers[i].equals(carMaker)) { out.write(" selected=true"); } %>><%= carMakers[i] %></option><%
                             } %></select>
@@ -471,10 +471,10 @@
         dojo.require('dijit.form.Button');
         dojo.require('dijit.form.CheckBox');
         dojo.require('dijit.form.DateTextBox');
+        dojo.require("dijit.form.FilteringSelect");
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberSpinner');
         // dojo.require('dijit.form.NumberTextBox');
-        dojo.require("dijit.form.Select");
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dijit.form.TimeTextBox');
@@ -627,7 +627,6 @@
             <%= Demand.CRITERIA %>: criteria
         };
         if (dijit.byId('demoMode').get('value') !== false) {
-            console.log('demo mode: true');
             parameters.<%= Demand.HASH_TAGS %> = ['<%= RegisteredHashTag.demo %>'];
         }
         var cc = twetailer.Common.getFriendCoordinates();

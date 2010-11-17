@@ -182,15 +182,17 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
     }
 
     public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName, HttpServletRequest request) throws ReservedOperationException {
-        if (!parameters.containsKey("referralId")) { // Missing parameter
+        if (!parameters.containsKey(Influencer.REFERRAL_ID)) { // Missing parameter
             log.warning("Missing referralId");
             throw new ReservedOperationException(action, entityName);
         }
         String referralId = parameters.getString(Influencer.REFERRAL_ID).trim();
-        if (referralId.length() != 0 && !referralId.equals("0") && !InfluencerOperations.verifyReferralIdValidity(pm, referralId)) {
+        if (referralId.length() != 0 && !referralId.equals(Influencer.DEFAULT_REFERRAL_ID) && !InfluencerOperations.verifyReferralIdValidity(pm, referralId)) {
             log.warning("Invalid referralId: " + referralId);
-            throw new ReservedOperationException(action, entityName);
+            parameters.put(Influencer.REFERRAL_ID, Influencer.DEFAULT_REFERRAL_ID); // Reset the given referral identifier!
         }
-        log.warning("Valid referralId: " + referralId);
+        else {
+            log.warning("Valid referralId: " + referralId);
+        }
     }
 }
