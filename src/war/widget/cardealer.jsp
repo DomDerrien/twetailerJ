@@ -136,9 +136,13 @@
                         if (model == null) {
                             model = "";
                         }
+                        String modelPlaceHolder = request.getParameter("metadata.model.placeHolder");
+                        if (modelPlaceHolder == null) {
+                            modelPlaceHolder = LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale);
+                        }
                         %>
                         <td class="firstCell"><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
-                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale) %>" style="width:100%;" required="true" type="text" value="<%= model %>" /></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= modelPlaceHolder %>" style="width:100%;" required="true" type="text" value="<%= model %>" /></td>
                     </tr>
                     <tr class="oddRow"><%
                         String transmission = request.getParameter("metadata.transmission");
@@ -146,7 +150,7 @@
                           transmission = "";
                         }
                         %>
-                        <td class="firstCell"><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
+                        <td class="firstCell"><label for="metadata.transmission"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
                         <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" value="<%= transmission %>" /></td>
                     </tr>
                     <tr class="evenRow">

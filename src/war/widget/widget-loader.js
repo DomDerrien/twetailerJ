@@ -8,7 +8,7 @@
         dm = '../../widget/', // 'https://anothersocialeconomy.appspot.com/widget/',
         id = 'ase_widget',
         dc = document,
-        bd = {
+        bdl = {
             core: { fr: 'Réseau d\'achat locaux', en: 'Local Buying Network' },
             cardealer: { fr: 'Rechercher un véhicule d\'occasion', en: 'Find Local Pre-Owned Cars' }
         }
@@ -16,14 +16,13 @@
             var dv = dc.getElementById(id),
                 txt = escape(window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : ''),
                 src = dm + (aC.hashtag || 'ase') + '.jsp?criteria=' + txt,
+                bd = aC.brand || bdl[ht][lg],
                 ifr, p;
             for(p in aC) {
-                src += '&' + p + '=' + escape(aC[p]);
+                if (p != 'brand') { src += '&' + p + '=' + escape(aC[p]); }
             }
-            if (!aC.brand) {
-                src += '&brand=' + escape(bd[ht][lg]);
-            }
-            console.log(src.replace(/\&/g, '\n'));
+            try { bd = decodeURIComponent(escape(bd)); } catch(ex) {} // For Chrome
+            src += '&brand=' + bd;
             if (dv) {
                 ifr = dc.getElementById(id + 'Ifr');
                 if (txt == '' || ifr.src.indexOf('criteria=' + txt + '&') != -1) {
@@ -65,11 +64,14 @@
         },
         installTab = function() {
             var ac = dc.createElement('a'),
-                dv = dc.createElement('div');
+                dv = dc.createElement('div'),
+                bd = aC.brand || bdl[ht][lg],
+                c;
             ac.href = '#';
             ac.id = 'ase_floatingTab';
             ac.onclick = installWidget;
-            ac.appendChild(dc.createTextNode(aC.brand || bd[ht][lg]));
+            try { bd = decodeURIComponent(escape(bd)) } catch(ex) {} // For Chrome
+            ac.appendChild(dc.createTextNode(bd));
             if (aC['color-brand']) {
                 ac.style.color = aC['color-brand'];
             }
@@ -78,8 +80,12 @@
             if (aC['border']) {
                 dv.style.border = aC['border'];
             }
-            if (aC['background-color']) {
-                dv.style.backgroundColor = aC['background-color'];
+            c = aC['background-color'];
+            if (c) {
+                if (c.indexOf('!') != -1) {
+                    c = c.substr(0, c.indexOf('!'));
+                }
+                dv.style.backgroundColor = c;
             }
             dc.getElementsByTagName('body')[0].appendChild(dv);
             if (document.all) {

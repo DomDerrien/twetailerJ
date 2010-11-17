@@ -2266,7 +2266,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Jetta TDI</seg>
+                <seg>TSX</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_label_transmission" dataType="text">

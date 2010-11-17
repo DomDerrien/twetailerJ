@@ -115,8 +115,8 @@
             <div dojoType="dijit.form.Form" id="form1" class="content" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr id="postalCodeRow" style="display:none;">
-                        <td><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
+                    <tr class="firstRow oddRow" id="postalCodeRow" style="display:none;">
+                        <td class="firstCell"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_postalCode", locale) %></label></td>
                         <td>
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
@@ -130,7 +130,7 @@
                                 type="text"
                             />
                         </td>
-                        <td style="width:20px;padding-right:0px !important;">
+                        <td class="lastCell" style="width:20px;padding-right:0px !important;">
                             <button
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconGPS"
@@ -141,9 +141,9 @@
                             ></button>
                         </td>
                     </tr>
-                    <tr id="countryCodeRow" style="display:none;">
-                        <td><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
-                        <td colspan="2">
+                    <tr class="evenRow" id="countryCodeRow" style="display:none;">
+                        <td class="firstCell"><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
+                        <td class="lastCell" colspan="2">
                             <select
                                 dojoType="dojox.form.DropDownSelect"
                                 id="countryCode"
@@ -158,17 +158,17 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_dueDate_date", locale) %></label></td>
-                        <td colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
+                    <tr class="firstRow oddRow">
+                        <td class="firstCell"><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_dueDate_date", locale) %></label></td>
+                        <td class="lastCell" colspan="2"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
                     </tr>
-                    <tr>
-                        <td><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
-                        <td colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
+                    <tr class="evenRow">
+                        <td class="firstCell"><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
+                        <td class="lastCell" colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
                     </tr>
-                    <tr>
-                        <td><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity", locale) %></label></td>
-                        <td colspan="2" style="vertical-align:top;">
+                    <tr class="lastRow oddRow">
+                        <td class="firstCell"><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity", locale) %></label></td>
+                        <td class="lastCell" colspan="2" style="vertical-align:top;">
                             <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="4" />
                             <label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity_extra", locale) %></label>
                         </td>
@@ -212,9 +212,9 @@
             <div dojoType="dijit.form.Form" id="form2" class="content" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_2_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr>
-                        <td style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
-                        <td style="text-align: right;">
+                    <tr class="firstRow lastRow oddRow">
+                        <td class="firstCell" style="vertical-align:top;"><label for="email0"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_owner_email", locale) %></label></td>
+                        <td class="lastCell" style="text-align: right;">
                             <input
                                 dojoType="dijit.form.ValidationTextBox"
                                 id="email0"
@@ -233,8 +233,8 @@
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_2_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tbody id="friendList">
-                        <tr id="friendRow1">
-                            <td><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
+                        <tr class="firstRow lastRow oddRow" id="friendRow1">
+                            <td class="firstCell"><label for="email1"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %></label></td>
                             <td style="text-align: right;">
                                 <input
                                     dojoType="dijit.form.ValidationTextBox"
@@ -249,7 +249,7 @@
                                     type="text"
                                 />
                             </td>
-                            <td style="width:20px;padding-left:0px !important">
+                            <td class="lastCell" style="width:20px;padding-left:0px !important">
                                 <button
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
@@ -290,19 +290,19 @@
                 <div class="step active"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_progressBarItem", locale) %></div> <div class="step transition">&nbsp;</div>
                 <div class="step inactive goal"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_4_progressBarItem", locale) %></div>
             </div>
-            <div dojoType="dijit.form.Form" id="form3" class="form" onsubmit="return false;">
+            <div dojoType="dijit.form.Form" id="form3" onsubmit="return false;">
                 <div class="title"><%= LabelExtractor.get(ResourceFileId.third, "gw_step_3_title", locale) %></div>
-                <div style="margin-left:20px;">
-                    <div>
+                <div class="form" style="border: 1px solid black; margin-bottom: 10px;">
+                    <div class="oddRow" style="padding: 5px 0 5px 20px; border-bottom: 1px solid black;">
                         <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="pullCart" name="pullCart" style="width:6em;" type="text" value="0" />
                         <label for="pullCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_metadata_pullCart", locale) %></label>
                     </div>
-                    <div>
+                    <div class="evenRow" style="padding: 5px 0 5px 20px;">
                         <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="motorCart" name="motorCart" style="width:6em;" type="text" value="0" />
                         <label for="motorCart"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_metadata_golfCart", locale) %></label>
                     </div>
                 </div>
-                <table cellpadding="0" cellspacing="0">
+                <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border: 0 none !important;">
                     <tr>
                         <td style="text-align:left;"><a href="#" onclick="localModule.switchPane(3, 2);"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_previous", locale) %></a></td>
                         <td style="text-align:right;">
@@ -465,7 +465,6 @@
             <%= Demand.META_DATA %>:'{\'pullCart\':' + dijit.byId('pullCart').get('value') + ',\'golfCart\':' + dijit.byId('motorCart').get('value') + '}'
         };
         if (dijit.byId('demoMode').get('value') !== false) {
-            console.log('demo mode: true');
             parameters.<%= Demand.HASH_TAGS %>.push('<%= RegisteredHashTag.demo %>');
         }
         var cc = twetailer.Common.getFriendCoordinates();

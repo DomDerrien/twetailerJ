@@ -581,7 +581,6 @@
             <%= Demand.CRITERIA %>: dojo.trim(dijit.byId('tags').get('value')).split(/\s+/)
         };
         if (dijit.byId('demoMode').get('value') !== false) {
-            console.log('demo mode: true');
             parameters.<%= Demand.HASH_TAGS %> = ['<%= RegisteredHashTag.demo %>'];
         }
         var cc = twetailer.Common.getFriendCoordinates();

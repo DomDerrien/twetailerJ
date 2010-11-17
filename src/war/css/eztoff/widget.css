@@ -1,6 +1,10 @@
 /**
  * Override settings for the Golf widget
  */
+#introFlash {
+    background-color: #5ddc1e;
+}
+
 .progressBar {
     height: 30px;
     padding: 0 0 0 7px;
@@ -66,15 +70,15 @@ label, .title {
     color: darkgreen;
 }
 
-.form>tbody>tr:nth-child(2n+1) {
+.form .oddRow {
     background-color: #00aa00;
 }
 
-.form>tbody>tr:nth-child(2n+1) label {
+.form .oddRow label {
     color: white;
 }
 
-.form>tbody>tr>td:first-child {
+.form .firstCell {
     width:1%;
 }
 
