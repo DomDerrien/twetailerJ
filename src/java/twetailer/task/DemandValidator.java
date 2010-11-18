@@ -215,6 +215,7 @@ public class DemandValidator {
                                 put("demand>owner>name", owner.getName()).
                                 fetch(demand).
                                 fetch(location, "demand").
+                                fetch(influencer).
                                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
                             message = msgGen.getMessage(isNewDemand ? MessageId.DEMAND_CREATION_OK_TO_CCED: MessageId.DEMAND_UPDATE_OK_TO_CCED);

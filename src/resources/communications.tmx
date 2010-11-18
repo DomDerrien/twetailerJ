@@ -919,7 +919,7 @@
                         <a href="mailto:Support@ezToff.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding tee-off Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, brought to you by <a href="{demand>influencer>url}">{demand>influencer>name}</a>.</p>
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>

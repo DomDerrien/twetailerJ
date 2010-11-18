@@ -673,7 +673,7 @@
                         <a href="mailto:Support@eztoff.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demande: {demand>key}, présentée par <a href="{demand>influencer>url}">{demand>influencer>name}</a>.</p>
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>

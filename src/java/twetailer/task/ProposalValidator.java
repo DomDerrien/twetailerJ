@@ -4,7 +4,6 @@ import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -20,7 +19,6 @@ import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
-import twetailer.dto.HashTag;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
