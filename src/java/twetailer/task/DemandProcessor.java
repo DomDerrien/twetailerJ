@@ -18,7 +18,6 @@ import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 
 import twetailer.ClientException;
-import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
@@ -156,32 +155,26 @@ public class DemandProcessor {
                 }
             }
             else {
+                boolean isInfluencerSelected = false;
                 Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
                 // Try to contact regular sale associates
                 List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
                 for(SaleAssociate saleAssociate: saleAssociates) {
+                    isInfluencerSelected = isInfluencerSelected || saleAssociate.getConsumerKey().equals(influencer.getConsumerKey());
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     // Communicate with the sale associate
-                    try {
-                        notifyAvailability(demand, owner, saConsumerRecord, influencer);
+                    notifyAvailability(demand, owner, saConsumerRecord, influencer);
 
-                        // Keep track of the notification to not ping him/her another time
-                        demand.addSaleAssociateKey(saleAssociate.getKey());
-                    }
-                    catch (ClientException ex) {
-                        // Send an e-mail to out catch-all list
-                        MockOutputStream stackTrace = new MockOutputStream();
-                        ex.printStackTrace(new PrintStream(stackTrace));
-                        try {
-                            MailConnector.reportErrorToAdmins(
-                                    "Unexpected error caught in " + DemandProcessor.class.getName(),
-                                    "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saleAssociate.getKey() + ")\n\n--\n\n" + stackTrace.toString()
-                            );
-                        }
-                        catch (MessagingException e) {
-                            log.severe("Failure while trying to report an unexpected by e-mail!");
-                        }
-                    }
+                    // Keep track of the notification to not ping him/her another time
+                    demand.addSaleAssociateKey(saleAssociate.getKey());
+                }
+                if (!isInfluencerSelected && influencer.getConsumerKey() != null) {
+                    Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, influencer.getConsumerKey());
+                    // Communicate with the sale associate
+                    notifyAvailability(demand, owner, saConsumerRecord, influencer);
+
+                    // Keep track of the notification to not ping him/her another time
+                    demand.addSaleAssociateKey(saConsumerRecord.getSaleAssociateKey());
                 }
             }
 
@@ -357,49 +350,63 @@ public class DemandProcessor {
      * @param demandOwner Record of the demand owner, used to expose the closing rate
      * @param saConsumerRecord Associate record of the sale associate to be contacted
      * @param influencer Descriptor of the entity who helped creating the demand
-     *
-     * @throws CommunicationException If the communication with the demand owner fails
      */
-    public static void notifyAvailability(Demand demand, Consumer demandOwner, Consumer saConsumerRecord, Influencer influencer) throws CommunicationException {
+    public static void notifyAvailability(Demand demand, Consumer demandOwner, Consumer saConsumerRecord, Influencer influencer) {
 
-        if (!Source.api.equals(saConsumerRecord.getPreferredConnection())) {
-            Locale locale = saConsumerRecord.getLocale();
+        try {
+            if (!Source.api.equals(saConsumerRecord.getPreferredConnection())) {
+                Locale locale = saConsumerRecord.getLocale();
 
-            MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), demand.getHashTags(), locale);
-            msgGen.
-                put("proposal>owner>name", saConsumerRecord.getName()).
-                fetch(demand).
-                fetch(influencer).
-                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), demand.getHashTags(), locale);
+                msgGen.
+                    put("proposal>owner>name", saConsumerRecord.getName()).
+                    fetch(demand).
+                    fetch(influencer).
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
-            MessageGenerator cmdGen = new MessageGenerator(Source.jabber, demand.getHashTags(), locale). // "jabber" is a used to "source" to be able to generate short command by e-mail
-                fetch(demand).
-                put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
-            String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", cmdGen.getParameters(), locale);
-            String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", cmdGen.getParameters(), locale);
-            String subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdGen.getParameters());
+                MessageGenerator cmdGen = new MessageGenerator(Source.jabber, demand.getHashTags(), locale). // "jabber" is a used to "source" to be able to generate short command by e-mail
+                    fetch(demand).
+                    put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+                String createProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_create", cmdGen.getParameters(), locale);
+                String declineDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_decline", cmdGen.getParameters(), locale);
+                String subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdGen.getParameters());
 
-            msgGen.
-                put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                put("command>createProposal", LocaleValidator.encodeCommand(createProposal));
+                msgGen.
+                    put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
+                    put("command>declineDemand", declineDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>createProposal", LocaleValidator.encodeCommand(createProposal));
 
-            double publishedNb = demandOwner.getPublishedDemandNb() == null ? 1 : demandOwner.getPublishedDemandNb(); // Can't be null with new demands, but can still be null with the old ones without this field
-            double closedNb = demandOwner.getClosedDemandNb() == null ? 0 : demandOwner.getClosedDemandNb();
-            msgGen.
-                put("demand>owner>publishedDemandNb", (long) publishedNb).
-                put("demand>owner>closedDemandNb", (long) closedNb).
-                put(
-                        "demand>owner>closedDemandPercentage",
-                        LocaleValidator.formatFloatWith2Digits(100.0D * closedNb / publishedNb, locale)
+                double publishedNb = demandOwner.getPublishedDemandNb() == null ? 1 : demandOwner.getPublishedDemandNb(); // Can't be null with new demands, but can still be null with the old ones without this field
+                double closedNb = demandOwner.getClosedDemandNb() == null ? 0 : demandOwner.getClosedDemandNb();
+                msgGen.
+                    put("demand>owner>publishedDemandNb", (long) publishedNb).
+                    put("demand>owner>closedDemandNb", (long) closedNb).
+                    put(
+                            "demand>owner>closedDemandPercentage",
+                            LocaleValidator.formatFloatWith2Digits(100.0D * closedNb / publishedNb, locale)
+                    );
+
+                communicateToConsumer(
+                        msgGen.getCommunicationChannel(),
+                        subject,
+                        saConsumerRecord,
+                        new String[] { msgGen.getMessage(MessageId.DEMAND_CREATION_OK_TO_ASSOCIATE) }
                 );
-
-            communicateToConsumer(
-                    msgGen.getCommunicationChannel(),
-                    subject,
-                    saConsumerRecord,
-                    new String[] { msgGen.getMessage(MessageId.DEMAND_CREATION_OK_TO_ASSOCIATE) }
-            );
+            }
+        }
+        catch (ClientException ex) {
+            // Send an e-mail to out catch-all list
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                MailConnector.reportErrorToAdmins(
+                        "Unexpected error caught in " + DemandProcessor.class.getName(),
+                        "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nSale associate: " + saConsumerRecord.getName() + " (" + saConsumerRecord.getSaleAssociateKey() + ")\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException e) {
+                log.severe("Failure while trying to report an unexpected by e-mail!");
+            }
         }
     }
 }
