@@ -119,14 +119,19 @@
                         <td class="lastCell"><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
                     </tr>
                     <tr class="lastRow oddRow">
-                        <td class="firstCell lastCell" colspan="2" align="center">
+                        <td class="firstCell">
+                            <!-- ddd for the Wish implementation to come
+                            <label for="wishMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
+                            <br/>
+                            -->
+                            <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
+                        </td>
+                        <td class="lastCell">
                             <!-- ddd for the Wish implementation to come
                             <input dojoType="dijit.form.CheckBox" id="wishMode" type="checkbox" />
-                            <label for="demoMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
                             <br/>
                             -->
                             <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
-                            <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                         </td>
                     </tr>
                 </table>
