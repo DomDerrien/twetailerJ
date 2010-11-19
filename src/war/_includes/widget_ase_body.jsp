@@ -121,10 +121,10 @@
                     <tr class="lastRow oddRow">
                         <td class="firstCell">
                             <!-- ddd for the Wish implementation to come
-                            <label for="wishMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
+                            <label for="wishMode">Wish only (no instant broadcast)</label>
                             <br/>
                             -->
-                            <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
+                            <label for="demoMode"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                         </td>
                         <td class="lastCell">
                             <!-- ddd for the Wish implementation to come
