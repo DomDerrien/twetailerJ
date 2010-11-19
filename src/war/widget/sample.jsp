@@ -260,6 +260,59 @@
         </a>.
     </p>
 
+    <pre style="border:2px solid orange;background-color:yellow;">
+
+/**************
+ * Note: Check http://anothersocialeconomy.appspot.com/widget/sample.jsp for the details
+ *
+ * Usage:
+ *  In a &lt;script/&gt; tag place the following code. You can tune the parameters in the
+ *  ase_config map to match your look-and-feel.
+ *
+ *  It's important to use your own referralId for tracking and billing purposes. Ask for
+ *  one by sending an e-mail to support@anothersocialeconomy.com
+ *
+var ase_config = {
+    lg: 'en',
+    hashtag: 'cardealer',
+    referralId: '350001-3681422170717618633-00',
+    postalCode: 'H9B 2C8',
+    countryCode: 'CA',
+    color: 'white',
+    'color-brand': 'white',
+    'color-title': 'white',
+    'color-odd-row': 'black',
+    'color-link': 'white !important',
+    'background-color': '#004A80 !important',
+    'background-color-odd-row': 'lightgrey',
+    'border': '2px solid grey',
+    'metadata.make': 'Volkswagen',
+    'metadata.model.placeHolder': 'Jetta TDI'
+};
+(function(){
+    var newScript = document.createElement('script');
+    newScript.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'anothersocialeconomy.appspot.com/widget/widget-loader.js',
+    newScript.type = 'text/javascript';
+    newScript.async = true;
+    var thisScript = document.getElementsByTagName('script')[0];
+    thisScript.parentNode.insertBefore(newScript, thisScript);
+})();
+ *
+ *************/
+
+/**************
+ * Extra: if everything is wrapped in a function on a single line, it's then
+ * possible to place the code as the URL for a link that can be dragged on
+ * dropped on the browser bookmark bar. The corresponding bookmark which has
+ * now a dynamic behavior is called a bookmarklet. Note that Internet
+ * Explorer informs users that such bookmarklet can be harmful...
+ *
+javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=document,url=('https:'==document.location.protocol?'https':'http')+'://anothersocialeconomy.appspot.com/widget/',js=dc.createElement('script');js.src=url+'widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()
+ *
+ * Special instructions to Internet Explorer users:  you can right click on the 'ASE it!' link,
+ * choose Add To Favorites, and then select Favorites Bar from the Create In menu.
+ *************/    </pre>
+
     <script type="text/javascript">
     var setupParametersForYellowScheme = function() {
         document.getElementById('lg').value = 'en';

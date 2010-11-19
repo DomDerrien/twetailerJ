@@ -4,8 +4,8 @@
 .ase_floatingTab {
     font-family: arial,helvetica,sans-serif;
     font-size: 22px;
-    font-weight: normal;
-    border: 1px solid #ddd000;
+    font-weight: bold;
+    border: 2px solid #ddd000;
     -webkit-box-shadow: -3px 3px 10px #aaa;
     -no-moz-box-shadow: -3px 3px 10px #aaa;
     padding: 5px;
