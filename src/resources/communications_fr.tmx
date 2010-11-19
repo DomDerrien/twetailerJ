@@ -791,7 +791,7 @@
                     <p>
                         Si <strong>vous pouvez fournir</strong> la demande, alors utilisez la
                         <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr&amp;demand={demand>key}">Console pour Associés</a>
-                        et cliquer "Créer une proposition" pour la <strong>demande {demand>key}</strong>.
+                        et remplissez la fiche pour créer une proposition pour la <strong>demande {demand>key}</strong>.
                         Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
                         en ayant pris soin de remplacer les 'X' par les bonnes valeurs.

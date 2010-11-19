@@ -192,7 +192,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">
-                <seg>Demo</seg>
+                <seg>Demo:</seg>
             </tuv>
         </tu>
 

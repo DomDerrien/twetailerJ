@@ -151,7 +151,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Mode démo</seg>
+                <seg>Mode démo:</seg>
             </tuv>
         </tu>
         <tu tuid="shared_email_sample" dataType="text">
