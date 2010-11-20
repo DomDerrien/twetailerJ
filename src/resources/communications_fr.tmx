@@ -1598,7 +1598,7 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> va réserver votre de départ de golf de la <strong>proposition {proposal>key}</strong> prévu le <strong>{proposal>dueDate}</strong>.</p>
                     <p>Merci pour la confirmation. En vous souhaitant une bonne partie !</p>
                     <p>
-                        PVI. Une fois le parcours complèté, vous devrez utiliser ce courriel pour
+                        PVI. Une fois le parcours complété, vous devrez utiliser ce courriel pour
                         <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a></strong>
                         le cycle de votre demande. Cela permettra d'améliorer votre <strong>ratio de transactions complétées</strong>, et vous offrira la possibilité
                         de <strong>commenter</strong> le club de golf et ses associés.
@@ -1735,8 +1735,8 @@
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
-                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">complèter</a></strong>
-                        le cycle de la proposition {proposal>key} une fois l'achat complété. Cela améliorera votre taux de transactions complètées.
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de la proposition {proposal>key} une fois l'achat complété. Cela améliorera votre taux de transactions complétées.
                     </p>
                     <p>Merci de gérer les demandes des consommateurs avec AnotherSocialEconomy.com.</p>
                     <p>
@@ -1766,8 +1766,8 @@
                         <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                     </ul>
                     <p>
-                        Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">complèter</a></strong>
-                        le cycle de la proposition {proposal>key} une fois que les joueurs auront fini leur partie. Cema améliorera votre taux de transactions complètées.
+                        Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de la proposition {proposal>key} une fois que les joueurs auront fini leur partie. Cema améliorera votre taux de transactions complétées.
                     </p>
                     <p>Merci de gérer les demandes de départ de golf avec ezToff.</p>
                     <p>
@@ -1840,9 +1840,9 @@
                 <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
-                        La demande {demand>key} associée à la  <strong>proposition {proposal>key}</strong>, prévue le <strong>{proposal>dueDate}</strong> a été <strong>complètée</strong>.
+                        La demande {demand>key} associée à la  <strong>proposition {proposal>key}</strong>, prévue le <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
                         Veuillezz <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
-                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complètées.
+                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complétées.
                     </p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
@@ -1856,9 +1856,9 @@
                 <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
-                        La demande {demand>key} pour la réservation <strong>proposition {proposal>key}</strong> du <strong>{proposal>dueDate}</strong> a été <strong>complètée</strong>.
+                        La demande {demand>key} pour la réservation <strong>proposition {proposal>key}</strong> du <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
                         Veullez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
-                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complètées.
+                        le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complétées.
                     </p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
@@ -1880,8 +1880,8 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>Bonjour {proposal>owner>name},</p>
-                    <p>La <strong>proposition {proposal>key}</strong> a été complètée.</p>
-                    <p>Votre taux de transactions complètées va être mis-à-jour sous peu.</p>
+                    <p>La <strong>proposition {proposal>key}</strong> a été complétée.</p>
+                    <p>Votre taux de transactions complétées va être mis-à-jour sous peu.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
@@ -1893,8 +1893,8 @@
             <tuv xml:lang="fr">
                 <seg>
                     <p>Bonjour {proposal>owner>name},</p>
-                    <p>La réservation de la <strong>proposition {proposal>key}</strong> a été complètée.</p>
-                    <p>Votre taux de transactions complètées va être mis-à-jour sous peu.</p>
+                    <p>La réservation de la <strong>proposition {proposal>key}</strong> a été complétée.</p>
+                    <p>Votre taux de transactions complétées va être mis-à-jour sous peu.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
@@ -1905,8 +1905,8 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    FYI. La proposition:{proposal>key} associée à la demande:{demand>key} a été complètée par le commerce:{store>key} {store>name}. |
-                    Conseil: envoyez "complèter demande:{demand>key}", ou "noter demande:{demand>key} note:X" pour améliorer votre taux de participation.
+                    FYI. La proposition:{proposal>key} associée à la demande:{demand>key} a été complétée par le commerce:{store>key} {store>name}. |
+                    Conseil: envoyez "compléter demande:{demand>key}", ou "noter demande:{demand>key} note:X" pour améliorer votre taux de participation.
                 </seg>
             </tuv>
         </tu>
@@ -1917,7 +1917,7 @@
                 <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complèté la proposition {proposal>key}</strong>.
+                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complété la proposition {proposal>key}</strong>.
                         Veuillez <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a>
                         votre demande {demand>key} correspondante pour améliorer votre taux de transactions completées.
                     </p>
@@ -1933,8 +1933,8 @@
                 <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
-                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>omplèté la proposition {proposal>key}</strong> de départ de golf.
-                        Veuillez <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">complèter</a>
+                        <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complété la proposition {proposal>key}</strong> de départ de golf.
+                        Veuillez <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeDemand}&amp;subject={command>threadSubject}">compléter</a>
                         votre demande {demand>key} de partie de golf correspondante pour améliorer votre taux de transactions completées.
                     </p>
                     {message>footer}
@@ -2040,7 +2040,7 @@
                     </p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
-                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
                         Si vous avez reçu ce message par erreur, cliquer sur
                         <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
