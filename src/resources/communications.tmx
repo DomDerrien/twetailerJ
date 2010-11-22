@@ -1112,7 +1112,7 @@
                     <p>
                         If <strong>you can accommodate</strong> the demand, then launch the
                         <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp?demand={demand>key}">Associate Console</a>
-                        and fill in your Proposal details <strong>demand {demand>key}</strong>.
+                        and fill in your Proposal details for <strong>demand {demand>key}</strong>.
                         Alternatively, you can also send an email to create a proposal by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Create proposal</a>
                         and replacing the 'X' place holders.
