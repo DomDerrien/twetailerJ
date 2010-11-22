@@ -88,15 +88,15 @@ public class MaelzelServlet extends HttpServlet {
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
-            /****
+            /******
             else if ("/influencer".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
                     Influencer influencer = new Influencer();
-                    influencer.setConsumerKey(163001L);
-                    influencer.setEmail("gholmes@gmail.com");
-                    influencer.setName("Volkswagen des Sources");
-                    influencer.setUrl("http://www.vw-sources.com/");
+                    influencer.setConsumerKey(15002L);
+                    influencer.setEmail("dominique.derrien@gmail.com");
+                    influencer.setName("Subaru des Sources");
+                    influencer.setUrl("http://www.subarudessources.com/");
                     influencer = BaseSteps.getInfluencerOperations().createInfluencer(pm, influencer);
                     out.put("resource", influencer.toJson());
                 }
@@ -104,7 +104,7 @@ public class MaelzelServlet extends HttpServlet {
                     pm.close();
                 }
             }
-            *****/
+            *******/
             else if ("/deleteMarkedForDeletion".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {

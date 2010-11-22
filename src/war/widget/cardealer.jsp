@@ -153,7 +153,7 @@
                         <td class="firstCell"><label for="metadata.transmission"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
                         <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" value="<%= transmission %>" /></td>
                     </tr>
-                    <tr class="evenRow">
+                    <tr class="lastRow evenRow">
                         <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
                         <td class="lastCell">
                             <textarea
@@ -180,17 +180,6 @@
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "cw_helper_title", locale) %>"
                                 ><%= LabelExtractor.get(ResourceFileId.third, "cdw_helper_text", locale) %></div>
                             </div>
-                        </td>
-                    </tr>
-                    <tr class="lastRow oddRow">
-                        <td class="firstCell lastCell" colspan="2" align="center">
-                            <!-- ddd for the Wish implementation to come
-                            <input dojoType="dijit.form.CheckBox" id="wishMode" type="checkbox" />
-                            <label for="demoMode" style="font-style:italic;">Wish only (no instant broadcast)</label>
-                            <br/>
-                            -->
-                            <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
-                            <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                         </td>
                     </tr>
                 </table>
@@ -630,9 +619,6 @@
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
             <%= Demand.CRITERIA %>: criteria
         };
-        if (dijit.byId('demoMode').get('value') !== false) {
-            parameters.<%= Demand.HASH_TAGS %> = ['<%= RegisteredHashTag.demo %>'];
-        }
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             parameters.<%= Demand.CC %> = cc;

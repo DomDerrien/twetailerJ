@@ -123,10 +123,10 @@ public class InfluencerOperations extends BaseOperations {
     }
 
     public static String generateReferralId(Long influencerKey) {
-        Long salt = 435422321L;
+        Long salt = 798435422321L;
         Long reducedNow = DateUtils.getNowCalendar().getTimeInMillis() % salt;
         Long signature = influencerKey * reducedNow * influencerKey.hashCode();
-        return influencerKey.toString() + "-" + signature.toString();
+        return influencerKey.toString() + String.valueOf(INFORMATION_SEPARATOR) + String.valueOf(Math.abs(signature));
     }
 
     public static final char INFORMATION_SEPARATOR = '-';
