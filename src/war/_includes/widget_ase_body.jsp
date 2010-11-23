@@ -87,7 +87,7 @@
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
                     <tr class="firstRow oddRow">
-                        <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_criteria", locale) %></label></td>
+                        <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
                         <td class="lastCell">
                             <textarea
                                 dojoType="dijit.form.Textarea"

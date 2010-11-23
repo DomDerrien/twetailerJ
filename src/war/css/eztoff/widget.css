@@ -45,11 +45,7 @@
     background-image: url('/images/golf/flag-small.png'), url('/images/golf/ball-green-small.png');
 }
 
-.dataZone {
-    background-color: #5ddc1e;
-}
-
-.dataZone>div {
+.dataZone, .dataZone>div, .content, .form .evenRow {
     background-color: #5ddc1e;
 }
 
@@ -89,10 +85,13 @@ label, .title {
     left:0;
 }
 
+.footer:hover{
+    background-color: #5ddc1e;
+}
 .poweredBy {
     font-size: smaller;
     text-align: center;
-    margin-bottom: 5px;
+    margin: 5px 0;
 }
 
 .poweredBy a, .poweredBy a:visited {

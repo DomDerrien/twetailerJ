@@ -154,7 +154,7 @@
                         <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" value="<%= transmission %>" /></td>
                     </tr>
                     <tr class="lastRow evenRow">
-                        <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_criteria", locale) %></label></td>
+                        <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_criteria", locale) %></label></td>
                         <td class="lastCell">
                             <textarea
                                 dojoType="dijit.form.Textarea"

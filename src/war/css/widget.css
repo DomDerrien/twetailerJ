@@ -101,6 +101,12 @@ a, a:hover, a:visited, a:link, a:active {
     color: #222;
 }
 
+.content {
+    background-color: #fff800;
+    position: relative;
+    z-index: 5;
+}
+
 .content>table {
     width: 100%;
 }
@@ -163,10 +169,23 @@ a, a:hover, a:visited, a:link, a:active {
 }
 
 .footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 0;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    background-color: transparent;
+}
+
+.footer:hover{
+    z-index: 10;
+    border: 1px solid black;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    background-color: #fff800;
 }
 
 .progressBar {

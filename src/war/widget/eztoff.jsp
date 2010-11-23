@@ -166,11 +166,17 @@
                         <td class="firstCell"><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
                         <td class="lastCell" colspan="2"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T07:00"/></td>
                     </tr>
-                    <tr class="lastRow oddRow">
+                    <tr class="oddRow">
                         <td class="firstCell"><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity", locale) %></label></td>
                         <td class="lastCell" colspan="2" style="vertical-align:top;">
                             <input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="4" />
                             <label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "gw_label_quantity_extra", locale) %></label>
+                        </td>
+                    </tr>
+                    <tr class="lastRow evenRow">
+                        <td class="firstCell"><label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label></td>
+                        <td class="lastCell" colspan="2" style="vertical-align:top;">
+                            <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
                         </td>
                     </tr>
                 </table>
@@ -178,10 +184,6 @@
                     <%= LabelExtractor.get(ResourceFileId.third, "gw_label_range", locale) %>
                     <input constraints="{min:5,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" style="width:5em;" type="text" value="25" />
                     km.
-                </div>
-                <div class="comment" style="text-align:center;">
-                    <input dojoType="dijit.form.CheckBox" id="demoMode" type="checkbox" />
-                    <label for="demoMode" style="font-style:italic;"><%= LabelExtractor.get(ResourceFileId.third, "demoMode_checkbox", locale) %></label>
                 </div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
@@ -254,7 +256,7 @@
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconAdd"
                                     id="friendButton1"
-                                    onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale) %>');"
+                                    onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale).replaceAll("\\'", "\\\\'") %>');"
                                     showLabel="false"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
                                 ></button>

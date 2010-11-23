@@ -348,7 +348,7 @@ public class MailConnector {
         messageToForward.setSubject((from == null ? "" : "Fwd: (" + from + ") ") + subject);
         setContentAsPlainTextAndHtml(messageToForward, body);
 
-        log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+        // log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
 
         Transport.send(messageToForward);
     }
@@ -394,7 +394,7 @@ public class MailConnector {
             body.append("</table>");
             setContentAsPlainTextAndHtml(messageToForward, body.toString());
 
-            log.warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
+            // log.warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
 
             Transport.send(messageToForward);
         }

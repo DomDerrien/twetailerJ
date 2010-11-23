@@ -25,7 +25,7 @@
 %>
         .dataZone {<%
         if (backgroundImage != null && 0 < backgroundImage.length()) { %>background-image:url(<%= backgroundImage.replaceAll(";|<|>", "") %>);<% } %> }
-        #introFlash, .dataZone, .dataZone>div, .evenRow {<%
+        #introFlash, .dataZone, .dataZone>div, .evenRow, .content, .footer:hover {<%
         if (backgroundColor != null && 0 < backgroundColor.length()) { %>background-color:<%= backgroundColor.replaceAll(";|<|>|\\:", "") %>;<% } %> }
         #introFlashWait>span, .oddRow {<%
         if (backgroundColorOddRow != null && 0 < backgroundColorOddRow.length()) { %>background-color:<%= backgroundColorOddRow.replaceAll(";|<|>|\\:", "") %>;<% } %> }

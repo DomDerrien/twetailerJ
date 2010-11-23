@@ -2,17 +2,9 @@
  * @author Dom Derrien
  */
 .ase_floatingTab {
-    font-family: arial,helvetica,sans-serif;
-    font-size: 22px;
-    font-weight: bold;
-    border: 2px solid #ddd000;
-    -webkit-box-shadow: -3px 3px 10px #aaa;
-    -no-moz-box-shadow: -3px 3px 10px #aaa;
-    padding: 5px;
     position: fixed;
     top: 400px;
     left: -5px;
-    background-color: #fff800;
     -webkit-transform-origin: top left;
     -webkit-transform: rotate(-90deg);
     -moz-transform-origin: top left;
@@ -22,7 +14,8 @@
     transform-origin: top left;
     transform: rotate(-90deg);
     filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-    -ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+    padding: 5px;
     z-index: 999;
 }
 .ase_floatingTab:hover {
@@ -30,8 +23,18 @@
 }
 .ase_floatingTab a, .ase_floatingTab a:hover, .ase_floatingTab a:visited {
     text-decoration: none !important;
-    padding: 10px;
+    font-family: arial,helvetica,sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 5px 15px;
     color: #222;
+    border: 2px solid #ddd000;
+    background-color: #fff800;
+    -webkit-box-shadow: -3px 3px 10px #aaa;
+    -moz-box-shadow: -3px 3px 10px #aaa;
+    box-shadow: -3px 3px 10px #aaa;
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135, Color='#a0a0a0');
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135, Color='#a0a0a0')";
 }
 .ase_widget {
     position: fixed;

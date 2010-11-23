@@ -2141,7 +2141,10 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></seg>
+                <seg>
+                    Powered by <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a>.<br/>
+                    Send your questions at <a href="mailto:support@anothersocialeconomy.com" onclick="var n=navigator,a,v,p,c,u;try{a=n.appName;}catch(e){};try{v=n.appVersion;}catch(e){};try{p=n.platform;}catch(e){};try{c=n.cookieEnabled;}catch(e){};try{u=n.userAgent;}catch(e){};this.href+='?body=[place%20your%20comments%20here.]%0A--%0ABrowser%20configuration:%0A-%20name:%20'+a+'%0A-%20version:%20'+v+'%0A-%20platform:%20'+p+'%0A-%20cookie%20enabled:%20'+c+'%0A-%20user%20agent:%20'+u;" title="Mail to support@anothersocialeconomy.com">support@a...</a>
+                </seg>
             </tuv>
         </tu>
 
@@ -2319,7 +2322,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Details:</seg>
+                <seg>Comments:</seg>
             </tuv>
         </tu>
 
@@ -2759,7 +2762,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Comments:</seg>
+                <seg>Details:</seg>
             </tuv>
         </tu>
 

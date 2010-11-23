@@ -1707,7 +1707,10 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Offert par <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a></seg>
+                <seg>
+                    Offert par <a href="http://AnotherSocialEconomy.com" target="_blank">AnotherSocialEconomy.com</a><br />
+                    Posez vos questions à <a href="mailto:support@anothersocialeconomy.com" onclick="var n=navigator,a,v,p,c,u;try{a=n.appName;}catch(e){};try{v=n.appVersion;}catch(e){};try{p=n.platform;}catch(e){};try{c=n.cookieEnabled;}catch(e){};try{u=n.userAgent;}catch(e){};this.href+='?body=[écrivez%20vos%20commentaires%20ici.]%0A--%0AConfiguration%20du%20navigateur:%0A-%20nom:%20'+a+'%0A-%20version:%20'+v+'%0A-%20plateforme:%20'+p+'%0A-%20cookie%20activé:%20'+c+'%0A-%20agent:%20'+u;" title="Courriel à support@anothersocialeconomy.com">support@a...</a>
+                </seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_1_title" dataType="text">
@@ -1728,7 +1731,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Dîtes nous que vous voulez, dans quelle région vous cherchez, pour quelle date vous en avez besoin, et qui doit être tenu au courant de la démarche. Nous communiquerons avec les vendeurs participants et vous enverrons leurs propositions.</seg>
+                <seg>Dites nous que vous voulez, où cela, pour quelle date, et qui tenir au courant de la démarche. Nous communiquerons avec les vendeurs alentour et vous acheminerons leurs propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_2_title" dataType="text">
@@ -2238,7 +2241,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Commentaires:</seg>
+                <seg>Détails:</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_label_make" dataType="text">
