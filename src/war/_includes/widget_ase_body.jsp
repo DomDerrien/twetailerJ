@@ -145,6 +145,7 @@
                                 onclick="localModule.switchPane(1, 2);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep2_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep2_hint", locale) %></span>
@@ -191,6 +192,7 @@
                                 onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'widgetOverlay');"
                                 showLabel="false"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
+                                type="button"
                             ></button>
                         </td>
                     </tr>
@@ -229,6 +231,7 @@
                                 onclick="localModule.switchPane(2, 3);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep3_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep3_hint", locale) %></span>
@@ -272,6 +275,7 @@
                                 onclick="localModule.switchPane(3, 4);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep4_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next_toStep4_hint", locale) %></span>
@@ -337,6 +341,7 @@
                                     onclick="twetailer.Common.manageFriendRow(1, '<%= LabelExtractor.get(ResourceFileId.third, "cw_label_cced_email", locale).replaceAll("\\'", "\\\\'") %>');"
                                     showLabel="false"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
+                                    type="button"
                                 ></button>
                             </td>
                         </tr>
@@ -353,6 +358,7 @@
                                 onclick="localModule.sendRequest();"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_send_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_send", locale) %></button>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cw_action_send_hint", locale) %></span>
@@ -384,6 +390,7 @@
                                 onclick="localModule.switchPane(5, 1);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset", locale) %></button>
                         </td>
                     </tr>
@@ -416,6 +423,7 @@
                                 onclick="localModule.switchPane(6, 1);"
                                 style="color:black;"
                                 title="<%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset_hint", locale) %>"
+                                type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_reset", locale) %></button>
                         </td>
                     </tr>

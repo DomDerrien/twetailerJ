@@ -170,11 +170,13 @@ public class DemandProcessor {
                 }
                 if (!isInfluencerSelected && influencer.getConsumerKey() != null) {
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, influencer.getConsumerKey());
-                    // Communicate with the sale associate
-                    notifyAvailability(demand, owner, saConsumerRecord, influencer);
+                    if (!demand.getSaleAssociateKeys().contains(saConsumerRecord.getSaleAssociateKey())) {
+                        // Communicate with the sale associate
+                        notifyAvailability(demand, owner, saConsumerRecord, influencer);
 
-                    // Keep track of the notification to not ping him/her another time
-                    demand.addSaleAssociateKey(saConsumerRecord.getSaleAssociateKey());
+                        // Keep track of the notification to not ping him/her another time
+                        demand.addSaleAssociateKey(saConsumerRecord.getSaleAssociateKey());
+                    }
                 }
             }
 

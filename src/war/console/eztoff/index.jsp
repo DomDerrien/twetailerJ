@@ -137,6 +137,7 @@
                         iconClass="silkIcon silkIconDemandAdd"
                         id="createButton"
                         onclick="twetailer.golf.Consumer.displayDemandForm(true);"
+                        type="button"
                     ><%= LabelExtractor.get(ResourceFileId.third, "golf_cmenu_createDemand", locale) %></button>
                 </div>
                 <div style="float:right;">
@@ -255,6 +256,7 @@
                                         onclick="twetailer.Common.fetchBrowserLocation('demand.postalCode', 'demand.countryCode', 'demandFormOverlay');"
                                         showLabel="false"
                                         title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
+                                        type="button"
                                     ></button>
                                 </td>
                             </tr>
@@ -280,6 +282,7 @@
                                         dojoType="dijit.form.Button"
                                         iconClass="silkIcon silkIconGMaps"
                                         onclick="twetailer.Common.showMap(dijit.byId('demand.postalCode').get('value'), dijit.byId('demand.countryCode').get('value'));"
+                                        type="button"
                                     ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                                 </td>
                             </tr>
@@ -336,6 +339,7 @@
                                             onclick="twetailer.Common.manageFriendRow(1);"
                                             showLabel="false"
                                             title="<%= LabelExtractor.get(ResourceFileId.third, "add_ccInfo_button", locale) %>"
+                                            type="button"
                                         ></button>
                                     </td>
                                 </tr>
@@ -351,9 +355,9 @@
         </fieldset>
         <div style="text-align:center;">
             <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="demandFormSubmitButton" onclick="return dijit.byId('demandForm').validate();" type="submit"></button>
-            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandCancel" id="demandFormCancelButton" onclick="twetailer.golf.Consumer.cancelDemand('demandForm', 'demand.key');"></button>
-            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="demandFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('demandForm', 'demand.key');"></button>
-            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('demandForm').hide();"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
+            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandCancel" id="demandFormCancelButton" onclick="twetailer.golf.Consumer.cancelDemand('demandForm', 'demand.key');" type="button"></button>
+            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="demandFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('demandForm', 'demand.key');" type="button"></button>
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('demandForm').hide();" type="button"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
         </div>
     </div>
 
@@ -416,10 +420,10 @@
             </table>
         </fieldset>
         <div style="text-align:center;">
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormConfirmButton" onclick="twetailer.golf.Consumer.confirmProposal();"></button>
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormDeclineButton" onclick="twetailer.golf.Consumer.declineProposal();"></button>
-            <button class="closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('proposalForm', 'proposal.demandKey');"></button>
-            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormConfirmButton" onclick="twetailer.golf.Consumer.confirmProposal();" type="button"></button>
+            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormDeclineButton" onclick="twetailer.golf.Consumer.declineProposal();" type="button"></button>
+            <button class="closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconDemandAccept" id="proposalFormCloseButton" onclick="twetailer.golf.Consumer.closeDemand('proposalForm', 'proposal.demandKey');" type="button"></button>
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" type="button"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
         </div>
     </div>
 
@@ -444,6 +448,7 @@
                             dojoType="dijit.form.Button"
                             iconClass="silkIcon silkIconGMaps"
                             onclick="twetailer.Common.showMap(dijit.byId('store.postalCode').get('value'), dijit.byId('store.countryCode').get('value'));"
+                            type="button"
                         ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                     </td>
                 </tr>
@@ -464,6 +469,7 @@
                             dojoType="dijit.form.Button"
                             iconClass="silkIcon silkIconLinkOpen"
                             onclick=""
+                            type="button"
                         ><%= LabelExtractor.get(ResourceFileId.third, "openLink_button", locale) %></button>
                     </td>
                 </tr>
@@ -518,6 +524,7 @@
         dojo.require('dijit.layout.BorderContainer');
         dojo.require('dijit.layout.ContentPane');
         dojo.require('dijit.layout.TabContainer');
+        dojo.require('dijit.form.Button');
         // dojo.require('dijit.form.CheckBox');
         // dojo.require('dijit.form.ComboBox');
         dojo.require('dijit.form.DateTextBox');

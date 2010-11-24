@@ -121,7 +121,7 @@
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.key">Key:</label></td>
                             <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.key" name="key" style="width:8em;" type="text" />
-                            <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.key', 'Consumer');">Fetch</button></td>
+                            <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.key', 'Consumer');" type="button">Fetch</button></td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.creationDate">Creation date:</label></td>
@@ -131,7 +131,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -222,7 +222,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.twitterId">Sale Associate key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.saleAssociateKey" name="saleAssociateKey" readonly="true" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -232,9 +232,9 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Consumer');">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('Consumer');">Delete</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Demand');">Get demand keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Consumer');" type="button">Update</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('Consumer');" type="button">Delete</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Demand');" type="button">Get demand keys</button>
                             </td>
                         </tr>
                     </table>
@@ -252,7 +252,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="saleassociate.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.key', 'SaleAssociate');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.key', 'SaleAssociate');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -263,7 +263,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="saleassociate.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -285,14 +285,14 @@
                             <td style="text-align:right;padding-right:10px;"><label for="saleassociate.consumerKey">Consumer key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.NumberTextBox" id="saleassociate.consumerKey" name="consumerKey" readonly="true" style="width:5em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.consumerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.consumerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="saleassociate.creatorKey">Creator key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.NumberTextBox" id="saleassociate.creatorKey" name="creatorKey" readonly="true" style="width:5em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.creatorKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.creatorKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -315,7 +315,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="saleassociate.storeKey">Store key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.storeKey" name="storeKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.storeKey', 'Store');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.storeKey', 'Store');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -325,9 +325,9 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('SaleAssociate');">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('SaleAssociate');">Delete</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Proposal');">Get proposal keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('SaleAssociate');" type="button">Update</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('SaleAssociate');" type="button">Delete</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Proposal');" type="button">Get proposal keys</button>
                             </td>
                         </tr>
                     </table>
@@ -345,7 +345,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="store.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="store.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.key', 'Store');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.key', 'Store');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -356,7 +356,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="store.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="store.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -396,14 +396,14 @@
                             <td style="text-align:right;padding-right:10px;"><label for="store.registrarKey">Registrar key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="store.registrarKey" name="registrarKey" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.registrarKey', 'Registrar');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.registrarKey', 'Registrar');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="store.reviewSystemKey">Review system key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="store.reviewSystemKey" name="reviewSystemKey" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -413,9 +413,9 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');">Get sale associate keys</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Store');">Get store keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');" type="button">Update</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');" type="button">Get sale associate keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.loadEntityKeys('consumer.key','Store');" type="button">Get store keys</button>
                             </td>
                         </tr>
                     </table>
@@ -433,7 +433,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="location.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.key', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.key', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -444,7 +444,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="location.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.locationKey" name="locationKey" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.locationKey', 'Location');">Fetch</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -479,10 +479,10 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="dijit.byId('locationFilterDialog').show();">Get location keys</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();">Resolve</button>
-                                <button disabled="true" dojoType="dijit.form.Button">View Map</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');" type="button">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="dijit.byId('locationFilterDialog').show();" type="button">Get location keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
+                                <button disabled="true" dojoType="dijit.form.Button" type="button">View Map</button>
                             </td>
                         </tr>
                     </table>
@@ -501,7 +501,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="influencer.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.key', 'Influencer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.key', 'Influencer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -512,7 +512,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="influencer.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -528,7 +528,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="influencer.consumerKey">Consumer key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.consumerKey" name="consumerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.consumerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.consumerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -550,7 +550,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Influencer');">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Influencer');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -568,7 +568,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="registrar.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.key', 'Registrar');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.key', 'Registrar');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -579,7 +579,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="registrar.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -595,7 +595,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="registrar.consumerKey">Consumer key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.consumerKey" name="consumerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.consumerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.consumerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -613,7 +613,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Registrar');">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Registrar');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -631,7 +631,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="reseller.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.key', 'Reseller');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.key', 'Reseller');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -642,7 +642,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="reseller.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -658,7 +658,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="reseller.consumerKey">Consumer key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.consumerKey" name="consumerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.consumerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.consumerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -668,7 +668,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Reseller');">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Reseller');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -686,7 +686,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="reviewSystem.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reviewSystem.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewSystem.key', 'ReviewSystem');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewSystem.key', 'ReviewSystem');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -697,7 +697,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="reviewSystem.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reviewSystem.locationKey" name="locationKey" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewSystem.locationKey', 'Location');">Fetch</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewSystem.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -724,7 +724,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('ReviewSystem');">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('ReviewSystem');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -743,7 +743,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.key', 'Demand');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.key', 'Demand');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -754,7 +754,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -774,7 +774,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.cancelerKey">Canceler key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="demand.cancelerKey" name="cancelerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.cancelerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.cancelerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -797,7 +797,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.ownerKey">Owner key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="demand.ownerKey" name="ownerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.ownerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.ownerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -860,7 +860,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="demand.influencerKey">Influencer key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="demand.influencerKey" name="influencerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.influencerKey', 'Influencer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.influencerKey', 'Influencer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -875,7 +875,7 @@
                                 >
                                     <option value="none" selected="true">None</option>
                                 </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -913,13 +913,13 @@
                                 >
                                     <option value="none" selected="true">None</option>
                                 </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" id="demand.updateButton" onclick="localModule.saveEntity('Demand');">Update</button>
+                                <button dojoType="dijit.form.Button" id="demand.updateButton" onclick="localModule.saveEntity('Demand');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -937,7 +937,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.key', 'Proposal');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.key', 'Proposal');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -948,7 +948,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="proposal.locationKey" name="locationKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.locationKey', 'Location');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -968,7 +968,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.cancelerKey">Canceler key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="proposal.cancelerKey" name="cancelerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.cancelerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.cancelerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -987,7 +987,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.ownerKey">Owner key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="proposal.ownerKey" name="ownerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1050,14 +1050,14 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.consumerKey">Consumer key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="proposal.consumerKey" name="consumerKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.consumerKey', 'Consumer');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.consumerKey', 'Consumer');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.demandKey">Demand key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="proposal.demandKey" name="demandKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.demandKey', 'Demand');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.demandKey', 'Demand');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1072,7 +1072,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.storeKey">Store key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="proposal.storeKey" name="storeKey" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.storeKey', 'Store');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.storeKey', 'Store');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1082,7 +1082,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" id="proposal.updateButton" onclick="localModule.saveEntity('Proposal');">Update</button>
+                                <button dojoType="dijit.form.Button" id="proposal.updateButton" onclick="localModule.saveEntity('Proposal');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -1100,7 +1100,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="payment.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="payment.key" name="key" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.key', 'Payment');">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.key', 'Payment');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1111,7 +1111,7 @@
                             <td style="text-align:right;padding-right:10px;"><label for="proposal.locationKey">Location key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="payment.locationKey" name="locationKey" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.locationKey', 'Location');">Fetch</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.locationKey', 'Location');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1146,7 +1146,7 @@
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Payment');">Update</button>
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Payment');" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
@@ -1203,8 +1203,8 @@
             </table>
         </div>
         <div class="dijitDialogPaneActionBar">
-            <button dojoType="dijit.form.Button" type="submit" id="ok">Get location keys</button>
-            <button dojoType="dijit.form.Button" type="button" onClick="dijit.byId('locationFilterDialog').onCancel();">Cancel</button>
+            <button dojoType="dijit.form.Button" id="ok" type="submit">Get location keys</button>
+            <button dojoType="dijit.form.Button" onClick="dijit.byId('locationFilterDialog').onCancel();" type="button">Cancel</button>
         </div>
     </div>
 

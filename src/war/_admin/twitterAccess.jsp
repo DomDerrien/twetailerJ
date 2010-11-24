@@ -105,7 +105,7 @@
         >
             <fieldset class="entityInformation" style="margin:5px;">
                 <legend>AnotherSocialEconomy Account</legend>
-                <button dojoType="dijit.form.Button" style="float:right;" onclick="location+='?getOAuthToken=true'">Get Application OAuth Token</button>
+                <button dojoType="dijit.form.Button" style="float:right;" onclick="location+='?getOAuthToken=true'" type="button">Get Application OAuth Token</button>
                 Consumer Key: <%= TwitterConnector.ASE_TWITTER_CONSUMER_KEY %><br />
                 Consumer Secret: <%= TwitterConnector.ASE_TWITTER_CONSUMER_SECRET %><br />
                 <br />

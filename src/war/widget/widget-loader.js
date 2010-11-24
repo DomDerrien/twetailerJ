@@ -12,7 +12,7 @@
         bdl = {
             core: { fr: 'Réseau d\'achat locaux', en: 'Local Buying Network' },
             cardealer: { fr: 'Rechercher un véhicule d\'occasion', en: 'Find Local Pre-Owned Cars' }
-        }
+        },
         installWidget = function(){
             var dv = dc.getElementById(id),
                 txt = escape(window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : ''),
@@ -80,10 +80,8 @@
             if (aC['color-brand']) {
                 ac.style.color = aC['color-brand'];
             }
-            dv.setAttribute('class', 'ase_floatingTab');
-            dv.appendChild(ac);
             if (aC['border']) {
-                dv.style.border = aC['border'];
+                ac.style.border = aC['border'];
             }
             cl = aC['background-color'];
             if (cl) {
@@ -97,8 +95,10 @@
                         cl = cl.substring(0, bi);
                     }
                 }
-                dv.style.backgroundColor = cl;
+                ac.style.backgroundColor = cl;
             }
+            dv.setAttribute('class', 'ase_floatingTab');
+            dv.appendChild(ac);
             hd.appendChild(dv);
             if (document.all) {
                 dv.style.top = '100px';

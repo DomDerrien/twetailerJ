@@ -191,6 +191,7 @@
                 dfd.addCallback(function(response) { _fetchProposal(_globalCommon.getCachedProposal(proposalKey)); });
             }
         }
+
         proposalForm.show();
     };
 
@@ -256,7 +257,7 @@
         data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
-        data.metadata = data.metadata.trim();
+        data.metadata = dojo.trim(data.metadata);
 
         data.hashTags = data.hashTags.split(','); // Standard array delimiter
         if (data.demoMode) {

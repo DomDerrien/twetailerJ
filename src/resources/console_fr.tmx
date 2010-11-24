@@ -302,7 +302,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Vous utiliser un navigateur dépassé !</seg>
+                <seg>Vous utilisez un navigateur dépassé !</seg>
             </tuv>
         </tu>
         <tu tuid="login_info_to_ie6_users" dataType="text">
@@ -324,10 +324,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    AnotherSocialEconomy.com does  ne requiert pas la création d'un compte spécifique car
+                    AnotherSocialEconomy.com ne requiert pas la création d'un compte spécifique car
                     il accepte les connexions vérifiées par les fournisseurs d'identité reconnus. Si cela
-                    n'est suffisant, ASE accepte aussi les identités vérifées par tout fournisseurs de
-                    service <a href="http://openid.net/" target="_blank">OpendID</a>.
+                    n'est suffisant, ASE accepte aussi les identités vérifées par tout fournisseur de
+                    service <a href="http://openid.net/" target="_blank">OpenID</a>.
                 </seg>
             </tuv>
         </tu>
@@ -359,7 +359,7 @@
                 <seg>Identifiez-vous avec Facebook</seg>
             </tuv>
         </tu>
-        <tu tuid="login_provider_shortcut_twiter" dataType="text">
+        <tu tuid="login_provider_shortcut_twitter" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">

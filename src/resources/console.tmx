@@ -462,7 +462,7 @@
             <tuv xml:lang="en"><seg>Sign in with Facebook</seg></tuv>
         </tu>
 
-        <tu tuid="login_provider_shortcut_twiter" datatype="Text">
+        <tu tuid="login_provider_shortcut_twitter" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en"><seg>Sign in with Twitter</seg></tuv>

@@ -136,24 +136,22 @@
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="middle" style="width: 40em;">
-                        <!--[if lt IE 7]>
-                        <div style='border: 1px solid #F7941D; background: #FEEFDA; text-align: center; clear: both; height: 75px; position: relative;'>
-                            <div style='width: 640px; margin: 0 auto; text-align: left; padding: 0; overflow: hidden; color: black;'>
-                                <div style='width: 75px; float: left;'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg' alt='!'/></div>
-                                <div style='width: 275px; float: left; font-family: Arial, sans-serif;'>
-                                    <div style='font-size: 14px; font-weight: bold; margin-top: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_call_to_ie6_users", locale) %></div>
-                                    <div style='font-size: 12px; margin-top: 6px; line-height: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_info_to_ie6_users", locale) %></div>
-                                </div>
-                                <div style='width: 75px; float: left;'><a href='http://www.firefox.com' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg' style='border: none;' alt='Mozilla Firefox'/></a></div>
-                                <div style='width: 75px; float: left;'><a href='http://www.microsoft.com/windows/internet-explorer/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg' style='border: none;' alt='Microsoft Internet Explorer'/></a></div>
-                                <div style='width: 73px; float: left;'><a href='http://www.apple.com/safari/download/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg' style='border: none;' alt='Apple Safari'/></a></div>
-                                <div style='float: left;'><a href='http://www.google.com/chrome' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg' style='border: none;' alt='Google Chrome'/></a></div>
-                            </div>
-                        </div>
-                        <![endif]-->
-
-                        <![if !IE]>
                         <div id="signInForm">
+                            <!--[if lt IE 8]>
+                            <div id="incompatibleIEWarning" style='border: 1px solid #F7941D; background: #FEEFDA; text-align: center; clear: both; height: 75px; position: relative; margin-bottom: 10px;'>
+                                <div style='width: 640px; margin: 0 auto; text-align: left; padding: 0; overflow: hidden; color: black;'>
+                                    <div style='width: 75px; float: left; padding-left: 10px;'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg' alt='!'/></div>
+                                    <div style='width: 275px; float: left; font-family: Arial, sans-serif;'>
+                                        <div style='font-size: 14px; font-weight: bold; margin-top: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_call_to_ie6_users", locale) %></div>
+                                        <div style='font-size: 12px; margin-top: 6px; line-height: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_info_to_ie6_users", locale) %></div>
+                                    </div>
+                                    <div style='width: 75px; float: left;'><a href='http://www.firefox.com' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg' style='border: none;' alt='Mozilla Firefox'/></a></div>
+                                    <div style='width: 75px; float: left;'><a href='http://www.microsoft.com/windows/internet-explorer/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg' style='border: none;' alt='Microsoft Internet Explorer'/></a></div>
+                                    <div style='width: 73px; float: left;'><a href='http://www.apple.com/safari/download/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg' style='border: none;' alt='Apple Safari'/></a></div>
+                                    <div style='float: left;'><a href='http://www.google.com/chrome' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg' style='border: none;' alt='Google Chrome'/></a></div>
+                                </div>
+                            </div>
+                            <![endif]-->
                             <div style="color:#888; text-align: justify;">
                                  <%= LabelExtractor.get(ResourceFileId.third, "login_introduction_message", locale) %>
                             </div>
@@ -166,6 +164,7 @@
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='<%= FacebookConnector.bootstrapAuthUrl(request) %>'+escape(window.location);"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_facebook", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/FaceBook-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
@@ -173,30 +172,35 @@
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='/login?loginWith=twitter&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_twitter", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Twitter-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='/login?loginWith=google&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Google-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="window.location='/login?loginWith=yahoo&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + dojo.byId('fromPageURL').value"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Yahoo-red-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://www.myspace.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myspace", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/MySpace-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://openid.aol.com/', '');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_aol", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Aol-32.png" width="32" height="32" /></button>
                             </div>
                             <div style="text-align: right;">
@@ -214,34 +218,37 @@
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.wordpress.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_wordpress", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Wordpress-blue-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.blogspot.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_blogger", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Blogger-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.mp');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_chimp", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/Chimp-32.png" width="32" height="32" /></button>
                                 <button
                                     class="shortcutButton"
                                     dojoType="dijit.form.Button"
                                     onclick="localModule.cookOpenId('http://', '.myopenid.com');"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_myopenid", locale) %>"
+                                    type="button"
                                 ><img src="/images/icons/MyOpenId-32.png" width="32" height="32" /></button>
-                                <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').attr('disabled', true);">
+                                <form action="/login" dojoType="dijit.form.Form" method="post" onsubmit="dijit.byId('signInButton').set('disabled', true);">
                                     <input id="fromPageURL" name="<%= LoginServlet.FROM_PAGE_URL_KEY %>" type="hidden" />
                                     <label for="openid_identifier"><%= LabelExtractor.get(ResourceFileId.third, "login_open_id_label", locale) %></label><br/>
                                     <center><input dojoType="dijit.form.TextBox" id="openid_identifier" name="openid_identifier" style="width:30em;font-size:larger" type="text" /></center>
-                                    <center><button dojoType="dijit.form.Button" id="signInButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
+                                    <center><button dojoType="dijit.form.Button" iconClass="openidSignInButton" id="signInButton" type="submit"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button></center>
                                 </form>
                             </div>
                         </div>
-                        <![endif]>
                     </td>
                     <td>&nbsp;</td>
                 </tr>
@@ -276,8 +283,8 @@
         </ul>
         <%= LabelExtractor.get(ResourceFileId.third, "login_dialog_custom_info_suffix", locale) %>
         <center>
-            <button dojoType="dijit.form.Button" id="useAdditionalInfoButton" type="submit" iconClass="openidSignInButton"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button>
-            <button dojoType="dijit.form.Button" type="reset" iconClass="silkIcon silkIconCancel" onclick="dijit.byId('openIdResolver').hide();dijit.byId('openid_identifier').focus();"><%= LabelExtractor.get(ResourceFileId.third, "login_dialog_close_button", locale) %></button>
+            <button dojoType="dijit.form.Button" iconClass="openidSignInButton" id="useAdditionalInfoButton" type="submit"><%= LabelExtractor.get(ResourceFileId.third, "login_sign_in_button", locale) %></button>
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconCancel" onclick="dijit.byId('openIdResolver').hide();dijit.byId('openid_identifier').focus();" type="reset"><%= LabelExtractor.get(ResourceFileId.third, "login_dialog_close_button", locale) %></button>
         </center>
     </div>
 
@@ -318,20 +325,32 @@
 
     var localModule = {};
     localModule.init = function() {
-        dijit.byId('openid_identifier').focus();
-        dojo.query('#signInButton').onclick(function(evt) {
-            dojo.query('.shortcutButton').forEach(function(node, index, arr){
-                // dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
-                dijit.getEnclosingWidget(node).attr('disabled', true);
+        var warningBox = dojo.byId('incompatibleIEWarning');
+        if (warningBox != null) {
+            var widget;
+            dojo.query('.shortcutButton').forEach(function(node, index, arr) {
+                widget = dijit.getEnclosingWidget(node)
+                widget.set('disabled', true);
+                widget.set('title', '');
             });
-        });
-        dojo.query('#openIdCustom').onkeypress(function(evt) {
-            if (evt.keyCode == dojo.keys.ENTER) {
-                dojo.byId('useAdditionalInfoButton').click();
-            }
-        });
-        dojo.byId('fromPageURL').value = escape(window.location); // encodeURI(window.location);
-        dijit.byId('signInButton').attr('disabled', false);
+            dijit.byId('signInButton').set('disabled', true);
+        }
+        else {
+            dijit.byId('openid_identifier').focus();
+            dojo.query('#signInButton').onclick(function(evt) {
+                dojo.query('.shortcutButton').forEach(function(node, index, arr) {
+                    // dojo.fadeOut({ node: dijit.getEnclosingWidget(node).domNode, duration: 2000 }).play();
+                    dijit.getEnclosingWidget(node).set('disabled', true);
+                });
+            });
+            dojo.query('#openIdCustom').onkeypress(function(evt) {
+                if (evt.keyCode == dojo.keys.ENTER) {
+                    dojo.byId('useAdditionalInfoButton').click();
+                }
+            });
+            dojo.byId('fromPageURL').value = escape(window.location); // encodeURI(window.location);
+            dijit.byId('signInButton').set('disabled', false);
+        }
     };
     localModule.cookOpenId = function(prefix, suffix) {
         dojo.byId('openIdPrefix').innerHTML = prefix;
@@ -341,9 +360,9 @@
     };
     localModule.reportCookedOpenId = function() {
         var prefix = dojo.byId('openIdPrefix').innerHTML;
-        var custom = dijit.byId('openIdCustom').attr('value');
+        var custom = dijit.byId('openIdCustom').get('value');
         var suffix = dojo.byId('openIdSuffix').innerHTML;
-        dijit.byId('openid_identifier').attr('value', prefix + custom + suffix);
+        dijit.byId('openid_identifier').set('value', prefix + custom + suffix);
         dojo.byId('signInButton').click();
     };
     </script>

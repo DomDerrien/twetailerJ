@@ -257,9 +257,9 @@
         </fieldset>
         <div style="text-align:center;">
             <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return dijit.byId('proposalForm').validate();" type="submit"></button>
-            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Associate.cancelProposal();"></button>
-            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.Associate.closeProposal();"></button>
-            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" ><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
+            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.golf.Associate.cancelProposal();" type="button"></button>
+            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.Associate.closeProposal();" type="button"></button>
+            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" type="button"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
         </div>
     </div>
 
@@ -303,6 +303,7 @@
         dojo.require('dijit.layout.BorderContainer');
         dojo.require('dijit.layout.ContentPane');
         dojo.require('dijit.layout.TabContainer');
+        dojo.require('dijit.form.Button');
         // dojo.require('dijit.form.CheckBox');
         // dojo.require('dijit.form.ComboBox');
         dojo.require('dijit.form.DateTextBox');

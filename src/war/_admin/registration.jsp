@@ -99,10 +99,10 @@
                         <legend>Action Selection</legend>
                         <p style="font-weight:bold;">Direct accesses:</p>
                         <p>
-                            <button disabled="true" dojoType="dijit.form.Button"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();">New Location >></button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();">New Store >></button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">New Sale Associate >></button>
+                            <button disabled="true" dojoType="dijit.form.Button" type="button"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button">New Location >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button">New Store >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button>
                         </p>
                         <p style="font-weight:bold;">Other tools:</p>
                         <ul>
@@ -135,8 +135,8 @@
                             </div>
                         </form>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createLocation();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();" type="button"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createLocation();" type="button">Next >></button>
                         </p>
                     </fieldset>
                 </div>
@@ -178,8 +178,8 @@
                             </div>
                         </form>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">Next >></button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -187,7 +187,7 @@
                         <ul id="storeList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getStores();">Get Stores</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getStores();" type="button">Get Stores</button>
                         </p>
                     </fieldset>
                 </div>
@@ -205,8 +205,8 @@
                             </div>
                         </form>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createSaleAssociate();">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Previous</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.createSaleAssociate();" type="button">Next >></button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -214,7 +214,7 @@
                         <ul id="saleAssociateList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();">Get Sale Associates</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();" type="button">Get Sale Associates</button>
                         </p>
                     </fieldset>
                     <fieldset class="entityInformation">
@@ -222,7 +222,7 @@
                         <ul id="consumerList">
                         </ul>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getConsumer();">Get Consumer</button>
+                            <button dojoType="dijit.form.Button" onclick="localModule.getConsumer();" type="button">Get Consumer</button>
                         </p>
                     </fieldset>
                 </div>
@@ -231,10 +231,10 @@
                         <legend>Repeat Again ;)</legend>
                         <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();"><< Another Location</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();"><< Another Store</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();"><< Another Sale Associate</button>
-                            <button disabled="true" dojoType="dijit.form.Button">Next >></button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Another Location</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Another Store</button>
+                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button"><< Another Sale Associate</button>
+                            <button disabled="true" dojoType="dijit.form.Button" type="button">Next >></button>
                         </p>
                     </fieldset>
                 </div>

@@ -1152,6 +1152,7 @@
      *                       onclick="twetailer.Common.manageFriendRow(1);"
      *                       showLabel="false"
      *                       title="..."           // Value copied in cloned rows
+     *                       type="button"
      *                   &gt;&lt;/button&gt;
      *               &lt;/td&gt;
      *           &lt;/tr&gt;
@@ -1184,7 +1185,8 @@
                     placeHolder: firstField.get('placeHolder'),
                     required: false,
                     style: 'width:100%',
-                    trim: true }).domNode
+                    trim: true
+                }).domNode
             );
             dojo.create('td', { style: 'width:20px;padding-right:0px !important;' }, row).appendChild(
                 new dijit.form.Button({
@@ -1192,7 +1194,9 @@
                     id: 'friendButton' + fIdx,
                     onClick: function() { module.manageFriendRow(fIdx, fieldLabel); },
                     showLabel: false,
-                    title: firstField.get('title') }).domNode
+                    title: firstField.get('title'),
+                    type: 'button'
+                }).domNode
             );
             dijit.byId('email' + fIdx).set('regExp', dijit.byId('email1').get('regExp')); // Work-around: otherwise, it seems the regExp value is misinterpreted!
         }
