@@ -299,26 +299,20 @@ public class LocationOperations extends BaseOperations {
     }
     */
 
-    private static final double ONE_MI_IN_KM = 1.609344;
+    private static final double ONE_MI_IN_KM = 1.609344d;
     private static final double EQUATORIAL_CIRCUMFERENCE_IN_KM = 40075.11d;
     private static final double ONE_EQUATORIAL_DEGREE_IN_KM = 360.0d / EQUATORIAL_CIRCUMFERENCE_IN_KM;
     private static final double EQUATORIAL_RADIUS_IN_KM = EQUATORIAL_CIRCUMFERENCE_IN_KM / 2.0d / Math.PI;
 
     /**
-     * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
+     * Get the geo-coordinates of the box defined by its centers and a radius
      *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param location place where to start the search
      * @param range distance around the location
      * @param rangeUnit unit of the distance around the search
-     * @param withStore if <code>true</code>, only locations with at least a store will be returned, otherwise there's no limitation
-     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of locations matching the given criteria
-     *
-     * @throws DataSourceException If given value cannot matched a data store type
+     * @return Array of coordinates
      */
-    @SuppressWarnings("unchecked")
-    public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+    public static double[] getLocationBounds(Location location, Double range, String rangeUnit) {
         // The vertical gap is consistent between parallels
         if (LocaleValidator.MILE_UNIT.equals(rangeUnit)) {
             range = range * ONE_MI_IN_KM;
@@ -343,6 +337,29 @@ public class LocationOperations extends BaseOperations {
 
         Logger.getLogger(LocationOperations.class.getName()).finest("Box limits [left; right] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
 
+        return new double[] { leftLongitude, rightLongitude, bottomLatitude, topLatitude };
+    }
+
+    /**
+     * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param location place where to start the search
+     * @param range distance around the location
+     * @param rangeUnit unit of the distance around the search
+     * @param withStore if <code>true</code>, only locations with at least a store will be returned, otherwise there's no limitation
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of locations matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+        double[] bounds = getLocationBounds(location, range, rangeUnit);
+        double leftLongitude = bounds[0];
+        double rightLongitude = bounds[1];
+        double bottomLatitude = bounds[2];
+        double topLatitude = bounds[3];
         /****************************************************************************************************************
          * Ideal case not feasible because of App Engine limitation:  Only _one_ inequality filter per query!
          * // Prepare the query

@@ -190,6 +190,11 @@
                             <button dojoType="dijit.form.Button" onclick="localModule.getStores();" type="button">Get Stores</button>
                         </p>
                     </fieldset>
+                    <fieldset class="entityInformation" id="innerStep2bis">
+                        <legend>Store Batch Creation</legend>
+                        <textarea dojoType="dijit.form.Textarea" id="storeList" width="100%"></textarea>
+                        <button dojoType="dijit.form.Button" onclick="localModule.createStores();" type="button">Create Stores</button>
+                    </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep3">
@@ -255,6 +260,7 @@
         dojo.require('dijit.form.Button');
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
@@ -328,6 +334,43 @@
             },
             error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
             url: '/API/Store/'
+        });
+    };
+    localModule.createStores = function() {
+        dojo.animateProperty({
+            node: 'innerStep2bis',
+            properties: { backgroundColor: { end: 'yellow' } }
+        }).play();
+        var values = dijit.byId('storeList').get('value');
+        if (!values || values.length == 0) {
+            alert('the area MUST contain at least an empty array');
+            return;
+        }
+        try {
+            values = dojo.toJson(dojo.fromJson(values), false);
+        }
+        catch(ex) {
+            alert('Invalid information: the area MUST contain an Array of Objects, each one describing a Store.');
+            return;
+        }
+        dojo.xhrPost({
+            headers: { 'content-type': 'application/json; charset-<%= StringUtils.HTML_UTF8_CHARSET %>' },
+            putData: values,
+            handleAs: 'json',
+            load: function(response, ioArgs) {
+                if (response !== null && response.success) {
+                    alert('Keys of the created Stores:\n'+dojo.toJson(response.keys));
+                }
+                else {
+                    alert(response.message+'\nurl: '+ioArgs.url);
+                }
+                dojo.animateProperty({
+                    node: 'innerStep2bis',
+                    properties: { backgroundColor: { end: 'transparent' } }
+                }).play();
+            },
+            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            url: '/_tasks/registerStores'
         });
     };
     localModule.getStores = function() {

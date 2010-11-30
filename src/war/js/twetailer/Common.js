@@ -856,18 +856,20 @@
 
     /**
      * Invoke a third-party service (Google Maps) to get the geographical coordinate of the given location
-     * and render the corresponding map in a dialog box with id "locationMapDialog".
+     * and render the corresponding map in a dialog box with id "locationMapDialog", embedding a <div/> with
+     * the identifier "mapPlaceHolder".
      *
      * @param {String} postalCode postal code in "A1A1A1" for Canada, and "12345" for USA.
      * @param {String} countryCode ISO of the country.
+     * @param {Object} (optional) map display parameters
      */
-    module.showMap = function(postalCode, countryCode) {
+    module.showMap = function(postalCode, countryCode, mapParams) {
         _postalCode = postalCode;
         _countryCode = countryCode;
 
         var cachedValue = _geoCache[_postalCode + '-' + countryCode];
         if (cachedValue) {
-            _placeMap(cachedValue);
+            _placeMap(cachedValue, mapParams);
             return;
         }
 
@@ -880,7 +882,9 @@
         if (!_geoCoder) {
             _geoCoder = new google.maps.Geocoder();
         }
-        _geoCoder.geocode(geoCoderParameters, _getGeoCoordinatesCallback);
+        _geoCoder.geocode(geoCoderParameters, function(results, status){
+            _getGeoCoordinatesCallback(results, status, mapParams);
+        });
     };
 
     /**
@@ -888,14 +892,15 @@
      *
      * @param {Array} results Array of possible locations matching the given {postal code, country code}.
      * @param {Number} status Status of the lookup operation.
+     * @param {Object} (optional) map display parameters
      *
      * @see Common#_placeMap(Object)
      */
-    var _getGeoCoordinatesCallback = function(results, status) {
+    var _getGeoCoordinatesCallback = function(results, status, mapParams) {
         if (google.maps.GeocoderStatus.OK == status) {
             var location = results[0].geometry.location;
             _geoCache[_postalCode + '-' + _countryCode] = location;
-            _placeMap(location);
+            _placeMap(location, mapParams);
         }
         else {
             alert(_getLabel('console', 'shared_invalid_locale_message', [_postalCode, _countryCode]));
@@ -905,13 +910,17 @@
     /**
      * Helper displaying a map (from Google) centered on the specified location.
      *
-     * @param {Object} location set of gographical coordinates.
+     * @param {Object} location set of geographical coordinates.
+     * @param {Object} (optional) map display parameters
      *
      * @see Common#_getGeoCoordinatesCallback(Array, Number)
      */
-    var _placeMap = function(location) {
+    var _placeMap = function(location, mapParams) {
         // Dialog should be displayed first for the map to appear correctly!
-        dijit.byId('locationMapDialog').show();
+        var dialog = dijit.byId('locationMapDialog');
+        if (dialog) {
+            dialog.show();
+        }
 
         // Creating a map
         var map = new google.maps.Map(
@@ -919,7 +928,7 @@
                 center: location,
                 language: _locale,
                 mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 10
+                zoom: (mapParams && mapParams.zoom) ? mapParams.zoom :  10
             }
         );
 
@@ -941,12 +950,23 @@
         // Creating a marker and positioning it on the map
         var marker = new google.maps.Marker({
             clickable: false,
+            draggable: mapParams && mapParams.iconOnDragEnd ? true : false,
             icon: image,
             shadow: shadow,
             map: map,
             position: location,
             title: _postalCode + ' ' + _countryCode
         });
+
+        // Return the map handle to the caller if needed
+        if (mapParams && mapParams.notification) {
+            dojo.publish(mapParams.notification, [map]);
+        }
+
+        // Prepare the handler to notify the caller when the central icon has been dragged
+        if (mapParams && mapParams.iconOnDragEnd) {
+            google.maps.event.addListener(marker, 'dragend', function(mouseEvent) { dojo.publish(mapParams.iconOnDragEnd, [mouseEvent, marker]); });
+        }
     };
 
     /**

@@ -1801,7 +1801,7 @@
                         Pendant ce temps, nous vous invitons à écrire un commentaire avec le service <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
                     </p>
                     <p>Nous vous remercions pour magasiner locallement avec AnotherSocialEconomy.com et espérons que vous nous recommenderez à vos amis.</p>
-                    <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: comble le lien entre le magasinage virtuel et &amp;amp; <strong>l'achat réel</strong>.</p>
+                    <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: comble le lien entre le magasinage virtuel et &amp; <strong>l'achat réel</strong>.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>

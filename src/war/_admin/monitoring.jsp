@@ -164,6 +164,10 @@
                             <td><input dojoType="dijit.form.TextBox" id="consumer.email" name="email" type="text" /></td>
                         </tr>
                         <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="consumer.facebookId">Facebook identifier:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="consumer.facebookId" name="facebookId" type="text" /></td>
+                        </tr>
+                        <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="consumer.jabberId">Jabber identifier:</label></td>
                             <td><input dojoType="dijit.form.TextBox" id="consumer.jabberId" name="jabberId" type="text" /></td>
                         </tr>
@@ -381,6 +385,14 @@
                             <td><input dojoType="dijit.form.TextBox" id="store.email" name="email" type="text" /></td>
                         </tr>
                         <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="store.latitude">Latitude:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="store.latitude" name="latitude" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="store.longitude">Longitude:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="store.longitude" name="longitude" type="text" /></td>
+                        </tr>
+                        <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="store.name">Name:</label></td>
                             <td><input dojoType="dijit.form.TextBox" id="store.name" name="name" type="text" /></td>
                         </tr>
@@ -405,6 +417,10 @@
                                 <input dojoType="dijit.form.TextBox" id="store.reviewSystemKey" name="reviewSystemKey" type="text" />
                                 <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem');" type="button">Fetch</button>
                             </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;padding-right:10px;"><label for="store.state">State:</label></td>
+                            <td><select dojoType="dijit.form.Select" id="store.state" name="state"><option value="referenced" selected="true">Referenced (minimal)</option><option value="inProgress">Needs follow-up</option><option value="waiting">Waiting activation</option><option value="active">Activated</option><option value="excluded">Excluded</option></select></td>
                         </tr>
                         <tr>
                             <td style="text-align:right;padding-right:10px;"><label for="store.url">URL:</label></td>

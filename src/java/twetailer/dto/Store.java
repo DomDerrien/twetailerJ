@@ -34,6 +34,16 @@ public class Store extends Entity {
     public final static String EMAIL = Consumer.EMAIL;
 
     @Persistent
+    private Double latitude = Location.INVALID_COORDINATE;
+
+    public static final String LATITUDE = Location.LATITUDE;
+
+    @Persistent
+    private Double longitude = Location.INVALID_COORDINATE;
+
+    public static final String LONGITUDE = Location.LONGITUDE;
+
+    @Persistent
     private String name;
 
     public final static String NAME = "name";
@@ -57,6 +67,20 @@ public class Store extends Entity {
     private Long reviewSystemKey;
 
     public final static String REVIEW_SYSTEM_KEY = ReviewSystem.REVIEW_SYSTEM_KEY;
+
+    public enum State {
+        referenced,
+        declined,
+        inProgress,
+        waiting,
+        active,
+        excluded
+    };
+
+    @Persistent
+    private State state;
+
+    public final static String STATE = "state";
 
     // Shortcut
     public static final String STORE_KEY = "storeKey";
@@ -106,6 +130,28 @@ public class Store extends Entity {
         this.email = email == null || email.length() == 0 ? null : email.toLowerCase();
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        if (latitude == null || 90.0D < latitude || latitude < -90.0D) {
+            latitude = Location.INVALID_COORDINATE;
+        }
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        if (longitude == null || 180.0D < longitude || longitude < -180.0D) {
+            longitude = Location.INVALID_COORDINATE;
+        }
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
     public String getName() {
         return name;
     }
@@ -146,6 +192,18 @@ public class Store extends Entity {
         this.reviewSystemKey = reviewSystemKey;
     }
 
+    public State getState() {
+        return state == null ? State.referenced : state;
+    }
+
+    public void setState(String state) {
+        setState(State.valueOf(state));
+    }
+
+    public void setState(State state) {
+        this.state = State.referenced.equals(state) ? null : state;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -160,6 +218,8 @@ public class Store extends Entity {
         out.put(ADDRESS, getAddress());
         out.put(CLOSED_PROPOSAL_NB, getClosedProposalNb() == null ? 0L : getClosedProposalNb());
         out.put(EMAIL, getEmail());
+        out.put(LATITUDE, getLatitude());
+        out.put(LONGITUDE, getLongitude());
         out.put(NAME, getName());
         out.put(PHONE_NUMBER, getPhoneNumber());
         out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
@@ -169,6 +229,7 @@ public class Store extends Entity {
         if (getReviewSystemKey() != null) {
             out.put(REVIEW_SYSTEM_KEY, getReviewSystemKey());
         }
+        out.put(STATE, getState().toString());
         out.put(URL, getUrl());
         return out;
     }
@@ -179,11 +240,14 @@ public class Store extends Entity {
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
+        if (in.containsKey(LATITUDE)) { setLatitude(in.getDouble(LATITUDE)); }
+        if (in.containsKey(LONGITUDE)) { setLongitude(in.getDouble(LONGITUDE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
         // if (in.containsKey(REGISTRAR_KEY)) { setRegistrarKey(in.getLong(REGISTRAR_KEY)); } // Cannot be changed transparently
         if (in.containsKey(REVIEW_SYSTEM_KEY)) { setReviewSystemKey(in.getLong(REVIEW_SYSTEM_KEY)); } // Store administrators can change it
+        if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 
         // Shortcut

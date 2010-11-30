@@ -156,7 +156,7 @@
                 <seg>
                     <p>--<br/>
                     Please see our <a href="http://eztoff.com/terms/">terms</a>, <a href="http://eztoff.com/privacy-policy/">privacy policy</a>
-                    and don't forget, you can always email <a href="mailto:Support@ezToff.com?subject=Inquiry ezToff.com">Support</a>.
+                    and don't forget, you can always email <a href="mailto:Support@ezToff.com?subject=Inquiry on ezToff.com">Support</a>.
                     In the meantime, <strong>thanks for booking locally</strong> with <a href="http://ezToff.com/">ezToff</a>,
                     a member of <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
@@ -3108,7 +3108,7 @@
                     </p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or,
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
                         if you've received this message in error, click
                         <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
                     </p>

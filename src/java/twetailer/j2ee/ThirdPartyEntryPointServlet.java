@@ -1,11 +1,11 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
-import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,15 +15,20 @@ import twetailer.ReservedOperationException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.InfluencerOperations;
+import twetailer.dao.LocationOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
+import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.DemandSteps;
+import twetailer.task.step.StoreSteps;
 import twetailer.validator.CommandSettings.Action;
 import domderrien.i18n.StringUtils;
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 
@@ -79,7 +84,20 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             }
             else if (STORE_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Store.class.getName(), request);
-                // TODO
+                List<Store> stores = StoreSteps.getStores(pm, in);
+                JsonArray list = new GenericJsonArray();
+                for (Store store: stores) {
+                    list.add(store.toJson());
+                }
+                out.put("resources", list);
+                Location location = BaseSteps.getLocationOperations().createLocation(pm, in);
+                double[] searchBounds = LocationOperations.getLocationBounds(location, in.getDouble(Demand.RANGE), in.getString(Demand.RANGE_UNIT));
+                JsonObject bounds = new GenericJsonObject();
+                bounds.put("left", searchBounds[0]);
+                bounds.put("right", searchBounds[1]);
+                bounds.put("bottom", searchBounds[2]);
+                bounds.put("top", searchBounds[3]);
+                out.put("bounds", bounds);
             }
             else {
                 response.setStatus(404); // Not Found

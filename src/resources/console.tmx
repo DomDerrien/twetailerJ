@@ -2822,6 +2822,131 @@
             </tuv>
         </tu>
 
+        <!-- ========= -->
+        <!-- Store map -->
+        <!-- ========= -->
+
+        <tu tuid="sm_localized_page_name" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>AnotherSocialEconomy.com - Store Directory</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_commands_sectionTitle" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Commands</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_statistics_sectionTitle" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Statistics</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_statistics_sectionBody" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    <div>Total stores: {total}</div>
+                    <div>Active stores: {active}</div>
+                    <div>Waiting activations: {waiting}</div>
+                    <div>Discussions in progress: {inProgress}</div>
+                    <div>Declined or excluded stores: {declinedExcluded}</div>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_title" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Legend:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_referenced" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>public listing</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_declined" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>declined</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_inProgress" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>discussions in progress</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_waiting" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>waiting activation</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_active" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>active</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_legend_excluded" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>excluded</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_infoBubble_publicStore" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    <div><strong><a href="{store>url}" target="_blank">{store>name}</a></strong></div>
+                    <div>{store>address}</div>
+                    <div>{store>phoneNb}</div>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="sm_infoBubble_activeStore" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    <div><strong><a href="{store>url}" target="_blank">{store>name}</a></strong></div>
+                    <div>{store>address}</div>
+                    <div>{store>phoneNb}</div>
+                    <br/>
+                    <div>ASE member since: {store>memberDate}</div>
+                    <div>Closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</div>
+                </seg>
+            </tuv>
+        </tu>
+
         <!-- =============== -->
         <!-- Facebook canvas -->
         <!-- =============== -->

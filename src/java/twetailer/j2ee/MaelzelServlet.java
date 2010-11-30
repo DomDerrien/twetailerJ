@@ -32,6 +32,7 @@ import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
+import twetailer.dto.Store;
 import twetailer.dto.Wish;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
@@ -43,6 +44,8 @@ import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
 import twetailer.task.WishValidator;
 import twetailer.task.step.BaseSteps;
+import twetailer.task.step.StoreSteps;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
@@ -55,7 +58,9 @@ import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
@@ -88,15 +93,15 @@ public class MaelzelServlet extends HttpServlet {
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
-            /******
+            /*********
             else if ("/influencer".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
                     Influencer influencer = new Influencer();
                     influencer.setConsumerKey(15002L);
                     influencer.setEmail("dominique.derrien@gmail.com");
-                    influencer.setName("Subaru des Sources");
-                    influencer.setUrl("http://www.subarudessources.com/");
+                    influencer.setName("Volvo Laval");
+                    influencer.setUrl("http://volvolaval.com/");
                     influencer = BaseSteps.getInfluencerOperations().createInfluencer(pm, influencer);
                     out.put("resource", influencer.toJson());
                 }
@@ -104,7 +109,7 @@ public class MaelzelServlet extends HttpServlet {
                     pm.close();
                 }
             }
-            *******/
+            *********/
             else if ("/deleteMarkedForDeletion".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
@@ -383,6 +388,39 @@ public class MaelzelServlet extends HttpServlet {
 
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
+            }
+            else if ("/registerStores".equals(pathInfo)) {
+                /*
+                [
+                    {'name': 'Royal Chevrolet Pontiac Buick GMC Inc.', 'address': '7960 boulevard Newman, Lasalle, QC, H8N 1X9', 'postalCode': 'H8N 1X9', 'phoneNb': '+1 514 595-6666', 'url': 'http://www.kia.ca/pages/dealer/FindDealer.aspx?id=61060'},
+                    {'name': 'LaSalle Suzuzki', 'address': '2225 rue Léger, Lasalle, QC, H8N 2V7', 'postalCode': 'H8N 2V7', 'phoneNb': '+1 514 368 8277', 'url': 'http://www.montrealsuzuki.ca/fr-ca/w/lasalle-suzuki-montreal/Accueil.aspx'},
+                    {'name': 'Métro Nissan', 'address': '8686 boulevard Newman, Lasalle, QC, H8N 1Y5', 'postalCode': 'H8N 1Y5', 'phoneNb': '+1 514 366-8931', 'url': 'http://metro-nissan.autoexpert.ca/fr-ca/metro_nissan/Accueil.aspx'},
+                    ...
+                    {'name': 'Volkswagen Gabriel', 'address': '1855, avenue Dollard, Lasalle, QC, H8N 1T9', 'postalCode': 'H8N 1T9', 'phoneNb': '+1 514 364-2753', 'url': 'http://www.vwgabriel.com/'}
+                ]
+                */
+                JsonArray stores = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonArray();
+                JsonArray storeKeys = new GenericJsonArray();
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+                try {
+                    for(int idx=0; idx<stores.size(); idx ++) {
+                        JsonObject store = stores.getJsonObject(idx);
+                        Location location = new Location();
+                        location.setCountryCode("CA");
+                        location.setPostalCode(store.getString("postalCode"));
+                        location = BaseSteps.getLocationOperations().createLocation(pm, location);
+                        if (Location.INVALID_COORDINATE.equals(location.getLatitude())) {
+                            LocaleValidator.getGeoCoordinates(location);
+                            location = BaseSteps.getLocationOperations().updateLocation(pm, location);
+                        }
+                        store.put(Store.LOCATION_KEY, location.getKey());
+                        storeKeys.add(StoreSteps.createStore(pm, store, null, null, true).getKey());
+                    }
+                }
+                finally {
+                    pm.close();
+                }
+                out.put("keys", storeKeys);
             }
             else if ("/processVerificationCode".equals(pathInfo)) {
                 //

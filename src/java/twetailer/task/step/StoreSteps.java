@@ -1,5 +1,7 @@
 package twetailer.task.step;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +20,9 @@ import twetailer.dto.Location;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.validator.LocaleValidator;
 import domderrien.i18n.DateUtils;
+import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 
 public class StoreSteps extends BaseSteps {
@@ -83,19 +87,24 @@ public class StoreSteps extends BaseSteps {
         if (!isPrivileged) {
             throw new ReservedOperationException("Store instances can only be created by admins");
         }
-        if (!parameters.containsKey(Store.REGISTRAR_KEY)) {
-            throw new ClientException("Missing registrar key");
-        }
 
         Store store = getStoreOperations().createStore(pm, parameters);
         if (parameters.containsKey(Store.REGISTRAR_KEY)) {
             store.setRegistrarKey(parameters.getLong(Store.REGISTRAR_KEY));
         }
-
-        Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
-        if (Boolean.FALSE.equals(location.hasStore())) {
-            location.setHasStore(Boolean.TRUE);
-            getLocationOperations().updateLocation(pm, location);
+        try {
+            store = LocaleValidator.getGeoCoordinates(store);
+            store = getStoreOperations().updateStore(pm, store);
+        }
+        catch (Exception ex) {
+            throw new ClientException("The store has an address which cannot be resolved geographically: {key:" + store.getKey() + ",name:'" + store.getName() + ",address:'" + store.getAddress() + "'}", ex);
+        }
+        finally {
+            Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
+            if (Boolean.FALSE.equals(location.hasStore())) {
+                location.setHasStore(Boolean.TRUE);
+                getLocationOperations().updateLocation(pm, location);
+            }
         }
 
         return store;
