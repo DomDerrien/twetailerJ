@@ -63,3 +63,20 @@
     height: 100%;
     border: 0 none;
 }
+.ase_floatingWarning {
+    z-index: 999;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    padding: 10px;
+    color: orange;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+    border: 2px solid black;
+    -webkit-box-shadow: -3px 3px 10px white;
+    -moz-box-shadow: -3px 3px 10px white;
+    box-shadow: -3px 3px 10px white;
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135, Color='#ffffff');
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=10, Direction=135, Color='#ffffff')";
+}

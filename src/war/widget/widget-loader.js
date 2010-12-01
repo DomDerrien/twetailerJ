@@ -103,6 +103,13 @@
             if (document.all) {
                 dv.style.top = '100px';
             }
+        },
+        installWarning = function() {
+            var dv = dc.createElement('div'),
+                hd = dc.getElementsByTagName('body')[0];
+            dv.appendChild(dc.createTextNode(lg == 'fr' ? 'Site de démonstration!' : 'For Demonstration Purposes Only!'));
+            dv.setAttribute('class', 'ase_floatingWarning');
+            hd.appendChild(dv);
         };
     installCSS();
     if (aC.showWidget) {
@@ -110,5 +117,8 @@
     }
     else {
         installTab();
+    }
+    if ((window.location+"").indexOf('_tmp') != -1) {
+        installWarning();
     }
 })();

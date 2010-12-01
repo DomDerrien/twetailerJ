@@ -94,7 +94,7 @@
         </jsp:include>
         <div dojoType="dijit.layout.BorderContainer" id="centerZone" region="center">
             <div dojoType="dijit.layout.AccordionContainer" splitter="true" style="width: 300px;" region="left">
-                <div dojoType="dijit.layout.ContentPane" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
+                <div dojoType="dijit.layout.ContentPane" id="formPane" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
                     <table>
                         <tr>
                             <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandPostalCode", locale) %></label></td>
@@ -114,7 +114,7 @@
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconGPS"
                                     id="detectLocationButton"
-                                    onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', null);"
+                                    onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'formPaneOverlay');"
                                     showLabel="false"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
                                     type="button"
@@ -159,15 +159,15 @@
                         </tr>
                     </table>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" title="sm_statistics_sectionTitle"><div id="statPane"></div></div>
+                <div dojoType="dijit.layout.ContentPane" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_statistics_sectionTitle", locale) %>"><div id="statPane"></div></div>
             </div>
             <div dojoType="dijit.layout.ContentPane" region="bottom">
                 <span style="font-size: larger;"><%= LabelExtractor.get(ResourceFileId.third, "sm_legend_title", locale) %></span>
-                <img src="http://labs.google.com/ridefinder/images/mm_20_red.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_referenced", locale) %> &mdash;
-                <img src="http://labs.google.com/ridefinder/images/mm_20_black.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_declined", locale) %> / <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_excluded", locale) %>&mdash;
-                <img src="http://labs.google.com/ridefinder/images/mm_20_blue.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_inProgress", locale) %> &mdash;
-                <img src="http://labs.google.com/ridefinder/images/mm_20_orange.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_waiting", locale) %> &mdash;
-                <img src="http://labs.google.com/ridefinder/images/mm_20_green.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_active", locale) %>.
+                <img src="/images/mini_red_dot.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_referenced", locale) %> &mdash;
+                <img src="/images/mini_black_dot.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_declined", locale) %> / <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_excluded", locale) %>&mdash;
+                <img src="/images/mini_blue_pin.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_inProgress", locale) %> &mdash;
+                <img src="/images/mini_orange_pin.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_waiting", locale) %> &mdash;
+                <img src="/images/mini_green_pin.png" style="vertical-align: middle;" /> <%= LabelExtractor.get(ResourceFileId.third, "sm_legend_active", locale) %>.
             </div>
             <div dojoType="dijit.layout.ContentPane" region="center">
                 <div id='mapPlaceHolder' style='width:100%;height:100%;'></div>
@@ -177,6 +177,13 @@
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
+
+    <div
+       color="yellow"
+       dojoType="dojox.widget.Standby"
+       id="formPaneOverlay"
+       target="formPane"
+    ></div>
 
     <script type="text/javascript">
     dojo.addOnLoad(function(){
@@ -234,6 +241,7 @@
         localModule.getMarkerImage('shadow'); // To bootstrap the process with the shadow marker
 
         dojo.subscribe('mapReady', function(map) {
+            dijit.byId('formPaneOverlay').show();
             dojo.xhrGet({
                 headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                 content: {
@@ -299,6 +307,8 @@
                             declinedExcluded: de
                         };
                         dojo.byId('statPane').innerHTML = '<div>' + localModule._getLabel('console', 'sm_statistics_sectionBody', params) + '</div>';
+                        // 5. Restore the transparent background
+                        dijit.byId('formPaneOverlay').hide();
                     }
                     else {
                         alert(response.message + '\nurl: '+ ioArgs.url);
@@ -357,20 +367,25 @@
         if (list && list[color]) {
             return list[color];
         }
-        var urlPart, width = 12;
+        var ext = '_pin.png', width = 12, height = 20, x = 3, y = 20;
         switch (color) {
-        case 'red': urlPart = 'mm_20_red.png'; break;
-        case 'black': urlPart = 'mm_20_black.png'; break;
-        case 'blue': urlPart = 'mm_20_blue.png'; break;
-        case 'orange': urlPart = 'mm_20_orange.png'; break;
-        case 'green': urlPart = 'mm_20_green.png'; break;
-        default: urlPart = 'mm_20_shadow.png'; width = 22;
+        case 'red':
+        case 'black':
+            ext = '_dot.png';
+            width = 14;
+            height = 14;
+            x = 6;
+            y = 6;
+            break;
+        case 'shadow':
+            width = 22;
+            break;
         };
         var image = new google.maps.MarkerImage(
-            'http://labs.google.com/ridefinder/images/' + urlPart,
-            new google.maps.Size(width, 20),
+            '/images/mini_' + color + ext,
+            new google.maps.Size(width, height),
             new google.maps.Point(0, 0),
-            new google.maps.Point(6, 20)
+            new google.maps.Point(x, y)
         );
         if (list == null) {
             localModule._markerImages = {};

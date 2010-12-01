@@ -939,7 +939,7 @@
             '/images/logo/gmaps-marker.png',
             new google.maps.Size(38, 73),
             new google.maps.Point(0, 0),
-            new google.maps.Point(28, 70)
+            new google.maps.Point(19, 60)
         );
         var shadow = new google.maps.MarkerImage(
             '/images/logo/gmaps-marker-shadow.png',
