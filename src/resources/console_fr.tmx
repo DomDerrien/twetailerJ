@@ -1936,6 +1936,13 @@
                 <seg>Courriel d'ami(e):</seg>
             </tuv>
         </tu>
+        <tu tuid="cw_open_storeMap" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Carte des commerces environnants</seg>
+            </tuv>
+        </tu>
         <tu tuid="cw_action_reset" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -2221,6 +2228,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>« Programmer un autre départ</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cdw_open_storeMap" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Carte des revendeurs environnants</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_step_1_title" dataType="text">

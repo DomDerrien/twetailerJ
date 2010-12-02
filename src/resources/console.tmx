@@ -2406,6 +2406,14 @@
             </tuv>
         </tu>
 
+        <tu tuid="cw_open_storeMap" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Map of participating retailers</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cw_action_reset" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -2741,6 +2749,14 @@
         <!-- ================= -->
         <!-- Car dealer widget -->
         <!-- ================= -->
+
+        <tu tuid="cdw_open_storeMap" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Map of participating dealers</seg>
+            </tuv>
+        </tu>
 
         <tu tuid="cdw_step_1_title" datatype="Text">
             <prop type="x-version">1</prop>

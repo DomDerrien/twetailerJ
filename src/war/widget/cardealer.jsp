@@ -186,6 +186,19 @@
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
                     <tr>
+                        <td>
+                            <button
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconGMaps"
+                                id="storeMapOpener"
+                                onclick="window.open('/widget/maps/stores.jsp?lang=<%= localeId %>', 'aseStoreMap');"
+                                showLabel="false"
+                                type="button"
+                            ></button>
+                            <div connectId="storeMapOpener" dojoType="dijit.Tooltip" position="above"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></div>
+                            <br/>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></span>
+                        </td>
                         <td style="text-align:right;">
                             <button
                                 dojoType="dijit.form.Button"
