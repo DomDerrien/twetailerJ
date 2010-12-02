@@ -278,13 +278,13 @@
                         localModule._markers = [];
                         localModule._infoWindows = [];
                         for (var idx = 0, limit = stores.length; idx < limit; idx++) {
-                            var store = stores[idx], color = 'red';
+                            var store = stores[idx], color = 'red', zIndex = 199, needShadow = false;
                             switch(store.state) {
                             // case 'referenced': color = 'red'; break;
                             case 'declined': color = 'black'; de++; break;
-                            case 'inProgress': color = 'blue'; ip++; break;
-                            case 'waiting': color = 'orange'; w++; break;
-                            case 'active': color = 'green'; a++; break;
+                            case 'inProgress': color = 'blue'; ip++; zIndex += 20; needShadow = true; break;
+                            case 'waiting': color = 'orange'; w++; zIndex += 30; needShadow = true; break;
+                            case 'active': color = 'green'; a++; zIndex += 50; needShadow = true; break;
                             case 'excluded': color = 'black'; de++; break;
                             default: color = 'red';
                             }
@@ -292,8 +292,9 @@
                                 map: map,
                                 icon: localModule.getMarkerImage(color),
                                 position: new google.maps.LatLng(store.latitude, store.longitude),
-                                shadow: localModule.getMarkerImage('shadow'),
-                                title: store.name
+                                shadow: needShadow ? localModule.getMarkerImage('shadow') : null,
+                                title: store.name,
+                                zIndex: zIndex
                             });
                             google.maps.event.addListener(marker, 'click', localModule.getInfoWindowHandler(map, idx));
                             localModule._markers.push(marker);

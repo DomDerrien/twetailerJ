@@ -955,7 +955,8 @@
             shadow: shadow,
             map: map,
             position: location,
-            title: _postalCode + ' ' + _countryCode
+            title: _postalCode + ' ' + _countryCode,
+            zIndex: mapParams && mapParams.iconZIndex ? mapParams.iconZIndex : 99,
         });
 
         // Return the map handle to the caller if needed

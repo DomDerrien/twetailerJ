@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.jdo.PersistenceManager;
@@ -271,6 +272,7 @@ public class CommandProcessor {
         }
         catch(Exception ex) {
             String additionalInfo = getDebugInfo(ex);
+            Logger.getLogger(CommandProcessor.class.getName()).severe("Unexpected error -- info: " + additionalInfo);
             boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
             // Report the error to the raw command emitter
             communicateToConsumer(

@@ -205,7 +205,7 @@ public class CommandSettings {
    }
 
    /**
-    * Helper getting a list of comma-separated keywords from a TMX and return them trimed in a JsonArray
+    * Helper getting a list of comma-separated keywords from a TMX and return them trimmed in a JsonArray
     *
     * @param fileId Identifier of the TMX file to process
     * @param tmxKey TMX entry key

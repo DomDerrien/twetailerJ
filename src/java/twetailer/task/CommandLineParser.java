@@ -1,5 +1,6 @@
 package twetailer.task;
 
+import java.text.Collator;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -84,7 +85,7 @@ public class CommandLineParser {
             final String dateTimePattern = "\\s?(?:\\d\\d\\d\\d(?: |/|-)?\\d\\d(?: |/|-)?\\d\\d)?(?:T\\d\\d\\:\\d\\d\\:\\d\\d|T\\d\\d\\:\\d\\d|)(?:AM|PM|)";
 
             // Read http://www.regular-expressions.info/unicode.html for explanations on \p{M} used to handle accented characters
-            preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|\\p{M}]+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|(?:\\p{L}\\p{M})]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.cc, "[\\w\\d\\.\\_\\-\\@]+", "(?:\\s|$)");
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
@@ -174,7 +175,7 @@ public class CommandLineParser {
         patterns.put(keywordKey, Pattern.compile(pattern.toString(), Pattern.CASE_INSENSITIVE));
     }
 
-    private static Pattern firstKeyword = Pattern.compile("^(\\w+)(?:$|\\s)");
+    private static Pattern firstKeyword = Pattern.compile("^([\\w|(?:\\p{L}\\p{M})]+)(?:$|\\s)");
 
     /**
      * Parse the given tweet with the set of given localized prefixes
@@ -214,8 +215,10 @@ public class CommandLineParser {
             if (matcher.find()) { // Runs the matcher once
                 String currentGroup = matcher.group(1).trim();
                 JsonObject actions = CommandLineParser.localizedActions.get(locale);
+                Collator collator = Collator.getInstance(locale);
+                collator.setStrength(Collator.PRIMARY);
                 for (Action action: Action.values()) {
-                    if (CommandSettings.isEquivalentTo(actions, action.toString(), currentGroup.toLowerCase(locale), null)) {
+                    if (CommandSettings.isEquivalentTo(actions, action.toString(), currentGroup.toLowerCase(locale), collator)) {
                         command.put(Command.ACTION, currentGroup.toLowerCase(locale));
                         messageCopy = extractPart(messageCopy, currentGroup);
                         oneFieldOverriden = true;

@@ -237,6 +237,11 @@
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
+        <property name="demandKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
     <!--
      Sale Associate
       -->
