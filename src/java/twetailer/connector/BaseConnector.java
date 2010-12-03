@@ -109,8 +109,9 @@ public class BaseConnector {
             Source.twitter.equals(source) ? consumer.getTwitterId() :
                 Source.jabber.equals(source) ? consumer.getJabberId() :
                     Source.mail.equals(source) ? consumer.getEmail() :
-                        Source.widget.equals(source) ? consumer.getEmail() :
-                            null;
+                        Source.facebook.equals(source) ? consumer.getEmail() : // FIXME: replace by getFacebookId() when Facebook connector is OK
+                            Source.widget.equals(source) ? consumer.getEmail() :
+                                null;
         String userName = consumer.getName();
         if (userId != null || Source.simulated.equals(source)) {
             communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
@@ -177,7 +178,7 @@ public class BaseConnector {
                 throw new CommunicationException("Cannot communicate by IM to the consumer: " + userId, Source.jabber, ex);
             }
         }
-        else if (Source.mail.equals(source) || Source.widget.equals(source)) {
+        else if (Source.mail.equals(source) || Source.widget.equals(source) || Source.facebook.equals(source)) {
             try {
                 StringBuilder mailMessage = new StringBuilder();
                 for (String message: messages) {
@@ -191,9 +192,6 @@ public class BaseConnector {
             catch(Exception ex) {
                 throw new CommunicationException("Cannot communicate by E-mail to the consumer: " + userId, Source.mail, ex);
             }
-        }
-        else if (Source.facebook.equals(source)) {
-            throw new RuntimeException("Not yet implemented");
         }
         else {
             throw new CommunicationException("Provider " + source + " not yet supported", source);

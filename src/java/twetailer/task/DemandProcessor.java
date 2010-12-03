@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.io.PrintStream;
@@ -39,8 +39,8 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
@@ -93,7 +93,7 @@ public class DemandProcessor {
                 for (Demand demand: demands) {
                     // Create a task for that demand
                     queue.add(
-                            url("/_tasks/processPublishedDemand").
+                            withUrl("/_tasks/processPublishedDemand").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );
@@ -146,7 +146,7 @@ public class DemandProcessor {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_tasks/processDemandForRobot").
+                            withUrl("/_tasks/processDemandForRobot").
                                 param(Demand.KEY, demand.getKey().toString()).
                                 method(Method.GET)
                     );

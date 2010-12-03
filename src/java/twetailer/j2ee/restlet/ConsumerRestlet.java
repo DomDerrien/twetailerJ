@@ -1,6 +1,6 @@
 package twetailer.j2ee.restlet;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -21,8 +21,8 @@ import twetailer.task.step.ConsumerSteps;
 import twetailer.validator.CommandSettings.Action;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
@@ -227,7 +227,7 @@ public class ConsumerRestlet extends BaseRestlet {
                         Queue queue = BaseSteps.getBaseOperations().getQueue();
                         for (Long demandKey: demandKeys) {
                             queue.add(
-                                    url("/_tasks/consolidateConsumerAccounts").
+                                    withUrl("/_tasks/consolidateConsumerAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, consumerKey.toString()).
                                     method(Method.GET)

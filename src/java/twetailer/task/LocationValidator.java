@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.List;
@@ -19,8 +19,8 @@ import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 
@@ -126,7 +126,7 @@ public class LocationValidator {
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             log.warning("Preparing the task: /_tasks/processCommand?key=" + commandKey.toString());
             queue.add(
-                    url("/_tasks/processCommand").
+                    withUrl("/_tasks/processCommand").
                         param(Command.KEY, commandKey.toString()).
                         method(Method.GET)
             );

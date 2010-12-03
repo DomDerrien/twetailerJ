@@ -12,8 +12,8 @@ import javax.jdo.Query;
 
 import twetailer.DataSourceException;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
 
 /**
  * Base class defining shared methods for entity-based controllers

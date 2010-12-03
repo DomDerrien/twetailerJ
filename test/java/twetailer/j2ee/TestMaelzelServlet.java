@@ -63,7 +63,7 @@ import twitter4j.TwitterException;
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
-import com.google.appengine.api.labs.taskqueue.MockQueue;
+import com.google.appengine.api.taskqueue.MockQueue;
 import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;

@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.Locale;
 
@@ -22,8 +22,8 @@ import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonParser;
@@ -80,7 +80,7 @@ public class RobotResponder {
                     // Schedule a task to transmit the proposal to the demand owner
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_tasks/processPublishedProposal").
+                            withUrl("/_tasks/processPublishedProposal").
                                 param(Proposal.KEY, proposal.getKey().toString()).
                                 method(Method.GET).
                                 countdownMillis(30*1000)

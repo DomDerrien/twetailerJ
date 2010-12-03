@@ -47,8 +47,8 @@ import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
-import com.google.appengine.api.labs.taskqueue.MockQueue;
-import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.MockQueue;
+import com.google.appengine.api.taskqueue.Queue;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;

@@ -1,6 +1,6 @@
 package twetailer.task.command;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.text.Collator;
@@ -32,8 +32,8 @@ import twetailer.task.step.StoreSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
@@ -327,7 +327,7 @@ public class ListCommandProcessor {
         // Schedule the validation task that will resolve the location geo-coordinates
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(
-                url("/_tasks/validateLocation").
+                withUrl("/_tasks/validateLocation").
                     param(Location.POSTAL_CODE, postalCode).
                     param(Location.COUNTRY_CODE, countryCode).
                     param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).

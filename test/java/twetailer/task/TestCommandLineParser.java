@@ -71,9 +71,12 @@ public class TestCommandLineParser {
         // Very simplified list of prefixes in FRENCH
         prefixes = new GenericJsonObject();
         prefixes.put(Prefix.reference.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.reference.toString()).add("demande");
         prefixes.getJsonArray(Prefix.reference.toString()).add("référence");
         prefixes.put(Prefix.price.toString(), new GenericJsonArray());
-        prefixes.getJsonArray(Prefix.reference.toString()).add("prix");
+        prefixes.getJsonArray(Prefix.price.toString()).add("prix");
+        prefixes.put(Prefix.help.toString(), new GenericJsonArray());
+        prefixes.getJsonArray(Prefix.help.toString()).add("aide");
         CommandLineParser.localizedPrefixes.put(Locale.FRENCH, prefixes);
 
         // Simplified list of actions
@@ -385,7 +388,8 @@ public class TestCommandLineParser {
 
     @Test
     public void testParsePriceIV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25,99€", Locale.FRENCH);
+        System.err.println("0. test");
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€ ", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
 
@@ -1004,25 +1008,6 @@ public class TestCommandLineParser {
         assertTrue(proposal.getCriteria().contains("two"));
         assertTrue(proposal.getCriteria().contains("four"));
         assertTrue(proposal.getCriteria().contains("five"));
-    }
-
-    @Test
-    public void testParseMixedTagsVII() throws ClientException, ParseException {
-        CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:supply tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
-                Locale.ENGLISH
-        );
-        // Cannot be tested by importing the tags for a SaleAssociate because the tags should be set manually
-        /*
-        SaleAssociate saleAssociate = new SaleAssociate(data);
-        assertNotNull(saleAssociate.getCriteria());
-        assertEquals(4, saleAssociate.getCriteria().size());
-        assertTrue(saleAssociate.getCriteria().contains("one"));
-        assertTrue(saleAssociate.getCriteria().contains("two"));
-        assertTrue(saleAssociate.getCriteria().contains("four"));
-        assertTrue(saleAssociate.getCriteria().contains("five"));
-        */
     }
 
     @Test

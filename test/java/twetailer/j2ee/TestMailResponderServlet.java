@@ -32,7 +32,7 @@ import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
-import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 

@@ -29,8 +29,8 @@ import twetailer.j2ee.MockLoginServlet;
 import twetailer.task.step.BaseSteps;
 
 import com.dyuproject.openid.OpenIdUser;
-import com.google.appengine.api.labs.taskqueue.MockQueue;
-import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.MockQueue;
+import com.google.appengine.api.taskqueue.Queue;
 
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;

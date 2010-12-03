@@ -1,6 +1,6 @@
 package twetailer.j2ee;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -27,8 +27,8 @@ import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.google.appengine.api.xmpp.JID;
 import com.google.appengine.api.xmpp.Message;
 
@@ -95,7 +95,7 @@ public class JabberResponderServlet extends HttpServlet {
             // Create a task for to process that new command
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url("/_tasks/processCommand").
+                    withUrl("/_tasks/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

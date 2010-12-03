@@ -1037,7 +1037,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1064,7 +1064,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>
                         Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
@@ -1111,7 +1111,7 @@
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1138,7 +1138,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>
                         Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
@@ -1185,7 +1185,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1224,7 +1224,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>
                         Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
@@ -1286,7 +1286,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>Informations sur le commerce:</p>
@@ -1323,7 +1323,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>Informations sur le club de golf:</p>
                     <ul>
@@ -1377,7 +1377,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1419,7 +1419,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>
                         Veuiller <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>,
@@ -1480,7 +1480,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>Informations sur le commerce:</p>
@@ -1517,7 +1517,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>Informations sur le club de golf:</p>
                     <ul>
@@ -1731,7 +1731,7 @@
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1763,7 +1763,7 @@
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
                     <p>
                         Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
@@ -1989,7 +1989,7 @@
                         <li>Détails: <strong>{proposal>criteria}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     {message>footer}

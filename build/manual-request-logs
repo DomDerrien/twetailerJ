@@ -1,6 +1,6 @@
 #!/bin/bash
 # Assume ${temp.dir} in build.xml file set to /tmp/webapp, in ${user.dir}/local.build.properties
-~/Tools/appengine-java-sdk-1.3.8/bin/appcfg.sh --email=dominique.derrien@gmail.com --severity=0 --num_days=8 request_logs /tmp/webapp/appengine-stage /tmp/webapp/dump0.txt
+~/Tools/appengine-java-sdk-1.4.0/bin/appcfg.sh --email=dominique.derrien@gmail.com --severity=0 --num_days=8 request_logs /tmp/webapp/appengine-stage /tmp/webapp/dump0.txt
 sed 's/[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*.*/\n======\n&/g' /tmp/webapp/dump0.txt > /tmp/webapp/dump1.txt
 sed 's/\x00/\n/g;s/\([0-9]\)\:[0-9][0-9]*\.[0-9][0-9]*/\1 -/g' /tmp/webapp/dump1.txt > /tmp/webapp/dump2.txt
 sed '/^\: *$/ d' /tmp/webapp/dump2.txt > /tmp/webapp/dump3.txt

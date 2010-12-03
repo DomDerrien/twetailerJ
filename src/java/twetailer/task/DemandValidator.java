@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
@@ -31,8 +31,8 @@ import twetailer.task.step.BaseSteps;
 import twetailer.task.step.LocationSteps;
 import twetailer.validator.CommandSettings;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -121,7 +121,7 @@ public class DemandValidator {
                     // Create a task for that demand
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_tasks/processPublishedDemand").
+                            withUrl("/_tasks/processPublishedDemand").
                                 param(Demand.KEY, demandKey.toString()).
                                 method(Method.GET).
                                 countdownMillis(5000)

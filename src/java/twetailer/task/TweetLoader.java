@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ import twetailer.task.step.BaseSteps;
 import twitter4j.DirectMessage;
 import twitter4j.TwitterException;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 /**
  * Define the <code>cron</code> job logic which load
@@ -127,7 +127,7 @@ public class TweetLoader {
 
             Queue queue = BaseSteps.getBaseOperations().getQueue();
             queue.add(
-                    url("/_tasks/processCommand").
+                    withUrl("/_tasks/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
                         method(Method.GET)
             );

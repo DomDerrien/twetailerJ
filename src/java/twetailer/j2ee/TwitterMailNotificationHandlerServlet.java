@@ -1,6 +1,6 @@
 package twetailer.j2ee;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twitter4j.TwitterException;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 /**
  * Entry point processing notifications sent by the
@@ -133,7 +133,7 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                 // Safe assumption: trigger a task to load the possibly just notified & waiting DMs
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
                 queue.add(
-                        url("/_tasks/loadTweets").
+                        withUrl("/_tasks/loadTweets").
                             method(Method.GET)
                 );
                 // Forward the message to the "admins" list

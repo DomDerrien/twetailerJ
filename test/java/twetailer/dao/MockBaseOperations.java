@@ -3,8 +3,8 @@ package twetailer.dao;
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.labs.taskqueue.MockQueue;
-import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.MockQueue;
+import com.google.appengine.api.taskqueue.Queue;
 
 public class MockBaseOperations extends BaseOperations {
 

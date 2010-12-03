@@ -1,6 +1,6 @@
 package twetailer.task;
 
-import static com.google.appengine.api.labs.taskqueue.TaskOptions.Builder.url;
+import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.util.Date;
@@ -26,8 +26,8 @@ import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
@@ -102,10 +102,10 @@ public class ProposalValidator {
                     message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getDueDate() == null || proposal.getDueDate().getTime() < nowTime) {
-                    message = LabelExtractor.get("dv_report_due_in_past", new Object[] { proposalRef }, locale);
+                    message = LabelExtractor.get("pv_report_due_in_past", new Object[] { proposalRef }, locale);
                 }
                 else if (nowTime + oneYear < proposal.getDueDate().getTime()) {
-                    message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { proposalRef }, locale);
+                    message = LabelExtractor.get("pv_report_due_too_far_in_future", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getQuantity() == null || proposal.getQuantity() == 0L) {
                     message = LabelExtractor.get("pv_report_quantity_zero", new Object[] { proposalRef }, locale);
@@ -155,7 +155,7 @@ public class ProposalValidator {
                     // Create a task for that proposal
                     Queue queue = BaseSteps.getBaseOperations().getQueue();
                     queue.add(
-                            url("/_tasks/processPublishedProposal").
+                            withUrl("/_tasks/processPublishedProposal").
                                 param(Proposal.KEY, proposalKey.toString()).
                                 method(Method.GET).
                                 countdownMillis(5000)
