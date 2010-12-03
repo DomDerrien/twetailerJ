@@ -26,6 +26,7 @@ import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
+import twetailer.dao.RegistrarOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
@@ -35,6 +36,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Registrar;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
@@ -164,6 +166,7 @@ public class TestConfirmCommandProcessor {
         });
         // StoreOperations mock
         final String storeName = "store name";
+        final Long registrarKey = 7654354L;
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
             public Store getStore(PersistenceManager pm, Long key) {
@@ -172,7 +175,19 @@ public class TestConfirmCommandProcessor {
                 store.setKey(storeKey);
                 store.setName(storeName);
                 store.setLocationKey(locationKey);
+                store.setRegistrarKey(registrarKey);
                 return store;
+            }
+        });
+        // RegistrarOperations mock
+        BaseSteps.setMockRegistrarOperations(new RegistrarOperations() {
+            @Override
+            public Registrar getRegistrar(PersistenceManager pm, Long key) {
+                assertEquals(registrarKey, key);
+                Registrar registrar = new Registrar();
+                registrar.setKey(registrarKey);
+                registrar.setName(storeName);
+                return registrar;
             }
         });
 

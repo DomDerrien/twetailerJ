@@ -21,6 +21,7 @@ import twetailer.dto.Store;
 import twetailer.dto.Wish;
 import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.validator.CommandSettings;
+import twetailer.validator.LocaleValidator;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
@@ -359,12 +360,20 @@ public class MessageGenerator {
             fetchEntity(store, prefix);
             // Store
             parameters.put(prefix + Store.ADDRESS, store.getAddress());
-            parameters.put(prefix + Store.CLOSED_PROPOSAL_NB, store.getClosedProposalNb());
+            double closedNb = store.getClosedProposalNb() == null ? 0 : store.getClosedProposalNb();
+            parameters.put(prefix + Store.CLOSED_PROPOSAL_NB, closedNb);
             parameters.put(prefix + Store.EMAIL, store.getEmail());
             parameters.put(prefix + Store.NAME, store.getName());
             parameters.put(prefix + Store.PHONE_NUMBER, store.getPhoneNumber());
-            parameters.put(prefix + Store.PUBLISHED_PROPOSAL_NB, store.getPublishedProposalNb());
+            double publishedNb = store.getPublishedProposalNb() == null ? 1 : store.getPublishedProposalNb(); // Can't be null with new demands, but can still be null with the old ones without this field
+            parameters.put(prefix + Store.PUBLISHED_PROPOSAL_NB, publishedNb);
             parameters.put(prefix + Store.URL, store.getUrl());
+
+            parameters.put(
+                    prefix + "closedProposalPercentage",
+                    LocaleValidator.formatFloatWith2Digits(100.0D * closedNb / publishedNb, userLocale)
+            );
+
         }
         return this;
     }

@@ -91,7 +91,6 @@ public class ProposalProcessor {
             try {
                 Demand demand = BaseSteps.getDemandOperations().getDemand(pm, proposal.getDemandKey(), null);
                 if (State.published.equals(demand.getState())) {
-
                     // Update the demand
                     boolean newlyProposed = !demand.getProposalKeys().contains(proposalKey);
                     demand.addProposalKey(proposalKey);
@@ -211,16 +210,6 @@ public class ProposalProcessor {
                     put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
-
-                double publishedNb = store.getPublishedProposalNb() == null ? 1 : store.getPublishedProposalNb(); // Can't be null with new demands, but can still be null with the old ones without this field
-                double closedNb = store.getClosedProposalNb() == null ? 0 : store.getClosedProposalNb();
-                msgGen.
-                    put("store>publishedProposalNb", (long) publishedNb).
-                    put("store>closedProposalNb", (long) closedNb).
-                    put(
-                            "store>closedProposalPercentage",
-                            LocaleValidator.formatFloatWith2Digits(100.0D * closedNb / publishedNb, locale)
-                    );
 
                 String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);
 

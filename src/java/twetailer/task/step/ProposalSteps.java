@@ -33,6 +33,7 @@ import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Registrar;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
@@ -392,6 +393,7 @@ public class ProposalSteps extends BaseSteps {
                     // Get demand owner
                     Consumer demandOwner = getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
                     Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
+                    Registrar registrar = getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
 
                     // Inform Proposal owner about the closing
                     Locale locale = demandOwner.getLocale();
@@ -402,6 +404,7 @@ public class ProposalSteps extends BaseSteps {
                         fetch(proposal).
                         fetch(store).
                         fetch(location, "store").
+                        fetch(registrar).
                         put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                         put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
@@ -632,6 +635,7 @@ public class ProposalSteps extends BaseSteps {
             // Echo back the successful confirmation
             Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
             Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
+            Registrar registrar = getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
 
             if (rawCommand != null) {
                 Locale locale = demandOwner.getLocale();
@@ -641,6 +645,7 @@ public class ProposalSteps extends BaseSteps {
                     fetch(proposal).
                     fetch(store).
                     fetch(location, "store").
+                    fetch(registrar).
                     fetch(demand).
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                     put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
@@ -735,6 +740,7 @@ public class ProposalSteps extends BaseSteps {
                                 fetch(proposal).
                                 fetch(store).
                                 fetch(location, "store").
+                                fetch(registrar).
                                 fetch(demand).
                                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
 
