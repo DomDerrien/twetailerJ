@@ -1731,7 +1731,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Dites nous que vous voulez, où cela, pour quelle date, et qui tenir au courant de la démarche. Nous communiquerons avec les vendeurs alentour et vous acheminerons leurs propositions.</seg>
+                <seg>Dites nous que vous voulez, où cela, pour quelle date, et qui tenir au courant de la démarche. Nous communiquerons avec les vendeurs alentours <strong>anonymement</strong> et <strong>sécuritairement</strong> et vous acheminerons leurs propositions.</seg>
             </tuv>
         </tu>
         <tu tuid="cw_step_2_title" dataType="text">
@@ -1851,6 +1851,9 @@
                         <a class="bookmarklet-link" href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()">Gadget ASE!</a>
                         <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Glissez-moi!</span></span>
                     </div>
+                    <p>
+                        Utilisateurs d'Internet Explorer: Vous cliquez du bouton droit de la souris sur le lien 'ASE it!', choisissez 'Ajouter aux  Favoris', et sélectionnez 'Bar des Favoris' dans la boîte 'Créer dans'.
+                    </p>
                     <p>
                         Vous pouvez aussi installé le gadget sur votre page personnalisée de iGoogle:
                         <a href="http://fusion.google.com/add?source=atgs&amp;moduleurl=https%3A//anothersocialeconomy.appspot.com/widget/igoogle/yellow.xml" onclick="javascript:(function(){pageTracker._trackPageview('/outbound/article/fusion.google.com');})()" target="_blank"><img alt="Ajouter à Google" border="0" src="http://gmodules.com/ig/images/plus_google.gif" style="vertical-align: middle;" /></a>

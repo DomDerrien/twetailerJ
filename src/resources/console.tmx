@@ -2168,7 +2168,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Tell us What you want, Where abouts you would like to find it, When you need it for and Who you are so we can communicate with you once we find it.</seg>
+                <seg>Tell us <strong>What</strong> you want, <strong>Where</strong>abouts you would like to find it, <strong>When</strong> you need it for and <strong>Who</strong> you are so we can <strong>securely</strong> and <strong>anonymously</strong> broadcast on your behalf to <strong>local</strong> participating retailers.</seg>
             </tuv>
         </tu>
 
@@ -2305,6 +2305,9 @@
                         >ASE it!</a>
                         <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Drag me!</span></span>
                     </div>
+                    <p>
+                        Internet Explorer users: You can right click on the 'ASE it!' link, choose 'Add To Favorites', and then select 'Favorites Bar' from the 'Create In' select box.
+                    </p>
                     <p>
                         You can also host our widget in your iGoogle page:
                         <a
