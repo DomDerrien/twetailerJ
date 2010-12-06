@@ -104,7 +104,7 @@
     } // endif (useCDN)
     %>
 
-    <div class="dataZone" id="widgetZone"><div>
+    <div class="dataZone" id="widgetZone"><div id="widgetInnerZone">
         <div id="pane1">
             <div dojoType="dijit.form.Form" id="form1" class="content" onsubmit="return false;">
                 <% boolean showBrand = request.getParameter("hideBrand") == null;
@@ -316,14 +316,16 @@
                 %><div class="brand"><%= brand %></div><% }
                 %><div class="title"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_3_title", locale) %></div>
                 <table cellpadding="0" cellspacing="0" class="form">
-                    <tr class="firstRow oddRow">
+                    <tr class="firstRow lastRow oddRow">
                         <td class="firstCell"><label for="date"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_date", locale) %></label></td>
                         <td class="lastCell"><input constraints="{datePattern:'EEE, MMMM dd yyyy'}" dojoType="dijit.form.DateTextBox" id="date" name="date" required="true" style="width:100%;" type="text" /></td>
                     </tr>
-                    <tr class="lastRow evenRow">
+                    <!--
+                    <tr class="evenRow">
                         <td class="firstCell"><label for="time"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_dueDate_time", locale) %></label></td>
                         <td class="lastCell"><input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="time" name="time" required="true" style="width:100%;" type="text" value="T00:00" /></td>
                     </tr>
+                    -->
                 </table>
                 <div class="comment"><%= LabelExtractor.get(ResourceFileId.third, "cw_step_1_contextualInfo", locale) %></div>
                 <table cellpadding="0" cellspacing="0">
@@ -474,6 +476,7 @@
        dojoType="dojox.widget.Standby"
        id="widgetOverlay"
        target="widgetZone"
+       zIndex="1000"
     ></div>
 
     <script type="text/javascript">
@@ -631,7 +634,7 @@
             <%= Consumer.EMAIL %>: dijit.byId('email0').get('value'),
             <%= Location.POSTAL_CODE %>: dijit.byId('postalCode').get('value'),
             <%= Location.COUNTRY_CODE %>: dijit.byId('countryCode').get('value'),
-            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), dijit.byId('time').get('value')),
+            <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), null), // dijit.byId('time').get('value')),
             <%= Demand.RANGE %>: dijit.byId('range').get('value'),
             <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
             <%= Demand.QUANTITY %>: 1, // Fixed to 1

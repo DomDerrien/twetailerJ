@@ -265,9 +265,9 @@ public class MessageGenerator {
     protected String serializeDate(Date date, Locale locale) {
         if (date.getHours() == 23) {
             if (date.getMinutes() == 59) {
-                if (date.getSeconds() == 59) {
+                // if (date.getSeconds() == 59) {
                     return DateUtils.dateToCustom(date, dateFormat, userLocale);
-                }
+                // }
             }
         }
         return DateUtils.dateToCustom(date, dateTimeFormat, userLocale);

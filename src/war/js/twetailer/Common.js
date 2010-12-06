@@ -90,8 +90,8 @@
         // return dojo.date.stamp.toISOString(date, {}); // Contains the timezone gap
         var month = date.getMonth() + 1;
         var day = date.getDate();
-        var hours = time ? time.getHours() : 0;
-        var minutes = time ? time.getMinutes() : 0;
+        var hours = time ? time.getHours() : 23;
+        var minutes = time ? time.getMinutes() : 59;
         return date.getFullYear() +
               (month < 10 ? '-0' : '-') + month +
               (day < 10 ? '-0' : '-') + day +

@@ -459,6 +459,7 @@
        dojoType="dojox.widget.Standby"
        id="widgetOverlay"
        target="widgetZone"
+       zIndex="1000"
     ></div>
 
     <script type="text/javascript">
