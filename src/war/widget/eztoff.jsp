@@ -61,6 +61,23 @@
 </head>
 <body class="tundra">
     <div id="introFlash">
+        <!--[if lt IE 8]>
+        <div id="incompatibleIEWarning" style='border: 1px solid #F7941D; background: #FEEFDA; text-align: center; clear: both; position: relative; margin-bottom: 10px; z-index:1000;'>
+            <div style='margin: 0 auto; text-align: left; padding: 0; overflow: hidden; color: black;'>
+                <div style='float: left; padding-left: 5px;'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-warning.jpg' alt='!'/></div>
+                <div style='font-family: Arial, sans-serif; padding-top: 5px; padding-left: 5px;'>
+                    <div style='font-size: 14px; font-weight: bold; margin-top: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_call_to_ie6_users", locale) %></div>
+                    <div style='font-size: 12px; margin-top: 6px; line-height: 12px;'><%= LabelExtractor.get(ResourceFileId.third, "login_info_to_ie6_users", locale) %></div>
+                </div>
+                <div style='float: right; padding-left: 5px; overflow: auto; height: 75px;'>
+                    <a href='http://www.firefox.com' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-firefox.jpg' style='border: none;' alt='Mozilla Firefox'/></a>
+                    <a href='http://www.microsoft.com/windows/internet-explorer/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-ie8.jpg' style='border: none;' alt='Microsoft Internet Explorer'/></a>
+                    <a href='http://www.apple.com/safari/download/' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-safari.jpg' style='border: none;' alt='Apple Safari'/></a>
+                    <a href='http://www.google.com/chrome' target='_blank'><img src='http://www.ie6nomore.com/files/theme/ie6nomore-chrome.jpg' style='border: none;' alt='Google Chrome'/></a>
+                </div>
+            </div>
+        </div>
+        <![endif]-->
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "widget_splash_screen_message", locale) %></span></div>
         <div id="introFlashInfo"><%= LabelExtractor.get(ResourceFileId.third, "cw_redirection_information", locale) %></div>
     </div>
@@ -381,6 +398,13 @@
         dojo.require('dojox.widget.Standby');
         dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
+            if (dojo.byId('incompatibleIEWarning') != null) {
+                dojo.style('widgetZone', 'display', 'none');
+                dojo.style('introFlashWait', 'display', 'none');
+                dojo.style('introFlashInfo', 'display', 'none');
+                dojo.style('introFlash', 'backgroundImage', 'none');
+                return;
+            }
             dojo.extend(dijit._TimePicker,{
                 visibleRange: 'T02:00:00',
             });

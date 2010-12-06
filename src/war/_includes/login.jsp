@@ -327,9 +327,8 @@
     localModule.init = function() {
         var warningBox = dojo.byId('incompatibleIEWarning');
         if (warningBox != null) {
-            var widget;
             dojo.query('.shortcutButton').forEach(function(node, index, arr) {
-                widget = dijit.getEnclosingWidget(node)
+                var widget = dijit.getEnclosingWidget(node)
                 widget.set('disabled', true);
                 widget.set('title', '');
             });
