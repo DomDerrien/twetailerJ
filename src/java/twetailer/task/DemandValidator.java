@@ -180,10 +180,10 @@ public class DemandValidator {
                 if (subject == null) {
                     subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
                 }
-                subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+                String reSubject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                    put("command>threadSubject", reSubject.replaceAll(" ", "%20")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
 
@@ -191,7 +191,7 @@ public class DemandValidator {
 
                 communicateToConsumer(
                         msgGen.getCommunicationChannel(),
-                        subject,
+                        isNewDemand ? subject : reSubject,
                         owner,
                         new String[] { message }
                 );

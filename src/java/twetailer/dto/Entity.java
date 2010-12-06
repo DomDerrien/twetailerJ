@@ -139,8 +139,10 @@ public class Entity implements TransferObject {
     }
 
     public void updateModificationDate() {
-        Date now = DateUtils.getNowDate();
-        setModificationDate(now);
+        if (key != null) {
+            Date now = DateUtils.getNowDate();
+            setModificationDate(now);
+        }
     }
 
     public void setModificationDate(Date modificationDate) {
