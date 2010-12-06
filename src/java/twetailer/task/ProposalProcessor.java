@@ -31,7 +31,6 @@ import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
