@@ -2293,7 +2293,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Vitesses:</seg>
+                <seg>Transmission:</seg>
             </tuv>
         </tu>
         <tu tuid="cdw_placeholder_transmission" dataType="text">
