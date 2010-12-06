@@ -2843,6 +2843,30 @@
             </tuv>
         </tu>
 
+        <tu tuid="cpw_label_year" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Year:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cpw_label_partNb" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Part #:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cpw_helper_text" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg><li>Volkswagen Jetta 2008 catalytic converter</li><li>Subaru Legacy 2004 4 steel rims</li><li>Michelin Alpin tires 215/50 R17</li></seg>
+            </tuv>
+        </tu>
+
         <!-- ========= -->
         <!-- Store map -->
         <!-- ========= -->

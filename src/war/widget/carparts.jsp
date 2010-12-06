@@ -140,9 +140,9 @@
                             if (carMaker == null) {
                                 carMaker = "";
                             }
-                            String[] carMakers = LabelExtractor.get(ResourceFileId.third, "cdw_carMakers", locale).split(",");
+                            String[] carMakers = (" ," + LabelExtractor.get(ResourceFileId.third, "cdw_carMakers", locale)).split(",");
                             %>
-                            <select class="selectbox" dojoType="dijit.form.FilteringSelect" id="metadata.make" name="metadata.make" style="width:auto;"><%
+                            <select class="selectbox" dojoType="dijit.form.FilteringSelect" id="metadata.make" name="metadata.make" placeholder="" style="width:auto;"><%
                             for (int i=0, carMakerNb = carMakers.length; i < carMakerNb; i++) { %>
                                 <option value="<%= carMakers[i] %>"<% if (carMakers[i].equals(carMaker)) { out.write(" selected=true"); } %>><%= carMakers[i] %></option><%
                             } %></select>
@@ -153,22 +153,21 @@
                         if (model == null) {
                             model = "";
                         }
-                        String modelPlaceHolder = request.getParameter("metadata.model.placeHolder");
-                        if (modelPlaceHolder == null) {
-                            modelPlaceHolder = LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_model", locale);
-                        }
                         %>
                         <td class="firstCell"><label for="metadata.model"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %></label></td>
-                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" placeholder="<%= modelPlaceHolder %>" style="width:100%;" type="text" value="<%= model %>" /></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.model" name="metadata.model" style="width:100%;" type="text" value="<%= model %>" /></td>
                     </tr>
-                    <tr class="oddRow"><%
-                        String transmission = request.getParameter("metadata.transmission");
-                        if (transmission == null) {
-                          transmission = "";
-                        }
-                        %>
-                        <td class="firstCell"><label for="metadata.transmission"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %></label></td>
-                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.transmission" name="metadata.transmission" placeholder="<%= LabelExtractor.get(ResourceFileId.third, "cdw_placeholder_transmission", locale) %>" style="width:100%;" type="text" value="<%= transmission %>" /></td>
+                    <tr class="oddRow">
+                        <td class="firstCell"><label for="metadata.year"><%= LabelExtractor.get(ResourceFileId.third, "cpw_label_year", locale) %></label></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.year" name="metadata.year" style="width:100%;" type="text" /></td>
+                    </tr>
+                    <tr class="evenRow">
+                        <td class="firstCell"><label for="metadata.partNb"><%= LabelExtractor.get(ResourceFileId.third, "cpw_label_partNb", locale) %></label></td>
+                        <td class="lastCell"><input dojoType="dijit.form.TextBox" id="metadata.partNb" name="metadata.partNb" style="width:100%;" type="text" /></td>
+                    </tr>
+                    <tr class="oddRow">
+                        <td class="firstCell"><label for="quantity"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_quantity", locale) %></label></td>
+                        <td class="lastCell"><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="quantity" name="quantity" style="width:5em;" required="true" type="text" value="1" /></td>
                     </tr>
                     <tr class="lastRow evenRow">
                         <td class="firstCell" style="vertical-align:top; padding-top:7px;"><label for="tags"><%= LabelExtractor.get(ResourceFileId.third, "cdw_label_criteria", locale) %></label></td>
@@ -195,7 +194,7 @@
                                 <div
                                     dojoType="dijit.TooltipDialog"
                                     title="<%= LabelExtractor.get(ResourceFileId.third, "cw_helper_title", locale) %>"
-                                ><%= LabelExtractor.get(ResourceFileId.third, "cdw_helper_text", locale) %></div>
+                                ><%= LabelExtractor.get(ResourceFileId.third, "cpw_helper_text", locale) %></div>
                             </div>
                         </td>
                     </tr>
@@ -204,14 +203,7 @@
                 <table cellpadding="0" cellspacing="0">
                     <tr>
                         <td>
-                            <button
-                                dojoType="dijit.form.Button"
-                                iconClass="silkIcon silkIconGMaps"
-                                id="storeMapOpener"
-                                onclick="window.open('/widget/maps/stores.jsp?lang=<%= localeId %>', 'aseStoreMap');"
-                                showLabel="false"
-                                type="button"
-                            ></button>
+                            <a href="/widget/maps/stores.jsp?lang=<%= localeId %>" target="aseStoreMap"><img src="/images/map_perspective.jpg" style="vertical-align: middle; border: 2px solid #A5BEDA; border-color: #A5BEDA #A5BEDA #5C7590 #5C7590;" /></a>
                             <div connectId="storeMapOpener" dojoType="dijit.Tooltip" position="above"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></div>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></span>
@@ -644,9 +636,13 @@
             criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
             criteria.push(dojo.trim(dijit.byId('metadata.model').get('value')));
         }
-        if (0 < dojo.trim(dijit.byId('metadata.transmission').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.transmission').get('value')));
+        if (0 < dojo.trim(dijit.byId('metadata.year').get('value')).length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_year", locale) %>');
+            criteria.push(dojo.trim(dijit.byId('metadata.year').get('value')));
+        }
+        if (0 < dojo.trim(dijit.byId('metadata.partNb').get('value')).length) {
+            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_partNb", locale) %>');
+            criteria.push(dojo.trim(dijit.byId('metadata.partNb').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
             criteria = criteria.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
@@ -661,8 +657,8 @@
             <%= Demand.DUE_DATE %>: twetailer.Common.toISOString(dijit.byId('date').get('value'), null), // dijit.byId('time').get('value')),
             <%= Demand.RANGE %>: dijit.byId('range').get('value'),
             <%= Demand.RANGE_UNIT %>: '<%= LocaleValidator.DEFAULT_RANGE_UNIT %>',
-            <%= Demand.QUANTITY %>: 1, // Fixed to 1
-            <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.cardealer.toString() %>'],
+            <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
+            <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.carparts.toString() %>'],
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
             <%= Demand.CRITERIA %>: criteria
         };

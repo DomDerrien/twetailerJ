@@ -2312,6 +2312,27 @@
                 <seg><li>VW Jetta TDI 3 portes</li><li>2006 Subaru Legacy familiale GT bleue</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
             </tuv>
         </tu>
+        <tu tuid="cpw_label_year" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Année:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cpw_label_partNb" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Numéro de pièce:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cpw_helper_text" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg><li>Volkswagen Jetta 2008 pot catalytique</li><li>Subaru Legacy 2004 4 gentes acier</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
+            </tuv>
+        </tu>
         <tu tuid="sm_localized_page_name" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

@@ -57,6 +57,7 @@
             Select your widget: <select onchange="document.getElementById('aseWidget').src=this.value;">
                 <option value="/widget/eztoff.jsp?lg=<%= localeId %>&postalCode=H3C2N6&countryCode=CA&referralId=0">ezToff</option>
                 <option value="/widget/cardealer.jsp?lg=<%= localeId %>&referralId=0">Car dealers</option>
+                <option value="/widget/carparts.jsp?lg=<%= localeId %>&referralId=0">Car parts</option>
                 <option value="/widget/ase.jsp?lg=<%= localeId %>&referralId=0" selected>Generic ASE</option>
             </select>
         </div>

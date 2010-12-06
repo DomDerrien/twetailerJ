@@ -21,7 +21,9 @@ public class HashTag {
     public enum RegisteredHashTag {
         demo,
         golf,
-        taxi
+        taxi,
+        cardealer,
+        carparts
     }
 
     public static Map<String, RegisteredHashTag> equivalents;
