@@ -2295,9 +2295,11 @@
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
                 <seg>
-                    Buy from anywhere on the web! Just drag this bookmarklet to your browser's bookmark toolbar.
-                    Then activate it whenever you want to create a demand. Note: the selected text is used to preset
-                    the demand details.
+                    <p style="margin-top:0;padding-top:0;">
+                        Buy from anywhere on the web! Just drag this bookmarklet to your browser's bookmark toolbar.
+                        Then activate it whenever you want to create a demand. Note: the selected text is used to preset
+                        the demand details.
+                    </p>
                     <div class="bookmarklet-container">
                         <a
                             class="bookmarklet-link"

@@ -1843,16 +1843,18 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Faites vos achats depuis n'importe o sur le Web! Glisser le <i>bookmarklet</i> ci-dessous
-                    sur votre barre de raccourcis du navigateur. En l'activant, le gadget apparaitra pour
-                    recevoir votre demande. Notez que le texte préalablement sélectionné sera transféré dans
-                    le champs de saisie des détails dela demande.
+                    <p style="margin-top:0;padding-top:0;">
+                        Faites vos achats depuis n'importe où sur le Web! Glisser le <i>bookmarklet</i> ci-dessous
+                        sur votre barre de raccourcis du navigateur. En l'activant, le gadget apparaitra pour
+                        recevoir votre demande. Notez que le texte préalablement sélectionné sera transféré dans
+                        le champs de saisie des détails dela demande.
+                    </p>
                     <div class="bookmarklet-container">
                         <a class="bookmarklet-link" href="javascript:(function(){window.ase_showWidget=true;var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()">Gadget ASE!</a>
                         <span class="bookmarklet-callout"><span class="bookmarklet-callout-inner">Glissez-moi!</span></span>
                     </div>
                     <p>
-                        Utilisateurs d'Internet Explorer: Vous cliquez du bouton droit de la souris sur le lien 'ASE it!', choisissez 'Ajouter aux  Favoris', et sélectionnez 'Bar des Favoris' dans la boîte 'Créer dans'.
+                        Utilisateurs d'Internet Explorer: Vous cliquez du bouton droit de la souris sur le lien 'Gadget ASE!', choisissez 'Ajouter aux  Favoris', et sélectionnez 'Bar des Favoris' dans la boîte 'Créer dans'.
                     </p>
                     <p>
                         Vous pouvez aussi installé le gadget sur votre page personnalisée de iGoogle:
