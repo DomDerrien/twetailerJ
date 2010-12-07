@@ -152,7 +152,7 @@
                                 <button
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconGMaps"
-                                    onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', _iconOnDragEnd: 'iconDragged'});"
+                                    onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'});"
                                     type="button"
                                 ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                             </td>
@@ -293,6 +293,7 @@
                                 icon: localModule.getMarkerImage(color),
                                 position: new google.maps.LatLng(store.latitude, store.longitude),
                                 shadow: needShadow ? localModule.getMarkerImage('shadow') : null,
+                                animation: google.maps.Animation.DROP,
                                 title: store.name,
                                 zIndex: zIndex
                             });
@@ -325,7 +326,13 @@
         });
 
         dojo.subscribe('iconDragged', function(mouseEvent, marker) {
-            console.log(dojo.toJson(marker.getPosition()));
+            twetailer.Common.getCursorOnMapLocation(
+                {coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}}, 
+                'postalCode', 
+                'countryCode', 
+                'formPaneOverlay'
+            );
+            // http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false
         });
     };
     localModule.getInfoWindowHandler = function(map, storeIdx) {

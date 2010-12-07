@@ -2,7 +2,7 @@
 
     var module = dojo.provide('twetailer.Common');
 
-    dojo.require("dojo.date.stamp");
+    dojo.require('dojo.date.stamp');
     dojo.require('domderrien.i18n.LabelExtractor');
 
     /* Set of local variables */
@@ -112,8 +112,8 @@
             return dojo.date.locale.format(dateObject, {selector: 'date'});
         }
         catch (ex) {
-            console.log("displayDate('" + serializedDate + "') -- ex: " + ex.message);
-            return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_date', [serializedDate]) + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+            console.log('displayDate("' + serializedDate + '") -- ex: ' + ex.message);
+            return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_date', [serializedDate]) + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
         }
     };
 
@@ -129,8 +129,8 @@
             return dojo.date.locale.format(dateObject, {selector: 'dateTime'});
         }
         catch (ex) {
-            console.log("displayDateTime('" + serializedDate + "') -- ex: " + ex.message);
-            return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_date', [serializedDate]) + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+            console.log('displayDateTime("' + serializedDate + '") -- ex: ' + ex.message);
+            return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_date', [serializedDate]) + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
         }
     };
 
@@ -146,9 +146,9 @@
         }
         var location = _locations[locationKey];
         if (location) {
-            return "<a href='javascript:twetailer.Common.showMap(\"" + location.postalCode + '\",\"' + location.countryCode + "\")'>" + location.postalCode + ' ' + location.countryCode + '</a>';
+            return '<a href="javascript:twetailer.Common.showMap(\'' + location.postalCode + '\',\'' + location.countryCode + '\')">' + location.postalCode + ' ' + location.countryCode + '</a>';
         }
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_locale') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+        return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_locale') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
     };
 
     /**
@@ -165,7 +165,7 @@
             return criteria.join(' ');
         }
         console.log('displayCriteria(' + criteria + ') is not an Array');
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_array') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+        return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_array') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
     };
 
     /**
@@ -185,11 +185,11 @@
             return '#' + hashTags.join(' #');
         }
         console.log('displayHashTags(' + hashTags + ') is not an Array');
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_array') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+        return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_array') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
     };
 
-    var _ccTwitterDecoration = ["<a href='http://twitter.com/", null, "' target='twTwitter'>", null, '</a>'];
-    var _ccEmailDecoration = ["<a href='mailto:", null, "'>", null, '</a>'];
+    var _ccTwitterDecoration = ['<a href="http://twitter.com/', null, '" target="twTwitter">', null, '</a>'];
+    var _ccEmailDecoration = ['<a href="mailto:', null, '">', null, '</a>'];
 
     /**
      * CC formatter.
@@ -222,7 +222,7 @@
             return value.join(', ');
         }
         console.log('displayCC(' + ccList + ') is not an Array');
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_array') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+        return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_array') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
     };
 
     /**
@@ -240,7 +240,7 @@
             // return dojo.toJson(dojo.fromJson(metadata), true);
         }
         catch(ex) {
-            return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_metadata') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+            return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_metadata') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
         }
     };
 
@@ -267,7 +267,7 @@
             }
             return value.join(' ');
         }
-        return "<span class='invalidData' title='" + _getLabel('console', 'error_invalid_array') + "'>" + _getLabel('console', 'error_invalid_data') + '</span>';
+        return '<span class="invalidData" title="' + _getLabel('console', 'error_invalid_array') + '">' + _getLabel('console', 'error_invalid_data') + '</span>';
     };
 
     /**
@@ -829,8 +829,8 @@
     module.setLocation = function(locationKey, postalCodeField, countryCodeField) {
         var location = _locations[locationKey];
         if (location) {
-            postalCodeField.set('value', location.postalCode);
             countryCodeField.set('value', location.countryCode);
+            setTimeout(function(){postalCodeField.set('value', location.postalCode);},0);
             return;
         }
     }
@@ -856,10 +856,10 @@
 
     /**
      * Invoke a third-party service (Google Maps) to get the geographical coordinate of the given location
-     * and render the corresponding map in a dialog box with id "locationMapDialog", embedding a <div/> with
-     * the identifier "mapPlaceHolder".
+     * and render the corresponding map in a dialog box with id 'locationMapDialog', embedding a <div/> with
+     * the identifier 'mapPlaceHolder'.
      *
-     * @param {String} postalCode postal code in "A1A1A1" for Canada, and "12345" for USA.
+     * @param {String} postalCode postal code in 'A1A1A1' for Canada, and '12345' for USA.
      * @param {String} countryCode ISO of the country.
      * @param {Object} (optional) map display parameters
      */
@@ -951,6 +951,7 @@
         var marker = new google.maps.Marker({
             clickable: false,
             draggable: mapParams && mapParams.iconOnDragEnd ? true : false,
+            animation: google.maps.Animation.DROP,
             icon: image,
             shadow: shadow,
             map: map,
@@ -979,14 +980,40 @@
      * @param {String} overlayId (Optional) Identifier of the overlay to show during the request.
      */
     module.fetchBrowserLocation = function(postalCodeId, countryCodeId, overlayId) {
-        var eventName = "browserLocationCodeAvailable";
+        var eventName = 'browserLocationCodeAvailable';
         var handle = dojo.subscribe(eventName, function(postalCode, countryCode) {
-            dijit.byId(postalCodeId).set("value", postalCode);
-            dijit.byId(countryCodeId).set("value", countryCode);
+            dijit.byId(countryCodeId).set('value', countryCode);
+            setTimeout(function(){dijit.byId(postalCodeId).set('value', postalCode);},0);
             dijit.byId(postalCodeId).focus();
             dojo.unsubscribe(handle);
         })
         module.getBrowserLocation(eventName, overlayId);
+    }
+
+    /**
+     * Helper displaying the specified overlay and getting the {postal code, country code}
+     * from the given geo-coordinates.
+     *
+     * @param {Object} position geo-coordinates, probably from Google Maps
+     * @param {String} postalCodeId Identifier of the field to receive the postal code.
+     * @param {String} countryCodeId Identifier of the field to receive the country code.
+     * @param {String} overlayId (Optional) Identifier of the overlay to show during the request.
+     */
+    module.getCursorOnMapLocation = function(position, postalCodeId, countryCodeId, overlayId){
+        _getPostalCountryEventName = 'browserLocationCodeAvailable';
+        var handle = dojo.subscribe(_getPostalCountryEventName, function(postalCode, countryCode) {
+            dijit.byId(countryCodeId).set('value', countryCode);
+            setTimeout(function(){dijit.byId(postalCodeId).set('value', postalCode);},0);
+            dijit.byId(postalCodeId).focus();
+            dojo.unsubscribe(handle);
+        })
+        _browserLocationOverlayId = overlayId;
+
+        if (overlayId) {
+            dijit.byId(overlayId).show();
+        }
+
+        _successCallbackBrowserLocation(position);
     }
 
     /**
@@ -1081,13 +1108,10 @@
      */
     var _getPostalCountryCodesCallback = function(results, status) {
         if (google.maps.GeocoderStatus.OK == status) {
-            var pC = null, cC = null, idx = results.length, jdx, COUNTRY_TAG = 'country', POSTAL_CODE_TAG = 'postal_code';
-            while (0 < idx) {
-                idx--;
+            var pC = null, cC = null, COUNTRY_TAG = 'country', POSTAL_CODE_TAG = 'postal_code';
+            for (var idx = 0, iLimit = results.length; idx < iLimit; idx++) {
                 var parts = results[idx].address_components;
-                jdx = parts.length;
-                while (0 < jdx) {
-                    jdx--;
+                for (var jdx = 0, jLimit = parts.length; jdx < jLimit; jdx++) {
                     var part = parts[jdx];
                     if (!cC && part.types[0] == COUNTRY_TAG) {
                         cC = part.short_name;
@@ -1101,6 +1125,7 @@
             }
             if (pC && cC) {
                 var location = results[0].geometry.location;
+                _geoCache[pC + '-' + cC] = location;
                 _lastBrowserLocation.postalCode = pC;
                 _lastBrowserLocation.countryCode = cC;
                _notifyBrowserLocation(pC, cC);

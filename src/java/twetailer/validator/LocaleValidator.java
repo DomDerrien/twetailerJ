@@ -104,89 +104,40 @@ public class LocaleValidator {
         else if (Locale.US.getCountry().equals(countryCode) && US_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
-                String line = reader.readLine(); // Only one line expected
-                if (line != null) {
-                    String[] parts = line.split(",\\s*");
-                    coordinates[0] = Double.valueOf(parts[0].trim());
-                    coordinates[1] = Double.valueOf(parts[1].trim());
+                String line = reader.readLine();
+                StringBuilder buffer = new StringBuilder();
+                while (line != null) {
+                    buffer.append(line);
+                    line = reader.readLine();
                 }
                 reader.close();
 
+                JsonObject info = new JsonParser(buffer.toString()).getJsonObject();
+                info = info.getJsonArray("results").getJsonObject(0).getJsonObject("geometry").getJsonObject("location");
+                coordinates[0] = info.getDouble("lat");
+                coordinates[1] = info.getDouble("lng");
             }
-            catch (IOException e) { }
+            catch (Exception e) { }
         }
         // Postal code in Canada
         else if (Locale.CANADA.getCountry().equals(countryCode) && CANADIAN_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
-                // Manual parsing
                 String line = reader.readLine();
+                StringBuilder buffer = new StringBuilder();
                 while (line != null) {
-                    if (line.indexOf("<error>") != -1) {
-                        break;
-                    }
-                    if (line.indexOf("<latt>") != -1) {
-                        coordinates[0] = Double.valueOf(line.substring(line.indexOf("<latt>") + "<latt>".length(), line.indexOf("</latt>")));
-                    }
-                    else if (line.indexOf("<longt>") != -1) {
-                        coordinates[1] = Double.valueOf(line.substring(line.indexOf("<longt>") + "<longt>".length(), line.indexOf("</longt>")));
-                    }
+                    buffer.append(line);
                     line = reader.readLine();
                 }
                 reader.close();
-                /* Automated parsing
-                import javax.xml.parsers.DocumentBuilder;
-                import javax.xml.parsers.DocumentBuilderFactory;
-                import javax.xml.parsers.ParserConfigurationException;
-                import javax.xml.xpath.XPath;
-                import javax.xml.xpath.XPathConstants;
-                import javax.xml.xpath.XPathExpression;
-                import javax.xml.xpath.XPathExpressionException;
-                import javax.xml.xpath.XPathFactory;
 
-                import org.w3c.dom.Document;
-                import org.w3c.dom.NodeList;
-                import org.xml.sax.InputSource;
-                import org.xml.sax.SAXException;
+                JsonObject info = new JsonParser(buffer.toString()).getJsonObject();
+                info = info.getJsonArray("results").getJsonObject(0).getJsonObject("geometry").getJsonObject("location");
+                coordinates[0] = info.getDouble("lat");
+                coordinates[1] = info.getDouble("lng");
 
-                StringBuilder bufferedResponse = new StringBuilder();
-                String line = reader.readLine();
-                while (line != null) {
-                    bufferedResponse.append(line);
-                    line = reader.readLine();
-                }
-                reader.close();
-                try {
-                    DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = builderFactory.newDocumentBuilder();
-                    Document doc = builder.parse(new InputSource(new StringReader(bufferedResponse.toString())));
-
-                    XPathFactory factory = XPathFactory.newInstance();
-                    XPath xpath = factory.newXPath();
-                    XPathExpression expr = xpath.compile("//geodata]/latt/text()");
-
-                    Object result = expr.evaluate(doc, XPathConstants.NODESET);
-                    NodeList nodes = (NodeList) result;
-
-                    if (0 < nodes.getLength()) {
-                        coordinates[0] = Double.valueOf(nodes.item(0).getNodeValue());
-                    }
-
-                    expr = xpath.compile("//geodata]/longt/text()");
-
-                    result = expr.evaluate(doc, XPathConstants.NODESET);
-                    nodes = (NodeList) result;
-
-                    if (0 < nodes.getLength()) {
-                        coordinates[1] = Double.valueOf(nodes.item(0).getNodeValue());
-                    }
-                }
-                catch(ParserConfigurationException ex) { }
-                catch(SAXException ex) { }
-                catch(XPathExpressionException ex) { }
-                */
             }
-            catch (IOException e) { }
+            catch (Exception e) { }
         }
         if (coordinates[0] < -90.0d || 90.0d < coordinates[0] || coordinates[1] < -180.0d || 180.0d < coordinates[1]) {
             // Reset
@@ -246,10 +197,12 @@ public class LocaleValidator {
             return testValidatorStream;
         }
         if (Locale.CANADA.getCountry().equals(countryCode)) {
-            return new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode).openStream();
+            return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20Canada").openStream();
+            // return new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode).openStream();
         }
         if (Locale.US.getCountry().equals(countryCode)) {
-            return new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode).openStream();
+            return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20USA").openStream();
+            // return new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode).openStream();
         }
         throw new MalformedURLException("Unsupported coutry code: " + countryCode);
     }

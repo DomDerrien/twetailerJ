@@ -1,7 +1,5 @@
 package twetailer.task.step;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,7 +20,6 @@ import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.DateUtils;
-import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 
 public class StoreSteps extends BaseSteps {

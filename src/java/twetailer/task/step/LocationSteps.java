@@ -81,6 +81,7 @@ public class LocationSteps extends BaseSteps {
             center.setLongitude(parameters.getDouble(Location.LONGITUDE));
         }
 
+        // Get location around
         List<Location> output = null;
         if (center == null) {
             output = new ArrayList<Location>();
