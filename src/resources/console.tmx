@@ -398,7 +398,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Message displayed to Microsoft IE 6 browser users, calling them to install a modern browser!</note>
             <tuv xml:lang="en">
-                <seg>You are using an outdated browser!</seg>
+                <seg>Your browser is not supported.</seg>
             </tuv>
         </tu>
 
@@ -407,7 +407,7 @@
             <prop type="x-tier">javarb</prop>
             <note>Message displayed to Microsoft IE 6 browser users, calling them to install a modern browser!</note>
             <tuv xml:lang="en">
-                <seg>To use this site, please upgrade to a modern web browser.</seg>
+                <seg>For best experience, use one of these recommended browsers.</seg>
             </tuv>
         </tu>
 
@@ -2863,7 +2863,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg><li>Volkswagen Jetta 2008 catalytic converter</li><li>Subaru Legacy 2004 4 steel rims</li><li>Michelin Alpin tires 215/50 R17</li></seg>
+                <seg><li>Volkswagen Jetta 2008 catalytic converter</li><li>Subaru Legacy 2004 4 steel rims type 10</li><li>Michelin Alpin tires 215/50 R17</li></seg>
             </tuv>
         </tu>
 

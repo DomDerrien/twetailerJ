@@ -327,9 +327,9 @@
 
         dojo.subscribe('iconDragged', function(mouseEvent, marker) {
             twetailer.Common.getCursorOnMapLocation(
-                {coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}}, 
-                'postalCode', 
-                'countryCode', 
+                {coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}},
+                'postalCode',
+                'countryCode',
                 'formPaneOverlay'
             );
             // http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false

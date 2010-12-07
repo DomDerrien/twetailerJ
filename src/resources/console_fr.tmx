@@ -302,14 +302,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Vous utilisez un navigateur dépassé !</seg>
+                <seg>Votre navigateur n'est pas supporté.</seg>
             </tuv>
         </tu>
         <tu tuid="login_info_to_ie6_users" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Pour accéder au site, utiliser un navigateur moderne.</seg>
+                <seg>Veuillez utiliser un des navigateurs recommendés suivants pour une utilisation optimale.</seg>
             </tuv>
         </tu>
         <tu tuid="login_localized_page_keywords" dataType="text">
@@ -2330,7 +2330,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg><li>Volkswagen Jetta 2008 pot catalytique</li><li>Subaru Legacy 2004 4 gentes acier</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
+                <seg><li>Volkswagen Jetta 2008 pot catalytique</li><li>Subaru Legacy 2004 4 gentes acier type 10</li><li>Pneus Michelin Alpin 215/50 R17</li></seg>
             </tuv>
         </tu>
         <tu tuid="sm_localized_page_name" dataType="text">
