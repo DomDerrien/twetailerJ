@@ -994,17 +994,18 @@
      * Helper displaying the specified overlay and getting the {postal code, country code}
      * from the given geo-coordinates.
      *
-     * @param {Object} position geo-coordinates, probably from Google Maps
+     * @param {Object} marker entity carrying the geo-coordinates
      * @param {String} postalCodeId Identifier of the field to receive the postal code.
      * @param {String} countryCodeId Identifier of the field to receive the country code.
      * @param {String} overlayId (Optional) Identifier of the overlay to show during the request.
      */
-    module.getCursorOnMapLocation = function(position, postalCodeId, countryCodeId, overlayId){
+    module.getCursorOnMapLocation = function(marker, postalCodeId, countryCodeId, overlayId){
         _getPostalCountryEventName = 'browserLocationCodeAvailable';
         var handle = dojo.subscribe(_getPostalCountryEventName, function(postalCode, countryCode) {
             dijit.byId(countryCodeId).set('value', countryCode);
             setTimeout(function(){dijit.byId(postalCodeId).set('value', postalCode);},0);
             dijit.byId(postalCodeId).focus();
+            marker.setTitle(postalCode + ' ' + countryCode);
             dojo.unsubscribe(handle);
         })
         _browserLocationOverlayId = overlayId;
@@ -1013,7 +1014,7 @@
             dijit.byId(overlayId).show();
         }
 
-        _successCallbackBrowserLocation(position);
+        _successCallbackBrowserLocation({coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}});
     }
 
     /**

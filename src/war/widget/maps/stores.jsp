@@ -327,7 +327,7 @@
 
         dojo.subscribe('iconDragged', function(mouseEvent, marker) {
             twetailer.Common.getCursorOnMapLocation(
-                {coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}},
+                marker,
                 'postalCode',
                 'countryCode',
                 'formPaneOverlay'
