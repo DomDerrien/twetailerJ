@@ -102,7 +102,9 @@ public class LocationOperations extends BaseOperations {
         catch (DataSourceException ex) {}
 
         // Create an entry for that new location
-        location = LocaleValidator.getGeoCoordinates(location);
+        if (location.getLatitude() == Location.INVALID_COORDINATE || location.getLongitude() == Location.INVALID_COORDINATE) {
+            location = LocaleValidator.getGeoCoordinates(location);
+        }
         return pm.makePersistent(location);
     }
 

@@ -62,7 +62,7 @@
         <!-- Copy the Twetailer dependencies -->
         <copy file="deps/lib/commons/commons-codec-1.4.jar" todir="src/war/WEB-INF/lib" />
         <copy file="deps/lib/domderrien/domderrien-1.5.2.jar" todir="src/war/WEB-INF/lib" />
-        <copy file="deps/lib/twitter4j/twitter4j-core-2.1.6.jar" todir="src/war/WEB-INF/lib" />
+        <copy file="deps/lib/twitter4j/twitter4j-core-2.1.8.jar" todir="src/war/WEB-INF/lib" />
         <copy todir="src/war/WEB-INF/lib">
             <fileset dir="deps/lib/dyuproject" />
         </copy>

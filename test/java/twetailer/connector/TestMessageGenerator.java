@@ -127,7 +127,7 @@ public class TestMessageGenerator {
         date.set(Calendar.HOUR_OF_DAY, 1); date.set(Calendar.MINUTE, 2); date.set(Calendar.SECOND, 3);
         assertTrue(msgGen.serializeDate(date.getTime(), Locale.ENGLISH).contains("T01:02:03"));
         date.set(Calendar.MINUTE, 59);     assertTrue(msgGen.serializeDate(date.getTime(), Locale.ENGLISH).contains("T01:59:03"));
-        date.set(Calendar.HOUR, 23);       assertTrue(msgGen.serializeDate(date.getTime(), Locale.ENGLISH).contains("T23:59:03"));
+        date.set(Calendar.HOUR, 23);       assertFalse(msgGen.serializeDate(date.getTime(), Locale.ENGLISH).contains("T23:59:03"));
         date.set(Calendar.SECOND, 59);     assertFalse(msgGen.serializeDate(date.getTime(), Locale.ENGLISH).contains("T23:59:59"));
 
         date.set(Calendar.HOUR_OF_DAY, 1); date.set(Calendar.MINUTE, 2); date.set(Calendar.SECOND, 3);

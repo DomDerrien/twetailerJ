@@ -72,7 +72,8 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIIa() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("22.5, -120.5, Somewhere, US, 95432"));
+        LocaleValidator.setValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':22.5,'lng':-120.5}}}]}"));
+        // LocaleValidator.setValidatorStream(new MockInputStream("22.5, -120.5, Somewhere, US, 95432"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
         assertEquals(22.5D, coords[0].doubleValue(), 0.0D); // Latitude
@@ -104,7 +105,8 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIVa() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.45</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
+        LocaleValidator.setValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':45.45,'lng':-75.5}}}]}"));
+        // LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.45</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(45.45D, coords[0].doubleValue(), 0.0D); // Latitude
