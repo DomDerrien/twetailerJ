@@ -93,15 +93,15 @@ public class MaelzelServlet extends HttpServlet {
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
             }
-            /*********
+            /********* /
             else if ("/influencer".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                 try {
                     Influencer influencer = new Influencer();
-                    influencer.setConsumerKey(15002L);
-                    influencer.setEmail("dominique.derrien@gmail.com");
-                    influencer.setName("Volvo Laval");
-                    influencer.setUrl("http://volvolaval.com/");
+                    influencer.setConsumerKey(64002L);
+                    influencer.setEmail("steven.milstein@gmail.com");
+                    influencer.setName("Mazda Fairview");
+                    influencer.setUrl("http://www.mazdafairview.com/fr/");
                     influencer = BaseSteps.getInfluencerOperations().createInfluencer(pm, influencer);
                     out.put("resource", influencer.toJson());
                 }

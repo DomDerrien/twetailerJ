@@ -7,6 +7,14 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <el-ignored>true</el-ignored>
+            <trim-directive-whitespaces>true</trim-directive-whitespaces>
+        </jsp-property-group>
+    </jsp-config>
+
     <filter>
         <filter-name>appstats</filter-name>
         <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
