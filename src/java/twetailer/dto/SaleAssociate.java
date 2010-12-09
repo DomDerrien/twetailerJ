@@ -74,9 +74,11 @@ public class SaleAssociate extends Entity {
     public final static String STORE_KEY = Store.STORE_KEY;
 
     // Not persistent
-    private Long score = 0L;
+    private String score;
 
     public final static String SCORE = "score";
+
+    public final static String DEFAULT_SCORE = "1:0.1";
 
     /** Default constructor */
     public SaleAssociate() {
@@ -278,15 +280,12 @@ public class SaleAssociate extends Entity {
         this.storeKey = storeKey;
     }
 
-    public Long getScore() {
-        return score;
+    public String getScore() {
+        return score == null ? DEFAULT_SCORE : score;
     }
 
-    public void setScore(Long score) {
-        if (score == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'score'");
-        }
-        this.score = score;
+    public void setScore(String score) {
+        this.score = DEFAULT_SCORE.equals(score) ? null : score;
     }
 
     @Override
@@ -356,7 +355,7 @@ public class SaleAssociate extends Entity {
         if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
         // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
-        // if (in.containsKey(SCORE)) { ... } // Cannot be set manually
+        if (in.containsKey(SCORE)) { setScore(in.getString(SCORE)); }
 
         // Shortcut
         if (in.containsKey(SALEASSOCIATE_KEY)) { setKey(in.getLong(SALEASSOCIATE_KEY)); }

@@ -2099,4 +2099,140 @@ public class TestDemandProcessor {
 
         DemandProcessor.process(demandKey, true);
     }
+
+    @Test
+    public void testFilterSaleAssociatesI() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesII() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+        demand.addCriterion("1111");
+
+        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
+    }
+
+    @Test
+    public void testFilterSaleAssociatesIII() {
+        SaleAssociate associate = new SaleAssociate();
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.0");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addHashTag("aaaa");
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesIV() {
+        SaleAssociate associate = new SaleAssociate();
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.0");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addHashTag("aaaa");
+        demand.addHashTag("bbbb");
+
+        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
+    }
+
+    @Test
+    public void testFilterSaleAssociatesV() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.1");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+        demand.addHashTag("aaaa");
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVI() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.1");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+        demand.addCriterion("1111");
+        demand.addHashTag("aaaa");
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVII() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.1");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+        demand.addHashTag("aaaa");
+        demand.addHashTag("bbbb");
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVIII() {
+        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
+
+        SaleAssociate associate = new SaleAssociate();
+        associate.addCriterion("1111", collator);
+        associate.addHashTag("bbbb");
+        associate.setScore("1:1.1");
+        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
+        associates.add(associate);
+
+        Demand demand = new Demand();
+        demand.addCriterion("0000");
+        demand.addCriterion("1111");
+        demand.addHashTag("aaaa");
+        demand.addHashTag("bbbb");
+
+        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
+    }
 }

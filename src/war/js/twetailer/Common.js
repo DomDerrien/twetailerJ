@@ -1000,6 +1000,7 @@
      * @param {String} overlayId (Optional) Identifier of the overlay to show during the request.
      */
     module.getCursorOnMapLocation = function(marker, postalCodeId, countryCodeId, overlayId){
+        _browserLocationOverlayId = overlayId;
         _getPostalCountryEventName = 'browserLocationCodeAvailable';
         var handle = dojo.subscribe(_getPostalCountryEventName, function(postalCode, countryCode) {
             dijit.byId(countryCodeId).set('value', countryCode);
@@ -1008,13 +1009,12 @@
             marker.setTitle(postalCode + ' ' + countryCode);
             dojo.unsubscribe(handle);
         })
-        _browserLocationOverlayId = overlayId;
 
         if (overlayId) {
             dijit.byId(overlayId).show();
         }
 
-        _successCallbackBrowserLocation({coords:{latitude: marker.getPosition().ya, longitude: marker.getPosition().za}});
+        _successCallbackBrowserLocation({coords:{latitude: marker.getPosition().lat(), longitude: marker.getPosition().lng()}});
     }
 
     /**

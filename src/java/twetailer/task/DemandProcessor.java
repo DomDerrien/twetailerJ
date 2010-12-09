@@ -306,38 +306,64 @@ public class DemandProcessor {
         if (saleAssociates.size() == 0) {
             return selectedSaleAssociates;
         }
+        // Filter out non matching Sale Associates
+        return filterSaleAssociates(saleAssociates, demand, owner);
+    }
+
+    /**
+     * Filter out Sale Associates who don't supply a tag or a hash tag (depends on each one's score) for the given demand
+     *
+     * @param saleAssociates Array of pre-selected Sale Associates
+     * @param demand Consumer demand to consider
+     * @param owner Demand owner
+     * @return List of sale associates listening for the demand tags
+     */
+    protected static List<SaleAssociate> filterSaleAssociates(List<SaleAssociate> saleAssociates, Demand demand, Consumer owner) {
+        List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
+
         // Verifies that the sale associates supply the demanded tags and that he/she has not been yet contacted
         Locale locale = owner.getLocale();
         for (SaleAssociate saleAssociate: saleAssociates) {
             // Verifies that the sale associate has not been yet informed about this demand
             if (demand.getSaleAssociateKeys() == null || !demand.getSaleAssociateKeys().contains(saleAssociate.getKey())) {
-                List<String> suppliedHashTags = saleAssociate.getHashTags();
-                long score = 0;
-                if (suppliedHashTags != null) {
-                    if (demand.getHashTags() != null) {
-                        for (String tag: demand.getHashTags()) {
-                            if (suppliedHashTags.contains(tag.toLowerCase(locale))) {
-                                ++ score;
-                                break; // One common hash tag is enough
-                            }
-                        }
-                    }
+                String score = saleAssociate.getScore();
+                long hashTagScore = 0, normalTagScore = 1, floatingScore = 0; // Default values
+                if (score.startsWith("1:")) {
+                    String[] scores = score.substring(2).split("\\.");
+                    hashTagScore = Long.valueOf(scores[0]);
+                    normalTagScore = Long.valueOf(scores[1]);
                 }
-                if (score == 0) {
-                    List<String> suppliedTags = saleAssociate.getCriteria();
-                    if (suppliedTags != null) {
-                        if (demand.getCriteria() != null) {
-                            for (String tag: demand.getCriteria()) {
-                                if (suppliedTags.contains(tag.toLowerCase(locale))) {
-                                    ++ score;
-                                    break; // TODO: use the sale associate required score before accepting the match
+                if (0 < hashTagScore) {
+                    List<String> suppliedHashTags = saleAssociate.getHashTags();
+                    if (suppliedHashTags != null) {
+                        if (demand.getHashTags() != null) {
+                            for (String tag: demand.getHashTags()) {
+                                if (suppliedHashTags.contains(tag.toLowerCase(locale))) {
+                                    ++ floatingScore;
+                                    if (hashTagScore == floatingScore) {
+                                        break; // Number of hash tags reached
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                if (0 < score) {
-                    saleAssociate.setScore(score);
+                if (0 < normalTagScore) {
+                    List<String> suppliedTags = saleAssociate.getCriteria();
+                    if (suppliedTags != null) {
+                        if (demand.getCriteria() != null) {
+                            for (String tag: demand.getCriteria()) {
+                                if (suppliedTags.contains(tag.toLowerCase(locale))) {
+                                    ++ floatingScore;
+                                    if (hashTagScore + normalTagScore == floatingScore) {
+                                        break; // Number of normal tags reached
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (hashTagScore + normalTagScore == floatingScore) {
                     selectedSaleAssociates.add(saleAssociate);
                 }
             }

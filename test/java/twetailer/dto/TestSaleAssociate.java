@@ -69,7 +69,7 @@ public class TestSaleAssociate {
     Boolean isStoreAdmin = Boolean.TRUE;
     Long locationKey = 12345L;
     Long storeKey = 54321L;
-    Long score = 5L;
+    String score = "1:2.3";
 
     @Test
     public void testAccessors() {
@@ -177,7 +177,7 @@ public class TestSaleAssociate {
         assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(storeKey, clone.getStoreKey());
-        assertEquals(Long.valueOf(0L), clone.getScore()); // Score cannot be set manually
+        assertEquals(score, clone.getScore()); // Score cannot be set manually
     }
 
     @Test
@@ -188,13 +188,11 @@ public class TestSaleAssociate {
 
         assertNull(object.getCriteria());
         assertNull(object.getLocationKey());
-        assertEquals(Long.valueOf(0L), object.getScore()); // Always reset
 
         SaleAssociate clone = new SaleAssociate(object.toJson());
 
         assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
         assertNull(clone.getLocationKey());
-        assertEquals(Long.valueOf(0L), clone.getScore()); // Always reset
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -257,9 +255,13 @@ public class TestSaleAssociate {
         new SaleAssociate().setStoreKey(null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testSetScore() {
-        new SaleAssociate().setScore(null);
+        SaleAssociate sa = new SaleAssociate();
+        sa.setScore(score);
+        assertEquals(score, sa.getScore());
+        sa.setScore(null);
+        assertEquals(SaleAssociate.DEFAULT_SCORE, sa.getScore());
     }
 
     @Test
