@@ -8,7 +8,6 @@
         _masterBundleName = 'master',
         _consoleBundleName = 'console',
         _getLabel,
-        _consumer,
         _queryPointOfView = _globalCommon.POINT_OF_VIEWS.CONSUMER;
 
     /**
@@ -59,13 +58,6 @@
     };
 
     /**
-     * Hook for the server-code (induced by the JSP processor) to store the logged user information.
-     */
-    module.registerConsumer = function(json) {
-        _consumer = json;
-    };
-
-    /**
      * Invoke the server to 1) initiate a verification sending via the specified channel
      * and 2) to validate the code if the user has specified any.
      *
@@ -80,7 +72,8 @@
         // Check for the update
         var field = dijit.byId(fieldId);
         var value = dojo.trim(field.attr('value'));
-        if (value == '' && !_consumer[topic] || value == _consumer[topic]) {
+        var consumer = _globalCommon.getLoggedConsumer();
+        if (value == '' && !consumer[topic] || value == consumer[topic]) {
             if (!waitForCode) {
                 dojo.style(codeNode, 'display', 'none');
             }
@@ -137,7 +130,8 @@
         field.attr('value', '');
         // Prepare the code field
         var codeField = dijit.byId(fieldId + 'Code');
-        if (!_consumer[topic]) {
+        var consumer = _globalCommon.getLoggedConsumer();
+        if (!consumer[topic]) {
             codeField.attr('value', '');
         }
         else {
@@ -151,7 +145,8 @@
 
     module.controlVerifyButtonState = function(topic, fieldId) {
         // Enable the Verify button only if the value if different from the current one
-        dijit.byId(fieldId + 'VerifyButton').attr('disabled', dijit.byId(fieldId).attr('value') == _consumer[topic]);
+        var consumer = _globalCommon.getLoggedConsumer();
+        dijit.byId(fieldId + 'VerifyButton').attr('disabled', dijit.byId(fieldId).attr('value') == consumer[topic]);
         dijit.byId(fieldId + 'Code').attr('value', null);
     };
 
@@ -170,12 +165,12 @@
                 var form = document.forms['consumerInformation'];
                 if (response && response.success) {
                     // Replace the _consumer instance with the updated copy
-                    _consumer = response.resource;
+                    _globalCommon.registerConsumer(response.resource);
                 }
-                _setFormElementValue(form, _consumer);
+                _setFormElementValue(form, _globalCommon.getLoggedConsumer());
             },
             error: module._reportClientError,
-            url: '/API/Consumer/' + _consumer.key
+            url: '/API/Consumer/' + _globalCommon.getLoggedConsumer().key
         });
     };
 

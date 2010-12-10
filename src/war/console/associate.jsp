@@ -14,6 +14,7 @@
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
     import="domderrien.i18n.StringUtils"
+    import="javamocks.io.MockOutputStream"
     import="twetailer.connector.BaseConnector.Source"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
@@ -43,6 +44,14 @@
     if (saleAssociateKey == null) {
         response.sendRedirect("./");
     }
+
+    SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser);
+
+    // Prepare logged user information
+    MockOutputStream serializedConsumer = new MockOutputStream();
+    consumer.toJson().toStream(serializedConsumer, false);
+    MockOutputStream serializedAssociate = new MockOutputStream();
+    saleAssociate.toJson().toStream(serializedAssociate, false);
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -129,6 +138,7 @@
             <jsp:param name="pageForAssociate" value="<%= Boolean.TRUE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.toString(saleAssociateKey != null) %>" />
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
+            <jsp:param name="profilePageURL" value="javascript:twetailer.Associate.showProfile();" />
         </jsp:include>
         <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center">
             <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
@@ -319,6 +329,20 @@
         <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
     </div>
 
+    <div
+        dojoType="dijit.Dialog"
+        id="userProfile"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "user_profile_dialogTitle", locale) %>"
+    >
+        <form dojoType="dijit.form.Form">
+            <div class="dijitDialogPaneContentArea" id="profileForms"></div>
+            <div class="dijitDialogPaneActionBar">
+                <button dojoType="dijit.form.Button" type="submit">OK</button>
+                <button dojoType="dijit.form.Button" type="button" onClick="dijit.byId('userProfile').hide();">Cancel</button>
+            </div>
+        </form>
+    </div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require('dojo.data.ItemFileWriteStore');
@@ -333,6 +357,7 @@
         // dojo.require('dijit.form.CheckBox');
         // dojo.require('dijit.form.ComboBox');
         dojo.require('dijit.form.DateTextBox');
+        dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberSpinner');
         dojo.require('dijit.form.NumberTextBox');
         dojo.require('dijit.form.Select');
@@ -351,6 +376,8 @@
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             twetailer.Associate.init('<%= localeId %>');
+            twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
+            twetailer.Common.registerSaleAssociate(<%= serializedAssociate.getStream() %>);
             dojo.fadeOut({
                 node: 'introFlash',
                 delay: 50,

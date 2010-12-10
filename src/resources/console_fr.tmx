@@ -2505,5 +2505,75 @@
                 <seg>Wish List</seg>
             </tuv>
         </tu>
+        <tu tuid="user_profile_dialogTitle" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_tabTitle" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Consumer Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_tabTitle" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Sale Associate Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_criteriaLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Tags you listen to:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_criteriaPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>One keyword or sequence of keywords per line</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_requiredCriteriaNbLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Number of tags required to match before sending new demands:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_hashtagsLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Hash tags you listen to:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_hashtagListSourceLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Available hash tags</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_hashtagListTargetLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your selected hash tags</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_requiredHashtagsNbLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Number of hash tags required to match before sending new demands:</seg>
+            </tuv>
+        </tu>
     </body>
 </tmx>

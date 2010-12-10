@@ -35,6 +35,10 @@
     boolean pageForAssociate = Boolean.valueOf(request.getParameter("pageForAssociate"));
     boolean isLoggedUserAssociate = Boolean.valueOf(request.getParameter("isLoggedUserAssociate"));
     String consumerName = request.getParameter("consumerName");
+    String profilePageURL = request.getParameter("profilePageURL");
+    if (profilePageURL == null) {
+        profilePageURL = "javascript:alert('Not implemented yet!');";
+    }
 
     String verticalId = request.getParameter("verticalId");
 %>
@@ -64,7 +68,7 @@
                     <li class="subItem"><a href="javascript:dijit.byId('aboutPopup').show();" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_about", locale) %></a></li>
                     <li class="subItem"><a href="/logout?<%= LoginServlet.FROM_PAGE_URL_KEY %>=<%= fromPageURL %>" id="logoutLink" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %>"><%= LabelExtractor.get(ResourceFileId.third, "navigation_sign_out", locale) %></a></li>
                     <li class="subItem" style="color: orange; font-weight: bold; padding: 0 20px;">
-                        <a href="/console/#profile" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_username_editIt", locale) %>">
+                        <a href="<%= profilePageURL %>" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_username_editIt", locale) %>">
                             <span style="color:orange;"><%= LabelExtractor.get(ResourceFileId.third, "navigation_welcome_user", new Object[] { consumerName}, locale) %></span>
                         </a>
                     </li>

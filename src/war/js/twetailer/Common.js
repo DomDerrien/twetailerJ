@@ -8,6 +8,8 @@
     /* Set of local variables */
     var _getLabel,
         _locale,
+        _consumer,
+        _saleAssociate,
         _supportGeolocation,
         _geoCoder,
         _postalCode,
@@ -78,6 +80,22 @@
 
         return _getLabel;
     };
+
+    module.registerConsumer = function(json) {
+        _consumer = json;
+    }
+
+    module.getLoggedConsumer = function() {
+        return _consumer;
+    }
+
+    module.registerSaleAssociate = function(json) {
+        _saleAssociate = json;
+    }
+
+    module.getLoggedSaleAssociate = function() {
+        return _saleAssociate || {};
+    }
 
     /**
      * Helper to generate an ISO formatted date without the timezone.

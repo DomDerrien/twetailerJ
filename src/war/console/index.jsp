@@ -366,7 +366,7 @@
             dojo.parser.parse();
             var userLocale = '<%= localeId %>';
             twetailer.Consumer.init(userLocale);
-            twetailer.Consumer.registerConsumer(<%= serializedConsumer.getStream() %>);
+            twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             dojo.fadeOut({
                 node: 'introFlash',
                 delay: 50,
