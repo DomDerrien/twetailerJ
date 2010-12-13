@@ -3294,7 +3294,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="profile_associate_hashtagGroup" datatype="Text">
+        <tu tuid="profile_associate_hashTagGroup" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">
@@ -3302,7 +3302,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="profile_associate_hashtagsLabel" datatype="Text">
+        <tu tuid="profile_associate_hashTagLabel" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">
@@ -3310,7 +3310,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="profile_associate_hashtagListSourceLabel" datatype="Text">
+        <tu tuid="profile_associate_hashTagListSourceLabel" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">
@@ -3318,7 +3318,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="profile_associate_hashtagListTargetLabel" datatype="Text">
+        <tu tuid="profile_associate_hashTagListTargetLabel" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">
@@ -3326,7 +3326,7 @@
             </tuv>
         </tu>
 
-        <tu tuid="profile_associate_requiredHashtagsNbLabel" datatype="Text">
+        <tu tuid="profile_associate_requiredHashTagNbLabel" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>
             <tuv xml:lang="en">

@@ -1332,6 +1332,10 @@
         return coordinates;
     };
 
+    //
+    // Business logic controlling the Consumer profile pane
+    //
+
     /**
      * Helper creating a HTML <code>table</code> with the <code>input</code> fields
      * displaying the consumer profile attributes
@@ -1496,4 +1500,55 @@
         // Return DOM node with the form fields
         return div;
     };
+
+    /**
+     * Helper collecting updated Consumer attributes and submitting them to the server
+     *
+     * @param {Object} filledData Collection of attributes made from the Consumer form
+     * @param {Function} nextStep Function to invoke when the process if finished
+     *
+     * @see twetailer.Console#createConsumerProfilePane(Object)
+     */
+    module.updateConsumerProfile = function(filledData, nextStep) {
+        var consumer = module.getLoggedConsumer(), filteredData = {}, hasNewValue = false, fieldId;
+        // Collect the updated values
+        fieldId = 'name'; if (consumer[fieldId] != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        fieldId = 'language'; if (consumer[fieldId] != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        fieldId = 'automaticLocaleUpdate'; if (consumer[fieldId] != (filledData[fieldId].length != 0)) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId].length != 0; }
+        fieldId = 'phoneNb'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        // Not implemented yet! // fieldId = 'email'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'jabberId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'twitterId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'facebookId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Cannot be updated // fieldId = 'openID'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        // Not implemented yet! // fieldId = 'preferredConnection'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        // Propagate the updates server-side
+        if (hasNewValue) {
+            // alert('need Consumer field update\n'+dojo.toJson(filteredData));
+            dojo.xhrPut({
+                headers: { 'content-type': 'application/json; charset=UTF-8' },
+                putData: dojo.toJson(filteredData),
+                handleAs: 'json',
+                load: function(response, ioArgs) {
+                    if (response && response.success) {
+                        module.registerConsumer(dojo.mixin(consumer, response.resource));
+                    }
+                    else {
+                        alert(response.message + '\nurl: '+ ioArgs.url);
+                    }
+                    if (nextStep) {
+                        nextStep();
+                    }
+                },
+                error: function(message, ioArgs) {
+                    dijit.byId('userProfileFormOverlay').hide();
+                    module.handleError(message, ioArgs);
+                },
+                url: '/API/Consumer/current'
+            });
+        }
+        else if (nextStep) {
+            nextStep();
+        }
+    }
 })(); // End of the function limiting the scope of the private variables

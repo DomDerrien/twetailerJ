@@ -2509,63 +2509,63 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your information</seg>
+                <seg>Votre profil</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_tabTitle" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Consumer Information</seg>
+                <seg>Profil du consommateur</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_personalInfoGroup" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Personal Information</seg>
+                <seg>Informations personnelles</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_nameLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Display name</seg>
+                <seg>Nom associé à votre compte:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_nameInvalidMessage" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your name cannot be empty</seg>
+                <seg>Votre nom ne peut resté vide</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_namePlaceHolder" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>your name</seg>
+                <seg>votre nom</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_languageLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Preferred language</seg>
+                <seg>Langage préférré:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_automaticLocaleUpdateLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Allows automatic update</seg>
+                <seg>Autorise les mises-à-jour automatiques</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_phoneNbLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Phone number:</seg>
+                <seg>Numéro de téléphone:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_phoneNbPlaceHolder" dataType="text">
@@ -2579,56 +2579,56 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Service Access Points</seg>
+                <seg>Points d'accès au service</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_emailLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>E-mail address:</seg>
+                <seg>Adresse de courriel:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_emailPlaceHolder" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>your.name@domain.com</seg>
+                <seg>votre.nom@domaine.com</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_jabberIdLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Jabber/XMPP identifier:</seg>
+                <seg>Identifiant Jabber/XMPP:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_jabberIdPlaceHolder" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>your.name@jabber.org</seg>
+                <seg>votre.nom@jabber.org</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_twitterIdLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Twitter identifier:</seg>
+                <seg>Identifiant Twitter:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_twitterIdPlaceHolder" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>your_name</seg>
+                <seg>votre_nom</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_facebookIdLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Facebook unique identifier:</seg>
+                <seg>Identifiant unique Facebook:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_facebookIdPlaceHolder" dataType="text">
@@ -2649,70 +2649,84 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>http://your-name.myopenid.com</seg>
+                <seg>http://votre-nom.myopenid.com</seg>
             </tuv>
         </tu>
         <tu tuid="profile_consumer_preferredConnectionLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Preferred communication channel:</seg>
+                <seg>Moyen de communication préférré:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_associate_tabTitle" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Sale Associate Information</seg>
+                <seg>Paramètres de l'Associé de ventes</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_criteriaGroup" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Mots-clés (balise)</seg>
             </tuv>
         </tu>
         <tu tuid="profile_associate_criteriaLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Tags you listen to:</seg>
+                <seg>Souscription: À raison de un par ligne, écrivez le mot-clé ou la séquence de mots-clés que vous souhaitez écouter:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_associate_criteriaPlaceHolder" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>One keyword or sequence of keywords per line</seg>
+                <seg>Un mot-clé ou une séquence de mots-clés par ligne</seg>
             </tuv>
         </tu>
         <tu tuid="profile_associate_requiredCriteriaNbLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Number of tags required to match before sending new demands:</seg>
+                <seg>Publication: Nombre minimum de correspondances requises pour être notifié:</seg>
             </tuv>
         </tu>
-        <tu tuid="profile_associate_hashtagsLabel" dataType="text">
+        <tu tuid="profile_associate_hashTagGroup" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Hash tags you listen to:</seg>
+                <seg>Catégories (balise spécifique)</seg>
             </tuv>
         </tu>
-        <tu tuid="profile_associate_hashtagListSourceLabel" dataType="text">
+        <tu tuid="profile_associate_hashTagLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Available hash tags</seg>
+                <seg>Souscription: Sélectionner les catégories que vous souhaitez écouter:</seg>
             </tuv>
         </tu>
-        <tu tuid="profile_associate_hashtagListTargetLabel" dataType="text">
+        <tu tuid="profile_associate_hashTagListSourceLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Your selected hash tags</seg>
+                <seg>Catégories disponibles</seg>
             </tuv>
         </tu>
-        <tu tuid="profile_associate_requiredHashtagsNbLabel" dataType="text">
+        <tu tuid="profile_associate_hashTagListTargetLabel" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Number of hash tags required to match before sending new demands:</seg>
+                <seg>Vos catégories</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_associate_requiredHashTagNbLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Publication: Nombre minimum de correspondances requises pour être notifié:</seg>
             </tuv>
         </tu>
     </body>

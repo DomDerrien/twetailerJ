@@ -345,6 +345,13 @@
         </form>
     </div>
 
+    <div
+       color="darkgreen"
+       dojoType="dojox.widget.Standby"
+       id="userProfileFormOverlay"
+       target="userProfileForm"
+    ></div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require('dojo.data.ItemFileWriteStore');
