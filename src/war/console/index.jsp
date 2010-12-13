@@ -208,17 +208,7 @@
                             <input id="consumerLanguage" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                             <script type="text/javascript">
                             dojo.require("domderrien.i18n.LanguageSelector");
-                            dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("consumerLanguage", "<%= Consumer.LANGUAGE %>", [<%
-                                ResourceBundle languageList = LocaleController.getLanguageListRB();
-                                Enumeration<String> keys = languageList.getKeys();
-                                while(keys.hasMoreElements()) {
-                                    String key = keys.nextElement();
-                                    %>{value:"<%= key %>",label:"<%= languageList.getString(key) %>"}<%
-                                    if (keys.hasMoreElements()) {
-                                        %>,<%
-                                    }
-                                }
-                                %>], "<%= localeId %>", null, function() {}); });
+                            dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("consumerLanguage", "<%= Consumer.LANGUAGE %>", <%= LocaleController.getJsonOfLanguageList() %>, "<%= localeId %>", null, function() {}); });
                             </script><br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "consumer_info_hint_language", locale) %></span>
                         </div>
@@ -364,8 +354,7 @@
         dojo.require('twetailer.Consumer');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            var userLocale = '<%= localeId %>';
-            twetailer.Consumer.init(userLocale);
+            twetailer.Consumer.init('<%= localeId %>');
             twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             dojo.fadeOut({
                 node: 'introFlash',

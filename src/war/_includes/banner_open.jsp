@@ -36,17 +36,7 @@
                         <input id="languageSelector" title="<%= LabelExtractor.get(ResourceFileId.third, "navigation_language_selector", locale) %>" />
                         <script type="text/javascript">
                         dojo.require("domderrien.i18n.LanguageSelector");
-                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", null, [<%
-                            ResourceBundle languageList = LocaleController.getLanguageListRB();
-                            Enumeration<String> keys = languageList.getKeys();
-                            while(keys.hasMoreElements()) {
-                                String key = keys.nextElement();
-                                %>{value:"<%= key %>",label:"<%= languageList.getString(key) %>"}<%
-                                if (keys.hasMoreElements()) {
-                                    %>,<%
-                                }
-                            }
-                            %>], "<%= localeId %>", "globalCommand", null)});
+                        dojo.addOnLoad(function() { domderrien.i18n.LanguageSelector.createSelector("languageSelector", null, <%= LocaleController.getJsonOfLanguageList() %>, "<%= localeId %>", "globalCommand", null)});
                         </script>
                     </li>
                 </ul>
