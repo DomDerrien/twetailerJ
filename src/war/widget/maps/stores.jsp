@@ -237,7 +237,7 @@
     localModule._lastInfoWindow = null;
 
     localModule.init = function() {
-        localModule._getLabel = twetailer.Common.init('<%= localeId %>', 'detectLocationButton');
+        localModule._getLabel = twetailer.Common.init('<%= localeId %>', null, 'detectLocationButton');
         localModule.getMarkerImage('shadow'); // To bootstrap the process with the shadow marker
 
         dojo.subscribe('mapReady', function(map) {

@@ -546,7 +546,7 @@
     var localModule = {};
     localModule._getLabel = null;
     localModule.init = function() {
-        localModule._getLabel = twetailer.Common.init('<%= localeId %>', 'detectLocationButton');
+        localModule._getLabel = twetailer.Common.init('<%= localeId %>', null, 'detectLocationButton');
 
         var yesterday = new Date();
         var inOneMonth = new Date();

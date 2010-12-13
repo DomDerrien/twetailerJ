@@ -4,10 +4,12 @@
 
     dojo.require('dojo.date.stamp');
     dojo.require('domderrien.i18n.LabelExtractor');
+    dojo.require('domderrien.i18n.LanguageSelector');
 
     /* Set of local variables */
     var _getLabel,
         _locale,
+        _supportedLanguages,
         _consumer,
         _saleAssociate,
         _supportGeolocation,
@@ -59,11 +61,13 @@
      * Initializer.
      *
      * @param {String} locale Identifier of the chosen locale.
+     * @param {Array} supportedLanguages List of supported languages, in a format to be used for a dijit.form.Select widget
      * @param {String} getGeoButtonId Identifier of the button allowing to query the browser location.
      * @return {Function} Shortcut on the local function getting localized labels.
      */
-    module.init = function(locale, getGeoButtonId) {
+    module.init = function(locale, supportedLanguages, getGeoButtonId) {
         _locale = locale;
+        _supportedLanguages = supportedLanguages;
 
         // Get the localized resource bundle
         domderrien.i18n.LabelExtractor.init('twetailer', 'master', locale);
@@ -1240,7 +1244,7 @@
             var firstField = dijit.byId('email1');
             var row = dojo.create('tr', { id: 'friendRow' + fIdx }, dojo.byId('friendList'));
             if (fieldLabel) {
-                dojo.create('label', { forAttr: 'email' + fIdx, innerHTML: fieldLabel }, dojo.create('td', null, row));
+                dojo.create('label', { 'for': 'email' + fIdx, innerHTML: fieldLabel }, dojo.create('td', null, row));
             }
             dojo.create('td', null, row).appendChild(
                 new dijit.form.ValidationTextBox({
@@ -1326,5 +1330,170 @@
             }
         }
         return coordinates;
+    };
+
+    /**
+     * Helper creating a HTML <code>table</code> with the <code>input</code> fields
+     * displaying the consumer profile attributes
+     *
+     * @param {Object} consumer Copy of the logged Consumer record
+     */
+    module.createConsumerProfilePane = function(consumer) {
+        var div = dojo.create('div', null),
+            fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
+            legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_consumer_personalInfoGroup') }, fieldSet),
+            table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+            tbody = dojo.create('tbody', null, table),
+            row;
+
+        // Row with the consumer's name
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'name', innerHTML: _getLabel('console', 'profile_consumer_nameLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', { colspan: 2 }, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'name',
+                invalidMessage: _getLabel('console', 'profile_consumer_nameInvalidMessage'),
+                name: 'name',
+                placeHolder: _getLabel('console', 'profile_consumer_namePlaceHolder'),
+                required: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.name
+            }).domNode
+        );
+
+        // Row with the consumer's language
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'language', innerHTML: _getLabel('console', 'profile_consumer_languageLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('input', { id: 'language', name: 'language' }, dojo.create('td', null, row));
+        setTimeout(function() {
+            domderrien.i18n.LanguageSelector.createSelector(
+                'language',
+                'language',
+                _supportedLanguages,
+                consumer.language,
+                null,
+                function(){}
+            );
+        }, 0); // Delay the widget creation to do it when the <input/> field
+        var cell = dojo.create('td', null, row);
+        cell.appendChild(
+            new dijit.form.CheckBox({
+                checked: consumer.automaticLocaleUpdate,
+                id: 'automaticLocaleUpdate',
+                name: 'automaticLocaleUpdate'
+            }).domNode
+        );
+        dojo.create('label', { 'for': 'automaticLocaleUpdate', innerHTML: _getLabel('console', 'profile_consumer_automaticLocaleUpdateLabel') }, cell);
+
+        // Row with the consumer's phoneNb
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'phoneNb', innerHTML: _getLabel('console', 'profile_consumer_phoneNbLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', { colspan: 2 }, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'phoneNb',
+                name: 'phoneNb',
+                placeHolder: _getLabel('console', 'profile_consumer_phoneNbPlaceHolder'),
+                style: 'width:100%',
+                trim: true,
+                value: consumer.phoneNb
+            }).domNode
+        );
+
+        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
+        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_consumer_accessPointsGroup') }, fieldSet),
+        table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+        tbody = dojo.create('tbody', null, table);
+
+        // Row with the consumer's email address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'email', innerHTML: _getLabel('console', 'profile_consumer_emailLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'email',
+                name: 'email',
+                placeHolder: _getLabel('console', 'profile_consumer_emailPlaceHolder'),
+                readOnly: true,
+                required: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.email
+            }).domNode
+        );
+
+        // Row with the consumer's jabberId address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'jabberId', innerHTML: _getLabel('console', 'profile_consumer_jabberIdLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'jabberId',
+                name: 'jabberId',
+                placeHolder: _getLabel('console', 'profile_consumer_jabberIdPlaceHolder'),
+                readOnly: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.jabberId
+            }).domNode
+        );
+
+        // Row with the consumer's twitterId address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'twitterId', innerHTML: _getLabel('console', 'profile_consumer_twitterIdLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'twitterId',
+                name: 'twitterId',
+                placeHolder: _getLabel('console', 'profile_consumer_twitterIdPlaceHolder'),
+                readOnly: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.twitterId
+            }).domNode
+        );
+
+        // Row with the consumer's facebookId address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'facebookId', innerHTML: _getLabel('console', 'profile_consumer_facebookIdLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'facebookId',
+                name: 'facebookId',
+                placeHolder: _getLabel('console', 'profile_consumer_facebookIdPlaceHolder'),
+                readOnly: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.facebookId
+            }).domNode
+        );
+
+        // Row with the consumer's openID address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'openID', innerHTML: _getLabel('console', 'profile_consumer_openIDLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.ValidationTextBox({
+                id: 'openID',
+                name: 'openID',
+                placeHolder: _getLabel('console', 'profile_consumer_openIDPlaceHolder'),
+                readOnly: true,
+                style: 'width:100%',
+                trim: true,
+                value: consumer.openID
+            }).domNode
+        );
+
+        // Row with the consumer's preferredConnection address
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'openID', innerHTML: _getLabel('console', 'profile_consumer_preferredConnectionLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
+        dojo.create('td', null, row).appendChild(
+            new dijit.form.Select({
+                id: 'preferredConnection',
+                options: [{ value: 'mail', label: 'E-mail' },{ value: 'jabber', label: 'Jabber / XMPP' },{ value: 'facebook', label: 'Facebook messages' },{ value: 'twitter', label: 'Twitter direct messages' }],
+                readOnly: true,
+                value: consumer.preferredConnection
+            }).domNode
+        );
+
+        // Return DOM node with the form fields
+        return div;
     };
 })(); // End of the function limiting the scope of the private variables

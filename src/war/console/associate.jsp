@@ -70,7 +70,8 @@
         @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
         @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
         @import "<%= cdnBaseURL %>/dojox/layout/resources/FloatingPane.css";
-        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";<%
+        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";
+        @import "<%= cdnBaseURL %>/dojox/widget/SortList/SortList.css";<%
         }
         else { // elif (!useCDN)
         %>
@@ -80,7 +81,8 @@
         @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
         @import "/js/dojo/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
         @import "/js/dojo/dojox/layout/resources/FloatingPane.css";
-        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
+        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";
+        @import "/js/dojo/dojox/widget/SortList/SortList.css";<%
         } // endif (useCDN)
         %>
         @import "/css/console.css";
@@ -334,9 +336,9 @@
         id="userProfile"
         title="<%= LabelExtractor.get(ResourceFileId.third, "user_profile_dialogTitle", locale) %>"
     >
-        <form dojoType="dijit.form.Form">
+        <form dojoType="dijit.form.Form" id="userProfileForm">
             <div class="dijitDialogPaneContentArea" id="profileForms"></div>
-            <div class="dijitDialogPaneActionBar">
+            <div class="dijitDialogPaneActionBar" style="text-align: right; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc; background-color: #f2f2f2;">
                 <button dojoType="dijit.form.Button" type="submit">OK</button>
                 <button dojoType="dijit.form.Button" type="button" onClick="dijit.byId('userProfile').hide();">Cancel</button>
             </div>
@@ -354,7 +356,7 @@
         dojo.require('dijit.layout.ContentPane');
         dojo.require('dijit.layout.TabContainer');
         dojo.require('dijit.form.Button');
-        // dojo.require('dijit.form.CheckBox');
+        dojo.require('dijit.form.CheckBox');
         // dojo.require('dijit.form.ComboBox');
         dojo.require('dijit.form.DateTextBox');
         dojo.require('dijit.form.Form');
@@ -375,7 +377,7 @@
         dojo.require('twetailer.Associate');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            twetailer.Associate.init('<%= localeId %>');
+            twetailer.Associate.init('<%= localeId %>', <%= LocaleController.getJsonOfLanguageList() %>);
             twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             twetailer.Common.registerSaleAssociate(<%= serializedAssociate.getStream() %>);
             dojo.fadeOut({

@@ -491,7 +491,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Cliquez pour mettre-à-jour votre nom</seg>
+                <seg>Cliquez pour mettre-à-jour votre profil</seg>
             </tuv>
         </tu>
         <tu tuid="navigation_consumer_createDemand" dataType="text">
@@ -2517,6 +2517,146 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Consumer Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_personalInfoGroup" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Personal Information</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_nameLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Display name</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_nameInvalidMessage" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Your name cannot be empty</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_namePlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>your name</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_languageLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Preferred language</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_automaticLocaleUpdateLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Allows automatic update</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_phoneNbLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Phone number:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_phoneNbPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>+1 (000) 111-2222</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_accessPointsGroup" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Service Access Points</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_emailLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>E-mail address:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_emailPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>your.name@domain.com</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_jabberIdLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Jabber/XMPP identifier:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_jabberIdPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>your.name@jabber.org</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_twitterIdLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Twitter identifier:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_twitterIdPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>your_name</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_facebookIdLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Facebook unique identifier:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_facebookIdPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>12345678</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_openIDLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>OpenID:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_openIDPlaceHolder" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>http://your-name.myopenid.com</seg>
+            </tuv>
+        </tu>
+        <tu tuid="profile_consumer_preferredConnectionLabel" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Preferred communication channel:</seg>
             </tuv>
         </tu>
         <tu tuid="profile_associate_tabTitle" dataType="text">

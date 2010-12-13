@@ -322,10 +322,11 @@ body {
  */
 .entityInformation {
     border: 1px solid lightgrey;
+    border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
-    margin: 10px 0;
-    padding: 10px;
+    margin: 0 0  10px 0;
+    padding: 0 10px 5px 10px;
 }
 
 .entityInformation legend {
@@ -345,6 +346,10 @@ body {
 .entityInformation td {
     height: 24px;
     vertical-align: middle;
+}
+
+.entityInformation .dijitSelect td {
+    height: auto;
 }
 
 .invalidData {

@@ -5,6 +5,7 @@
     dojo.require('twetailer.Common');
     dojo.require('dijit.Tooltip');
     dojo.require('dijit.form.MultiSelect');
+    dojo.require('dojox.widget.SortList');
 
     /* Set of local variables */
     var _globalCommon = twetailer.Common,
@@ -18,9 +19,10 @@
      * Initializer.
      *
      * @param {String} locale Identifier of the chosen locale.
+     * @param {Array} supportedLanguages List of supported languages, in a format to be used for a dijit.form.Select widget.
      */
-    module.init = function(locale) {
-        _getLabel = _globalCommon.init(locale);
+    module.init = function(locale, supportedLanguages) {
+        _getLabel = _globalCommon.init(locale, supportedLanguages);
 
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
@@ -374,106 +376,244 @@
     };
 
     /**
-     * Helper buidling dynamically the pane with the user profile attributes
+     * Helper building dynamically the pane with the user profile attributes
      */
     module.showProfile = function() {
         try {
-        var associate = _globalCommon.getLoggedSaleAssociate();
+        var createContent = dijit.byId('profileForms') == null
+        if (createContent) {
+            // Create the tab container for both the consumer and the associate profiles
+            var tC = new dijit.layout.TabContainer({
+                style: 'height: 380px; width: 600px;',
+                tabStrip: true
+            }, 'profileForms');
 
-        var tC = new dijit.layout.TabContainer({style: 'height: 400px; width: 600px;', tabStrip: true}, 'profileForms');
-        var consumerTab = new dijit.layout.ContentPane({
-            content: 'Not yet implemented!',
-            title: _getLabel('console', 'profile_consumer_tabTitle')
+            // Create the consumer profile tab
+            var consumerTab = new dijit.layout.ContentPane({
+                content: _globalCommon.createConsumerProfilePane(_globalCommon.getLoggedConsumer()),
+                title: _getLabel('console', 'profile_consumer_tabTitle')
+            });
+            tC.addChild(consumerTab);
+
+            // Create the associate profile tab and select it
+            var associateTab = new dijit.layout.ContentPane({
+                content: _createAssociateProfilePane(_globalCommon.getLoggedSaleAssociate()),
+                title: _getLabel('console', 'profile_associate_tabTitle')
+            });
+            tC.addChild(associateTab);
+            tC.selectChild(associateTab);
+
+            var form = dijit.byId('userProfileForm');
+            dojo.connect(form, 'onSubmit', module, 'updateProfile');
+        }
+
+        // Show the dialog
+        var dialog = dijit.byId('userProfile');
+        dialog.show();
+
+        if (createContent) {
+            // Initialize the tab container
+            tC.startup();
+        }
+        }catch(ex){alert(ex);}
+    };
+
+    /**
+     * Helper creating a HTML <code>table</code> with the <code>input</code> fields
+     * displaying the associate profile attributes
+     *
+     * @param {Object} associate Copy of the logged Sale Associate record
+     */
+    var _createAssociateProfilePane = function(associate) {
+        var div = dojo.create('div', null),
+            fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
+            legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_associate_hashtagGroup') }, fieldSet),
+            table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+            tbody = dojo.create('tbody', null, table),
+            row;
+
+        // Row with a list of available hash tags and the associate's selected hash tags
+        row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'hashtagSource', innerHTML: _getLabel('console', 'profile_associate_hashtagsLabel') }, dojo.create('td', { colspan: 4 }, row));
+
+        var nativeListSource = dojo.create('ul'), nativeListTarget = dojo.create('ul');
+        dojo.forEach(['cardealer', 'carparts', 'golf', 'taxi'], function(hashtag) {
+            dojo.create('li', { key: hashtag, innerHTML: '#' + hashtag }, (dojo.indexOf(associate.hashtags || [], hashtag) == -1 ? nativeListSource : nativeListTarget));
         });
-        tC.addChild(consumerTab);
 
-        var table = dojo.create('table', { style: 'width: 100%'});
-        var tbody = dojo.create('tbody', {}, table);
-        var row = dojo.create('tr', {}, tbody);
-        dojo.create('label', { forAttr: 'criteria', innerHTML: _getLabel('console', 'profile_associate_criteriaLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
-        dojo.create('td', { colspan: 3, style: 'width: 100%;' }, row).appendChild(
+        row = dojo.create('tr', null, tbody);
+        dojo.create('td', { innerHTML: '&nbsp;', style: 'width: 25%;' }, row)
+        dojo.create('td', { style: 'width: 35%;' }, row).appendChild(nativeListSource);
+        cell = dojo.create('td', { style: 'text-align: center;', style: 'width: 5%;' }, row);
+        cell.appendChild(
+            new dijit.form.Button({
+                label: '&gt;',
+                onClick: function() {
+                    _switchSortList(dijit.byId("hashtagSource"), dijit.byId("hashtagTarget"));
+                }
+            }).domNode
+        );
+        cell.appendChild(
+            dojo.create('br')
+        );
+        cell.appendChild(
+            new dijit.form.Button({
+                label: '&lt;',
+                onClick: function() {
+                    _switchSortList(dijit.byId("hashtagTarget"), dijit.byId("hashtagSource"));
+                }
+            }).domNode
+        );
+        dojo.create('td', { style: 'width: 35%;' }, row).appendChild(nativeListTarget);
+        new dojox.widget.SortList({ id: 'hashtagSource', style: 'width: 100%; height: 100px; overflow: auto;', sortable: true, title: _getLabel('console', 'profile_associate_hashtagListSourceLabel') }, nativeListSource);
+        new dojox.widget.SortList({ id: 'hashtagTarget', style: 'width: 100%; height: 100px; overflow: auto;', sortable: true, title: _getLabel('console', 'profile_associate_hashtagListTargetLabel') }, nativeListTarget);
+
+        // Row with the associate's number of required hash tags
+        row = dojo.create('tr', null, tbody);
+        cell = dojo.create('td', { colspan: 4 }, row);
+        dojo.create('label', { 'for': 'requiredHashtagsNb', innerHTML: _getLabel('console', 'profile_associate_requiredHashtagsNbLabel') }, cell);
+        cell.appendChild(
+            new dijit.form.NumberSpinner({
+                constraints: {min: 0, places: 0 },
+                id: 'requiredHashtagsNb',
+                name: 'requiredHashtagsNb',
+                style: 'width:3em',
+                value: 0
+            }).domNode
+        );
+
+        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
+        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_associate_criteriaGroup') }, fieldSet),
+        table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+        tbody = dojo.create('tbody', null, table);
+
+        // Rows with the associates's criteria
+        var row = dojo.create('tr', null, tbody);
+        dojo.create('label', { 'for': 'criteria', innerHTML: _getLabel('console', 'profile_associate_criteriaLabel') }, dojo.create('td', { colspan: 4 }, row));
+
+        row = dojo.create('tr', null, tbody);
+        dojo.create('td', { innerHTML: '&nbsp;', style: 'width: 25%;' }, row)
+        dojo.create('td', { colspan: 3, }, row).appendChild(
             new dijit.form.Textarea({
                 id: 'criteria',
                 name: 'criteria',
                 placeHolder: _getLabel('console', 'profile_associate_criteriaPlaceHolder'),
                 rows: 3,
-                style: 'width:100%',
+                style: 'width: 100%; font-family: "Droid Sans", arial, serif; font-size: 12px;',
                 trim: true,
                 value: (associate.criteria || []).join('\n')
             }).domNode
         );
-        row = dojo.create('tr', {}, tbody);
-        dojo.create('label', { forAttr: 'requiredCriteriaNb', innerHTML: _getLabel('console', 'profile_associate_requiredCriteriaNbLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
-        dojo.create('td', { colspan: 3, style: 'width: 100%;' }, row).appendChild(
+
+        // Row with the associate's number of required criteria
+        row = dojo.create('tr', null, tbody);
+        cell = dojo.create('td', { colspan: 4 }, row);
+        dojo.create('label', { 'for': 'requiredCriteriaNb', innerHTML: _getLabel('console', 'profile_associate_requiredCriteriaNbLabel') }, cell);
+        cell.appendChild(
             new dijit.form.NumberSpinner({
+                constraints: {min: 0, places: 0 },
                 id: 'requiredCriteriaNb',
                 name: 'requiredCriteriaNb',
-                rows: 3,
-                style: 'width:5em',
-                trim: true,
+                style: 'width:3em',
                 value: 1
             }).domNode
         );
-        row = dojo.create('tr', {}, tbody);
-        dojo.create('label', { forAttr: 'hashtags', innerHTML: _getLabel('console', 'profile_associate_hashtagsLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
-        var nativeSelectSource = dojo.doc.createElement('select'), nativeSelectTarget = dojo.doc.createElement('select'), nativeOption;
-        var supportedHashTags = ['cardealer', 'carparts', 'golf', 'taxi'];
-        dojo.forEach(supportedHashTags, function(hashtag) {
-            nativeOption = dojo.doc.createElement('option');
-            nativeOption.value = hashtag;
-            nativeOption.innerHTML = '#' + hashtag;
-            (dojo.indexOf(associate.hashtags || [], hashtag) == -1 ? nativeSelectSource : nativeSelectTarget).appendChild(nativeOption);
-        });
-        var cell = dojo.create('td', { style: 'width: 33%;' }, row);
-        cell.appendChild(dojo.doc.createTextNode(_getLabel('console', 'profile_associate_hashtagListSourceLabel')));
-        cell.appendChild(dojo.doc.createElement('br'));
-        cell.appendChild(nativeSelectSource);
-        new dijit.form.MultiSelect({ id: 'hashtagSource', style: 'width: 100%; height: 100px; overflow: auto;' }, nativeSelectSource);
-        dojo.create('td', { style: 'width: 1%;' }, row).appendChild(
-            new dijit.form.Button({
-                label: '&lt;',
-                onClick: function() {
-                    dijit.byId("hashtagSource").addSelected(dijit.byId("hashtagTarget"));
-                }
-            }).domNode
-        ).appendChild(
-            new dijit.form.Button({
-                label: '&gt;',
-                onClick: function() {
-                    dijit.byId("hashtagTarget").addSelected(dijit.byId("hashtagSource"));
-                }
-            }).domNode
-        );
-        cell = dojo.create('td', { style: 'width: 33%;' }, row);
-        cell.appendChild(dojo.doc.createTextNode(_getLabel('console', 'profile_associate_hashtagListTargetLabel')));
-        cell.appendChild(dojo.doc.createElement('br'));
-        cell.appendChild(nativeSelectTarget);
-        new dijit.form.MultiSelect({ id: 'hashtagTarget', name: 'hashtags', style: 'width: 100%; height: 100px; overflow: auto;' }, nativeSelectTarget);
-        row = dojo.create('tr', {}, tbody);
-        dojo.create('label', { forAttr: 'requiredHashtagsNb', innerHTML: _getLabel('console', 'profile_associate_requiredHashtagsNbLabel') }, dojo.create('td', { style: 'width: 33%; vertical-align: top;' }, row));
-        dojo.create('td', { colspan: 3, style: 'width: 100%;' }, row).appendChild(
-            new dijit.form.NumberSpinner({
-                id: 'requiredHashtagsNb',
-                name: 'requiredHashtagsNb',
-                rows: 3,
-                style: 'width:5em',
-                trim: true,
-                value: 0
-            }).domNode
-        );
 
-        var associateTab = new dijit.layout.ContentPane({
-            content: table,
-            title: _getLabel('console', 'profile_associate_tabTitle')
-        });
-        tC.addChild(associateTab);
-        tC.selectChild(associateTab);
-
-        var dialog = dijit.byId('userProfile');
-        dialog.show();
-        tC.startup();
-        }catch(ex){alert(ex);}
+        // Return DOM node with the form fields
+        return div;
     };
 
-    var _is
+    var _switchSortList = function(fromList, toList){
+        var selectedTags = fromList.get('selected');
+        if (selectedTags == null || selectedTags.length == 0) {
+            return;
+        }
+        var selectedTagIdx = 0, fromContainerNode = fromList.containerNode, child = fromContainerNode.firstChild, toContainerNode = toList.containerNode, nextSibling;
+        while (child != null) {
+            nextSibling = child.nextSibling;
+            if (child.innerHTML == selectedTags[selectedTagIdx]) {
+                fromContainerNode.removeChild(child);
+                toContainerNode.appendChild(child);
+                dojo.removeClass(child, 'sortListItemSelected');
+                selectedTagIdx++;
+            }
+            child = nextSibling;
+        }
+        fromList.onSort();
+        fromList.onSort();
+        toList.onSort();
+        toList.onSort();
+    }
+
+    module.updateProfile = function(event) {
+        dojo.stopEvent(event);
+        var form = dijit.byId('userProfileForm');
+        if (!form.validate()) {
+            return;
+        }
+        var filledData = form.get('value');
+        _updateConsumerProfile(filledData);
+    };
+
+    var _updateConsumerProfile = function(filledData) {
+        var consumer = _globalCommon.getLoggedConsumer(), filteredData = {}, hasNewValue = false, fieldId;
+        fieldId = 'name'; if (consumer[fieldId] != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        fieldId = 'language'; if (consumer[fieldId] != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        fieldId = 'automaticLocaleUpdate'; if (consumer[fieldId] != (filledData[fieldId].length != 0)) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId].length != 0; }
+        fieldId = 'phoneNb'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        // Not implemented yet! // fieldId = 'email'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'jabberId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'twitterId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Not implemented yet! // fieldId = 'facebookId'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; filteredData[fieldId + 'VC'] = filledData[fieldId + 'VC']; }
+        // Cannot be updated // fieldId = 'openID'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        // Not implemented yet! // fieldId = 'preferredConnection'; if ((consumer[fieldId] || "") != filledData[fieldId]) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId]; }
+        if (hasNewValue) {
+            alert('need Consumer field update\n'+dojo.toJson(filteredData));
+            _globalCommon.registerConsumer(dojo.mixin(consumer, filteredData));
+            _updateSaleAssociateProfile(filledData);
+        }
+        else {
+            _updateSaleAssociateProfile(filledData);
+        }
+    }
+
+    var _updateSaleAssociateProfile = function(filledData) {
+        var associate = _globalCommon.getLoggedSaleAssociate(), filteredData = {}, hasNewValue = false;
+        // Check hash tags
+        var source = associate['hashtags'] || [], target = [];
+        for(var child = dijit.byId('hashtagTarget').containerNode.firstChild; child != null; child = child.nextSibling) {
+            target.push(dojo.attr(child, 'key'));
+        }
+        if (source.length == 0 && target.length == 0) {
+            // No update, both lists are empty
+        }
+        else if (source.length != target.length){
+            // Different lists
+            hasNewValue = true;
+            filteredData['hashtags'] = target;
+        }
+        else {
+            // Look for the differences
+            for(var idx = 0, iLimit = target.length; idx < iLimit; idx++) {
+                if (dojo.indexOf(source, target[idx]) == -1) {
+                    alert(target[idx] + ' not found in ' + dojo.toJson(source))
+                    hasNewValue = true;
+                    break;
+                }
+            }
+            // Report the differences
+            if (hasNewValue == true) {
+                filteredData['hashtags'] = target;
+            }
+        }
+        // fieldId = 'criteria'; if (associate[fieldId] != filledData[fieldId].split('\n')) { hasNewValue = true; filteredData[fieldId] = filledData[fieldId].split('\n'); }
+        if (hasNewValue) {
+            alert('need Sale Associate field update\n'+dojo.toJson(filteredData));
+            _globalCommon.registerSaleAssociate(dojo.mixin(associate, filteredData));
+            // dijit.byId('userProfile').hide();
+        }
+        else {
+            // dijit.byId('userProfile').hide();
+        }
+    }
 })(); // End of the function limiting the scope of the private variables
