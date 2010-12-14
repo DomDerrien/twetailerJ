@@ -487,7 +487,14 @@
                 <seg>Bonjour {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="navigation_username_editIt" dataType="text">
+        <tu tuid="navigation_user_account" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Mon compte</seg>
+            </tuv>
+        </tu>
+        <tu tuid="navigation_user_account_helper" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">

@@ -602,7 +602,15 @@
             </tuv>
         </tu>
 
-        <tu tuid="navigation_username_editIt" datatype="Text">
+        <tu tuid="navigation_user_account" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>My Account</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="navigation_user_account_helper" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
