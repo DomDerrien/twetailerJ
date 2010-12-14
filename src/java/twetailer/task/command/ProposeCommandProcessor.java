@@ -39,8 +39,6 @@ public class ProposeCommandProcessor {
                 Store store = StoreSteps.getStore(pm, saleAssociate.getStoreKey());
 
                 // Create new proposal
-                command.put(Command.SOURCE, rawCommand.getSource().toString());
-                command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
                 command.put(Command.LOCATION_KEY, store.getLocationKey());
                 if (command.containsKey(Proposal.DEMAND_REFERENCE)) {
                     command.put(Proposal.DEMAND_KEY, command.getLong(Proposal.DEMAND_REFERENCE));

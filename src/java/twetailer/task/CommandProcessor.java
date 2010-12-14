@@ -268,6 +268,7 @@ public class CommandProcessor {
             // Extract information from the short message and process the information
             JsonObject command = CommandLineParser.parseCommand(patterns, rawCommand.getCommand(), consumer.getLocale());
             command.put(Command.SOURCE, rawCommand.getSource().toString());
+            command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
             processCommand(pm, consumer, rawCommand, command);
         }
         catch(Exception ex) {

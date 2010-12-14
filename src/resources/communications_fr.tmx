@@ -1841,7 +1841,7 @@
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
                         La demande {demand>key} associée à la  <strong>proposition {proposal>key}</strong>, prévue le <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
-                        Veuillezz <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
                         le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complétées.
                     </p>
                     {message>footer}
@@ -1857,7 +1857,7 @@
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
                         La demande {demand>key} pour la réservation <strong>proposition {proposal>key}</strong> du <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
-                        Veullez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        Veuillez <strong><a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
                         le cycle de votre  proposition {proposal>key} pour améliorer votre taux de transactions complétées.
                     </p>
                     {message>footer}

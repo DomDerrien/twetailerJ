@@ -28,8 +28,6 @@ public class DemandCommandProcessor {
 
         if (!command.containsKey(Demand.REFERENCE)) {
             // Create new demand
-            command.put(Command.SOURCE, rawCommand.getSource().toString());
-            command.put(Command.RAW_COMMAND_ID, rawCommand.getKey());
 
             DemandSteps.createDemand(pm, command, consumer);
 
