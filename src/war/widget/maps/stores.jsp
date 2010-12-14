@@ -20,6 +20,20 @@
     // Locale detection
     Locale locale = LocaleController.detectLocale(request);
     String localeId = LocaleController.getLocaleId(request);
+
+    // Parameter reading
+    String postalCode = request.getParameter("postalCode");
+    String countryCode = LocaleValidator.checkCountryCode(request.getParameter("countryCode"));
+    String rangeUnit = LocaleValidator.checkRangeUnit(request.getParameter("rangeUnit"));
+    long range = 10;
+    try {
+    	if (request.getParameter("range") != null) {
+    		range = Math.round(Double.valueOf(request.getParameter("range")));
+    	}
+    }
+    catch(NumberFormatException ex) {} // Just ignore the malformed value!
+    boolean autoload = request.getParameter("autoload") != null;
+    String serializedHashTags = request.getParameter("hashTags");
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -129,7 +143,6 @@
                                     id="countryCode"
                                     name="countryCode"
                                     onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'postalCode');"
-                                    style=""
                                 >
                                         <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
                                         <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
@@ -152,6 +165,7 @@
                                 <button
                                     dojoType="dijit.form.Button"
                                     iconClass="silkIcon silkIconGMaps"
+                                    id="showMapButton"
                                     onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'});"
                                     type="button"
                                 ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
@@ -249,7 +263,9 @@
                     countryCode: dijit.byId('countryCode').get('value'),
                     range: dijit.byId('range').get('value'),
                     rangeUnit: dijit.byId('rangeUnit').get('value'),
-                    referralId: 0
+                    referralId: 0<%
+                    if (serializedHashTags != null) { %>,
+                    hashTags: ['<%= serializedHashTags.replaceAll(",", "','") %>']<% } %>
                 },
                 handleAs: 'json',
                 load: function(response, ioArgs) {
@@ -334,6 +350,12 @@
             );
             // http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false
         });
+
+        dijit.byId('countryCode').set('value', '<%= countryCode %>');
+        <% if (postalCode != null) { %>dijit.byId('postalCode').set('value', '<%= postalCode %>');<% } %>
+        dijit.byId('range').set('value', '<%= range %>');
+        dijit.byId('rangeUnit').set('value', '<%= rangeUnit %>');
+        <% if (autoload) { %>dijit.byId('showMapButton').onClick();<% } %>
     };
     localModule.getInfoWindowHandler = function(map, storeIdx) {
         return function(event) { localModule.showInfoWindow(map, storeIdx); }
