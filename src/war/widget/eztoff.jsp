@@ -33,6 +33,14 @@
 
     // Regular expression for e-mail address validation
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
+
+    // Parameter reading
+    String postalCode = request.getParameter("postalCode");
+    if (postalCode == null) {
+        postalCode = "H3S 1A1";
+    }
+    String countryCode = LocaleValidator.checkCountryCode(request.getParameter("countryCode"));
+    String countryLabel = LocaleValidator.getCountryLabel(countryCode, locale);
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -163,7 +171,7 @@
                         <td class="firstCell"><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "cw_label_countryCode", locale) %></label></td>
                         <td class="lastCell" colspan="2">
                             <select
-                                dojoType="dojox.form.DropDownSelect"
+                                dojoType="dijit.form.Select"
                                 id="countryCode"
                                 hasDownArrow="true"
                                 name="countryCode"
@@ -215,6 +223,14 @@
                             ><%= LabelExtractor.get(ResourceFileId.third, "cw_action_next", locale) %></button>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "gw_action_next_toStep2_hint", locale) %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                            <a href="http://anothersocialeconomy.com/golf/?countryCode=<%= countryCode %>&postalCode=<%= postalCode %>&lang=<%= localeId %>" target="aseGolfPartsPage"><img src="http://maps.google.com/maps/api/staticmap?sensor=false&language=<%= localeId %>&format=png8&center=<%= postalCode %>,<%= countryLabel %>&zoom=7&size=96x96" style="vertical-align: middle; border: 2px solid #A5BEDA; border-color: #A5BEDA #A5BEDA #5C7590 #5C7590;" /></a>
+                            <div connectId="storeMapOpener" dojoType="dijit.Tooltip" position="above"><%= LabelExtractor.get(ResourceFileId.third, "gw_open_storeMap", locale) %></div>
+                            <br/>
+                            <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></span>
                         </td>
                     </tr>
                 </table>
@@ -389,12 +405,12 @@
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberSpinner');
         // dojo.require('dijit.form.NumberTextBox');
+        dojo.require("dijit.form.Select");
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dijit.form.TimeTextBox');
         dojo.require('dijit.form.ValidationTextBox');
         dojo.require('dojox.analytics.Urchin');
-        dojo.require('dojox.form.DropDownSelect');
         dojo.require('dojox.widget.Standby');
         dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
@@ -437,7 +453,6 @@
         dateField.constraints.min = yesterday; // ??? why is reported as an invalid date?
 
         <%
-        String postalCode = request.getParameter("postalCode");
         if (postalCode == null || postalCode.length() == 0) {
         %>dojo.style('postalCodeRow', 'display', '');
         dijit.byId('postalCode').focus();
@@ -447,7 +462,6 @@
         %>dijit.byId('postalCode').set('value', '<%= postalCode %>');
         dijit.byId('quantity').focus();
         <% }
-        String countryCode = request.getParameter("countryCode");
         if (countryCode != null && 0 < countryCode.length()) {
         %>dijit.byId('countryCode').set('value', '<%= countryCode %>');<%
         } %>

@@ -1952,7 +1952,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Carte des commerces environnants</seg>
+                <seg>Carte des magasins environnants</seg>
             </tuv>
         </tu>
         <tu tuid="cw_action_reset" dataType="text">
@@ -2059,6 +2059,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Vous devez décrire la requête avec des mots-clés. Voir les Exemples proposés.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="gw_open_storeMap" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Map of participating golf courses</seg>
             </tuv>
         </tu>
         <tu tuid="gw_step_1_title" dataType="text">

@@ -20,6 +20,7 @@ import twetailer.connector.BaseConnector;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
+import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -263,7 +264,7 @@ public class LocaleValidator {
         return DEFAULT_LOCALE; // Default language
     }
 
-    public static final String DEFAULT_COUNTRY_CODE = Locale.US.getCountry();
+    public static final String DEFAULT_COUNTRY_CODE = Locale.CANADA.getCountry();
 
     /**
      * Verify that the given country code is supported by the system
@@ -278,6 +279,21 @@ public class LocaleValidator {
         if (Locale.CANADA.getCountry().equalsIgnoreCase(countryCode)) { return Locale.CANADA.getCountry(); }
         if (Locale.US.getCountry().equalsIgnoreCase(countryCode)) { return Locale.US.getCountry(); }
         return DEFAULT_COUNTRY_CODE; // Default country code
+    }
+
+    /**
+     * Return the localized country name for the given country code
+     *
+     * @param countryCode code, to be normalized, used to select the label to return
+     * @param locale used to select in which localized resource bundle to load the label
+     * @return Country name in the expected locale
+     *
+     * @see twetailer.validator.LocaleValidator#checkCountryCode(String)
+     */
+    public static String getCountryLabel(String countryCode, Locale locale) {
+        // Normalization
+        countryCode = checkCountryCode(countryCode);
+        return LabelExtractor.get("country_" + countryCode, locale);
     }
 
     /**

@@ -27,13 +27,14 @@
     String rangeUnit = LocaleValidator.checkRangeUnit(request.getParameter("rangeUnit"));
     long range = 10;
     try {
-    	if (request.getParameter("range") != null) {
-    		range = Math.round(Double.valueOf(request.getParameter("range")));
-    	}
+        if (request.getParameter("range") != null) {
+            range = Math.round(Double.valueOf(request.getParameter("range")));
+        }
     }
     catch(NumberFormatException ex) {} // Just ignore the malformed value!
     boolean autoload = request.getParameter("autoload") != null;
     String serializedHashTags = request.getParameter("hashTags");
+    boolean normalChrome = !"min".equals(request.getParameter("chrome"));
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -47,21 +48,31 @@
         if (useCDN) {
         %>
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";<%
+        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
+        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";<%
         }
         else { // elif (!useCDN)
         %>
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";<%
+        @import "/js/dojo/dijit/themes/tundra/tundra.css";
+        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
         } // endif (useCDN)
         %>
         @import "/css/console.css";
+        .dojoxExpandoWrapper {
+            border-left: 1px solid #CCC;
+            border-right: 1px solid #CCC;
+        }
     </style>
 
 </head>
 <body class="tundra">
 
+    <% if (normalChrome) { %>
     <div id="introFlash">
+    <% } else { %>
+    <div id="introFlash" style="top: 0; right: 0; bottom: 0; left: 0;">
+    <% } %>
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
     </div>
 
@@ -102,78 +113,83 @@
     } // endif (useCDN)
     %>
 
+    <% if (normalChrome) { %>
     <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
         <jsp:include page="/_includes/banner_open.jsp">
             <jsp:param name="localeId" value="<%= localeId %>" />
         </jsp:include>
         <div dojoType="dijit.layout.BorderContainer" id="centerZone" region="center">
-            <div dojoType="dijit.layout.AccordionContainer" splitter="true" style="width: 300px;" region="left">
-                <div dojoType="dijit.layout.ContentPane" id="formPane" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
-                    <table>
-                        <tr>
-                            <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandPostalCode", locale) %></label></td>
-                            <td>
-                                <input
-                                    dojoType="dijit.form.ValidationTextBox"
-                                    id="postalCode"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                                    name="postalCode"
-                                    placeholder="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_placeHolder_CA", locale) %>"
-                                    regExp="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_regExp_CA", locale) %>"
-                                    required="true"
-                                    style="width:7em;"
-                                    type="text"
-                                />
-                                <button
-                                    dojoType="dijit.form.Button"
-                                    iconClass="silkIcon silkIconGPS"
-                                    id="detectLocationButton"
-                                    onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'formPaneOverlay');"
-                                    showLabel="false"
-                                    title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
-                                    type="button"
-                                ></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right"><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCountryCode", locale) %></label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.Select"
-                                    id="countryCode"
-                                    name="countryCode"
-                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'postalCode');"
-                                >
-                                        <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
-                                        <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right"><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandRange", locale) %></label></td>
-                            <td>
-                                <input constraints="{min:1,max:50,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" required="true" style="width:7em;" type="text" value="10" />
-                                <select dojoType="dijit.form.Select" id="rangeUnit" name="rangeUnit" required="true" style="width:5em;">
-                                    <option value="<%= LocaleValidator.KILOMETER_UNIT %>" selected="true"><%= LocaleValidator.KILOMETER_UNIT %></option>
-                                    <option value="<%= LocaleValidator.MILE_UNIT %>"><%= LocaleValidator.MILE_UNIT %></option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button
-                                    dojoType="dijit.form.Button"
-                                    iconClass="silkIcon silkIconGMaps"
-                                    id="showMapButton"
-                                    onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'});"
-                                    type="button"
-                                ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
-                            </td>
-                        </tr>
-                    </table>
+    <% } else { %>
+        <div dojoType="dijit.layout.BorderContainer" id="centerZone" region="center" style="margin: 0; height: 100%; background-color: transparent;">
+    <% } %>
+            <div dojoType="dojox.layout.ExpandoPane" id="formPane" splitter="true" region="left" style="width: 170px; border-bottom: 1px solid #CCC !important; background-color: #FFF;" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
+                <table>
+                    <tr>
+                        <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandPostalCode", locale) %></label></td>
+                        <td>
+                            <input
+                                dojoType="dijit.form.ValidationTextBox"
+                                id="postalCode"
+                                invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
+                                name="postalCode"
+                                placeholder="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_placeHolder_CA", locale) %>"
+                                regExp="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_regExp_CA", locale) %>"
+                                required="true"
+                                style="width:7em;"
+                                type="text"
+                            />
+                            <button
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconGPS"
+                                id="detectLocationButton"
+                                onclick="twetailer.Common.fetchBrowserLocation('postalCode', 'countryCode', 'formPaneOverlay');"
+                                showLabel="false"
+                                title="<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>"
+                                type="button"
+                            ></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><label for="countryCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCountryCode", locale) %></label></td>
+                        <td>
+                            <select
+                                dojoType="dijit.form.Select"
+                                id="countryCode"
+                                name="countryCode"
+                                onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'postalCode');"
+                            >
+                                    <option value="CA" selected="true"><%= LabelExtractor.get(ResourceFileId.master, "country_CA", locale) %></option>
+                                    <option value="US"><%= LabelExtractor.get(ResourceFileId.master, "country_US", locale) %></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right"><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandRange", locale) %></label></td>
+                        <td>
+                            <input constraints="{min:1,max:50,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" required="true" style="width:7em;" type="text" value="10" />
+                            <select dojoType="dijit.form.Select" id="rangeUnit" name="rangeUnit" required="true" style="width:5em;">
+                                <option value="<%= LocaleValidator.KILOMETER_UNIT %>" selected="true"><%= LocaleValidator.KILOMETER_UNIT %></option>
+                                <option value="<%= LocaleValidator.MILE_UNIT %>"><%= LocaleValidator.MILE_UNIT %></option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button
+                                dojoType="dijit.form.Button"
+                                iconClass="silkIcon silkIconGMaps"
+                                id="showMapButton"
+                                onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'});"
+                                type="button"
+                            ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
+                        </td>
+                    </tr>
+                </table>
+                <div style="display: none;">
+                    <p style="border-top: 1px solid lightgrey;"><%= LabelExtractor.get(ResourceFileId.third, "sm_statistics_sectionTitle", locale) %></p>
+                    <div id="statPane"></div>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_statistics_sectionTitle", locale) %>"><div id="statPane"></div></div>
             </div>
             <div dojoType="dijit.layout.ContentPane" region="bottom">
                 <span style="font-size: larger;"><%= LabelExtractor.get(ResourceFileId.third, "sm_legend_title", locale) %></span>
@@ -187,10 +203,12 @@
                 <div id='mapPlaceHolder' style='width:100%;height:100%;'></div>
             </div>
         </div>
+    <% if (normalChrome) { %>
         <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
+    <% } %>
 
     <div
        color="yellow"
@@ -214,13 +232,14 @@
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberSpinner');
         // dojo.require('dijit.form.NumberTextBox');
+        dojo.require("dijit.form.Select");
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dijit.form.TimeTextBox');
         dojo.require('dijit.form.ValidationTextBox');
         dojo.require('dijit.TooltipDialog');
         dojo.require('dojox.analytics.Urchin');
-        dojo.require('dojox.form.DropDownSelect');
+        dojo.require('dojox.layout.ExpandoPane');
         dojo.require('dojox.widget.Standby');
         dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
@@ -355,7 +374,7 @@
         <% if (postalCode != null) { %>dijit.byId('postalCode').set('value', '<%= postalCode %>');<% } %>
         dijit.byId('range').set('value', '<%= range %>');
         dijit.byId('rangeUnit').set('value', '<%= rangeUnit %>');
-        <% if (autoload) { %>dijit.byId('showMapButton').onClick();<% } %>
+        <% if (autoload && postalCode != null) { %>setTimeout(function(){ dijit.byId('showMapButton').onClick(); }, 0);<% } %>
     };
     localModule.getInfoWindowHandler = function(map, storeIdx) {
         return function(event) { localModule.showInfoWindow(map, storeIdx); }

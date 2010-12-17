@@ -2423,7 +2423,7 @@
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
             <tuv xml:lang="en">
-                <seg>Map of participating retailers</seg>
+                <seg>Map of participating stores</seg>
             </tuv>
         </tu>
 
@@ -2551,6 +2551,14 @@
         <!-- =========== -->
         <!-- Golf widget -->
         <!-- =========== -->
+
+        <tu tuid="gw_open_storeMap" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Map of participating golf courses</seg>
+            </tuv>
+        </tu>
 
         <tu tuid="gw_step_1_title" datatype="Text">
             <prop type="x-version">1</prop>
