@@ -1550,5 +1550,71 @@
         else if (nextStep) {
             nextStep();
         }
-    }
+    };
+
+    //
+    // Business logic controlling the Google App Engine Channel
+    //
+
+    module.openGAEChannel = function(parameters){
+        parameters.errorMessage = 'Automatic update connection openning failed :( Please, update manually.';
+        parameters.statusPlaceHolder = dojo.byId(parameters.displayStatusId);
+
+        dojo.xhrPost({
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
+            postData: '{"action":"getToken"}',
+            handleAs: 'json',
+            load: function(response, ioArgs) {
+                if (response && response.success) {
+                    _openChannelSocket(dojo.mixin(parameters, response));
+                }
+                else {
+                    parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                }
+            },
+            error: function(message, ioArgs) {
+                parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+            },
+            url: '/API/Channel/'
+        });
+    };
+
+    var _openChannelSocket = function(parameters) {
+        parameters.genericMessage = 'Connected for automatic updates...';
+
+        var channel = new goog.appengine.Channel(parameters.token);
+
+        var socket = channel.open({
+            onopen: function() {
+				console.log('socket.onopen');
+                parameters.statusPlaceHolder.innerHTML = parameters.genericMessage;
+                dojo.xhrPost({
+                    headers: { 'content-type': 'application/json; charset=UTF-8' },
+                    postData: '{"action":"getToken","token":"'+parameters.token+'"}',
+                    handleAs: 'json',
+                    load: function(response, ioArgs) {
+                        if (!response || !response.success) {
+                            parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                        }
+                    },
+                    error: function(message, ioArgs) {
+                        parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                    },
+                    url: '/API/Channel/'
+                });
+            },
+            onmessage: function(message) {
+                parameters.statusPlaceHolder.innerHTML = '1 message received and being processed ;)';
+                console.log('message coming in -- data: ' + dojo.toJson(message.data) + '\ndump: ' + dojo.toJson(message));
+                setTimeout(function() { statusPlaceHolder.innerHTML = genericMessage; }, 2500); // Restore the default message in 2.4 seconds
+            },
+            onerror: function(error) {
+                console.log('error -- description: '+ error.description + ', code (xhr status): ' + error.code + '\ndump: ' + dojo.toJson(error));
+            },
+            onclose: function() {
+                console.log('closing channel\nany argument? ' + arguments.length);
+            }
+        });
+        console.log(socket);
+    };
 })(); // End of the function limiting the scope of the private variables

@@ -16,6 +16,7 @@
     import="domderrien.i18n.StringUtils"
     import="javamocks.io.MockOutputStream"
     import="twetailer.connector.BaseConnector.Source"
+    import="twetailer.connector.ChannelConnector"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
     import="twetailer.dto.Location"
@@ -52,6 +53,7 @@
     consumer.toJson().toStream(serializedConsumer, false);
     MockOutputStream serializedAssociate = new MockOutputStream();
     saleAssociate.toJson().toStream(serializedAssociate, false);
+
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -145,6 +147,7 @@
         <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center">
             <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
                 <div style="float:right;">
+                    <span id="automaticUpdateState" class="dijit dijitReset dijitInline dijitButton"></span>
                     <select dojoType="dijit.form.Select" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
                         <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "core_stateSelector_anyState", locale) %></option>
                         <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
@@ -159,6 +162,7 @@
                         id="refreshButton"
                         onclick="twetailer.Associate.loadNewDemands();"
                     ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
+                    <span id="automaticUpdateState"></span>
                 </div>
             </div>
             <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
@@ -387,6 +391,9 @@
             twetailer.Associate.init('<%= localeId %>', <%= LocaleController.getJsonOfLanguageList() %>);
             twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             twetailer.Common.registerSaleAssociate(<%= serializedAssociate.getStream() %>);
+            twetailer.Common.openGAEChannel({
+                displayStatusId: 'automaticUpdateState'
+            });
             dojo.fadeOut({
                 node: 'introFlash',
                 delay: 50,
@@ -402,6 +409,7 @@
     });
     </script>
 
+    <script src='/_ah/channel/jsapi'></script>
     <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 </body>
 </html>

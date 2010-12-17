@@ -92,6 +92,16 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>channel</servlet-name>
+        <servlet-class>twetailer.j2ee.ChannelListenerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>channel</servlet-name>
+        <url-pattern>/API/Channel/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>maelzel</servlet-name>
         <servlet-class>twetailer.j2ee.MaelzelServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
