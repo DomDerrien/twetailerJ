@@ -316,49 +316,49 @@ public class TestCommandLineParser {
     public void testParseLocaleI() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6 ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleII() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIII() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:h3c2n6-ca", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleIV() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323 us", Locale.ENGLISH);
         assertEquals("97323", data.getString(Location.POSTAL_CODE));
-        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleV() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345 us", Locale.ENGLISH);
         assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
-        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleVI() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345-us", Locale.ENGLISH);
         assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
-        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleShortI() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343-us", Locale.ENGLISH);
         assertEquals("97343", data.getString(Location.POSTAL_CODE));
-        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -531,7 +531,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -542,7 +542,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
     }
 
@@ -554,7 +554,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -570,7 +570,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -586,7 +586,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -602,7 +602,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
@@ -618,7 +618,7 @@ public class TestCommandLineParser {
         assertEquals(10, data.getLong(Demand.RANGE));
         assertEquals(LocaleValidator.MILE_UNIT, data.getString(Demand.RANGE_UNIT));
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
-        assertEquals(RobotResponder.ROBOT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
         String[] parts = keywords.split("\\s+");
         for (int i = 0; i < parts.length; i ++) {
