@@ -40,7 +40,7 @@ public class ChannelConnector {
     @SuppressWarnings("unchecked")
     public static void sendMessage(Consumer consumer, JsonObject data) {
         Map<Long, Long> activeChannels = (Map<Long, Long>) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_IDENTIFIER);
-        Long expirationDate = activeChannels.get(consumer.getKey());
+        Long expirationDate = activeChannels == null ? null: activeChannels.get(consumer.getKey());
         if (expirationDate != null && DateUtils.getNowCalendar().getTimeInMillis() - 2*60*60*1000 < expirationDate) {
             MockOutputStream buffer = new MockOutputStream();
             try {
