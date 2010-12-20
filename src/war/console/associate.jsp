@@ -147,7 +147,7 @@
         <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center">
             <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
                 <div style="float:right;">
-                    <span id="automaticUpdateState" class="dijit dijitReset dijitInline dijitButton"></span>
+                    <span id="automaticUpdateState" style="padding: 6px; vertical-align: middle;"></span>
                     <select dojoType="dijit.form.Select" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
                         <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "core_stateSelector_anyState", locale) %></option>
                         <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
@@ -162,7 +162,6 @@
                         id="refreshButton"
                         onclick="twetailer.Associate.loadNewDemands();"
                     ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
-                    <span id="automaticUpdateState"></span>
                 </div>
             </div>
             <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
@@ -388,12 +387,9 @@
         dojo.require('twetailer.Associate');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
-            twetailer.Associate.init('<%= localeId %>', <%= LocaleController.getJsonOfLanguageList() %>);
+            twetailer.Associate.init('<%= localeId %>', <%= LocaleController.getJsonOfLanguageList() %>, 'automaticUpdateState');
             twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             twetailer.Common.registerSaleAssociate(<%= serializedAssociate.getStream() %>);
-            twetailer.Common.openGAEChannel({
-                displayStatusId: 'automaticUpdateState'
-            });
             dojo.fadeOut({
                 node: 'introFlash',
                 delay: 50,

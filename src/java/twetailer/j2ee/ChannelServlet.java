@@ -30,8 +30,8 @@ import domderrien.jsontools.JsonParser;
  *
  */
 @SuppressWarnings("serial")
-public class ChannelListenerServlet extends HttpServlet {
-    private static Logger log = Logger.getLogger(ChannelListenerServlet.class.getName());
+public class ChannelServlet extends HttpServlet {
+    private static Logger log = Logger.getLogger(ChannelServlet.class.getName());
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
@@ -63,10 +63,10 @@ public class ChannelListenerServlet extends HttpServlet {
                 out.put("token", ChannelConnector.getUserToken(LoginServlet.getConsumer(loggedUser)));
             }
             else if ("register".equals(in.getString("action"))) {
-                // ChannelConnector.registerUser(LoginServlet.getConsumer(loggedUser)), in.getString("token"));
+                ChannelConnector.register(LoginServlet.getConsumer(loggedUser));
             }
             else if ("unregister".equals(in.getString("action"))) {
-                // ChannelConnector.unregisterUser(LoginServlet.getConsumer(loggedUser)), in.getString("token"));
+                ChannelConnector.unregister(LoginServlet.getConsumer(loggedUser));
             }
             else {
                 response.setStatus(400); // Unavailable

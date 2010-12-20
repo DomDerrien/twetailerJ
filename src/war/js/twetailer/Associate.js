@@ -20,8 +20,9 @@
      *
      * @param {String} locale Identifier of the chosen locale.
      * @param {Array} supportedLanguages List of supported languages, in a format to be used for a dijit.form.Select widget.
+     * @param {String} statusPlaceHolderId identifier of the DOM node to display the notification related to the GAE Channel
      */
-    module.init = function(locale, supportedLanguages) {
+    module.init = function(locale, supportedLanguages, statusPlaceHolderId) {
         _getLabel = _globalCommon.init(locale, supportedLanguages);
 
         // Attach the contextual menu to the DataGrid instance
@@ -37,6 +38,29 @@
         var dfd = _globalCommon.loadRemoteDemands(null, 'demandListOverlay', _queryPointOfView, null); // No modificationDate means "load all active Demands" & no filter on hash tag
         dfd.addCallback(function(response) { _globalCommon.processDemandList(response.resources, _grid); });
         dfd.addCallback(function(response) { setTimeout(_processConsoleParameters, 1000); });
+
+        // Register callbacks for the GAE Channel and initialize it
+        var placeHolder = dojo.byId(statusPlaceHolderId);
+        var genericMessage = 'Connected for automatic updates...';
+        dojo.subscribe(_globalCommon.getOnOpenNotificationId(), function() { placeHolder.innerHTML = genericMessage; });
+        dojo.subscribe(_globalCommon.getOnMessageNotificationId(), function(message) {
+            dojo.animateProperty({
+                node: placeHolder,
+                properties: { backgroundColor: { end: 'yellow' } }
+            }).play();
+            placeHolder.innerHTML = '1 message received and being processed ;)';
+            module.loadNewDemands(); // TODO: use the data in the received message to update the grid without another roundtrip
+            setTimeout(function() {
+                dojo.animateProperty({
+                    node: placeHolder,
+                    properties: { backgroundColor: { end: 'transparent' } }
+                }).play();
+                placeHolder.innerHTML = genericMessage;
+            }, 2500); // Restore the default message in 2.4 seconds
+        });
+        _globalCommon.openGAEChannel({
+            statusPlaceHolder: placeHolder
+        });
     };
 
     module.readyToProcessParameters = false;
@@ -268,7 +292,7 @@
         }
 
         var dfd = _globalCommon.updateRemoteProposal(data, data.key, 'demandListOverlay');
-        dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); });
+        // dfd.addCallback(function(response) { setTimeout(function() { module.loadNewDemands(); }, 7000); }); // Now, updates come automatically via the Channel')
     };
 
     /**

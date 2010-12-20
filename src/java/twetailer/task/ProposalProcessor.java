@@ -17,6 +17,7 @@ import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
+import twetailer.connector.ChannelConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -34,6 +35,8 @@ import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.State;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 /**
  * Define the task with is invoked by the task "/_tasks/validateOpenProposal"
@@ -104,6 +107,13 @@ public class ProposalProcessor {
                         Registrar registrar = BaseSteps.getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
                         notifyAvailability(proposal, store, location, newlyProposed, demand, rawCommand, consumer, registrar);
                     }
+
+                    // Try to communicate to the logged sale associate
+                    SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
+                    Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                    JsonObject tmp = new GenericJsonObject();
+                    tmp.put("resource", proposal.toJson());
+                    ChannelConnector.sendMessage(saConsumerRecord, tmp);
                 }
                 else {
                     SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());

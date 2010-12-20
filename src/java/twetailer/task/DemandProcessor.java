@@ -21,6 +21,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
+import twetailer.connector.ChannelConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
@@ -45,6 +46,8 @@ import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 /**
  * Define the task with is invoked by the task "/_tasks/validateOpenDemand"
@@ -382,6 +385,12 @@ public class DemandProcessor {
     public static void notifyAvailability(Demand demand, Consumer demandOwner, Consumer saConsumerRecord, Influencer influencer) {
 
         try {
+            // Try to communicate to the logged sale associate
+            JsonObject tmp = new GenericJsonObject();
+            tmp.put("resource", demand.toJson());
+            ChannelConnector.sendMessage(saConsumerRecord, tmp);
+
+            // Send a formal notification
             if (!Source.api.equals(saConsumerRecord.getPreferredConnection())) {
                 Locale locale = saConsumerRecord.getLocale();
 

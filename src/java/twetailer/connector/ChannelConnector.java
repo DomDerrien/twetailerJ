@@ -1,16 +1,21 @@
 package twetailer.connector;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
+import twetailer.dao.SettingsOperations;
 import twetailer.dto.Consumer;
+import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.api.channel.ChannelFailureException;
 import com.google.appengine.api.channel.ChannelMessage;
 import com.google.appengine.api.channel.ChannelService;
 import com.google.appengine.api.channel.ChannelServiceFactory;
 
+import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonObject;
 
 public class ChannelConnector {
@@ -32,23 +37,50 @@ public class ChannelConnector {
         return channelService.createChannel(getUniqueChannelId(consumer));
     }
 
+    @SuppressWarnings("unchecked")
     public static void sendMessage(Consumer consumer, JsonObject data) {
-        MockOutputStream buffer = new MockOutputStream();
-        try {
-            data.toStream(buffer, false);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot prepare JsonObject for sending over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
-        }
-        ChannelService channelService = ChannelServiceFactory.getChannelService();
-        try {
-            String channelId = retrieveUniqueChannelId(consumer);
-            if (channelId != null) {
-                channelService.sendMessage(new ChannelMessage(channelId, buffer.getStream().toString()));
+        Map<Long, Long> activeChannels = (Map<Long, Long>) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_IDENTIFIER);
+        Long expirationDate = activeChannels.get(consumer.getKey());
+        if (expirationDate != null && DateUtils.getNowCalendar().getTimeInMillis() - 2*60*60*1000 < expirationDate) {
+            MockOutputStream buffer = new MockOutputStream();
+            try {
+                data.toStream(buffer, false);
+            }
+            catch (IOException ex) {
+                Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot prepare JsonObject for sending over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
+            }
+            ChannelService channelService = ChannelServiceFactory.getChannelService();
+            try {
+                String channelId = retrieveUniqueChannelId(consumer);
+                if (channelId != null) {
+                    channelService.sendMessage(new ChannelMessage(channelId, buffer.getStream().toString()));
+                }
+            }
+            catch(ChannelFailureException ex) {
+                Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot send data to: " + consumer.getName() + " over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
             }
         }
-        catch(ChannelFailureException ex) {
-            Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot send data to: " + consumer.getName() + "over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
+    }
+
+    public final static String MEMCACHE_IDENTIFIER = "activeChannels";
+
+    @SuppressWarnings("unchecked")
+    public static void register(Consumer consumer) {
+        SettingsOperations ops = BaseSteps.getSettingsOperations();
+        Map<Long, Long> activeChannels = (Map<Long, Long>) ops.getFromCache(MEMCACHE_IDENTIFIER);
+        if (activeChannels == null) {
+            activeChannels = new HashMap<Long, Long>();
+            ops.setInCache(MEMCACHE_IDENTIFIER, activeChannels);
+        }
+        activeChannels.put(consumer.getKey(), DateUtils.getNowCalendar().getTimeInMillis());
+        ops.setInCache(MEMCACHE_IDENTIFIER, activeChannels);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void unregister(Consumer consumer) {
+        Map<Long, Long> activeChannels = (Map<Long, Long>) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_IDENTIFIER);
+        if (activeChannels != null) {
+            activeChannels.remove(consumer.getKey());
         }
     }
 }

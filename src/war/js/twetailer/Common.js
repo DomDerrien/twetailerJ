@@ -1556,9 +1556,12 @@
     // Business logic controlling the Google App Engine Channel
     //
 
+    var _gaeChannelParameters = {};
+
     module.openGAEChannel = function(parameters){
-        parameters.errorMessage = 'Automatic update connection openning failed :( Please, update manually.';
-        parameters.statusPlaceHolder = dojo.byId(parameters.displayStatusId);
+        _gaeChannelParameters = dojo.mixin(_gaeChannelParameters, parameters);
+        _gaeChannelParameters.errorMessage = 'Automatic update connection openning failed :( Please, update manually.';
+        _gaeChannelParameters.statusPlaceHolder = parameters.statusPlaceHolder || dojo.byId(parameters.statusPlaceHolderId);
 
         dojo.xhrPost({
             headers: { 'content-type': 'application/json; charset=UTF-8' },
@@ -1566,55 +1569,100 @@
             handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response && response.success) {
-                    _openChannelSocket(dojo.mixin(parameters, response));
+                    _openChannelSocket(dojo.mixin(_gaeChannelParameters, response));
                 }
                 else {
-                    parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
                 }
             },
             error: function(message, ioArgs) {
-                parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
             },
             url: '/API/Channel/'
         });
+
+        dojo.addOnUnload(function(){
+            twetailer.Common.closeGAEChannel(true);
+        });
+    };
+
+    module.getOnOpenNotificationId = function() {
+        return _gaeChannelParameters.onOpenNotificationId || 'asynchronousChannelOpen';
+    };
+
+    module.getOnMessageNotificationId = function() {
+        return _gaeChannelParameters.onMessageNotificationId || 'asynchronousBackendNotification';
+    };
+
+    module.getOnCloseNotificationId = function() {
+        return _gaeChannelParameters.onCloseNotificationId || 'asynchronousChannelClose';
+    };
+
+    module.closeGAEChannel = function(finalClose){
+        if (_gaeChannelParameters.socket) {
+            _gaeChannelParameters.finalClose = finalClose;
+            _gaeChannelParameters.socket.close();
+            dojo.xhrPost({
+                headers: { 'content-type': 'application/json; charset=UTF-8' },
+                postData: '{"action":"unregister"}',
+                handleAs: 'json',
+                load: function(response, ioArgs){
+                    if (!response || !response.success) {
+                        _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                    }
+                },
+                error: function(message, ioArgs){
+                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                },
+                url: '/API/Channel/'
+            });
+        }
     };
 
     var _openChannelSocket = function(parameters) {
-        parameters.genericMessage = 'Connected for automatic updates...';
-
         var channel = new goog.appengine.Channel(parameters.token);
 
-        var socket = channel.open({
+        parameters.socket = channel.open({
             onopen: function() {
-				console.log('socket.onopen');
-                parameters.statusPlaceHolder.innerHTML = parameters.genericMessage;
                 dojo.xhrPost({
                     headers: { 'content-type': 'application/json; charset=UTF-8' },
-                    postData: '{"action":"getToken","token":"'+parameters.token+'"}',
+                    postData: '{"action":"register"}',
                     handleAs: 'json',
                     load: function(response, ioArgs) {
-                        if (!response || !response.success) {
+                        if (response && response.success) {
+                            // Inform the listening logic that the channel is opened
+                            dojo.publish(module.getOnOpenNotificationId(), []);
+                        }
+                        else {
+                            parameters.socket.close();
                             parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
                         }
                     },
                     error: function(message, ioArgs) {
+                        parameters.socket.close();
                         parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
                     },
                     url: '/API/Channel/'
                 });
             },
             onmessage: function(message) {
-                parameters.statusPlaceHolder.innerHTML = '1 message received and being processed ;)';
-                console.log('message coming in -- data: ' + dojo.toJson(message.data) + '\ndump: ' + dojo.toJson(message));
-                setTimeout(function() { statusPlaceHolder.innerHTML = genericMessage; }, 2500); // Restore the default message in 2.4 seconds
+                // Inform the listening logic that a message has been received
+                dojo.publish(module.getOnMessageNotificationId(), arguments);
             },
             onerror: function(error) {
-                console.log('error -- description: '+ error.description + ', code (xhr status): ' + error.code + '\ndump: ' + dojo.toJson(error));
+                if (_gaeChannelParameters.socket) {
+                    _gaeChannelParameters.socket.close();
+                }
+                if (!_gaeChannelParameters.finalClose) {
+                    module.openGAEChannel(_gaeChannelParameters);
+                }
             },
             onclose: function() {
-                console.log('closing channel\nany argument? ' + arguments.length);
+                _gaeChannelParameters.socket = null;
+                if (!_gaeChannelParameters.finalClose) {
+                    module.openGAEChannel(_gaeChannelParameters);
+                }
             }
         });
-        console.log(socket);
     };
 })(); // End of the function limiting the scope of the private variables
