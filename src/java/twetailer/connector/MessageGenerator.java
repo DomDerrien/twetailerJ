@@ -52,6 +52,8 @@ public class MessageGenerator {
         dateTimeFormat,
         emptyListIndicator,
         noCCIndicator,
+        noComment,
+        noScore,
 
         messageSubject ("message_subject"),
         messageFooter ("message_footer"),
@@ -115,6 +117,12 @@ public class MessageGenerator {
         DEMAND_CLOSING_OK_TO_CONSUMER ("demand_closing_ackToConsumer"),
         /** For message sent to the owner of the proposal attached to the demand, to invite him to close it too */
         DEMAND_CLOSING_OK_TO_ASSOCIATE ("demand_closing_associateNotif"),
+
+        /// C6. Consumer rates a proposal -- Only associate who owns the proposal is notified
+        /** For message sent to the demand owner who rated a proposal */
+        PROPOSAL_RATING_OK_TO_CONSUMER ("proposal_rating_ackToConsumer"),
+        /** For message sent to the owner of the proposal which has been rated */
+        PROPOSAL_RATING_OK_TO_ASSOCIATE ("proposal_rating_associateNotif"),
 
         /// A1. Associate creates a proposal -- Consumer and CC'ed are notified
         /** For message sent to the proposal owner to confirm the proposal creation */
@@ -335,13 +343,23 @@ public class MessageGenerator {
      */
     public MessageGenerator fetch(Proposal proposal) {
         if (proposal != null) {
+            final String noComment = getAlternateMessage(MessageId.noComment);
+            final String noScore = getAlternateMessage(MessageId.noScore);
             final String prefix = "proposal" + FIELD_SEPARATOR;
             // Command
             fetchCommand(proposal, prefix);
             // Proposal
+            parameters.put(prefix + Proposal.COMMENT, proposal.getComment() == null ? noComment : proposal.getComment());
             parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.master, "currencySymbol_" + proposal.getCurrencyCode(), (String) null, userLocale));
             parameters.put(prefix + Proposal.DEMAND_KEY, proposal.getDemandKey());
             parameters.put(prefix + Proposal.PRICE, proposal.getPrice());
+            String score = noScore;
+            switch(proposal.getScore()) {
+            case 1: score = ":-("; break;
+            case 2: case 3: score = ":-|"; break;
+            case 4: case 5: score = ":-)"; break;
+            }
+            parameters.put(prefix + Proposal.SCORE, score);
             parameters.put(prefix + Proposal.TOTAL, proposal.getTotal());
         }
         return this;

@@ -111,6 +111,30 @@
             <tuv xml:lang="en"><seg>no others</seg></tuv>
         </tu>
 
+        <tu tuid="short_core_noComment" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>[]</seg></tuv>
+        </tu>
+
+        <tu tuid="long_core_noComment" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>none</seg></tuv>
+        </tu>
+
+        <tu tuid="short_core_noScore" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>[]</seg></tuv>
+        </tu>
+
+        <tu tuid="long_core_noScore" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en"><seg>not evaluated yet</seg></tuv>
+        </tu>
+
         <tu tuid="short_core_message_footer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -3115,6 +3139,146 @@
                     {message>footer}
                     <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
                 </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_rating_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal rating.|
+                {proposal>*}: proposal attributes
+                {demand>*}: proposal attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, the rate for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
+                    score:{proposal>score} comment:{proposal>comment}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_rating_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal rating.|
+                {proposal>*}: proposal attributes
+                {demand>*}: proposal attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <ul>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                    </ul>
+                    <p>
+                        Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal {proposal>key}</a></strong>,
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or,
+                        simply wait to see if any others come in.
+                    </p>
+                    <p>More store information:</p>
+                    <ul>
+                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Telephone: {store>phoneNb}</li>
+                        <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
+                    </ul>
+                    <p>
+                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+               </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_rating_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message notifying about a successful proposal rating.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>updateProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing just rated proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
+                    score:{proposal>score} comment:{proposal>comment}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_rating_associateNotif" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {proposal>*}: proposal attributes
+                {proposal>owner>name}: name of the proposal owner
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>cancelProposal}
+                {command>updateProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Your <strong>proposal {proposal>key}</strong> has been rated by the Consumer:</p>
+                    <ul>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                    </ul>
+                    <p>
+                        If for any reason, you can longer offer this proposal, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {proposal>demandKey}, Proposal: {proposal>key}.</p>
+               </seg>
             </tuv>
         </tu>
 

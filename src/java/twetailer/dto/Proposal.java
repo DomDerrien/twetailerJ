@@ -37,6 +37,11 @@ public class Proposal extends Command {
     public static final String CONSUMER_KEY = "consumerKey";
 
     @Persistent
+    private String comment;
+
+    public static final String COMMENT = "comment";
+
+    @Persistent
     private String currencyCode = DecimalFormatSymbols.getInstance(LocaleValidator.DEFAULT_LOCALE).getInternationalCurrencySymbol();
 
     public static final String CURRENCY_CODE = "currencyCode";
@@ -55,6 +60,11 @@ public class Proposal extends Command {
     private Double price = 0.0D;
 
     public static final String PRICE = "price";
+
+    @Persistent
+    private Integer score;
+
+    public static final String SCORE = "score";
 
     @Persistent
     private Long storeKey;
@@ -103,6 +113,14 @@ public class Proposal extends Command {
         AWSCBUIURL = aWSCBUIURL == null || aWSCBUIURL.length() == 0 ? null : new Text(aWSCBUIURL);
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public Long getConsumerKey() {
         return consumerKey;
     }
@@ -144,6 +162,17 @@ public class Proposal extends Command {
         this.price = price;
     }
 
+    public Integer getScore() {
+        if (score == null) {
+            return 0;
+        }
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score < 1 || 5 < score ? null : score;
+    }
+
     public Long getStoreKey() {
         return storeKey;
     }
@@ -169,11 +198,15 @@ public class Proposal extends Command {
         if (AWSCBUIURL != null) {
             out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
         }
-        out.put(CURRENCY_CODE, getCurrencyCode());
+        if (comment != null) {
+            out.put(COMMENT, getComment());
+        }
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        out.put(CURRENCY_CODE, getCurrencyCode());
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         out.put(PRICE, getPrice());
         if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
+        out.put(SCORE, getScore());
         out.put(TOTAL, getTotal());
         return out;
     }
@@ -182,12 +215,14 @@ public class Proposal extends Command {
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
-        if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
+        // if (in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
         if (getKey() == null && in.containsKey(DEMAND_KEY)) {
             setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time
         }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
+        // if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); } // Set by the system from the Consumer !rate action
         // if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); } // Set by the system from the SaleAssociate own storeKey
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 

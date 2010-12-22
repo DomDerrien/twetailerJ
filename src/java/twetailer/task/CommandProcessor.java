@@ -35,6 +35,7 @@ import twetailer.task.command.HelpCommandProcessor;
 import twetailer.task.command.LanguageCommandProcessor;
 import twetailer.task.command.ListCommandProcessor;
 import twetailer.task.command.ProposeCommandProcessor;
+import twetailer.task.command.RateCommandProcessor;
 import twetailer.task.command.SupplyCommandProcessor;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
@@ -432,6 +433,10 @@ public class CommandProcessor {
             else if (CommandSettings.isEquivalentTo(actions, Action.propose.toString(), action, collator)) {
                 command.put(Command.ACTION, Action.propose.toString());
                 ProposeCommandProcessor.processProposeCommand(pm, consumer, rawCommand, command);
+            }
+            else if (CommandSettings.isEquivalentTo(actions, Action.rate.toString(), action, collator)) {
+                command.put(Command.ACTION, Action.rate.toString());
+                RateCommandProcessor.processRateCommand(pm, consumer, rawCommand, command);
             }
             else if (CommandSettings.isEquivalentTo(actions, Action.supply.toString(), action, collator)) {
                 command.put(Command.ACTION, Action.supply.toString());

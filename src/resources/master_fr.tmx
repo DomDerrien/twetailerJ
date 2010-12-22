@@ -196,6 +196,14 @@
                 <seg>cc,copieCarbone,copieÀ</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_prefix_comment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>commentaires</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_prefix_dueDate" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-tier">dojotk</prop>
@@ -300,6 +308,14 @@
                 <seg>distance</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_prefix_score" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>score</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_prefix_state" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -349,6 +365,13 @@
                 <seg>confirmer</seg>
             </tuv>
         </tu>
+        <tu tuid="cl_action_connect" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>connecter</seg>
+            </tuv>
+        </tu>
         <tu tuid="cl_action_decline" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -396,6 +419,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>proposer</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cl_action_rate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>évaluer,evaluer,noter</seg>
             </tuv>
         </tu>
         <tu tuid="cl_action_supply" dataType="text">
@@ -1319,6 +1349,13 @@
                 <seg>CC:{0}</seg>
             </tuv>
         </tu>
+        <tu tuid="cp_tweet_comment_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>commentaire:{0}</seg>
+            </tuv>
+        </tu>
         <tu tuid="cp_short_date_part" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>
@@ -1359,6 +1396,13 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>distance:{0}{1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="cp_tweet_score_part" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>score:{0}</seg>
             </tuv>
         </tu>
         <tu tuid="cp_tweet_quantity_part" dataType="text">

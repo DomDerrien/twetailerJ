@@ -581,63 +581,215 @@ public class ProposalSteps extends BaseSteps {
     public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, Consumer demandOwner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException, CommunicationException {
 
         // Verify the correct parameter sequence
-        if (parameters.size() != 2 ||
+        if (parameters.size() != 2 && parameters.size() != 3 ||
             !parameters.containsKey(Command.POINT_OF_VIEW) ||
-            !parameters.containsKey(Command.STATE) ||
-            !State.confirmed.toString().equals(parameters.getString(Command.STATE)) && !State.declined.toString().equals(parameters.getString(Command.STATE))
+            !parameters.containsKey(Command.STATE) && !parameters.containsKey(Proposal.SCORE) ||
+            parameters.containsKey(Command.STATE) && !State.confirmed.toString().equals(parameters.getString(Command.STATE)) && !State.declined.toString().equals(parameters.getString(Command.STATE))
         ) {
             throw new InvalidStateException("Invalid parameter sequence for the Proposal state update!");
         }
-        boolean confirmProposal = State.confirmed.toString().equals(parameters.getString(Command.STATE));
-        State newState = confirmProposal ? State.confirmed : State.declined;
 
         // Get the proposal and verify its state
         Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, null, null);
-        State currentState = proposal.getState();
-        if (!State.published.equals(currentState)) {
-            throw new InvalidStateException("Invalid Proposal state for a " + (confirmProposal ? "confirmation" : "declination"), currentState.toString(), newState.toString());
-        }
 
         // Verify the consumer owns the associated demand and its state
         Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), demandOwner.getKey());
-        if (!State.published.equals(demand.getState())) {
-            throw new InvalidStateException("Invalid associated Demand state for a " + (confirmProposal ? "confirmation" : "declination"), demand.getState().toString(), newState.toString());
-        }
 
-        // Persist the proposal state change
-        proposal.setState(newState);
-        if (!confirmProposal) {
-            proposal.setCancelerKey(demandOwner.getKey());
-        }
-        proposal = getProposalOperations().updateProposal(pm, proposal);
+        if (parameters.containsKey(Command.STATE)) {
+            boolean confirmProposal = State.confirmed.toString().equals(parameters.getString(Command.STATE));
+            State newState = confirmProposal ? State.confirmed : State.declined;
 
-        if (confirmProposal) {
-            // Cancel the other proposals associated to the demand
-            List<Long> proposalKeys = demand.getProposalKeys();
-            if (1 < proposalKeys.size()) {
-                // Schedule the other proposal cancellation
-                MaelzelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
-
-                // Clean-up the list of associated proposals
-                demand.resetProposalKeys();
-                demand.addProposalKey(proposalKey);
-            }
-            List<Long> saleAssociateKeys = demand.getSaleAssociateKeys();
-            if (1 < saleAssociateKeys.size()) {
-                demand.resetSaleAssociateKeys();
-                demand.addSaleAssociateKey(proposal.getOwnerKey());
+            // Verify the proposal state
+            State currentState = proposal.getState();
+            if (!State.published.equals(currentState)) {
+                throw new InvalidStateException("Invalid Proposal state for a " + (confirmProposal ? "confirmation" : "declination"), currentState.toString(), newState.toString());
             }
 
-            // Persist the demand state change
-            demand.setState(State.confirmed);
-            getDemandOperations().updateDemand(pm, demand);
+            // Verify the demand state
+            if (!State.published.equals(demand.getState())) {
+                throw new InvalidStateException("Invalid associated Demand state for a " + (confirmProposal ? "confirmation" : "declination"), demand.getState().toString(), newState.toString());
+            }
 
-            // Echo back the successful confirmation
+            // Persist the proposal state change
+            proposal.setState(newState);
+            if (!confirmProposal) {
+                proposal.setCancelerKey(demandOwner.getKey());
+            }
+            proposal = getProposalOperations().updateProposal(pm, proposal);
+
+            if (confirmProposal) {
+                // Cancel the other proposals associated to the demand
+                List<Long> proposalKeys = demand.getProposalKeys();
+                if (1 < proposalKeys.size()) {
+                    // Schedule the other proposal cancellation
+                    MaelzelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
+
+                    // Clean-up the list of associated proposals
+                    demand.resetProposalKeys();
+                    demand.addProposalKey(proposalKey);
+                }
+                List<Long> saleAssociateKeys = demand.getSaleAssociateKeys();
+                if (1 < saleAssociateKeys.size()) {
+                    demand.resetSaleAssociateKeys();
+                    demand.addSaleAssociateKey(proposal.getOwnerKey());
+                }
+
+                // Persist the demand state change
+                demand.setState(State.confirmed);
+                getDemandOperations().updateDemand(pm, demand);
+
+                // Echo back the successful confirmation
+                Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
+                Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
+                Registrar registrar = getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
+
+                if (rawCommand != null) { // Means the Consumer did not use the console to !confirm the Proposal
+                    Locale locale = demandOwner.getLocale();
+                    MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+                    msgGen.
+                        put("demand>owner>name", demandOwner.getName()).
+                        fetch(proposal).
+                        fetch(store).
+                        fetch(location, "store").
+                        fetch(registrar).
+                        fetch(demand).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                        put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+
+                    String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
+                    String closeDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_close", msgGen.getParameters(), locale);
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                        subject = rawCommand.getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                    msgGen.
+                        put("command>threadSubject", subject.replaceAll(" ", "%20")).
+                        put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                        put("command>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+
+                    String message = msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_CONSUMER);
+
+                    communicateToConsumer(
+                            msgGen.getCommunicationChannel(),
+                            subject,
+                            demandOwner,
+                            new String[] { message }
+                    );
+                }
+
+                Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
+                if (proposal.getOwnerKey().equals(robotKey)) {
+                    // Schedule the automatic Proposal closing by the Robot
+                    prepareProposalClosingByTheRobot(pm, proposalKey);
+                }
+                else {
+                    // Inform the sale associate of the successful confirmation
+                    SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
+                    Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
+                    Locale locale = saConsumerRecord.getLocale();
+
+                    MessageGenerator msgGen = new MessageGenerator(saConsumerRecord.getPreferredConnection(), proposal.getHashTags(), locale);
+                    msgGen.
+                        put("proposal>owner>name", saConsumerRecord.getName()).
+                        fetch(proposal).
+                        fetch(demand).
+                        put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+                        put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+
+                    String cancelProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_cancel", msgGen.getParameters(), locale);
+                    String closeProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_close", msgGen.getParameters(), locale);
+                    String subject = null;
+                    if (Source.mail.equals(msgGen.getCommunicationChannel()) && Source.mail.equals(proposal.getSource())) {
+                        subject = getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId()).getSubject();
+                    }
+                    if (subject == null) {
+                        subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+                    }
+                    subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+                    msgGen.
+                        put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
+                        put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                        put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+
+                    communicateToConsumer(
+                            msgGen.getCommunicationChannel(),
+                            subject,
+                            saConsumerRecord,
+                            new String[] { msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_ASSOCIATE) }
+                    );
+                }
+
+                // Notify CC-ed
+                List<String> cc = demand.getCC();
+                if (cc != null && 0 < cc.size()) {
+                    Locale locale = demandOwner.getLocale();
+                    MessageGenerator msgGen = null;
+                    String message = null;
+                    String subject = null;
+                    for (String coordinate: cc) {
+                        try {
+                            Source source = getCCedCommunicationChannel(coordinate);
+
+                            if (msgGen == null || !source.equals(msgGen.getCommunicationChannel())) {
+                                //
+                                // TODO: cache the MessageGenerator instance per Source value to avoid unnecessary re-creation!
+                                //
+                                msgGen = new MessageGenerator(source, demand.getHashTags(), locale);
+                                msgGen.
+                                    put("demand>owner>name", demandOwner.getName()).
+                                    fetch(proposal).
+                                    fetch(store).
+                                    fetch(location, "store").
+                                    fetch(registrar).
+                                    fetch(demand).
+                                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+
+                                message = msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_CCED);
+                            }
+
+                            if (subject == null) {
+                                Map<String, Object> cmdPrm = new HashMap<String, Object>();
+                                cmdPrm.put("demand>key", demand.getKey());
+                                subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
+                                subject = MailConnector.prepareSubjectAsForward(subject, locale);
+                            }
+
+                            communicateToCCed(
+                                    msgGen.getCommunicationChannel(),
+                                    coordinate,
+                                    subject,
+                                    message,
+                                    locale
+                            );
+                        }
+                        catch (CommunicationException e) {
+                            // Too bad, cannot contact the CC-ed person... Don't block the next sending!
+                            log.warning("Cannot inform cc'ed " + coordinate);
+                        }
+                    }
+                }
+            }
+        }
+        else { //  if (parameters.containsKey(Proposal.SCORE)) {
+            // Persist the proposal attribute change
+            proposal.setScore(Integer.valueOf((int) parameters.getLong(Proposal.SCORE)));
+            if (parameters.containsKey(Proposal.COMMENT)) {
+                proposal.setComment(parameters.getString(Proposal.COMMENT));
+            }
+            proposal = getProposalOperations().updateProposal(pm, proposal);
+
+            // Echo back the successful rating
             Store store = BaseSteps.getStoreOperations().getStore(pm, proposal.getStoreKey());
             Location location = BaseSteps.getLocationOperations().getLocation(pm, store.getLocationKey());
             Registrar registrar = getRegistrarOperations().getRegistrar(pm, store.getRegistrarKey());
 
-            if (rawCommand != null) {
+            if (rawCommand != null) { // Means the Consumer did not use the console to !confirm the Proposal
                 Locale locale = demandOwner.getLocale();
                 MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
                 msgGen.
@@ -650,10 +802,11 @@ public class ProposalSteps extends BaseSteps {
                     put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                     put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
+                String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", msgGen.getParameters(), locale);
+                String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", msgGen.getParameters(), locale);
                 String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
-                String closeDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_close", msgGen.getParameters(), locale);
                 String subject = null;
-                if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+                if (rawCommand != null) { // Can be only null if its source == api -- see caller context
                     subject = rawCommand.getSubject();
                 }
                 if (subject == null) {
@@ -663,10 +816,11 @@ public class ProposalSteps extends BaseSteps {
 
                 msgGen.
                     put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
-                String message = msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_CONSUMER);
+                String message = msgGen.getMessage(MessageId.PROPOSAL_RATING_OK_TO_CONSUMER);
 
                 communicateToConsumer(
                         msgGen.getCommunicationChannel(),
@@ -678,11 +832,10 @@ public class ProposalSteps extends BaseSteps {
 
             Long robotKey = RobotResponder.getRobotSaleAssociateKey(pm);
             if (proposal.getOwnerKey().equals(robotKey)) {
-                // Schedule the automatic Proposal closing by the Robot
-                prepareProposalClosingByTheRobot(pm, proposalKey);
+                // Stay silent
             }
             else {
-                // Inform the sale associate of the successful confirmation
+                // Inform the sale associate of the successful rating
                 SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, proposal.getOwnerKey());
                 Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                 Locale locale = saConsumerRecord.getLocale();
@@ -715,58 +868,8 @@ public class ProposalSteps extends BaseSteps {
                         msgGen.getCommunicationChannel(),
                         subject,
                         saConsumerRecord,
-                        new String[] { msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_ASSOCIATE) }
+                        new String[] { msgGen.getMessage(MessageId.PROPOSAL_RATING_OK_TO_ASSOCIATE) }
                 );
-            }
-
-            // Notify CC-ed
-            List<String> cc = demand.getCC();
-            if (cc != null && 0 < cc.size()) {
-                Locale locale = demandOwner.getLocale();
-                MessageGenerator msgGen = null;
-                String message = null;
-                String subject = null;
-                for (String coordinate: cc) {
-                    try {
-                        Source source = getCCedCommunicationChannel(coordinate);
-
-                        if (msgGen == null || !source.equals(msgGen.getCommunicationChannel())) {
-                            //
-                            // TODO: cache the MessageGenerator instance per Source value to avoid unnecessary re-creation!
-                            //
-                            msgGen = new MessageGenerator(source, demand.getHashTags(), locale);
-                            msgGen.
-                                put("demand>owner>name", demandOwner.getName()).
-                                fetch(proposal).
-                                fetch(store).
-                                fetch(location, "store").
-                                fetch(registrar).
-                                fetch(demand).
-                                put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
-
-                            message = msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_CCED);
-                        }
-
-                        if (subject == null) {
-                            Map<String, Object> cmdPrm = new HashMap<String, Object>();
-                            cmdPrm.put("demand>key", demand.getKey());
-                            subject = msgGen.getAlternateMessage(MessageId.messageSubject, cmdPrm);
-                            subject = MailConnector.prepareSubjectAsForward(subject, locale);
-                        }
-
-                        communicateToCCed(
-                                msgGen.getCommunicationChannel(),
-                                coordinate,
-                                subject,
-                                message,
-                                locale
-                        );
-                    }
-                    catch (CommunicationException e) {
-                        // Too bad, cannot contact the CC-ed person... Don't block the next sending!
-                        log.warning("Cannot inform cc'ed " + coordinate);
-                    }
-                }
             }
         }
 

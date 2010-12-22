@@ -388,7 +388,6 @@ public class TestCommandLineParser {
 
     @Test
     public void testParsePriceIV() throws ClientException, ParseException {
-        System.err.println("0. test");
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 price:  25.99€ ", Locale.ENGLISH);
         assertEquals(25.99, data.getDouble(Proposal.PRICE), 0.0);
     }
@@ -1353,5 +1352,92 @@ public class TestCommandLineParser {
     public void testParseMetadataIV() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 metadata:{} qty:1", Locale.ENGLISH);
         assertEquals("{}", data.getString(Command.META_DATA));
+    }
+
+    @Test
+    public void testParseCommentI() throws ClientException, ParseException {
+        String comment = "bravo pour les tests";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 comment:" + comment, Locale.ENGLISH);
+        assertEquals(comment, data.getString(Proposal.COMMENT));
+    }
+
+    @Test
+    public void testParseCommentII() throws ClientException, ParseException {
+        String comment = "\t   \t merci   ";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 comment:" + comment, Locale.ENGLISH);
+        assertEquals(comment.trim(), data.getString(Proposal.COMMENT));
+    }
+
+    @Test
+    public void testParseCommentIII() throws ClientException, ParseException {
+        String comment = "";
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 comment:" + comment, Locale.ENGLISH);
+        assertNull(data.getString(Proposal.COMMENT));
+        assertEquals(Proposal.COMMENT + CommandLineParser.PREFIX_SEPARATOR, data.getJsonArray(Command.CRITERIA_ADD).getString(0));
+    }
+
+    @Test
+    public void testParseScoreI() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        JsonObject data;
+        String value;
+        value = ":)";       data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(5, data.getLong(Proposal.SCORE));
+        value = ":-)";      data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(5, data.getLong(Proposal.SCORE));
+        value = " \t :-) "; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(5, data.getLong(Proposal.SCORE));
+    }
+
+    @Test
+    public void testParseScoreII() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        JsonObject data;
+        String value;
+        value = ":|";  data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(3, data.getLong(Proposal.SCORE));
+        value = ":-|"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(3, data.getLong(Proposal.SCORE));
+    }
+
+    @Test
+    public void testParseScoreIII() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        JsonObject data;
+        String value;
+        value = ":(";  data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(1, data.getLong(Proposal.SCORE));
+        value = ":-("; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(1, data.getLong(Proposal.SCORE));
+    }
+
+    @Test
+    public void testParseScoreIV() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        JsonObject data;
+        String value;
+        value = "0"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(0, data.getLong(Proposal.SCORE));
+        value = "1"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(1, data.getLong(Proposal.SCORE));
+        value = "2"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(2, data.getLong(Proposal.SCORE));
+        value = "3"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(3, data.getLong(Proposal.SCORE));
+        value = "4"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(4, data.getLong(Proposal.SCORE));
+        value = "5"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(5, data.getLong(Proposal.SCORE));
+    }
+
+    @Test
+    public void testParseScoreV() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        JsonObject data;
+        String value;
+        value = "000"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(0, data.getLong(Proposal.SCORE));
+        value = "01";  data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(0, data.getLong(Proposal.SCORE));
+        value = "6";   data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(0, data.getLong(Proposal.SCORE));
+        value = "132"; data = CommandLineParser.parseCommand(patterns, "ref:21 score:" + value, Locale.ENGLISH); assertEquals(0, data.getLong(Proposal.SCORE));
+    }
+
+    @Test
+    public void testParseScoreVI() throws ClientException, ParseException {
+        Map<String, Pattern> patterns = CommandLineParser.localizedPatterns.get(Locale.ENGLISH);
+        String comment = "no comment sir";
+        JsonObject data;
+        data = CommandLineParser.parseCommand(patterns, "rate proposal:59 score::) comment:" + comment, Locale.ENGLISH);
+        assertEquals(5, data.getLong(Proposal.SCORE));
+        assertEquals(comment, data.getString(Proposal.COMMENT));
+        data = CommandLineParser.parseCommand(patterns, "rate proposal:59 comment:" + comment + " score::)", Locale.ENGLISH);
+        assertEquals(5, data.getLong(Proposal.SCORE));
+        assertEquals(comment, data.getString(Proposal.COMMENT));
     }
 }

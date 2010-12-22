@@ -304,6 +304,16 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_prefix_comment" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>For the command line arguments, accepted labels for the expiration date attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>comment</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_prefix_dueDate" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -436,6 +446,16 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_prefix_score" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <note>For the command line arguments, accepted labels for the score attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>score</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_prefix_state" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -503,6 +523,15 @@
             </tuv>
         </tu>
 
+        <tu tuid="cl_action_connect" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>connect</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cl_action_decline" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -566,6 +595,15 @@
             <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
             <tuv xml:lang="en">
                 <seg>propose</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cl_action_rate" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>For the command line arguments, accepted labels for the action attribute. Important: keywords MUST be comma-separated, without extra-spaces!</note>
+            <tuv xml:lang="en">
+                <seg>rate</seg>
             </tuv>
         </tu>
 
@@ -1810,6 +1848,15 @@
             </tuv>
         </tu>
 
+        <tu tuid="cp_tweet_comment_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>{0}: demand due date</note>
+            <tuv xml:lang="en">
+                <seg>comment:{0}</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="cp_short_date_part" datatype="Text">
             <prop type="x-version">2</prop>
             <prop type="x-tier">javarb</prop>
@@ -1899,6 +1946,17 @@
             </note>
             <tuv xml:lang="en">
                 <seg>range:{0}{1}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_tweet_score_part" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: score
+            </note>
+            <tuv xml:lang="en">
+                <seg>score:{0}</seg>
             </tuv>
         </tu>
 

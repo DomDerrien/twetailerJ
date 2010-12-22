@@ -88,6 +88,7 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.action, "\\s*[\\w|(?:\\p{L}\\p{M})]+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.address, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.cc, "[\\w\\d\\.\\_\\-\\@]+", "(?:\\s|$)");
+            preparePattern(prefixes, patterns, Prefix.comment, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
@@ -102,6 +103,7 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.reference, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.range, "[\\s\\d\\.,]+(?:miles|mile|mi|km)", ".*" + separatorFromOtherPrefix);
+            preparePattern(prefixes, patterns, Prefix.score, "\\s*(?:\\d+|\\:\\-?\\)|\\:\\-?\\||\\:\\-?\\()", "");
             preparePattern(prefixes, patterns, Prefix.state, "\\s*\\w+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.store, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.total, "[\\s$€£\\d\\.,]+", separatorFromNonDigit);
@@ -249,6 +251,14 @@ public class CommandLineParser {
             oneFieldOverriden = true;
             matcher = patterns.get(Prefix.cc.toString()).matcher(messageCopy);
         }
+        // Comment
+        matcher = patterns.get(Prefix.comment.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Proposal.COMMENT, getValue(currentGroup));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
         // Due Date
         matcher = patterns.get(Prefix.dueDate.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
@@ -347,6 +357,14 @@ public class CommandLineParser {
             String currentGroup = matcher.group(1).trim();
             command.put(Demand.RANGE_UNIT, getRangeUnit(currentGroup).toLowerCase(locale));
             command.put(Demand.RANGE, getDoubleValue(currentGroup, locale));
+            messageCopy = extractPart(messageCopy, currentGroup);
+            oneFieldOverriden = true;
+        }
+        // Score
+        matcher = patterns.get(Prefix.score.toString()).matcher(messageCopy);
+        if (matcher.find()) { // Runs the matcher once
+            String currentGroup = matcher.group(1).trim();
+            command.put(Proposal.SCORE, getScoreValue(currentGroup, locale));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }
@@ -468,7 +486,7 @@ public class CommandLineParser {
             command = pattern.substring(1);
         }
         else {
-            command = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1);
+            command = getValue(pattern);
         }
         return command;
     }
@@ -483,7 +501,7 @@ public class CommandLineParser {
      */
     @SuppressWarnings("deprecation")
     private static String getDate(String pattern) throws ParseException {
-        String value = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
+        String value = getValue(pattern);
         int year, month, day, hour, minute, second;
         int timeSeparator = value.indexOf('T');
         String date = value;
@@ -576,7 +594,7 @@ public class CommandLineParser {
             command = command.substring(1);
         }
         else {
-            command = command.substring(command.indexOf(PREFIX_SEPARATOR) + 1);
+            command = getValue(pattern);
         }
         return command;
     }
@@ -641,13 +659,13 @@ public class CommandLineParser {
      * @return valid number representation, ready to be transformed
      */
     private static String getCleanNumber(String pattern) {
-        StringBuilder value = new StringBuilder(pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim());
+        StringBuilder value = new StringBuilder(getValue(pattern));
         int idx = value.length();
         while (0 < idx) {
             -- idx;
             char scannedChar = value.charAt(idx);
             // Look for excluding the currency symbols
-            if (!Character.isDigit(scannedChar) && scannedChar != '.' && scannedChar != ',') {
+            if (!Character.isDigit(scannedChar) && scannedChar != '.' && scannedChar != ',' && scannedChar != '-') {
                 value = value.replace(idx, idx + 1, "");
             }
         }
@@ -686,6 +704,29 @@ public class CommandLineParser {
     }
 
     /**
+     * Helper extracting Score values
+     *
+     * @param pattern Parameters extracted by a regular expression
+     * @param locale Locale used to detect the decimal separator
+     * @return valid Long value
+     *
+     * @throws ParseException if the parsing fails
+     */
+    private static long getScoreValue(String pattern, Locale locale) throws ParseException {
+        String value = getValue(pattern);
+        if (":(".equals(value) || ":-(".equals(value)) { return 1; }
+        if (":|".equals(value) || ":-|".equals(value)) { return 3; }
+        if (":)".equals(value) || ":-)".equals(value)) { return 5; }
+        value = getCleanNumber(value);
+        if ("1".equals(value)) { return 1; }
+        if ("2".equals(value)) { return 2; }
+        if ("3".equals(value)) { return 3; }
+        if ("4".equals(value)) { return 4; }
+        if ("5".equals(value)) { return 5; }
+        return 0;
+    }
+
+    /**
      * Helper extracting value after the prefix
      * @param pattern Parameters extracted by a regular expression
      * @return any value
@@ -704,7 +745,7 @@ public class CommandLineParser {
         String keywords = pattern;
         // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of tags: or -tags:)
         if (patterns == null) { // && pattern.indexOf(PREFIX_SEPARATOR) != -1) {
-            keywords = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
+            keywords = getValue(pattern);
         }
         else {
             // Because it's possible the keywords are not prefixed, it's not possible to ignore everything before the colon
