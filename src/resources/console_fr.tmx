@@ -1299,6 +1299,27 @@
                 <seg>Dernière date de modification:</seg>
             </tuv>
         </tu>
+        <tu tuid="core_proposalForm_proposalScore" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Score:</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalNoScoreYet" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="fr">
+                <seg>Pas encore évaluée.</seg>
+            </tuv>
+        </tu>
+        <tu tuid="core_proposalForm_proposalComment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Commentaires:</seg>
+            </tuv>
+        </tu>
         <tu tuid="core_alert_cancelPublishedProposal" dataType="text">
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>

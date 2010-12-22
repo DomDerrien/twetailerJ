@@ -1558,34 +1558,6 @@
 
     var _gaeChannelParameters = {};
 
-    module.openGAEChannel = function(parameters){
-        _gaeChannelParameters = dojo.mixin(_gaeChannelParameters, parameters);
-        _gaeChannelParameters.errorMessage = 'Automatic update connection openning failed :( Please, update manually.';
-        _gaeChannelParameters.statusPlaceHolder = parameters.statusPlaceHolder || dojo.byId(parameters.statusPlaceHolderId);
-
-        dojo.xhrPost({
-            headers: { 'content-type': 'application/json; charset=UTF-8' },
-            postData: '{"action":"getToken"}',
-            handleAs: 'json',
-            load: function(response, ioArgs) {
-                if (response && response.success) {
-                    _openChannelSocket(dojo.mixin(_gaeChannelParameters, response));
-                }
-                else {
-                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
-                }
-            },
-            error: function(message, ioArgs) {
-                _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
-            },
-            url: '/API/Channel/'
-        });
-
-        dojo.addOnUnload(function(){
-            twetailer.Common.closeGAEChannel(true);
-        });
-    };
-
     module.getOnOpenNotificationId = function() {
         return _gaeChannelParameters.onOpenNotificationId || 'asynchronousChannelOpen';
     };
@@ -1598,25 +1570,43 @@
         return _gaeChannelParameters.onCloseNotificationId || 'asynchronousChannelClose';
     };
 
-    module.closeGAEChannel = function(finalClose){
-        if (_gaeChannelParameters.socket) {
-            _gaeChannelParameters.finalClose = finalClose;
-            _gaeChannelParameters.socket.close();
-            dojo.xhrPost({
-                headers: { 'content-type': 'application/json; charset=UTF-8' },
-                postData: '{"action":"unregister"}',
-                handleAs: 'json',
-                load: function(response, ioArgs){
-                    if (!response || !response.success) {
-                        _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
-                    }
-                },
-                error: function(message, ioArgs){
-                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
-                },
-                url: '/API/Channel/'
-            });
+    module.openGAEChannel = function(parameters){
+        _gaeChannelParameters = dojo.mixin(_gaeChannelParameters, parameters);
+        _gaeChannelParameters.errorMessage = 'Automatic update connection openning failed :( Please, update manually.';
+        _gaeChannelParameters.statusPlaceHolder = parameters.statusPlaceHolder || dojo.byId(parameters.statusPlaceHolderId);
+        _gaeChannelParameters.finalClose = false;
+
+        if (_gaeChannelParameters.getTokenPending) {
+            return;
         }
+        _gaeChannelParameters.getTokenPending = true;
+
+        dojo.xhrPost({
+            headers: { 'content-type': 'application/json; charset=UTF-8' },
+            postData: '{"action":"getToken"}',
+            handleAs: 'json',
+            load: function(response, ioArgs) {
+                if (response && response.success) {
+                    _openChannelSocket(dojo.mixin(_gaeChannelParameters, response));
+                }
+                else {
+                    _gaeChannelParameters.finalClose = true; // Block automatic channel reopening as the token cannot be retrieved
+                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                }
+                _gaeChannelParameters.getTokenPending = false;
+            },
+            error: function(message, ioArgs) {
+                _gaeChannelParameters.finalClose = true; // Block automatic channel reopening as the token cannot be retrieved
+                _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                _gaeChannelParameters.getTokenPending = false;
+                module.handleError(message, ioArgs);
+            },
+            url: '/API/Channel/'
+        });
+
+        dojo.addOnUnload(function(){
+            twetailer.Common.closeGAEChannel(true);
+        });
     };
 
     var _openChannelSocket = function(parameters) {
@@ -1641,6 +1631,7 @@
                     error: function(message, ioArgs) {
                         parameters.socket.close();
                         parameters.statusPlaceHolder.innerHTML = parameters.errorMessage;
+                        module.handleError(message, ioArgs);
                     },
                     url: '/API/Channel/'
                 });
@@ -1664,5 +1655,26 @@
                 }
             }
         });
+    };
+
+    module.closeGAEChannel = function(finalClose){
+        if (_gaeChannelParameters.socket) {
+            _gaeChannelParameters.finalClose = finalClose;
+            _gaeChannelParameters.socket.close();
+            dojo.xhrPost({
+                headers: { 'content-type': 'application/json; charset=UTF-8' },
+                postData: '{"action":"unregister"}',
+                handleAs: 'json',
+                load: function(response, ioArgs){
+                    if (!response || !response.success) {
+                        _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                    }
+                },
+                error: function(message, ioArgs){
+                    _gaeChannelParameters.statusPlaceHolder.innerHTML = _gaeChannelParameters.errorMessage;
+                },
+                url: '/API/Channel/'
+            });
+        }
     };
 })(); // End of the function limiting the scope of the private variables

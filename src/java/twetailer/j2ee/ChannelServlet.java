@@ -59,7 +59,12 @@ public class ChannelServlet extends HttpServlet {
             OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
             getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
-            if ("getToken".equals(in.getString("action"))) {
+            if (loggedUser == null) {
+                response.setStatus(401); // Unauthorized
+                out.put("success", false);
+                out.put("reason", "Unauthorized");
+            }
+            else if ("getToken".equals(in.getString("action"))) {
                 out.put("token", ChannelConnector.getUserToken(LoginServlet.getConsumer(loggedUser)));
             }
             else if ("register".equals(in.getString("action"))) {

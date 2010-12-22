@@ -1595,6 +1595,30 @@
             </tuv>
         </tu>
 
+        <tu tuid="core_proposalForm_proposalScore" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Score:</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="core_proposalForm_proposalNoScoreYet" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">dojotk</prop>
+            <tuv xml:lang="en">
+                <seg>Not yet evaluated.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="core_proposalForm_proposalComment" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>Comment:</seg>
+            </tuv>
+        </tu>
+
         <tu tuid="core_alert_cancelPublishedProposal" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">dojotk</prop>

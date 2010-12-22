@@ -243,6 +243,19 @@
             dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
         }
         dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
+        var scoreValue = _getLabel('console', 'core_proposalForm_proposalNoScoreYet');
+        switch(proposal.score) {
+            case 1: scoreValue = ':-(';
+            case 2: scoreValue = ':-|';
+            case 3: scoreValue = ':-|';
+            case 4: scoreValue = ':-)';
+            case 5: scoreValue = ':-)';
+        }
+        dijit.byId('proposal.score').set('value', scoreValue);
+        var commentWidget = dijit.byId('proposal.comment');
+        if (proposal.comment) {
+            commentWidget.set('value', proposal.comment);
+        }
 
         var closeableState = proposal.state == _globalCommon.STATES.CONFIRMED;
         if (closeableState) {

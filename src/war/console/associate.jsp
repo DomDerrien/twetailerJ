@@ -291,6 +291,14 @@
                     </td>
                 </tr>
                 <tr class="existingAttribute">
+                    <td align="right"><label for="proposal.score"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalScore", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.score" readonly="true" style="width:100%;" type="text" /></td>
+                </tr>
+                <tr class="existingAttribute">
+                    <td align="right"><label for="proposal.comment"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalComment", locale) %></label></td>
+                    <td><textarea dojoType="dijit.form.Textarea" id="proposal.comment" readonly="true" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;" type="text"></textarea></td>
+                </tr>
+                <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalModificationDate", locale) %></td>
                     <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
                 </tr>
