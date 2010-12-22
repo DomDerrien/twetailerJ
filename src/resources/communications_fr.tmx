@@ -105,6 +105,34 @@
                 <seg>personne d'autre</seg>
             </tuv>
         </tu>
+        <tu tuid="short_core_noComment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_noComment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>aucun</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_noScore" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_noScore" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>pas encore évalué</seg>
+            </tuv>
+        </tu>
         <tu tuid="short_core_message_footer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -312,6 +340,83 @@
             <tuv xml:lang="fr">
                 <seg>
                     compléter proposition:{proposal>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_reserved_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( L'action {user>action} n'est pas permise par votre statut. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_reserved_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{user>name}</strong></p>
+                    <p>L'action <strong>{user>action}</strong> n'est pas permise par votre statut.</p>
+                    <p>Envoyez la commande '?{user>action}' pour recevoir une aide contextuelle.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_missing_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( L'identifiant de la Proposition est requis. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_missing_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{user>name}</strong></p>
+                    <p>La commande <strong>{user>action}</strong> requiert un numéro de Proposition valide.</p>
+                    <p>Veuillez donner un autre numéro de Proposition et renvoyer la commande.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_invalid_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vérifier le numéro de la Proposition et renvoyez la commande. {command>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_invalid_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{user>name}</strong></p>
+                    <p>La commande suivante <strong>{user>action}</strong> contient un numéro de Proposition invalide.</p>
+                    <ul><li>{user>command}</li></ul>
+                    <p>Veuillez donner un autre numéro de Proposition et renvoyer la commande.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_invalid_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Vous ne pouvez modifier la Proposition:{proposal>key} quand elle est dans l'état:{proposal>state). {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_invalid_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{user>name}</strong></p>
+                    <p>La Proposition {proposal>key} n'est pas dans un état favorable pour la commande <strong>{user>action}</strong> action.</p>
+                    <p>Envoyez la commande '?{user>action}' pour recevoir une aide contextuelle.</p>
+                    {message>footer}
                 </seg>
             </tuv>
         </tu>
@@ -2047,6 +2152,96 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {demand>owner>name}, the rate for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
+                    score:{proposal>score} comment:{proposal>comment}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <ul>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                    </ul>
+                    <p>
+                        Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal {proposal>key}</a></strong>,
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or,
+                        simply wait to see if any others come in.
+                    </p>
+                    <p>More store information:</p>
+                    <ul>
+                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Telephone: {store>phoneNb}</li>
+                        <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
+                    </ul>
+                    <p>
+                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+               </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_rating_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {proposal>owner>name}, listing just rated proposal:{proposal>key}...|
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
+                    score:{proposal>score} comment:{proposal>comment}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_rating_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Your <strong>proposal {proposal>key}</strong> has been rated by the Consumer:</p>
+                    <ul>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                    </ul>
+                    <p>
+                        If for any reason, you can longer offer this proposal, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {proposal>demandKey}, Proposal: {proposal>key}.</p>
+               </seg>
             </tuv>
         </tu>
     </body>

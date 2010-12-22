@@ -59,6 +59,12 @@ public class MessageGenerator {
         messageFooter ("message_footer"),
         robotAutomatedResponse ("robot_automatedResponse"),
 
+        // Error message accessors
+        RESERVED_OPERATION_ERROR("reserved_action"),
+        PROPOSAL_MISSING_ID_ERROR("proposal_missing_id"),
+        PROPOSAL_INVALID_ID_ERROR("proposal_invalid_id"),
+        PROPOSAL_INVALID_STATE_ERROR("proposal_invalid_state"),
+
         /// W1. Consumer creates a wish -- CC'ed and associates are notified
         /** For message sent to the wish owner to confirm the wish creation */
         WISH_CREATION_OK_TO_CONSUMER ("wish_creation_ackToConsumer"),

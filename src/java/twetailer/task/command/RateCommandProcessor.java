@@ -11,6 +11,8 @@ import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.MessageGenerator;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
@@ -18,6 +20,7 @@ import twetailer.dto.RawCommand;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.task.CommandLineParser;
 import twetailer.task.step.ProposalSteps;
+import twetailer.validator.CommandSettings.Action;
 import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
@@ -42,22 +45,44 @@ public class RateCommandProcessor {
 
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             String message = null;
+            Proposal proposal = null;
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
-                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshRatingParameters(command), consumer);
+                proposal = ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshRatingParameters(command), consumer);
                 return;
             }
             catch(InvalidIdentifierException ex) {
-                message = LabelExtractor.get("cp_command_confirm_invalid_proposal_id", locale);
+                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
+                MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
+                msgGen.
+                    put("user>name", consumer.getName()).
+                    put("user>action", actionLabel).
+                    put("user>command", rawCommand.getCommand()).
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                message = msgGen.getMessage(MessageId.PROPOSAL_INVALID_ID_ERROR);
             }
             catch(InvalidStateException ex) {
-                String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
+                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
                 String stateLabel = CommandLineParser.localizedStates.get(locale).getString(ex.getEntityState().toString());
-                stateLabel = LabelExtractor.get("cp_tweet_state_part", new Object[] { stateLabel }, locale);
-                message = LabelExtractor.get("cp_command_confirm_invalid_state_demand", new Object[] { proposalRef, stateLabel },  locale);
+                MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
+                msgGen.
+                    put("user>name", consumer.getName()).
+                    put("user>action", actionLabel).
+                    put("user>command", rawCommand.getCommand()).
+                    put("proposal>key", proposal == null ? "0" : proposal.getKey()).
+                    put("proposal>state", stateLabel).
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                message = msgGen.getMessage(MessageId.PROPOSAL_INVALID_STATE_ERROR);
             }
             catch(ReservedOperationException ex) {
-                message = LabelExtractor.get("cp_command_parser_reserved_action", new String[] { ex.getAction().toString() }, locale);
+                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
+                MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
+                msgGen.
+                    put("user>name", consumer.getName()).
+                    put("user>action", actionLabel).
+                    put("user>command", rawCommand.getCommand()).
+                    put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
+                message = msgGen.getMessage(MessageId.RESERVED_OPERATION_ERROR);
             }
             communicateToConsumer(
                     rawCommand.getSource(),
@@ -68,11 +93,18 @@ public class RateCommandProcessor {
             return;
         }
 
+        String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
+        MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
+        msgGen.
+            put("user>name", consumer.getName()).
+            put("user>action", actionLabel).
+            put("user>command", rawCommand.getCommand()).
+            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter));
         communicateToConsumer(
                 rawCommand.getSource(),
                 rawCommand.getSubject(),
                 consumer,
-                new String[] { LabelExtractor.get("cp_command_confirm_missing_proposal_id", consumer.getLocale()) }
+                new String[] { msgGen.getMessage(MessageId.PROPOSAL_MISSING_ID_ERROR) }
         );
     }
 }

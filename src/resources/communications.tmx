@@ -379,6 +379,153 @@
             </tuv>
         </tu>
 
+        <!-- =========================== -->
+        <!-- Customizable error messages -->
+        <!-- =========================== -->
+
+        <tu tuid="short_core_reserved_action" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Error message generated when the given action is not allowed by the user's profile.|
+                {user>name}: display name of the logged user
+                {user>action}: initial action
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Action {user>action} is not allowed by your profile. Send '?{user>action}' for help. {message>footer}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_reserved_action" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Error message generated when the given action is not allowed by the user's profile.|
+                {user>name}: display name of the logged user
+                {user>action}: initial action
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{user>name}</strong></p>
+                    <p>The Action <strong>{user>action}</strong> is not allowed by your profile.</p>
+                    <p>Send the command '?{user>action}' to get contextual help.</p>
+                    {message>footer}
+                </seg>
+                <seg>:-( Action {user>action} is not allowed by your profile. Send '?{user>action}' for help. {message>footer}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_missing_id" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>action}: initial action
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( A Proposal identifier is required. Send '?{user>action}' for help. {message>footer}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_missing_id" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>action}: initial command
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{user>name}</strong></p>
+                    <p>The command <strong>{user>action}</strong> requires a valid Proposal number.</p>
+                    <p>Please specify the Proposal number you wish to act on and try again.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_invalid_id" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>action}: initial command
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please verify the Proposal number you wish to act on and try again. {message>footer}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_invalid_id" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>action}: initial command
+                {user>command}: initial command
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{user>name}</strong></p>
+                    <p>The proposal number you gave in the following command is incorrect.</p>
+                    <ul><li>{user>command}</li></ul>
+                    <p>Please verify the Proposal number you wish to act on and try again.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_proposal_invalid_state" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>command}: initial command
+                {proposal>key}
+                {proposal>state}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( You cannot act on the Proposal:{proposal>key} when it is in state:{proposal>state). {message>footer}</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_proposal_invalid_state" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message sent when the given proposal identifier is incorrect
+                {user>name}: display name of the logged user
+                {user>command}: initial command
+                {proposal>key}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{user>name}</strong></p>
+                    <p>The proposal number {proposal>key} is not in an appropriate state for the <strong>{user>action}</strong> action.</p>
+                    <p>Send the command '?{user>action}' to get contextual help.</p>
+                    {message>footer}
+                </seg>
+            </tuv>
+        </tu>
+
         <!-- ============================== -->
         <!-- Customizable feedback messages -->
         <!-- ============================== -->
