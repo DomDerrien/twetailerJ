@@ -204,6 +204,9 @@ public class ProposalProcessor {
 
                 String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", msgGen.getParameters(), locale);
                 String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", msgGen.getParameters(), locale);
+                String rateProposal1 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate1", msgGen.getParameters(), locale);
+                String rateProposal3 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate3", msgGen.getParameters(), locale);
+                String rateProposal5 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate5", msgGen.getParameters(), locale);
                 String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
                 String subject = null;
                 if (rawCommand != null) { // Can be only null if its source == api -- see caller context
@@ -218,6 +221,9 @@ public class ProposalProcessor {
                     put("command>threadSubject", subject.replaceAll(" ", "%20")).
                     put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>rateProposal1", rateProposal1.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>rateProposal3", rateProposal3.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
+                    put("command>rateProposal5", rateProposal5.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
                     put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
 
                 String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);

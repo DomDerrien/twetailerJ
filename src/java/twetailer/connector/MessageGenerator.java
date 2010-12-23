@@ -197,6 +197,7 @@ public class MessageGenerator {
 
     protected final static String DEFAULT_VERTICAL_PREFIX = "core_";
     protected final static String GOLF_VERTICAL_PREFIX = "golf_";
+    protected final static String CARDEALER_VERTICAL_PREFIX = "cardealer_";
 
     /**
      * Get the accurate prefix for the TMX entries from the list of hash tags
@@ -211,6 +212,9 @@ public class MessageGenerator {
         }
         else if (hashTags.contains(RegisteredHashTag.golf.toString())) {
             identifier = GOLF_VERTICAL_PREFIX;
+        }
+        else if (hashTags.contains(RegisteredHashTag.cardealer.toString())) {
+            identifier = CARDEALER_VERTICAL_PREFIX;
         }
         // Note: other hash tags don't rely on a prefix for now
         return identifier;
