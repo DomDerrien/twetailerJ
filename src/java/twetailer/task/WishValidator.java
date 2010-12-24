@@ -167,9 +167,9 @@ public class WishValidator {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>cancelWish", cancelWish.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>updateWish", updateWish.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                    put("command>cancelWish", BaseConnector.prepareMailToBody(cancelWish)).
+                    put("command>updateWish", BaseConnector.prepareMailToBody(updateWish));
 
                 String message = msgGen.getMessage(isNewWish ? MessageId.WISH_CREATION_OK_TO_CONSUMER: MessageId.WISH_UPDATE_OK_TO_CONSUMER);
 

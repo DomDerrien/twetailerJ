@@ -218,18 +218,12 @@ public class BaseConnector {
         return lastCommunications.get(lastCommunications.size() - 1 - retroIndex);
     }
 
-    /** If found into a message, this separator is used as a suggestion to break a message in many parts */
-    public static final char SUGGESTED_MESSAGE_SEPARATOR = '|';
-    public static final String SUGGESTED_MESSAGE_SEPARATOR_STR = "|";
-    public static final String ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR = "\\|";
-    public static final String SENTENCE_SEPARATOR_STR = ".";
-    public static final String MANY_SPACES_REGEXP = "\\s+";
+    /** If found non escaped into a message, this separator is used as a suggestion to break a message in many parts */
+    protected static final char SUGGESTED_MESSAGE_SEPARATOR = '|';
+    protected static final char ESCAPED_MESSAGE_SEPARATOR = '\\';
 
     /** Minimal size of the messages to be sent */
-    public static final int MINIMAL_MESSAGE_LENGTH = 8;
-
-    private static final char SPACE_CHAR = ' ';
-    private static final String SPACE_STR = Command.SPACE;
+    protected static final int MINIMAL_MESSAGE_LENGTH = 8;
 
     /**
      * Split the message in many parts as suggested and when the different parts are larger than the specified limit.
@@ -244,28 +238,119 @@ public class BaseConnector {
         }
         List<String> output = new ArrayList<String>();
         if (message != null) {
-            // Initial conditions
+            // Message clean-up
             message =
                 message.trim().
-                replaceAll(MANY_SPACES_REGEXP, SPACE_STR).
-                replaceAll(MANY_SPACES_REGEXP + "\\" + SENTENCE_SEPARATOR_STR, SENTENCE_SEPARATOR_STR).
-                replaceAll(MANY_SPACES_REGEXP + "\\" + SUGGESTED_MESSAGE_SEPARATOR, SUGGESTED_MESSAGE_SEPARATOR_STR);
+                replaceAll("\\s+", String.valueOf(' ')).
+                replaceAll("\\s+\\" + SUGGESTED_MESSAGE_SEPARATOR, String.valueOf(SUGGESTED_MESSAGE_SEPARATOR)).
+                replaceAll("(?<!\\\\)\\" + SUGGESTED_MESSAGE_SEPARATOR + "\\s+", String.valueOf(SUGGESTED_MESSAGE_SEPARATOR));
+            // Initial conditions
             int separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
+            while(separatorIdx != -1) {
+                if (separatorIdx == 0 || separatorIdx - 1 == message.length() || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
+                    break;
+                }
+                // Find the next non-escaped separator
+                separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR, separatorIdx + 1);
+            }
             while (0 < message.length()) {
                 String head = separatorIdx == -1 ? message : message.substring(0, separatorIdx);
-                if (limit < head.length()) {
+                if (limit < head.length()) { // Line too long!
                     int endIdx = limit;
-                    while (head.charAt(endIdx) != SPACE_CHAR) { // All separators have been replaced by SPACE_STR!
+                    // so comes back up to find a word separator
+                    while (head.charAt(endIdx) !=  ' ') { // All separators have been replaced by a space
                         -- endIdx;
                     }
                     head = head.substring(0, endIdx);
                 }
-                output.add(head.trim());
+                output.add(head.trim().replaceAll("\\\\\\" + SUGGESTED_MESSAGE_SEPARATOR, String.valueOf(SUGGESTED_MESSAGE_SEPARATOR))); // Neutralize the escaped separators as the non-escaped one has been processed
                 // Variants
                 message = message.substring(head.length() + (separatorIdx == -1 ? 0 : 1));
                 separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
+                while(separatorIdx != -1) {
+                    if (separatorIdx == 0 || separatorIdx - 1 == message.length() || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
+                        break;
+                    }
+                    // Find the next non-escaped separator
+                    separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR, separatorIdx + 1);
+                }
             }
         }
         return output;
+    }
+
+    /**
+     * Helper transforming the given command in a URL compliant format.
+     * Note that the TMX message separator is transformed in the corresponding
+     * return-to-line sequence
+     *
+     * @param command Original command
+     * @param oneLine if <code>false</code>, suggested return-to-line sequence are changed in "%0A" sequence, stay unchanged otherwise
+     * @return Transformed command
+     */
+    protected static String urlEncodeValue(String command, boolean oneLine) {
+        int idx = 0, limit = command.length();
+        char thisC, nextC = idx == limit ? 0 : command.charAt(idx);
+        StringBuilder temp = new StringBuilder(2 * limit);
+        while (idx < limit) {
+            thisC = nextC;
+            nextC = idx == limit -1 ? 0 : command.charAt(idx + 1);
+            if ('0' <= thisC &&  thisC <= '9' || 'A' <= thisC && thisC <= 'Z' || 'a' <= thisC && thisC <= 'z') {
+                temp.append(thisC);
+            }
+            else if (thisC == ' ' || thisC == '\t' || thisC == '\r' || thisC == '\n') {
+                if (nextC == ' ' || nextC == '\t' || nextC == '\r' || nextC == '\n' || nextC == 0) {
+                    // Just ignore the repetition
+                }
+                else {
+                    temp.append('%').append('2').append('0');
+                }
+            }
+            else if (thisC == ESCAPED_MESSAGE_SEPARATOR) {
+                if (nextC == SUGGESTED_MESSAGE_SEPARATOR) {
+                    ++ idx;
+                    nextC = idx == limit -1 ? 0 : command.charAt(idx + 1);
+                    temp.append('%').append('7').append('C');
+                }
+                else {
+                    temp.append('%').append('5').append('C');
+                }
+            }
+            else if (thisC == SUGGESTED_MESSAGE_SEPARATOR) {
+                if (oneLine) {
+                    temp.append('%').append('7').append('C');
+                }
+                else {
+                    temp.append('%').append('0').append('A');
+                }
+            }
+            else {
+                int high = thisC / 16, low = thisC % 16;
+                temp.append('%').append((char) (high < 10 ? high + '0' : high - 10 + 'A')).append((char) (low < 10 ? low + '0' : low - 10 + 'A'));
+            }
+            ++idx;
+        }
+        return temp.toString().trim();
+    }
+
+    /**
+     * Helper URL-encoding the given string
+     *
+     * @param in Source
+     * @return URL-encoded string
+     */
+    public static String prepareMailToSubject(String in) {
+        return urlEncodeValue(in, true);
+    }
+
+    /**
+     * Helper URL-encoding the given string. Suggested
+     * return-to-line character are replaced by the '%0A' sequence.
+     *
+     * @param in Source
+     * @return URL-encoded string
+     */
+    public static String prepareMailToBody(String in) {
+        return urlEncodeValue(in, false);
     }
 }

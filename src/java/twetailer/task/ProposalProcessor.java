@@ -218,13 +218,13 @@ public class ProposalProcessor {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>rateProposal1", rateProposal1.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>rateProposal3", rateProposal3.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>rateProposal5", rateProposal5.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                    put("command>confirmProposal", BaseConnector.prepareMailToBody(confirmProposal)).
+                    put("command>declineProposal", BaseConnector.prepareMailToBody(declineProposal)).
+                    put("command>rateProposal1", BaseConnector.prepareMailToBody(rateProposal1)).
+                    put("command>rateProposal3", BaseConnector.prepareMailToBody(rateProposal3)).
+                    put("command>rateProposal5", BaseConnector.prepareMailToBody(rateProposal5)).
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand));
 
                 String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);
 

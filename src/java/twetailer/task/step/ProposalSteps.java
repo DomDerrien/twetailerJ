@@ -419,8 +419,8 @@ public class ProposalSteps extends BaseSteps {
                     subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                     msgGen.
-                        put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                        put("command>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                        put("command>threadSubject", BaseConnector.prepareMailToSubject(MailConnector.prepareSubjectAsResponse(subject, locale))).
+                        put("command>closeDemand", BaseConnector.prepareMailToBody(closeDemand));
 
                     try {
                         communicateToConsumer(
@@ -505,9 +505,9 @@ public class ProposalSteps extends BaseSteps {
                     subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                     msgGen.
-                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+                    put("command>updateDemand", BaseConnector.prepareMailToBody(updateDemand));
 
                     try {
                         communicateToConsumer(
@@ -668,9 +668,9 @@ public class ProposalSteps extends BaseSteps {
                     subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                     msgGen.
-                        put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                        put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                        put("command>closeDemand", closeDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                        put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                        put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+                        put("command>closeDemand", BaseConnector.prepareMailToBody(closeDemand));
 
                     String message = msgGen.getMessage(MessageId.PROPOSAL_CONFIRMATION_OK_TO_CONSUMER);
 
@@ -713,9 +713,9 @@ public class ProposalSteps extends BaseSteps {
                     subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                     msgGen.
-                        put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                        put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                        put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                        put("command>threadSubject", BaseConnector.prepareMailToSubject(MailConnector.prepareSubjectAsResponse(subject, locale))).
+                        put("command>cancelProposal", BaseConnector.prepareMailToBody(cancelProposal)).
+                        put("command>closeProposal", BaseConnector.prepareMailToBody(closeProposal));
 
                     communicateToConsumer(
                             msgGen.getCommunicationChannel(),
@@ -815,10 +815,10 @@ public class ProposalSteps extends BaseSteps {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                    put("command>confirmProposal", confirmProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>declineProposal", declineProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                    put("command>confirmProposal", BaseConnector.prepareMailToBody(confirmProposal)).
+                    put("command>declineProposal", BaseConnector.prepareMailToBody(declineProposal)).
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand));
 
                 String message = msgGen.getMessage(MessageId.PROPOSAL_RATING_OK_TO_CONSUMER);
 
@@ -860,9 +860,9 @@ public class ProposalSteps extends BaseSteps {
                 subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                    put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(MailConnector.prepareSubjectAsResponse(subject, locale))).
+                    put("command>cancelProposal", BaseConnector.prepareMailToBody(cancelProposal)).
+                    put("command>closeProposal", BaseConnector.prepareMailToBody(closeProposal));
 
                 communicateToConsumer(
                         msgGen.getCommunicationChannel(),

@@ -183,9 +183,9 @@ public class DemandValidator {
                 String reSubject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                 msgGen.
-                    put("command>threadSubject", reSubject.replaceAll(" ", "%20")).
-                    put("command>cancelDemand", cancelDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A")).
-                    put("command>updateDemand", updateDemand.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A").replaceAll("\\{", "%7B").replaceAll("\\}", "%7D"));
+                    put("command>threadSubject", BaseConnector.prepareMailToSubject(reSubject)).
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+                    put("command>updateDemand", BaseConnector.prepareMailToBody(updateDemand));
 
                 String message = msgGen.getMessage(isNewDemand ? MessageId.DEMAND_CREATION_OK_TO_CONSUMER: MessageId.DEMAND_UPDATE_OK_TO_CONSUMER);
 

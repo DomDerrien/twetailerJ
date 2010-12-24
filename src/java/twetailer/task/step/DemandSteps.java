@@ -439,8 +439,8 @@ public class DemandSteps extends BaseSteps {
                     subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
                     msgGen.
-                        put("command>threadSubject", MailConnector.prepareSubjectAsResponse(subject, locale).replaceAll(" ", "%20")).
-                        put("command>closeProposal", closeProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                        put("command>threadSubject", BaseConnector.prepareMailToSubject(MailConnector.prepareSubjectAsResponse(subject, locale))).
+                        put("command>closeProposal", BaseConnector.prepareMailToBody(closeProposal));
 
                     try {
                         communicateToConsumer(

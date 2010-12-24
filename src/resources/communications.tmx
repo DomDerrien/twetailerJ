@@ -382,9 +382,12 @@
         <tu tuid="command_message_body_proposal_rate3" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
+            <note>
+                IMPORTANT: double-escaping of the suggested return to line character needed as the string is processed twice!
+            </note>
             <tuv xml:lang="en">
                 <seg>
-                    rate proposal:{proposal>key} score: :-| comment: {command>footer}
+                    rate proposal:{proposal>key} score: :-\\| comment: {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -1995,7 +1998,7 @@
                     </p>
                     <ol>
                         <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">I'm happy</a></li>
-                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
+                        <li>:-\\| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
                         <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">I'm disappointed</a></li>
                     </ol>
                     <p>More store information:</p>
@@ -2344,7 +2347,7 @@
                     </p>
                     <ol>
                         <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">I'm happy</a></li>
-                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
+                        <li>:-\\| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
                         <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">I'm disappointed</a></li>
                     </ol>
                     <p>More store information:</p>

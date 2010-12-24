@@ -487,4 +487,35 @@ public class TestBaseConnector {
         MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
         BaseConnector.communicateToCCed(Source.twitter, twitterId, subject, message, Locale.ENGLISH);
     }
+
+    @Test
+    public void testCheckMessageLengthX() {
+        String message = "blah :-\\| blah|blah \r \n \t  blah  blah ";
+        List<String> output = BaseConnector.checkMessageLength(message, 1000);
+        assertNotNull(output);
+        assertEquals(2, output.size());
+        assertEquals("blah :-| blah", output.get(0));
+        assertEquals("blah blah blah", output.get(1)); // trimmed
+    }
+
+    @Test
+    public void testEncodeCommandI() {
+        String in = "blah\\|blah";
+        assertEquals("blah%7Cblah", BaseConnector.urlEncodeValue(in, true));
+        assertEquals("blah%7Cblah", BaseConnector.urlEncodeValue(in, false));
+    }
+
+    @Test
+    public void testEncodeCommandII() {
+        String in = "blah|blah";
+        assertEquals("blah%7Cblah", BaseConnector.urlEncodeValue(in, true));
+        assertEquals("blah%0Ablah", BaseConnector.urlEncodeValue(in, false));
+    }
+
+    @Test
+    public void testEncodeCommandIII() {
+        String in = "blah \\| blah|blah \r \n \t  blah";
+        assertEquals("blah%20%7C%20blah%7Cblah%20blah", BaseConnector.urlEncodeValue(in, true));
+        assertEquals("blah%20%7C%20blah%0Ablah%20blah", BaseConnector.urlEncodeValue(in, false));
+    }
 }

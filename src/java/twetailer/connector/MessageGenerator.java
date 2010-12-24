@@ -366,7 +366,7 @@ public class MessageGenerator {
             String score = noScore;
             switch(proposal.getScore()) {
             case 1: score = ":-("; break;
-            case 2: case 3: score = ":-|"; break;
+            case 2: case 3: score = ":-\\|"; break;
             case 4: case 5: score = ":-)"; break;
             }
             parameters.put(prefix + Proposal.SCORE, score);

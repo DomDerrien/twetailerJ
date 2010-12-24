@@ -208,9 +208,9 @@ public class ProposalValidator {
             subject = MailConnector.prepareSubjectAsResponse(subject, locale);
 
             msgGen.
-                put("command>threadSubject", subject.replaceAll(" ", "%20")).
-                put("command>cancelProposal", cancelProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
-                // put("command>updateProposal", updateProposal.replaceAll(" ", "%20").replaceAll(BaseConnector.ESCAPED_SUGGESTED_MESSAGE_SEPARATOR_STR, "%0A"));
+                put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                put("command>cancelProposal", BaseConnector.prepareMailToBody(cancelProposal));
+                // put("command>updateProposal", BaseConnector.prepareMailToLink(updateProposal));
 
             String message = msgGen.getMessage(isNewProposal ? MessageId.PROPOSAL_CREATION_OK_TO_ASSOCIATE: MessageId.PROPOSAL_UPDATE_OK_TO_ASSOCIATE);
 
