@@ -1332,6 +1332,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
@@ -1359,13 +1360,12 @@
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
-                        Normallement, nous allons continuer à vous envoyer des Propositions jusqu'à ce vous demandiez de <strong>stopper le flux des Propositions</strong>.
-                        Pour nous aider à améliorer le service, s'il vous plaît, cliquer sur un des liens suivant pour évaluer la présente Proposition:
+                        Pour améliorer la gestion de vos Propositions, veuillez les annoter en cliquant un des liens suivants
                     </p>
                     <ol>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">:-) J'en suis satisfait</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-| Je ne suis ni satisfait ni déçu</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( J'en suis déçu</a></li>
+                        <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">J'en suis satisfait</a></li>
+                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">Je ne suis ni satisfait ni déçu</a></li>
+                        <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">J'en suis déçu</a></li>
                     </ol>
                     <p>Informations sur le commerce:</p>
                     <ul>
@@ -1374,6 +1374,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
@@ -1470,6 +1471,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
@@ -1566,6 +1568,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
@@ -1593,13 +1596,12 @@
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
-                        Normallement, nous allons continuer à vous envoyer des Propositions jusqu'à ce vous demandiez de <strong>stopper le flux des Propositions</strong>.
-                        Pour nous aider à améliorer le service, s'il vous plaît, cliquer sur un des liens suivant pour évaluer la présente Proposition:
+                        Pour améliorer la gestion de vos Propositions, veuillez les annoter en cliquant un des liens suivants
                     </p>
                     <ol>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">:-) J'en suis satisfait</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-| Je ne suis ni satisfait ni déçu</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( J'en suis déçu</a></li>
+                        <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">J'en suis satisfait</a></li>
+                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">Je ne suis ni satisfait ni déçu</a></li>
+                        <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">J'en suis déçu</a></li>
                     </ol>
                     <p>Informations sur le commerce:</p>
                     <ul>
@@ -1608,6 +1610,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
@@ -1706,6 +1709,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
@@ -1794,6 +1798,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
@@ -1875,6 +1880,7 @@
                         <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
                         <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
                         Si vous n'êtes plus intéressé à recevoir de notification pour cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:Support@anothersocialeconomy.com?body=SVP, retirez moi de la liste des notifiés.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">SVP retirer mes coordonnées</a>.
@@ -2270,10 +2276,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {demand>owner>name}, the rate for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
-                    score:{proposal>score} comment:{proposal>comment}
+                    :) Bonjour {demand>owner>name}, l'évaluation de la proposition{proposal>key} a été prise en compte...
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
             </tuv>
         </tu>
@@ -2282,37 +2288,77 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
-                        <li>Details: <strong>{proposal>criteria}</strong></li>
-                        <li>More options: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
-                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
-                    </ul>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
+                        <li>Évaluation: <strong>{proposal>score}</strong> -- Commentaire: {proposal>comment}</li>
+                    </ul>aire
                     <p>
-                        Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal {proposal>key}</a></strong>,
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">decline</a> it, or,
-                        simply wait to see if any others come in.
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
+                        cette proposition {proposal>key}, la <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">décliner</a>, ou
+                        simplement attendre encore que d'autres soient soumises.
                     </p>
-                    <p>More store information:</p>
+                    <p>Informations sur le commerce:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
-                        <li>Telephone: {store>phoneNb}</li>
-                        <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
-                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
-                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
-                        if you've received this message in error, click
-                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
+               </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_cardealer_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
+                    <ul>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
+                        <li>Évaluation: <strong>{proposal>score}</strong> -- Commentaire: {proposal>comment}</li>
+                    </ul>aire
+                    <p>
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirmer</a></strong>
+                        cette proposition {proposal>key} si vous décidez de choisir cette proposition.
+                    </p>
+                    <p>Informations sur le commerce:</p>
+                    <ul>
+                        <li>Adresse: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Téléphone: {store>phoneNb}</li>
+                        <li>Taux de transactions complétées par le commerce: {store>closedProposalNb} pour {store>publishedProposalNb}, ou {store>closedProposalPercentage}%</li>
+                        <li>Commerce enregistré par <a href="{registrar>url}">{registrar>name}</a></li>
+                    </ul>
+                    <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>
@@ -2321,10 +2367,10 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    :-) Hi {proposal>owner>name}, listing just rated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
-                    score:{proposal>score} comment:{proposal>comment}
+                    :-) Bonjour {proposal>owner>name}, voici la proposition:{proposal>key} qui vient juste d'être évaluée...|
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
             </tuv>
         </tu>
@@ -2333,25 +2379,30 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Hi <strong>{proposal>owner>name}</strong>,</p>
-                    <p>Your <strong>proposal {proposal>key}</strong> has been rated by the Consumer:</p>
+                    <p>Bonjour {proposal>owner>name},</p>
+                    <p>Votre proposition {proposal>key} vient d'être évaluée par le demandeur:</p>
                     <ul>
-                        <li>Details: <strong>{proposal>criteria}</strong></li>
-                        <li>More options: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
-                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
-                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
-                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
-                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
+                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
+                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Date limite: <strong>{proposal>dueDate}</strong></li>
+                        <li>Évaluation: <strong>{proposal>score}</strong> -- Commentaire: {proposal>comment}</li>
                     </ul>
                     <p>
-                        If for any reason, you can longer offer this proposal, you can send an email by clicking
-                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Cancel proposal</a>, or,
-                        if you've received this message in error, click
-                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding proposal:{proposal>key}">There's been some kind of mistake</a> :-(
+                        Veuillez <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>closeProposal}&amp;subject={command>threadSubject}">compléter</a></strong>
+                        le cycle de la proposition {proposal>key} une fois l'achat complété. Cela améliorera votre taux de transactions complétées.
+                    </p>
+                    <p>Merci de gérer les demandes des consommateurs avec AnotherSocialEconomy.com.</p>
+                    <p>
+                        Si vous ne pouvez plus offrir le départ de golf, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:eztoff@anothersocialeconomy.appspotmail.com?body={command>cancelProposal}&amp;subject={command>threadSubject}">Annuler la proposition</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
                     </p>
                     {message>footer}
-                    <p>Demand: {proposal>demandKey}, Proposal: {proposal>key}.</p>
+                    <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
             </tuv>
         </tu>

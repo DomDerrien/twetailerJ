@@ -1944,6 +1944,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -1990,13 +1991,12 @@
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
-                        By default, we will continue sending you Proposals until you click <strong>please stop sending me more Proposals</strong>.
-                        However in the meantime, please help us improve our service by clicking on one of the following ratings for this Proposal:
+                        In order to better manage your Proposals, please click on one of the following ratings:
                     </p>
                     <ol>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">:-) I'm happy</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-| I'm neither happy, nor disappointed</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( I'm disappointed</a></li>
+                        <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">I'm happy</a></li>
+                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
+                        <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">I'm disappointed</a></li>
                     </ol>
                     <p>More store information:</p>
                     <ul>
@@ -2005,6 +2005,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -2143,6 +2144,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
@@ -2291,6 +2293,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -2337,13 +2340,12 @@
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
-                        By default, we will continue sending you Proposals until you click <strong>please stop sending me more Proposals</strong>.
-                        However in the meantime, please help us improve our service by clicking on one of the following ratings for this Proposal:
+                        In order to better manage your Proposals, please click on one of the following ratings:
                     </p>
                     <ol>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">:-) I'm happy</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-| I'm neither happy, nor disappointed</a></li>
-                        <li><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( I'm disappointed</a></li>
+                        <li>:-) <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal5}&amp;subject={command>threadSubject}">I'm happy</a></li>
+                        <li>:-| <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">I'm neither happy, nor disappointed</a></li>
+                        <li>:-( <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">I'm disappointed</a></li>
                     </ol>
                     <p>More store information:</p>
                     <ul>
@@ -2352,6 +2354,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -2494,6 +2497,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:Support@anothersocialeconomy.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
@@ -2640,6 +2644,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">cancel</a>, or,
@@ -2780,6 +2785,7 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in being notified, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body=Please remove me from the notification list&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">Please remove</a>, or,
@@ -3508,6 +3514,60 @@
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
+                    <p>
+                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
+                        if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {demand>key}, Proposal: {proposal>key}.</p>
+               </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_cardealer_proposal_rating_ackToConsumer" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal rating.|
+                {proposal>*}: proposal attributes
+                {demand>*}: proposal attributes
+                {demand>owner>name}: name of the demand owner
+                {demand>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong>,</p>
+                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <ul>
+                        <li>Details: <strong>{proposal>criteria}</strong></li>
+                        <li>More options: <strong>{proposal>metadata}</strong></li>
+                        <li>Quantity: <strong>{proposal>quantity}</strong></li>
+                        <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
+                        <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
+                        <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
+                    </ul>
+                    <p>
+                        Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal {proposal>key}</a></strong>
+                        if you decide to have a deal with the Store for this demand.
+                    </p>
+                    <p>More store information:</p>
+                    <ul>
+                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Telephone: {store>phoneNb}</li>
+                        <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
+                        <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
+                    </ul>
+                    <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,

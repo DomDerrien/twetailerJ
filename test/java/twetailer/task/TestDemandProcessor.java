@@ -1377,6 +1377,7 @@ public class TestDemandProcessor {
         consumerDemand.setLocationKey(locationKey);
         consumerDemand.setRange(demandRange);
         consumerDemand.setState(State.published);
+        consumerDemand.setSource(Source.simulated);
 
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -1455,6 +1456,8 @@ public class TestDemandProcessor {
             }
         });
 
+        BaseSteps.setMockSettingsOperations(new SettingsOperations());
+
         CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
 
         DemandProcessor.process(demandKey, true);
@@ -1493,6 +1496,7 @@ public class TestDemandProcessor {
         consumerDemand.setLocationKey(locationKey);
         consumerDemand.setRange(demandRange);
         consumerDemand.setState(State.published);
+        consumerDemand.setSource(Source.simulated);
 
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -1572,6 +1576,8 @@ public class TestDemandProcessor {
                 return rawCommand;
             }
         });
+
+        BaseSteps.setMockSettingsOperations(new SettingsOperations());
 
         DemandProcessor.process(demandKey, true);
 

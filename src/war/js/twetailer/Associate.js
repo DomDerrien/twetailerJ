@@ -245,11 +245,11 @@
         dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
         var scoreValue = _getLabel('console', 'core_proposalForm_proposalNoScoreYet');
         switch(proposal.score) {
-            case 1: scoreValue = ':-(';
-            case 2: scoreValue = ':-|';
-            case 3: scoreValue = ':-|';
-            case 4: scoreValue = ':-)';
-            case 5: scoreValue = ':-)';
+            case 1: scoreValue = ':-('; break;
+            case 2: scoreValue = ':-|'; break;
+            case 3: scoreValue = ':-|'; break;
+            case 4: scoreValue = ':-)'; break;
+            case 5: scoreValue = ':-)'; break;
         }
         dijit.byId('proposal.score').set('value', scoreValue);
         var commentWidget = dijit.byId('proposal.comment');
