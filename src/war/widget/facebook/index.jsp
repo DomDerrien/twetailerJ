@@ -239,7 +239,7 @@
         <div class="divider">&nbsp;</div>
         <div id="info"><%= LabelExtractor.get(ResourceFileId.third, "fbc_menu_footer", locale) %></div>
         <div class="divider">&nbsp;</div>
-        <div style="text-align:center;"><iframe src="https://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fanothersocialeconomy.appspot.com%2Ffacebook%2Fwidget%2F&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></div>
+        <div style="text-align:center;"><iframe src="https://www.facebook.com/plugins/like.php?href=<%= ApplicationSettings.get().getApplicationWebsite() %>facebook%2Fwidget%2F&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:21px;" allowTransparency="true"></iframe></div>
         <div id="info" style="text-align:center;"><button dojoType="dijit.form.Button" onclick="window.location.reload();" type="button">Refresh data</button></div>
     </div>
 

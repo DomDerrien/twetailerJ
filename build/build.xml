@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="43"
+        value="44"
     />
 
     <property name="app.companyName"
@@ -35,16 +35,6 @@
     <property name="app.productName"
         description="Product name"
         value="AnotherSocialEconomy.com"
-    />
-
-    <property name="app.productEmailDomain"
-        description="Product e-mail domain"
-        value="anothersocialeconomy.appspotmail.com"
-    />
-
-    <property name="app.productWebsite"
-        description="Product website"
-        value="http://anothersocialeconomy.com/"
     />
 
     <property name="app.appEngineId"
@@ -379,9 +369,7 @@
     <filterchain id="genericFilterChain">
         <replacetokens>
             <token key="app.release" value="${app.release}" />
-            <token key="app.productWebsite" value="${app.productWebsite}" />
             <token key="app.productName" value="${app.productName}" />
-            <token key="app.productEmailDomain" value="${app.productEmailDomain}" />
             <token key="app.appEngineId" value="${app.appEngineId}" />
             <token key="app.packageName" value="${app.packageName}" />
             <token key="app.contextRoot" value="${app.contextRoot}" />

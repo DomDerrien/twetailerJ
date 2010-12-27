@@ -99,17 +99,6 @@
             id="centerZone"
             region="center"
         >
-            <p align="center">
-                Administrative console:
-                <a href="http://appengine.google.com/">hosted</a> --
-                <a href="http://127.0.0.1:9999/_ah/admin">local</a>;
-                Registration console:
-                <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
-                <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;
-                Monitoring console:
-                <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
-                <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.
-            </p>
             <fieldset class="entityInformation" id="consumerInformationFieldset" style="float:left;margin:5px;">
                 <legend>
                     Consumer Information

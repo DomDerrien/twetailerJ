@@ -30,6 +30,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -675,7 +676,7 @@ public class TestCommandLineParser {
 
     @Test
     public void testParseActionIIe() throws ClientException, ParseException {
-        String url = "http://anothersocialeconomy.com/";
+        String url = ApplicationSettings.get().getProductWebsite();
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " www " + url, Locale.ENGLISH);
         assertEquals(Action.www.toString(), data.getString(Command.ACTION));
         assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());

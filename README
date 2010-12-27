@@ -3,8 +3,8 @@ Required tools
 ========================================
 
 - SUN Java SDK 1.6: from http://java.sun.com/javase/downloads/index.jsp
-- Eclipse 3.5+: from http://www.eclipse.org/downloads/
-- MSysGit 1.6: from http://code.google.com/p/msysgit/ -- follow directions from http://help.github.com/win-git-installation/
+- Eclipse 3.5+: from http://www.eclipse.org/downloads/ or Aptana 2.0+: from http://aptana.com/products/studio2/download
+- Linux/Ubuntu or Windows/MSysGit 1.6: from http://code.google.com/p/msysgit/ -- follow directions from http://help.github.com/win-git-installation/
 
 ========================================
 Initial development environment setup
@@ -12,7 +12,7 @@ Initial development environment setup
 
 * "~twetailerJ" is considered being the twetailerJ home directory, probably something like "c:\workspaces\twetailerJ".
 
-1. Install the Java SDK, Eclipse, and MSysGit
+1. Install the Java SDK, Eclipse, and MSysGit (last one if you're on Windows)
 
 2. For the github.com page, fork the twetailerJ project (details on http://help.github.com/forking/)
 3. Add the git alias: git remote add dom git://github.com/DomDerrien/twetailerJ.git
@@ -39,10 +39,39 @@ Refresh from git hub before day-to-day development
     2.3 Start App Engine server: "build\run-dev-server.bat"
     2.4 Open http://localhost:9999/ for local Console, or, http://localhost:9999/_ah/admin for local Google App Engine 
 
-========================================
+============================
 Work and submit your updates
-========================================
+============================
 
 Please, look at the webcast http://www.oreillynet.com/pub/e/1394.
 
 If needed, follow-up with questions added to http://twetailer.cyn.in/home/developers/oreilly-git-in-one-hour.
+
+==========================
+Pre-production environment
+==========================
+
+The production-ready application is deployed with the App Engine identifier 'anothersocialeconomy'.
+This is the default identifier. However, it's possible to deploy the application with the 
+identifier 'twetailer' (all corresponding entry points use 'twetailer' in place of 
+'anothersocialeconomy').
+
+=> Override the App Engine identifier in your ~/local.host.properties file:
+  app.appEngineId = twetailer
+
+To clean-up the database, as after a series of tests for example, you can run the following URLs,
+select all returned results, and delete all of them.
+
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Consumer&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Demand&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Location&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Proposal&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM RawCommand&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM SaleAssociate&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Seed&limit=200
+https://appengine.google.com/datastore/explorer?app_id=twetailer&viewby=gql&query=SELECT *FROM Store&limit=200
+
+The path to create a new environment:
+- login to twetailer.appspot.com/console/ with one account -- this will create a Consumer record
+- open twetailer.appspot.com/_admin/registration.jsp
+- create a Location, a Store, and a SaleAssociate record (link this one to the Consumer record)

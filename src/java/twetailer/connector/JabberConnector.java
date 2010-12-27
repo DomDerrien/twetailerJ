@@ -24,7 +24,7 @@ public class JabberConnector {
     /**
      * Use the Google App Engine API to get the Jabber message carried by the HTTP request
      *
-     * @param request Request parameters submitted by the Google App Engine in response to the reception of an instant message sent to twetailer@appspot.com
+     * @param request Request parameters submitted by the Google App Engine in response to the reception of an instant message sent to anothersocialeconomy@appspot.com
      * @return Extracted instant message information
      *
      * @throws IOException If the HTTP request stream parsing fails

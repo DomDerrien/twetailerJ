@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 
+import twetailer.validator.ApplicationSettings;
+
 import com.google.appengine.api.urlfetch.FetchOptions;
 import com.google.appengine.api.urlfetch.HTTPHeader;
 import com.google.appengine.api.urlfetch.HTTPMethod;
@@ -88,7 +90,7 @@ public class FacebookConnector {
     public static final String FB_LCLHOST_APP_URL = "http://apps.facebook.com/ase-localhost/";
     public static final String FB_VRTBOX_APP_URL = "http://apps.facebook.com/ase-virtualbox/";
 
-    public static final String ASE_MAIN_APP_URL = "http://anothersocialeconomy.appspot.com/widget/facebook/";
+    public static final String ASE_MAIN_APP_URL = ApplicationSettings.get().getApplicationWebsite() + "widget/facebook/";
     public static final String LCLHOST_MAIN_APP_URL = "http://localhost:9999/widget/facebook/";
     public static final String VRTBOX_MAIN_APP_URL = "http://10.0.2.2:9999/widget/facebook/";
 

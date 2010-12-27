@@ -69,10 +69,10 @@
         ></iframe>
     </div>
     <h1 style="background-color: white; color: black; font-weight: bold; font-size: 30px; line-height: 36px; font-family: 'Helvetica Neue', Arial, Helvetica, 'Nimbus Sans L', sans-serif;">AnotherSocialEconomy</h1>
-    <p><a href="http://anothersocialeconomy.com"><img src="http://anothersocialeconomy.com/wp-content/uploads/2010/08/cropped-iStock_000006943675Small.jpg" style="border-top: 4px solid black; border-bottom: 4px solid black;"/></a></p>
+    <p><a href="<%= ApplicationSettings.get().getProductWebsite() %>"><img src="<%= ApplicationSettings.get().getProductWebsite() %>wp-content/uploads/2010/08/cropped-iStock_000006943675Small.jpg" style="border-top: 4px solid black; border-bottom: 4px solid black;"/></a></p>
     <h1>Widget context</h1>
     <p>
-        <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a> (ASE) provides a multi-channel engine (e-mail, Twitter, Facebook, SMS, Android, iPhone, Web, etc.).
+        <a href="<%= ApplicationSettings.get().getProductWebsite() %>">AnotherSocialEconomy.com</a> (ASE) provides a multi-channel engine (e-mail, Twitter, Facebook, SMS, Android, iPhone, Web, etc.).
         <a href="http://eztoff.com/">ezToff</a> is a specific implementation of ASE to the golf world!
         <b>ezToff</b> offers its widget to help players initiating their requests.
         The widget can be embedded on any Web page of the participating golf courses or associations, being given the right referral identifier is used.
@@ -209,7 +209,7 @@
         In the example below, the &lt;iframe/&gt; background color is set to 'transparent' and color is applied to the &lt;iframe/&gt; itself, with drop-shadow.
     </p>
     <textarea id="cdsnppt" rows="5" style="border: 1px solid gray; width: 100%;">&nbsp;&nbsp;&lt;iframe
-&nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?background-color=transparent"
+&nbsp;&nbsp;&nbsp;&nbsp;src="<%= ApplicationSettings.get().getApplicationWebsite() %>widget/ase.jsp?background-color=transparent"
 &nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff800; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"
 &nbsp;&nbsp;&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"
 &nbsp;&nbsp;&gt;&lt;/iframe&gt;</textarea>
@@ -246,7 +246,7 @@
     <ul>
         <li>
             <a
-                href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='https://anothersocialeconomy.appspot.com/widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
+                href="javascript:(function(){var dc=document,js=dc.createElement('script');js.src='<%= ApplicationSettings.get().getApplicationWebsite() %>widget/widget-loader.js';js.type='text/javascript';dc.getElementsByTagName('head')[0].appendChild(js);})()"
                 style="border:1px solid grey;background-color:#fff800;padding:3px 5px;"
             >ASE floating tab</a>
             &mdash; ready to be dropped on your bookmark toolbar
@@ -379,7 +379,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
     };
     var generateCodeSnippet = function() {
         var code = '&nbsp;&nbsp;&lt;iframe\n' +
-                   '&nbsp;&nbsp;&nbsp;&nbsp;src="https://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]"\n'+
+                   '&nbsp;&nbsp;&nbsp;&nbsp;src="<%= ApplicationSettings.get().getApplicationWebsite() %>widget/ase.jsp?[plchldr]"\n'+
                    '&nbsp;&nbsp;&nbsp;&nbsp;style="width: 250px; height: 400px; border: 0 none; background-color: #fff800; -moz-box-shadow: 5px 5px 5px #aaa; -webkit-box-shadow: 5px 5px 5px #aaa;"\n' +
                    '&nbsp;&nbsp;frameborder="0" width="250" height="400" border="0"\n' +
                    '&nbsp;&nbsp;&gt;&lt;/iframe&gt;';
@@ -394,7 +394,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
             dc = document,
             dv = dc.getElementById(id),
             txt = window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : '',
-            src = 'https://anothersocialeconomy.appspot.com/widget/ase.jsp?[plchldr]&criteria=' + escape(txt),
+            src = '<%= ApplicationSettings.get().getApplicationWebsite() %>widget/ase.jsp?[plchldr]&criteria=' + escape(txt),
             ifr;
         if (dv) {
             dv.style.display = '';
@@ -471,7 +471,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
     <h1>Live widgets &amp; associated consoles</h1>
 
     <ul>
-        <li>This documentation on <a href="https://anothersocialeconomy.appspot.com/widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
+        <li>This documentation on <a href="<%= ApplicationSettings.get().getApplicationWebsite() %>widget/sample.jsp">appspot.com</a> or <a href="http://127.0.0.1:9999/widget/sample.jsp">dev server</a>.</li>
         <li>ASE widget alone: <a href="/widget/ase.jsp">normal</a> -- <a href="/widget/ase.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
         <li>ezToff page alone: <a href="/widget/eztoff.jsp">normal</a> -- <a href="/widget/eztoff.jsp?color=yellow&color-title=green&color-link=yellow&color-odd-row=yellow&background-color=white&background-color-odd-row=white&font-family=courier&font-size=22pt&font-family-title=courier&font-family-brand=courier&font-size-title=42pt&background-image=http://www.dvd-ppt-slideshow.com/images/ppt-background/background-5.jpg">custom</a>.</li>
         <li>ASE console: <a href="/console/">Consumer</a> -- <a href="/console/associate.jsp">Associate</a>.</li>

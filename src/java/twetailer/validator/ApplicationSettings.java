@@ -34,13 +34,13 @@ public class ApplicationSettings {
 
     protected final static String MAIN_PAGE_URL_KEY = "mainPageURL";
 
-    public final static String DEFAULT_LOGO_URL = "http://anothersocialeconomy.appspot.com/images/logo/logo-48x48.png";
+    public final static String DEFAULT_LOGO_URL = "/images/logo/logo-48x48.png";
 
     private String logoURL = DEFAULT_LOGO_URL;
 
     protected final static String LOGO_URL_KEY = "logoURL";
 
-    public final static String DEFAULT_PRODUCT_EMAIL_DOMAIN = "anothersocialeconomy.com";
+    public final static String DEFAULT_PRODUCT_EMAIL_DOMAIN = "anothersocialeconomy.appspotmail.com";
 
     private String productEmailDomain = DEFAULT_PRODUCT_EMAIL_DOMAIN;
 
@@ -57,6 +57,12 @@ public class ApplicationSettings {
     private String productWebsite = DEFAULT_PRODUCT_WEBSITE;
 
     protected final static String PRODUCT_WEBSITE_KEY = "productWebsite";
+
+    public final static String DEFAULT_APPLICATION_WEBSITE = "https://anothersocialeconomy.appspot.com/";
+
+    private String applicationWebsite = DEFAULT_APPLICATION_WEBSITE;
+
+    protected final static String APPLICATION_WEBSITE_KEY = "applicationWebsite";
 
     /**
      * Boolean used in the JSP file to decide if the Dojo library
@@ -136,6 +142,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Get the application website URL
+     *
+     * @return URL
+     */
+    public String getApplicationWebsite() {
+        return applicationWebsite;
+    }
+
+    /**
      * Singleton accessor
      * @return Container for the application settings
      */
@@ -210,6 +225,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 productWebsite = DEFAULT_PRODUCT_WEBSITE;
+            }
+            try {
+                applicationWebsite = appSettings.getString(APPLICATION_WEBSITE_KEY);
+            }
+            catch(Exception ex) {
+                applicationWebsite = DEFAULT_APPLICATION_WEBSITE;
             }
         }
         catch(Exception ex) {

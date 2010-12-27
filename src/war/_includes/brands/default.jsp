@@ -8,6 +8,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.LocaleController"
+    import="twetailer.validator.ApplicationSettings"
 %><%
 // Locale detection
 String localeId = request.getParameter("localeId");
@@ -22,7 +23,7 @@ Locale locale = LocaleController.getLocale(localeId);
                         title="<%= LabelExtractor.get("product_name", locale) %>"
                     />
                     <a
-                        href="http://anothersocialeconomy.com/"
+                        href="<%= ApplicationSettings.get().getProductWebsite() %>"
                         title="<%= LabelExtractor.get("product_name", locale) %>"
                     ><%= LabelExtractor.get("product_name", locale) %></a>
                 </h1>

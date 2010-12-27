@@ -342,13 +342,13 @@ public class MailConnector {
 
         MimeMessage messageToForward = new MimeMessage(session);
         try {
-            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
+            messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain(), "ASE admin notifier"));
         }
         catch (UnsupportedEncodingException ex) {
             log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
-            messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
+            messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()));
         }
-        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
+        messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
         messageToForward.setSubject((from == null ? "" : "Fwd: (" + from + ") ") + subject);
         setContentAsPlainTextAndHtml(messageToForward, body);
 
@@ -381,7 +381,7 @@ public class MailConnector {
                 log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
                 messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
             }
-            messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins")); // "catch-all@anothersocialeconomy.com"));
+            messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
             messageToForward.setSubject("Silent copy");
 
             StringBuilder body = new StringBuilder();

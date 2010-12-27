@@ -104,18 +104,6 @@
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button">New Store >></button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button>
                         </p>
-                        <p style="font-weight:bold;">Other tools:</p>
-                        <ul>
-                            <li>Administrative console:
-                            <a href="https://appengine.google.com/dashboard?app_id=anothersocialeconomy">hosted</a> --
-                            <a href="http://127.0.0.1:9999/_ah/admin">local</a>;</li>
-                            <li>Registration console:
-                            <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp">hosted</a> --
-                            <a href="http://127.0.0.1:9999/_admin/registration.jsp">local</a>;</li>
-                            <li>Monitoring console:
-                            <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp">hosted</a> --
-                            <a href="http://127.0.0.1:9999/_admin/monitoring.jsp">local</a>.</li>
-                        </ul>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">
@@ -128,7 +116,7 @@
                             </div>
                             <div>
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
-                                <select dojoType="dijit.form.Select" name="countryCode">
+                                <select dojoType="dijit.form.Select" id="<%= Location.COUNTRY_CODE %>" name="<%= Location.COUNTRY_CODE %>">
                                     <option value="CA" selected="true">Canada</option>
                                     <option value="US">United States of America</option>
                                 </select>
@@ -171,6 +159,17 @@
                             <div>
                                 <label for="<%= Store.REVIEW_SYSTEM_KEY %>">Review System Key</label><br/>
                                 <input dojoType="dijit.form.TextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" style="width:10em;" type="text" value="" />
+                            </div>
+                            <div>
+                                <label for="<%= Store.STATE %>">State</label><br/>
+                                <select dojoType="dijit.form.Select" name="<%= Store.STATE %>">
+                                    <option value="referenced" selected="true">referenced</option>
+                                    <option value="declined">declined</option>
+                                    <option value="inProgress">inProgress</option>
+                                    <option value="waiting">waiting</option>
+                                    <option value="active">active</option>
+                                    <option value="excluded">excluded</option>
+                                </select>
                             </div>
                             <div>
                                 <label for="<%= Store.URL %>">Website URL</label><br/>
