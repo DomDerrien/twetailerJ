@@ -274,23 +274,26 @@
  *  It's important to use your own referralId for tracking and billing purposes. Ask for
  *  one by sending an e-mail to support@anothersocialeconomy.com
  *
-var ase_config = {
-    lg: 'en',
-    hashtag: 'cardealer',
-    referralId: '350001-3681422170717618633-00',
-    postalCode: 'H9B 2C8',
-    countryCode: 'CA',
-    color: 'white',
-    'color-brand': 'white',
-    'color-title': 'white',
-    'color-odd-row': 'black',
-    'color-link': 'white !important',
-    'background-color': '#004A80 !important',
-    'background-color-odd-row': 'lightgrey',
-    'border': '2px solid grey',
-    'metadata.make': 'Volkswagen',
-    'metadata.model.placeHolder': 'Jetta TDI'
-};
+var params = window.location.search,
+    ase_dbg = params != null && params.indexOf && params.indexOf('ase_dbg') != -1,
+    ase_config = {
+        lg: 'en',
+        hashtag: 'cardealer',
+        referralId: '350001-3681422170717618633-00',
+        postalCode: 'H9B 2C8',
+        countryCode: 'CA',
+        color: 'white',
+        'color-brand': 'white',
+        'color-title': 'white',
+        'color-odd-row': 'black',
+        'color-link': 'white !important',
+        'background-color': '#004A80 !important',
+        'background-color-odd-row': 'lightgrey',
+        'border': '2px solid grey',
+        'metadata.make': 'Volkswagen',
+        'metadata.model.placeHolder': 'Jetta TDI',
+        'debug': ase_dbg
+    };
 (function(){
     var newScript = document.createElement('script');
     newScript.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'anothersocialeconomy.appspot.com/widget/widget-loader.js',
