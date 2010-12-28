@@ -3,6 +3,7 @@ package twetailer.connector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -681,5 +682,245 @@ public class TestMailConnector {
         assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward(null, Locale.ENGLISH));
         assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward("", Locale.ENGLISH));
         assertEquals(defaultSubject, MailConnector.prepareSubjectAsForward("     ", Locale.ENGLISH));
+    }
+
+    @Test(expected=java.io.IOException.class)
+    public void defect_7845587_I() throws IOException, MessagingException {
+        // https://www.pivotaltracker.com/story/show/7845587
+        final MockServletInputStream stream = new MockServletInputStream();
+        stream.setData(
+            "Delivered-To: dominique.derrien@gmail.com\n" +
+            "Received: by 10.229.80.81 with SMTP id s17cs100883qck;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Received: by 10.224.54.69 with SMTP id p5mr4751769qag.46.1292895389080;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from mail-vw0-f47.google.com (mail-vw0-f47.google.com [209.85.212.47])\n" +
+            "        by mx.google.com with ESMTP id m40si3472957vcr.55.2010.12.20.17.36.27;\n" +
+            "        Mon, 20 Dec 2010 17:36:28 -0800 (PST)\n" +
+            "Received-SPF: pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) client-ip=209.85.212.47;\n" +
+            "Authentication-Results: mx.google.com; spf=pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) smtp.mail=katelynconsumer@gmail.com; dkim=pass (test mode) header.i=@gmail.com\n" +
+            "Received: by mail-vw0-f47.google.com with SMTP id 6so1485106vws.34\n" +
+            "        for <dominique.derrien@gmail.com>; Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=domainkey-signature:received:received:from:content-type\n" +
+            "         :content-transfer-encoding:subject:date:message-id:cc:to\n" +
+            "         :mime-version:x-mailer;\n" +
+            "        bh=t7KU0c8GXDI+1/XpOv7toqYcmjzsyWxApYvVMUrjkpY=;\n" +
+            "        b=gChncTx1TnOu7RJwZxfzMJ89up455F5/QWAW0wJzBD+ExZD4WvkF8/k380pDrXWVcA\n" +
+            "         58Iv6/sV0hMkKlEpfk2oMdGdLdgj7uXaqRQSA1iZyzDuOcJyupJm7+k4naIfiV0Tt9TT\n" +
+            "         Pis/e7Ck2ylgYbWRcVBE+uunEnm4pPEZoonMo=\n" +
+            "DomainKey-Signature: a=rsa-sha1; c=nofws;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=from:content-type:content-transfer-encoding:subject:date:message-id\n" +
+            "         :cc:to:mime-version:x-mailer;\n" +
+            "        b=XDAOy5ULXitTPhZSsc2mPTQ2tk9r0ZkaqQuUx9AYtVfrMOy9WlWCJpQdA/0MdPrC1N\n" +
+            "         eB+2LylbZMrXtJ31o2UAi82XRAkgGi0UsJotlskE9QEGGFYd/kFv5rC333En76WoBy7f\n" +
+            "         0wrCkobjemMu3R4ys0mYU006l/dotg/OTk2HQ=\n" +
+            "Received: by 10.220.186.195 with SMTP id ct3mr1485248vcb.57.1292895387922;\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from [192.168.0.101] (modemcable127.8-58-74.mc.videotron.ca [74.58.8.127])\n" +
+            "        by mx.google.com with ESMTPS id y4sm925779vch.11.2010.12.20.17.36.27\n" +
+            "        (version=TLSv1/SSLv3 cipher=RC4-MD5);\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "From: Katelyn <katelynconsumer@gmail.com>\n" +
+            "Content-Type: text/plain; charset=iso-8859-1\n" +
+            "Content-Transfer-Encoding: quoted-printable\n" +
+            "Subject: Re: Notification de AnotherSocialEconomy pour la Demande: 689001\n" +
+            "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
+            "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
+            "Cc: dominique.derrien@gmail.com\n" +
+            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
+            "X-Mailer: Apple Mail (2.1082)\n" +
+            "\n" +
+            "confirmer proposition:690001=20\n" +
+            "--\n" +
+            "Cette commande va =EAtre trait=E9e automatiquement par le moteur de =\n" +
+            "AnotherSocialEconomy.com.\n" +
+            "\n" +
+            "*** Dom ****\n" +
+            "System responds with ... from this Mac Mail\n" +
+            "\n" +
+            ":-( The System encountered an unexpected error! You can resend your =\n" +
+            "message, or, report incident identifier: 323-0.="
+        );
+
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return stream;
+            }
+        };
+
+        MimeMessage mailMessage = MailConnector.getMailMessage(request);
+
+        assertNotNull(mailMessage);
+        assertEquals("katelynconsumer@gmail.com", ((InternetAddress) mailMessage.getFrom()[0]).getAddress());
+        assertEquals("Katelyn", ((InternetAddress) mailMessage.getFrom()[0]).getPersonal());
+        assertEquals("confirmer proposition:690001", MailConnector.getText(mailMessage));
+        assertEquals(0, stream.getNotProcessedContents().length());
+    }
+
+    @Test
+    public void defect_7845587_II() throws IOException, MessagingException {
+        // https://www.pivotaltracker.com/story/show/7845587
+        final MockServletInputStream stream = new MockServletInputStream();
+        stream.setData(
+            "Delivered-To: dominique.derrien@gmail.com\n" +
+            "Received: by 10.229.80.81 with SMTP id s17cs100883qck;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Received: by 10.224.54.69 with SMTP id p5mr4751769qag.46.1292895389080;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from mail-vw0-f47.google.com (mail-vw0-f47.google.com [209.85.212.47])\n" +
+            "        by mx.google.com with ESMTP id m40si3472957vcr.55.2010.12.20.17.36.27;\n" +
+            "        Mon, 20 Dec 2010 17:36:28 -0800 (PST)\n" +
+            "Received-SPF: pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) client-ip=209.85.212.47;\n" +
+            "Authentication-Results: mx.google.com; spf=pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) smtp.mail=katelynconsumer@gmail.com; dkim=pass (test mode) header.i=@gmail.com\n" +
+            "Received: by mail-vw0-f47.google.com with SMTP id 6so1485106vws.34\n" +
+            "        for <dominique.derrien@gmail.com>; Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=domainkey-signature:received:received:from:content-type\n" +
+            "         :content-transfer-encoding:subject:date:message-id:cc:to\n" +
+            "         :mime-version:x-mailer;\n" +
+            "        bh=t7KU0c8GXDI+1/XpOv7toqYcmjzsyWxApYvVMUrjkpY=;\n" +
+            "        b=gChncTx1TnOu7RJwZxfzMJ89up455F5/QWAW0wJzBD+ExZD4WvkF8/k380pDrXWVcA\n" +
+            "         58Iv6/sV0hMkKlEpfk2oMdGdLdgj7uXaqRQSA1iZyzDuOcJyupJm7+k4naIfiV0Tt9TT\n" +
+            "         Pis/e7Ck2ylgYbWRcVBE+uunEnm4pPEZoonMo=\n" +
+            "DomainKey-Signature: a=rsa-sha1; c=nofws;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=from:content-type:content-transfer-encoding:subject:date:message-id\n" +
+            "         :cc:to:mime-version:x-mailer;\n" +
+            "        b=XDAOy5ULXitTPhZSsc2mPTQ2tk9r0ZkaqQuUx9AYtVfrMOy9WlWCJpQdA/0MdPrC1N\n" +
+            "         eB+2LylbZMrXtJ31o2UAi82XRAkgGi0UsJotlskE9QEGGFYd/kFv5rC333En76WoBy7f\n" +
+            "         0wrCkobjemMu3R4ys0mYU006l/dotg/OTk2HQ=\n" +
+            "Received: by 10.220.186.195 with SMTP id ct3mr1485248vcb.57.1292895387922;\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from [192.168.0.101] (modemcable127.8-58-74.mc.videotron.ca [74.58.8.127])\n" +
+            "        by mx.google.com with ESMTPS id y4sm925779vch.11.2010.12.20.17.36.27\n" +
+            "        (version=TLSv1/SSLv3 cipher=RC4-MD5);\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "From: Katelyn <katelynconsumer@gmail.com>\n" +
+            "Content-Type: text/plain; charset=iso-8859-1\n" +
+            "Content-Transfer-Encoding: quoted-printable\n" +
+            "Subject: Re: Notification de AnotherSocialEconomy pour la Demande: 689001\n" +
+            "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
+            "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
+            "Cc: dominique.derrien@gmail.com\n" +
+            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
+            "X-Mailer: Apple Mail (2.1082)\n" +
+            "\n" +
+            "confirmer proposition:690001=20=0A=\r\n" +
+            "--=0A=\r\n" +
+            "Cette commande va =EAtre trait=E9e automatiquement par le moteur de=20=\r\n" +
+            "AnotherSocialEconomy.com."
+        );
+
+//        Other valid alternative
+//            "confirmer=20proposition:690001=20=0A--=0ACette=20commande=20va=20=EAtre=\r\n" +
+//            "=20trait=E9e=20automatiquement=20par=20le=20moteur=20de=20=\r\n" +
+//            "AnotherSocialEconomy.com."
+
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return stream;
+            }
+        };
+
+
+        MimeMessage mailMessage = MailConnector.getMailMessage(request);
+
+        assertNotNull(mailMessage);
+        assertEquals("katelynconsumer@gmail.com", ((InternetAddress) mailMessage.getFrom()[0]).getAddress());
+        assertEquals("Katelyn", ((InternetAddress) mailMessage.getFrom()[0]).getPersonal());
+        assertEquals("confirmer proposition:690001 \n--\nCette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.", MailConnector.getText(mailMessage));
+        assertEquals(0, stream.getNotProcessedContents().length());
+    }
+
+    @Test
+    public void defect_7845587_III() throws IOException, MessagingException {
+        // https://www.pivotaltracker.com/story/show/7845587
+        final MockServletInputStream stream = new MockServletInputStream();
+        stream.setData(
+            "Delivered-To: dominique.derrien@gmail.com\n" +
+            "Received: by 10.229.80.81 with SMTP id s17cs100883qck;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Received: by 10.224.54.69 with SMTP id p5mr4751769qag.46.1292895389080;\n" +
+            "        Mon, 20 Dec 2010 17:36:29 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from mail-vw0-f47.google.com (mail-vw0-f47.google.com [209.85.212.47])\n" +
+            "        by mx.google.com with ESMTP id m40si3472957vcr.55.2010.12.20.17.36.27;\n" +
+            "        Mon, 20 Dec 2010 17:36:28 -0800 (PST)\n" +
+            "Received-SPF: pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) client-ip=209.85.212.47;\n" +
+            "Authentication-Results: mx.google.com; spf=pass (google.com: domain of katelynconsumer@gmail.com designates 209.85.212.47 as permitted sender) smtp.mail=katelynconsumer@gmail.com; dkim=pass (test mode) header.i=@gmail.com\n" +
+            "Received: by mail-vw0-f47.google.com with SMTP id 6so1485106vws.34\n" +
+            "        for <dominique.derrien@gmail.com>; Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=domainkey-signature:received:received:from:content-type\n" +
+            "         :content-transfer-encoding:subject:date:message-id:cc:to\n" +
+            "         :mime-version:x-mailer;\n" +
+            "        bh=t7KU0c8GXDI+1/XpOv7toqYcmjzsyWxApYvVMUrjkpY=;\n" +
+            "        b=gChncTx1TnOu7RJwZxfzMJ89up455F5/QWAW0wJzBD+ExZD4WvkF8/k380pDrXWVcA\n" +
+            "         58Iv6/sV0hMkKlEpfk2oMdGdLdgj7uXaqRQSA1iZyzDuOcJyupJm7+k4naIfiV0Tt9TT\n" +
+            "         Pis/e7Ck2ylgYbWRcVBE+uunEnm4pPEZoonMo=\n" +
+            "DomainKey-Signature: a=rsa-sha1; c=nofws;\n" +
+            "        d=gmail.com; s=gamma;\n" +
+            "        h=from:content-type:content-transfer-encoding:subject:date:message-id\n" +
+            "         :cc:to:mime-version:x-mailer;\n" +
+            "        b=XDAOy5ULXitTPhZSsc2mPTQ2tk9r0ZkaqQuUx9AYtVfrMOy9WlWCJpQdA/0MdPrC1N\n" +
+            "         eB+2LylbZMrXtJ31o2UAi82XRAkgGi0UsJotlskE9QEGGFYd/kFv5rC333En76WoBy7f\n" +
+            "         0wrCkobjemMu3R4ys0mYU006l/dotg/OTk2HQ=\n" +
+            "Received: by 10.220.186.195 with SMTP id ct3mr1485248vcb.57.1292895387922;\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "Return-Path: <katelynconsumer@gmail.com>\n" +
+            "Received: from [192.168.0.101] (modemcable127.8-58-74.mc.videotron.ca [74.58.8.127])\n" +
+            "        by mx.google.com with ESMTPS id y4sm925779vch.11.2010.12.20.17.36.27\n" +
+            "        (version=TLSv1/SSLv3 cipher=RC4-MD5);\n" +
+            "        Mon, 20 Dec 2010 17:36:27 -0800 (PST)\n" +
+            "From: Katelyn <katelynconsumer@gmail.com>\n" +
+            "Content-Type: text/plain; charset=iso-8859-1\n" +
+            "Content-Transfer-Encoding: quoted-printable\n" +
+            "Subject: Re: Notification de AnotherSocialEconomy pour la Demande: 689001\n" +
+            "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
+            "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
+            "Cc: dominique.derrien@gmail.com\n" +
+            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
+            "X-Mailer: Apple Mail (2.1082)\n" +
+            "\n" +
+            "confirmer proposition:690001=20\n" +
+            "--\n" +
+            "Cette commande va =EAtre trait=E9e automatiquement par le moteur de =\n" +
+            "AnotherSocialEconomy.com.\n" +
+            "\n" +
+            "*** Dom ****\n" +
+            "System responds with ... from this Mac Mail\n" +
+            "\n" +
+            ":-( The System encountered an unexpected error! You can resend your =\n" +
+            "message, or, report incident identifier: 323-0.="
+        );
+
+        MockHttpServletRequest request = new MockHttpServletRequest() {
+            @Override
+            public ServletInputStream getInputStream() {
+                return stream;
+            }
+        };
+
+        MimeMessage mailMessage = MailConnector.getMailMessage(request);
+
+        assertNotNull(mailMessage);
+        assertEquals("katelynconsumer@gmail.com", ((InternetAddress) mailMessage.getFrom()[0]).getAddress());
+        assertEquals("Katelyn", ((InternetAddress) mailMessage.getFrom()[0]).getPersonal());
+        assertEquals("confirmer proposition:690001 \n--\nCette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.\n\n*** Dom ****\nSystem responds with ... from this Mac Mail\n\n:-( The System encountered an unexpected error! You can resend your message, or, report incident identifier: 323-0.", MailConnector.alternateGetText(mailMessage));
+        assertEquals(0, stream.getNotProcessedContents().length());
     }
 }

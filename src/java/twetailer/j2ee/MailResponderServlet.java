@@ -169,7 +169,14 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setEmitterId(email.toLowerCase());
             rawCommand.setToId(to.toLowerCase());
             rawCommand.setSubject(subject);
-            command = extractFirstLine(MailConnector.getText(mailMessage)) + command;
+            String messageContent;
+            try {
+                messageContent = MailConnector.getText(mailMessage);
+            }
+            catch(IOException ex) {
+                messageContent = MailConnector.alternateGetText(mailMessage);
+            }
+            command = extractFirstLine(messageContent) + command;
             rawCommand.setCommand(command);
 
             log.warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);

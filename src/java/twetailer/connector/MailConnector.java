@@ -1,6 +1,8 @@
 package twetailer.connector;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.Properties;
@@ -405,5 +407,57 @@ public class MailConnector {
         catch (MessagingException ex) {
             throw new CommunicationException("Cannot communicate a copy to the adminis", ex);
         }
+    }
+
+    /**
+     * Helper extracting the content of a badly quoted-printable message
+     *
+     * @param message Message the system cannot decode
+     * @return Decoded message
+     *
+     * @throws MessagingException If the system cannot the message InputStream
+     * @throws IOException If the message InputStream cannot be read one character at a time
+     */
+    public static String alternateGetText(MimeMessage message) throws MessagingException, IOException {
+        InputStream in = message.getRawInputStream();
+        if (in == null) {
+            return null;
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream(in.available());
+        byte[] buffer = new byte[2];
+        int status;
+        while ((status = in.read(buffer, 0, 1)) != -1) {
+            if (buffer[0] == '=') {
+                // Get the next controlled character
+                status = in.read(buffer, 0, 1);
+                if (status == -1) {
+                    // Ignore trailing '='
+                }
+                else if (buffer[0] == '\r') {
+                    // Get next '\n' and ignore sequence '=\r\n'
+                    in.read(buffer, 0, 1);
+                }
+                else if (buffer[0] == '\n') {
+                    // Ignore sequence '=\n'
+                }
+                else {
+                    // Convert encoded character
+                    in.read(buffer, 1, 1);
+                    out.write((byte) ((Character.digit(buffer[0], 16) << 4) + Character.digit(buffer[1], 16)));
+                }
+            }
+            else {
+                out.write(buffer, 0, 1);
+            }
+        }
+
+        String contentType = message.getContentType(), charset = null;
+        int charsetPartIdx = contentType.indexOf("charset");
+        if (charsetPartIdx != -1) {
+            charset = contentType.substring(contentType.indexOf('=', charsetPartIdx + 1) + 1).trim();
+        }
+
+        return new String(out.toByteArray(), charset);
     }
 }
