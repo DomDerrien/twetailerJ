@@ -58,6 +58,19 @@
     </style><%
     } // endif (useCDN)
     %>
+    <style type="text/css">
+    div.action {
+        float: left;
+        text-align: center;
+        padding: 3px 30px;
+        margin: 1px;
+        border-radius: 5px;
+        background-color: #dfd;
+    }
+    div.action.current {
+        background-color: #afa;
+    }
+    </style>
 </head>
 <body class="tundra">
 
@@ -94,25 +107,13 @@
             region="center"
         >
             <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
-                <div dojoType="dijit.layout.ContentPane" jsId="step0">
-                    <fieldset class="entityInformation">
-                        <legend>Action Selection</legend>
-                        <p style="font-weight:bold;">Direct accesses:</p>
-                        <p>
-                            <button disabled="true" dojoType="dijit.form.Button" type="button"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button">New Location >></button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button">New Store >></button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button>
-                        </p>
-                    </fieldset>
-                </div>
-                <div dojoType="dijit.layout.ContentPane" jsId="step1" style="display:hidden;">
+                <div dojoType="dijit.layout.ContentPane" jsId="step1">
                     <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
-                        <form id="locationInformation">
+                        <form dojoType="dijit.form.Form" id="locationInformation" onsubmit="localModule.createLocation();return false;">
                             <div>
                                 <label for="<%= Location.POSTAL_CODE %>">Postal Code</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= Location.POSTAL_CODE %>" name="<%= Location.POSTAL_CODE %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Location.POSTAL_CODE %>" name="<%= Location.POSTAL_CODE %>" required="true" style="width:10em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
@@ -121,44 +122,44 @@
                                     <option value="US">United States of America</option>
                                 </select>
                             </div>
+                            <br/>
+                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create Location >></button><br/>(with values from above)</div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button">New Store >></button><br/>(need valid Location key)</div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button><br/>(need valid Store key)</div>
                         </form>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();" type="button"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createLocation();" type="button">Next >></button>
-                        </p>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step2" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep2">
                         <legend>Store Creation</legend>
-                        <form id="storeInformation">
+                        <form dojoType="dijit.form.Form" id="storeInformation" onsubmit="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();return false;">
                             <div>
                                 <label for="<%= Store.LOCATION_KEY %>">Location Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.NAME %>">Store Name</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.NAME %>" style="width:20em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.NAME %>" required="true" style="width:20em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.ADDRESS %>">Address</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.ADDRESS %>" style="width:30em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.ADDRESS %>" required="true" style="width:30em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.EMAIL %>">Email</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.EMAIL %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.EMAIL %>" required="true" style="width:10em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.PHONE_NUMBER %>">Phone Number</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.PHONE_NUMBER %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.PHONE_NUMBER %>" required="true" style="width:10em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.REGISTRAR_KEY %>">Registrar Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.REGISTRAR_KEY %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REGISTRAR_KEY %>" required="true" style="width:10em;" type="text" value="0" />
                             </div>
                             <div>
                                 <label for="<%= Store.REVIEW_SYSTEM_KEY %>">Review System Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" required="true" style="width:10em;" type="text" value="0" />
                             </div>
                             <div>
                                 <label for="<%= Store.STATE %>">State</label><br/>
@@ -173,61 +174,47 @@
                             </div>
                             <div>
                                 <label for="<%= Store.URL %>">Website URL</label><br/>
-                                <input dojoType="dijit.form.TextBox" name="<%= Store.URL %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.URL %>" required="true" style="width:10em;" type="text" value="" />
                             </div>
+                            <br/>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
+                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create Store >></button><br/>(with values from above)</div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button><br/>(need valid Store key)</div>
                         </form>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">Next >></button>
-                        </p>
                     </fieldset>
-                    <fieldset class="entityInformation">
+                    <fieldset class="entityInformation" id="innerStep2.1">
                         <legend>Store Retrieval</legend>
-                        <ul id="storeList">
-                        </ul>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getStores();" type="button">Get Stores</button>
-                        </p>
-                    </fieldset>
-                    <fieldset class="entityInformation" id="innerStep2bis">
-                        <legend>Store Batch Creation</legend>
-                        <textarea dojoType="dijit.form.Textarea" id="storeList" width="100%"></textarea>
-                        <button dojoType="dijit.form.Button" onclick="localModule.createStores();" type="button">Create Stores</button>
+                        <ul id="storeList"></ul>
+                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getStores();" type="button">Get Stores</button><br/>(for the specified location)</div>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep3">
                         <legend>Sale Associate Creation</legend>
-                        <form id="saleAssociateInformation">
+                        <form dojoType="dijit.form.Form" id="saleAssociateInformation" onsubmit="localModule.createSaleAssociate();return false;">
                             <div>
                                 <label for="<%= SaleAssociate.STORE_KEY %>">Store Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" required="true" style="width:10em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= SaleAssociate.CONSUMER_KEY %>">Consumer Key</label><br/>
-                                <input dojoType="dijit.form.TextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" style="width:20em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" required="true" style="width:20em;" type="text" value="" />
                             </div>
+                            <br/>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);;dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< New Store</button><br/>(need valid Location key)</div>
+                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create SaleAssociate >></button><br/>(with values from above)</div>
                         </form>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Previous</button>
-                            <button dojoType="dijit.form.Button" onclick="localModule.createSaleAssociate();" type="button">Next >></button>
-                        </p>
                     </fieldset>
-                    <fieldset class="entityInformation">
-                        <legend>Sale Associate Retrieval (for the specified Store Key)</legend>
-                        <ul id="saleAssociateList">
-                        </ul>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();" type="button">Get Sale Associates</button>
-                        </p>
+                    <fieldset class="entityInformation" id="innerStep3.1">
+                        <legend>Sale Associate Retrieval</legend>
+                        <ul id="saleAssociateList"></ul>
+                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();" type="button">Get Sale Associates</button><br/>(for the specified store)</div>
                     </fieldset>
-                    <fieldset class="entityInformation">
-                        <legend>Consumer Retrieval (for the E-mail Address, the Jabber Id, or the Twitter Name--in this order)</legend>
-                        <ul id="consumerList">
-                        </ul>
-                        <p>
-                            <button dojoType="dijit.form.Button" onclick="localModule.getConsumer();" type="button">Get Consumer</button>
-                        </p>
+                    <fieldset class="entityInformation" id="innerStep3.2">
+                        <legend>Consumer Retrieval</legend>
+                        <ul id="consumerList"></ul>
+                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getConsumer();" type="button">Get Consumer</button><br/>(for the specified consumer</div>
                     </fieldset>
                 </div>
                 <div dojoType="dijit.layout.ContentPane" jsId="step5" style="display:hidden;">
@@ -238,7 +225,6 @@
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Another Location</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Another Store</button>
                             <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button"><< Another Sale Associate</button>
-                            <button disabled="true" dojoType="dijit.form.Button" type="button">Next >></button>
                         </p>
                     </fieldset>
                 </div>
@@ -261,6 +247,8 @@
         dojo.require('dijit.form.Select');
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
+        dojo.require('dijit.form.ValidationTextBox');
+        dojo.require('twetailer.Common');
         dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
@@ -275,6 +263,7 @@
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
             dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
+            twetailer.Common.init('en', null, null);
         });
     });
 
@@ -284,6 +273,9 @@
             node: 'innerStep1',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
+        if (!dijit.byId('locationInformation').validate()) {
+            return;
+        }
         dojo.xhrPost({
             headers: { 'content-type': 'application/json; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.formToJson('locationInformation'),
@@ -302,7 +294,7 @@
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/Location/'
         });
     };
@@ -311,6 +303,9 @@
             node: 'innerStep2',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
+        if (!dijit.byId('storeInformation').validate()) {
+            return;
+        }
         var data = dojo.formToObject('storeInformation');
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
         dojo.xhrPost({
@@ -331,45 +326,8 @@
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/Store/'
-        });
-    };
-    localModule.createStores = function() {
-        dojo.animateProperty({
-            node: 'innerStep2bis',
-            properties: { backgroundColor: { end: 'yellow' } }
-        }).play();
-        var values = dijit.byId('storeList').get('value');
-        if (!values || values.length == 0) {
-            alert('the area MUST contain at least an empty array');
-            return;
-        }
-        try {
-            values = dojo.toJson(dojo.fromJson(values), false);
-        }
-        catch(ex) {
-            alert('Invalid information: the area MUST contain an Array of Objects, each one describing a Store.');
-            return;
-        }
-        dojo.xhrPost({
-            headers: { 'content-type': 'application/json; charset-<%= StringUtils.HTML_UTF8_CHARSET %>' },
-            putData: values,
-            handleAs: 'json',
-            load: function(response, ioArgs) {
-                if (response !== null && response.success) {
-                    alert('Keys of the created Stores:\n'+dojo.toJson(response.keys));
-                }
-                else {
-                    alert(response.message+'\nurl: '+ioArgs.url);
-                }
-                dojo.animateProperty({
-                    node: 'innerStep2bis',
-                    properties: { backgroundColor: { end: 'transparent' } }
-                }).play();
-            },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
-            url: '/_tasks/registerStores'
         });
     };
     localModule.getStores = function() {
@@ -379,6 +337,10 @@
             dijit.byId('<%= Store.LOCATION_KEY %>').focus();
             return;
         }
+        dojo.animateProperty({
+            node: 'innerStep2.1',
+            properties: { backgroundColor: { end: 'green' } }
+        }).play();
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: { <%= Store.LOCATION_KEY %>: locationKey },
@@ -405,8 +367,12 @@
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: 'innerStep2.1',
+                    properties: { backgroundColor: { end: 'transparent' } }
+                }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/Store/'
         });
     };
@@ -415,6 +381,9 @@
             node: 'innerStep3',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
+        if (!dijit.byId('saleAssociateInformation').validate()) {
+            return;
+        }
         var data = dojo.formToObject('saleAssociateInformation');
         data.storeKey = parseInt(data.storeKey); // Otherwise it's passed as a String
         if (data.consumerKey == null || isNaN(data.consumerKey) || data.consumerKey.length == 0) {
@@ -440,7 +409,7 @@
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/SaleAssociate/'
         });
     };
@@ -451,6 +420,10 @@
             dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();
             return;
         }
+        dojo.animateProperty({
+            node: 'innerStep3.1',
+            properties: { backgroundColor: { end: 'green' } }
+        }).play();
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: { <%= SaleAssociate.STORE_KEY %>: storeKey },
@@ -462,26 +435,38 @@
                     dojo.forEach(response.resources, function(saleAssociate, i) {
                         var listItem = dojo.doc.createElement('li');
                         listItem.innerHTML =
-                            'Consumer key: ' + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %>;
+                            'Consumer key: <a href="javascript:localModule.getConsumer(' + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %> + ');">' + saleAssociate.<%= SaleAssociate.CONSUMER_KEY %> + '</a>, ' +
+                            'Tags: [' + (saleAssociate.<%= SaleAssociate.CRITERIA %> || []) + '], ' +
+                            'Hash tags: [' + (saleAssociate.<%= SaleAssociate.HASH_TAGS %> || []) + '], ' +
+                            'Rates: ' + saleAssociate.<%= SaleAssociate.CLOSED_PROPOSAL_NB %> + ' / ' + saleAssociate.<%= SaleAssociate.PUBLISHED_PROPOSAL_NB %> + ', ' +
+                            'Score: ' + saleAssociate.<%= SaleAssociate.SCORE %>;
                         placeHolder.appendChild(listItem);
                     });
                 }
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: 'innerStep3.1',
+                    properties: { backgroundColor: { end: 'transparent' } }
+                }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/SaleAssociate/'
         });
     };
-    localModule.getConsumer = function() {
-        var consumerKey = dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').get('value');
+    localModule.getConsumer = function(consumerKey) {
+        consumerKey = consumerKey || dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').get('value');
         if (consumerKey.length == 0) {
             alert('You need to specify a consumer key!');
             dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').focus();
             return;
         }
         var parameters = { <%= SaleAssociate.CONSUMER_KEY %>: consumerKey };
+        dojo.animateProperty({
+            node: 'innerStep3.2',
+            properties: { backgroundColor: { end: 'green' } }
+        }).play();
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             content: parameters,
@@ -503,8 +488,12 @@
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
                 }
+                dojo.animateProperty({
+                    node: 'innerStep3.2',
+                    properties: { backgroundColor: { end: 'transparent' } }
+                }).play();
             },
-            error: function(message, ioArgs) { alert(message+'\nurl: '+ioArgs.url); },
+            error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/Consumer/' + consumerKey
         });
     };
