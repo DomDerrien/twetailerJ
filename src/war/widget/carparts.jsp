@@ -225,7 +225,7 @@
                     </tr>
                     <tr>
                         <td style="text-align:center;">
-                            <a href="<%= ApplicationSettings.get().getProductWebsite() %>carparts/?countryCode=<%= countryCode %>&postalCode=<%= postalCode %>&lang=<%= localeId %>" target="aseCarPartsPage"><img src="http://maps.google.com/maps/api/staticmap?sensor=false&language=<%= localeId %>&format=png8&center=<%= postalCode %>,<%= countryLabel %>&zoom=7&size=96x96" style="vertical-align: middle; border: 2px solid #A5BEDA; border-color: #A5BEDA #A5BEDA #5C7590 #5C7590;" /></a>
+                            <a href="<%= ApplicationSettings.get().getProductWebsite() %>carparts/?countryCode=<%= countryCode %>&postalCode=<%= postalCode %>&lang=<%= localeId %>#map" target="aseCarPartsPage"><img src="http://maps.google.com/maps/api/staticmap?sensor=false&language=<%= localeId %>&format=png8&center=<%= postalCode %>,<%= countryLabel %>&zoom=7&size=96x96" style="vertical-align: middle; border: 2px solid #A5BEDA; border-color: #A5BEDA #A5BEDA #5C7590 #5C7590;" /></a>
                             <div connectId="storeMapOpener" dojoType="dijit.Tooltip" position="above"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></div>
                             <br/>
                             <span class="hint"><%= LabelExtractor.get(ResourceFileId.third, "cdw_open_storeMap", locale) %></span>
