@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Droits réservés \u00a9 2009-2010 Milstein &amp;amp; associates inc.</seg>
+                <seg>Droits réservés \u00a9 2009-2010 Milstein &amp; associates inc.</seg>
             </tuv>
         </tu>
         <tu tuid="product_rich_copyright" dataType="text">
@@ -59,7 +59,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp;amp; associates inc.</a></seg>
+                <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
             </tuv>
         </tu>
         <tu tuid="display_name_pattern" dataType="text">
@@ -886,7 +886,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI. La {0} a été fermée par le Consommateur.|
-                    Conseil: Envoyer 'fermer {1}' ou 'rapporter {1} note:votre-commentaire' pour la mise-à-jour de votre Notation.
+                    Conseil: Envoyer 'fermer {1}' pour la mise-à-jour de votre Notation.
                 </seg>
             </tuv>
         </tu>
@@ -917,7 +917,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI. La {0} a été fermée par le Vendeur.|
-                    Conseil: Envoyer 'fermer {1}' ou 'rapporter {1} note:votre-commentaire' pour la mise-à-jour de votre Notation.
+                    Conseil: Envoyer 'fermer {1}' pour la mise-à-jour de votre Notation.
                 </seg>
             </tuv>
         </tu>
@@ -961,7 +961,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) La {0} pour les {1} a été confirmée.|
-                    Veuillez la mettre de côté pour la {2}. Une fois livrée, n'oubliez pas de Fermer ou Rapporter la Proposition.
+                    Veuillez la mettre de côté pour la {2}. Une fois livrée, n'oubliez pas de Fermer la Proposition.
                 </seg>
             </tuv>
         </tu>

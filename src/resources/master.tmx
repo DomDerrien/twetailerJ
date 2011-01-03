@@ -661,7 +661,7 @@
                     MI,
                     Note,
                     Object,
-                    Rate, Register, Register-link, Register-retailer, Register-salesassociate, Register-store, Reserve, Reserved, Retailer,
+                    Register, Register-link, Register-retailer, Register-salesassociate, Register-store, Reserve, Reserved, Retailer,
                     Salesassociate, Sentiment, Settle, Settled, State-flow,
                     Twitter
                 </seg>
@@ -1124,7 +1124,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. {0} has been closed by the Consumer. |
-                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                    Hint: Send "close {1}" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
             </tuv>
         </tu>
@@ -1171,7 +1171,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. {0} has been closed by the Retailer. |
-                    Hint: Send "close {1}", or, "flag {1} note:enter-your-note-here" to improve your AnotherSocialEconomy.com Rating.
+                    Hint: Send "close {1}" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
 
             </tuv>
@@ -1251,7 +1251,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) {0} for {1} has been confirmed.|
-                    Please mark, hold for Consumer with {2} and then 'close {0}', or, 'flag {0} note:your-note-here'.
+                    Please mark, hold for Consumer with {2} and then 'close {0}'.
                 </seg>
             </tuv>
         </tu>

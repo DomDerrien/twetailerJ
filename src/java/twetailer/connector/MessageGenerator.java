@@ -158,6 +158,12 @@ public class MessageGenerator {
         /** For message sent to the owner of the demand attached to the proposal, to invite him to close it too */
         PROPOSAL_CLOSING_OK_TO_CONSUMER ("proposal_closing_consumerNotif"),
 
+        /// L1. List one demand
+        /** For the description of a specified demand */
+        LIST_ONE_DEMAND_TO_OWNER ("demand_listing_details_to_owner"),
+        /** For the description of a specified demand. Note this message can be included many times into the LIST_ONE_DEMAND_TO_OWNER message */
+        LIST_PROPOSALS_OF_ONE_DEMAND_TO_OWNER ("demand_listing_proposals_to_owner"),
+
         nop; // Just to simplify the manipulation of the list entries :-)
 
         private String tmxSuffix;
@@ -321,6 +327,7 @@ public class MessageGenerator {
             // Wish
             fetchRequest(demand, prefix);
             // Demand
+            parameters.put(prefix + "proposalNb", demand.getProposalKeys() == null ? 0 : demand.getProposalKeys().size());
             parameters.put(prefix + Demand.PROPOSAL_KEYS, demand.getSerializedProposalKeys(emptyListIndicator));
         }
         return this;

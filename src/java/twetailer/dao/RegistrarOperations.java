@@ -1,7 +1,12 @@
 package twetailer.dao;
 
-import javax.jdo.PersistenceManager;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
+
+import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.Registrar;
 
@@ -85,6 +90,42 @@ public class RegistrarOperations extends BaseOperations {
         catch(Exception ex) {
             throw new InvalidIdentifierException("Error while retrieving Registrar instance for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * Get the identified Registrar instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param registrarKeys list of Registrar instance identifiers
+     * @return Collection of registrars matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Registrar> getRegistrars(PersistenceManager pm, List<Long> registrarKeys) throws DataSourceException {
+        List<Registrar> registrars;
+        boolean defaultRequired = registrarKeys.remove(0L);
+        if (registrarKeys.size() == 0) {
+            registrars = new ArrayList<Registrar>();
+        }
+        else {
+            // Select the corresponding resources
+            Query query = pm.newQuery(Registrar.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+            try {
+                registrars = (List<Registrar>) query.execute(registrarKeys);
+                registrars.size(); // FIXME: remove workaround for a bug in DataNucleus
+            }
+            finally {
+                query.closeAll();
+            }
+        }
+        if (defaultRequired) {
+            try {
+                registrars.add(getRegistrar(pm, 0L));
+            }
+            catch (InvalidIdentifierException e) {} // Impossible Exception is this case!
+        }
+        return registrars;
     }
 
     /**

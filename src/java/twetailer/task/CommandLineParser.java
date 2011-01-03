@@ -98,7 +98,7 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.phoneNumber, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.pointOfView, "\\s*\\w+", separatorFromNonAlpha);
-            preparePattern(prefixes, patterns, Prefix.price, "[ $€£¥\\d\\.,]+", separatorFromNonDigit);
+            preparePattern(prefixes, patterns, Prefix.price, "[ \\$€£¥\\d\\.,]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.proposal, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.reference, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);

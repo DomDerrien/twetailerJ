@@ -214,12 +214,10 @@ public class MailConnector {
     public static String getText(MimeMessage message) throws MessagingException, IOException {
         if (message.isMimeType("text/plain")) {
             return (String) message.getContent();
-            // return StringUtils.toUTF8((String)plain message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("text/html")) {
             return (String) message.getContent();
-            // return StringUtils.toUTF8((String) message.getContent());
             // return convertToString((InputStream) message.getContent());
         }
         if (message.isMimeType("multipart/*")) {

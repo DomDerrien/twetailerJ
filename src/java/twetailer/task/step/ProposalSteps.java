@@ -805,6 +805,7 @@ public class ProposalSteps extends BaseSteps {
                 String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", msgGen.getParameters(), locale);
                 String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", msgGen.getParameters(), locale);
                 String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
+                String listDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_list", msgGen.getParameters(), locale);
                 String subject = null;
                 if (rawCommand != null) { // Can be only null if its source == api -- see caller context
                     subject = rawCommand.getSubject();
@@ -818,7 +819,8 @@ public class ProposalSteps extends BaseSteps {
                     put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
                     put("command>confirmProposal", BaseConnector.prepareMailToBody(confirmProposal)).
                     put("command>declineProposal", BaseConnector.prepareMailToBody(declineProposal)).
-                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand));
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+                    put("command>listDemand", BaseConnector.prepareMailToBody(listDemand));
 
                 String message = msgGen.getMessage(MessageId.PROPOSAL_RATING_OK_TO_CONSUMER);
 

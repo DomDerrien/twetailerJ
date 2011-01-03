@@ -196,7 +196,6 @@ public class CommandSettings {
        int acceptedValueNb = acceptedValues.size();
        int acceptedValueIdx = 0;
        while (acceptedValueIdx < acceptedValueNb) {
-           // String acceptedValue = LocaleValidator.toUnicode(acceptedValues.getString(acceptedValueIdx));
            String acceptedValue = acceptedValues.getString(acceptedValueIdx);
            if (collator != null && collator.compare(acceptedValue, actualValue) == 0 ||
                collator == null && acceptedValue.equals(actualValue)) {

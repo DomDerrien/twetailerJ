@@ -319,6 +319,16 @@
             </tuv>
         </tu>
 
+        <tu tuid="command_message_body_demand_list" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="en">
+                <seg>
+                    list demand:{demand>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="command_message_body_proposal_create" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -1639,7 +1649,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
                 </seg>
             </tuv>
@@ -1661,7 +1671,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, listing newly created proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1757,7 +1767,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
                 </seg>
             </tuv>
@@ -1779,7 +1789,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, listing updated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1876,7 +1886,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, your demand:{demand>key} received the proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                 </seg>
             </tuv>
@@ -1899,7 +1909,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, your tee-off demand:{demand>key} received the proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1979,6 +1989,7 @@
                 {command>rateProposal3}
                 {command>rateProposal5}
                 {command>cancelDemand}
+                {command>listDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -2009,6 +2020,7 @@
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
+                    <p>If you wish, you can click <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">list</a> to request your proposals by your rating.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -2087,7 +2099,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the following proposal:{proposal>key} reception...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                 </seg>
             </tuv>
@@ -2106,7 +2118,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off demand:{demand>key} which received a new proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -2225,7 +2237,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                 </seg>
             </tuv>
@@ -2248,7 +2260,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, the proposal:{proposal>key} for your tee-off demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -2328,6 +2340,7 @@
                 {command>rateProposal3}
                 {command>rateProposal5}
                 {command>cancelDemand}
+                {command>listDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -2341,6 +2354,7 @@
                         <li>Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong></li>
                         <li>Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong></li>
                         <li>Due date: <strong>{proposal>dueDate}</strong></li>
+                        <li>Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}</li>
                     </ul>
                     <p>
                         In order to better manage your Proposals, please click on one of the following ratings:
@@ -2358,6 +2372,7 @@
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
+                    <p>If you wish, you can click <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">list</a> to request your proposals by your rating.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -2440,7 +2455,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the reception of an update of proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                 </seg>
             </tuv>
@@ -2459,7 +2474,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI: You have been CC'ed by {demand>owner>name} regarding the tee-off demand:{demand>key} which received an update of proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     players:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} pullCart:{demand>metadata>pullCart} golfCart:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -2820,7 +2835,7 @@
                 <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>confirmed</strong>
-                         tee-off under <strong>ezToff proposal {proposal>key}</strong>
+                        tee-off under <strong>ezToff proposal {proposal>key}</strong>
                         on <strong>{proposal>dueDate}</strong> at <strong><a href="{store>url}">{store>name}</a></strong>.
                     </p>
                     <p>Have a great game!</p>
@@ -2860,7 +2875,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, proposal:{proposal>key} for demand:{demand>key} has been confirmed.|
-                    Please mark, hold for Consumer with demand:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                    Please mark, hold for Consumer with demand:{demand>key} and then 'close proposal:{proposal>key}'.
                 </seg>
             </tuv>
         </tu>
@@ -2882,7 +2897,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, proposal:{proposal>key} on {proposal>dueDate} has been confirmed.|
-                    Please mark, schedule the tee-off demand:{demand>key} and then 'close proposal:{proposal>key}', or, 'flag proposal:{proposal>key} note:your-note-here'.
+                    Please mark, schedule the tee-off demand:{demand>key} and then 'close proposal:{proposal>key}'.
                 </seg>
             </tuv>
         </tu>
@@ -3060,7 +3075,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. demand:{demand>key} associated to proposal:{proposal>key} has been closed by the Consumer. |
-                    Hint: Send "close proposal:{proposal>key}", or, "flag proposal:{proposal>key} note:X" to improve your AnotherSocialEconomy.com Rating.
+                    Hint: Send "close proposal:{proposal>key}" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
             </tuv>
         </tu>
@@ -3206,7 +3221,7 @@
             <tuv xml:lang="en">
                 <seg>
                     FYI. proposal:{proposal>key} for your demand:{demand>key} has been closed by the store:{store>key} {store>name}. |
-                    Hint: Send "close demand:{demand>key}", or, "flag demand:{demand>key} note:X" to improve your AnotherSocialEconomy.com Rating.
+                    Hint: Send "close demand:{demand>key}" to improve your AnotherSocialEconomy.com Rating.
                 </seg>
             </tuv>
         </tu>
@@ -3469,7 +3484,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {demand>owner>name}, the rate for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                     score:{proposal>score} comment:{proposal>comment}
                 </seg>
@@ -3544,6 +3559,7 @@
                 {command>cancelDemand}
                 {command>confirmProposal}
                 {command>declineProposal}
+                {command>listDemand}
                 {message>footer}
             </note>
             <tuv xml:lang="en">
@@ -3571,6 +3587,7 @@
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
                     </ul>
                     <p>Please quote the Proposal number {proposal>key} whenever communicating with the Store.</p>
+                    <p>If you wish, you can click <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">list</a> to request your proposals by your rating.</p>
                     <p>
                         If for any reason, you're no longer interested in this demand, you can send an email by clicking
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>, or,
@@ -3599,7 +3616,7 @@
             <tuv xml:lang="en">
                 <seg>
                     :-) Hi {proposal>owner>name}, listing just rated proposal:{proposal>key}...|
-                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate} expires:{proposal>expirationDate}
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
                     score:{proposal>score} comment:{proposal>comment}
                 </seg>
@@ -3640,7 +3657,151 @@
                     </p>
                     {message>footer}
                     <p>Demand: {proposal>demandKey}, Proposal: {proposal>key}.</p>
-               </seg>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_listing_details_to_owner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {demand>owner>name}: name of the demand owner
+                {demand>*}: demand attributes
+                {demand>location>*}: demand's location attributes
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>proposalList}: *unique* placeholder for the list of proposals associated to the demand -- message inserted: *_demand_listing_proposals_to_owner
+                {influencer>*}: influencer attributes
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>updateDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    :-) Hi {demand>owner>name}, here are the details about your demand:{demand>key}.|
+                    demand:{demand>key} due:{demand>dueDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
+                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags}
+                    cc:{demand>cc}|
+                    So far, you have received {demand>proposalNb} proposal(s).{demand>proposalList}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_listing_details_to_owner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message confirming a successful proposal creation.|
+                {demand>owner>name}: name of the demand owner
+                {demand>*}: demand attributes
+                {demand>location>*}: demand's location attributes
+                {demand>metadata>*}: optional meta data from the demand (vertical dependent)
+                {demand>proposalList}: *unique* placeholder for the list of proposals associated to the demand -- message inserted: *_demand_listing_proposals_to_owner
+                {influencer>*}: influencer attributes
+                {command>threadSubject}
+                {command>cancelDemand}
+                {command>updateDemand}
+                {message>footer}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong></p>
+                    <p>Here is the demand you asked information about:</p>
+                    <ul>
+                        <li>Details: {demand>criteria} HashTags:{demand>hashTags}</li>
+                        <li>Quantity: {demand>quantity};</li>
+                        <li>Due date: {demand>dueDate};</li>
+                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
+                        <li>Range: {demand>range} {demand>rangeUnit};</li>
+                    </ul>
+                    <p>So far, you have received {demand>proposalNb} proposal(s).</p>
+                    <ul>{demand>proposalList}</ul>
+                    <p>
+                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>,
+                        or, if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_core_demand_listing_proposals_to_owner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inserted in *_demand_listing_details_to_owner which is used for each proposal attached to a demand.
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>orderInList}: place of the proposal in the list of attached proposals
+                {store>*}: store attributes
+                {registrar>*}: registrar attributes
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>rateProposal1}
+                {command>rateProposal2}
+                {command>rateProposal4}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    |
+                    {proposal>orderInList}.
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
+                    total:{proposal>currencyCode}{proposal>total}
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="long_core_demand_listing_proposals_to_owner" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message inserted in *_demand_listing_details_to_owner which is used for each proposal attached to a demand.
+                {proposal>*}: proposal attributes
+                {proposal>metadata>*}: optional meta data from the proposal (vertical dependent)
+                {proposal>orderInList}: place of the proposal in the list of attached proposals
+                {store>*}: store attributes
+                {registrar>*}: registrar attributes
+                {command>threadSubject}
+                {command>confirmProposal}
+                {command>declineProposal}
+                {command>rateProposal1}
+                {command>rateProposal2}
+                {command>rateProposal4}
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    <li>
+                        Details: <strong>{proposal>criteria}</strong>;
+                        More options: <strong>{proposal>metadata}</strong>;
+                        Quantity: <strong>{proposal>quantity}</strong>;
+                        Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong>;
+                        Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong>;
+                        Due date: <strong>{proposal>dueDate}</strong>;
+                        Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}.
+                        <br/>
+                        Store: <a href="{store>url}">{store>name}</a>;
+                        Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a>.
+                        Telephone: {store>phoneNb}.
+                        <br/>
+                        Commands:
+                        You can update the Proposal:{proposal>key} <strong>rating</strong> with one option:
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-) Happy</a>,
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal2}&amp;subject={command>threadSubject}">:-\\| So-so</a>, or
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( Disappointed</a>.
+                        You can also
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">Confirm</a> or
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">Decline</a>
+                        this Proposal:{proposal>key}.
+                        <br/>
+                    </li>
+                </seg>
             </tuv>
         </tu>
 

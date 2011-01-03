@@ -100,7 +100,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-//        final String currency = "$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -194,7 +194,7 @@ public class TestProposalProcessor {
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
                         LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
                         "", // No unit price attached to this demand
-                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), currency }, locale)
                 },
                 locale);
         assertEquals(
@@ -213,7 +213,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 29.99D;
-//        final String currency = "$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -307,7 +307,7 @@ public class TestProposalProcessor {
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
                         LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
                         "", // No unit price attached to this proposal
-                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), currency }, locale)
                 },
                 locale);
         assertEquals(
@@ -326,7 +326,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = null;
-//        final String currency = "$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -419,7 +419,7 @@ public class TestProposalProcessor {
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
                         LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
-                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), currency }, locale),
                         "" // No total cost attached to this proposal
                 },
                 locale);
@@ -439,7 +439,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 0.0D;
-//        final String currency = "$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -532,7 +532,7 @@ public class TestProposalProcessor {
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
                         LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
-                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), currency }, locale),
                         "" // No total cost attached to this proposal
                 },
                 locale);
@@ -552,7 +552,7 @@ public class TestProposalProcessor {
         final Long quantity = 32L;
         final Long storeKey = 5555L;
         final Double total = 37.95D;
-//        final String currency = "$";
+        final String currency = "$";
         final Proposal proposal = new Proposal();
         proposal.addCriterion("test");
         proposal.setKey(proposalKey);
@@ -645,8 +645,8 @@ public class TestProposalProcessor {
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getExpirationDate()) }, locale),
                         LabelExtractor.get("cp_tweet_store_part", new Object[] { storeKey, name }, locale),
-                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale),
-                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale)
+                        LabelExtractor.get("cp_tweet_price_part", new Object[] { proposal.getPrice(), currency }, locale),
+                        LabelExtractor.get("cp_tweet_total_part", new Object[] { proposal.getTotal(), currency }, locale)
                 },
                 locale);
         assertEquals(

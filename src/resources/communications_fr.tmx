@@ -138,7 +138,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    |Informations complémentaires: AnotherSocialEconomy.com. Rapportez les problèmes à : support@anothersocialeconomy.com.
+                    |Informations complémentaires: AnotherSocialEconomy.com. Rapportez les problèmes à: support@anothersocialeconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -147,7 +147,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    |Informations complémentaires: ezToff.com. Rapportez les problèmes à : support@ezToff.com. ezToff.com is est un membre de AnotherSocialEconomy.com.
+                    |Informations complémentaires: ezToff.com. Rapportez les problèmes à: support@ezToff.com. ezToff.com is est un membre de AnotherSocialEconomy.com.
                 </seg>
             </tuv>
         </tu>
@@ -286,6 +286,15 @@
             <tuv xml:lang="fr">
                 <seg>
                     compléter demande:{demand>key} {command>footer}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_list" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    lister demande:{demand>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -1141,7 +1150,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
@@ -1152,7 +1161,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1215,7 +1224,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
@@ -1226,7 +1235,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1289,7 +1298,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a reçu la proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimit:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimit:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
@@ -1300,7 +1309,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} pour un départ de golf a reçu la proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1376,6 +1385,10 @@
                     </ul>
                     <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
+                        Pour obtenir une liste ordonnée selon l'annotation des propositions, vous pouvez cliquer sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">lister les propositions</a>.
+                    </p>
+                    <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
                         Si vous avez reçu ce message par erreur, cliquer sur
@@ -1430,7 +1443,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la réception de la proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
@@ -1441,7 +1454,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la demande:{demand>key} de départ de golf qui a reçu la proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1525,7 +1538,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour votre demande:{demand>key} a été modifiée...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
@@ -1536,7 +1549,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour la demande:{demand>key} de départ de golf a été modifiée...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -1612,6 +1625,10 @@
                     </ul>
                     <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
+                        Pour obtenir une liste ordonnée selon l'annotation des propositions, vous pouvez cliquer sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">lister les propositions</a>.
+                    </p>
+                    <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
                         Si vous avez reçu ce message par erreur, cliquer sur
@@ -1669,7 +1686,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key}...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
@@ -1680,7 +1697,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key} faite pour la demande:{demand>key} de départ de golf...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
@@ -2277,7 +2294,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :) Bonjour {demand>owner>name}, l'évaluation de la proposition{proposal>key} a été prise en compte...
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
@@ -2352,6 +2369,10 @@
                     </ul>
                     <p>N'oubliez pas de mentionner le numéro de la Proposition {proposal>key} lorsque vous contacterez le commerce.</p>
                     <p>
+                        Pour obtenir une liste ordonnée selon l'annotation des propositions, vous pouvez cliquer sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>listDemand}&amp;subject={command>threadSubject}">lister les propositions</a>.
+                    </p>
+                    <p>
                         Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
                         <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
                         Si vous avez reçu ce message par erreur, cliquer sur
@@ -2368,7 +2389,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     :-) Bonjour {proposal>owner>name}, voici la proposition:{proposal>key} qui vient juste d'être évaluée...|
-                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate} expiration:{proposal>expirationDate}
+                    proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
@@ -2404,6 +2425,92 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_listing_details_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    :-) Hi {demand>owner>name}, here are the details about your demand:{demand>key}.|
+                    demand:{demand>key} due:{demand>dueDate}
+                    locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
+                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags}
+                    cc:{demand>cc}|
+                    So far, you have received {demand>proposalNb} proposal(s).{demand>proposalList}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_listing_details_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Hi <strong>{demand>owner>name}</strong></p>
+                    <p>Here is the demand you asked information about:</p>
+                    <ul>
+                        <li>Details: {demand>criteria} HashTags:{demand>hashTags}</li>
+                        <li>Quantity: {demand>quantity};</li>
+                        <li>Due date: {demand>dueDate};</li>
+                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
+                        <li>Range: {demand>range} {demand>rangeUnit};</li>
+                    </ul>
+                    <p>So far, you have received {demand>proposalNb} proposal(s).</p>
+                    <ul>{demand>proposalList}</ul>
+                    <p>
+                        If for any reason, you're no longer interested in this demand, you can send an email by clicking
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Cancel demand</a>,
+                        or, if you've received this message in error, click
+                        <a href="mailto:Support@anothersocialeconomy.com?body=I should not have been emailed. Please remove my email address&amp;subject=Theres's been some kind of mistake regarding Demand:{demand>key}">There's been some kind of mistake</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_listing_proposals_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    |
+                    {proposal>orderInList}.
+                    proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
+                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
+                    total:{proposal>currencyCode}{proposal>total}
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_listing_proposals_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <li>
+                        Details: <strong>{proposal>criteria}</strong>;
+                        More options: <strong>{proposal>metadata}</strong>;
+                        Quantity: <strong>{proposal>quantity}</strong>;
+                        Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong>;
+                        Total cost: <strong>{proposal>currencyCode}{proposal>total}</strong>;
+                        Due date: <strong>{proposal>dueDate}</strong>;
+                        Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}.
+                        <br />
+                        Store: <a href="{store>url}">{store>name}</a>;
+                        Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a>.
+                        Telephone: {store>phoneNb}.
+                        <br />
+                        Commands:
+                        You can update the Proposal:{proposal>key} <strong>rating</strong> with one option:
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal3}&amp;subject={command>threadSubject}">:-) Happy</a>,
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal2}&amp;subject={command>threadSubject}">:-\\| So-so</a>, or
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>rateProposal1}&amp;subject={command>threadSubject}">:-( Disappointed</a>.
+                        You can also
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">Confirm</a> or
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>declineProposal}&amp;subject={command>threadSubject}">Decline</a>
+                        this Proposal:{proposal>key}.
+                        <br />
+                    </li>
+                </seg>
             </tuv>
         </tu>
     </body>

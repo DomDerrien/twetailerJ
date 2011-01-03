@@ -208,6 +208,7 @@ public class ProposalProcessor {
                 String rateProposal3 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate3", msgGen.getParameters(), locale);
                 String rateProposal5 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate5", msgGen.getParameters(), locale);
                 String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
+                String listDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_list", msgGen.getParameters(), locale);
                 String subject = null;
                 if (rawCommand != null) { // Can be only null if its source == api -- see caller context
                     subject = rawCommand.getSubject();
@@ -224,7 +225,8 @@ public class ProposalProcessor {
                     put("command>rateProposal1", BaseConnector.prepareMailToBody(rateProposal1)).
                     put("command>rateProposal3", BaseConnector.prepareMailToBody(rateProposal3)).
                     put("command>rateProposal5", BaseConnector.prepareMailToBody(rateProposal5)).
-                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand));
+                    put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+                    put("command>listDemand", BaseConnector.prepareMailToBody(listDemand));
 
                 String message = msgGen.getMessage(initialProposal ? MessageId.PROPOSAL_CREATION_OK_TO_CONSUMER : MessageId.PROPOSAL_UPDATE_OK_TO_CONSUMER);
 

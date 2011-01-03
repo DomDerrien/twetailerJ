@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import twetailer.connector.BaseConnector;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;

@@ -5,21 +5,31 @@ import static twetailer.connector.BaseConnector.communicateToConsumer;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.BaseConnector;
+import twetailer.connector.MailConnector;
+import twetailer.connector.MessageGenerator;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Registrar;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
@@ -37,6 +47,7 @@ import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonObject;
 
 public class ListCommandProcessor {
@@ -53,12 +64,42 @@ public class ListCommandProcessor {
                 String message = null;
                 try {
                     Long ownerKey = consumer.getKey();
+                    if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
+                        // FIXME: remove this lock! for now only demands' owner can list them
+                        throw new ClientException("Not yet implemented for Query by Associates!");
+                    }
                     Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.list, Demand.class.getName()).getKey() : null;
                     Demand demand = DemandSteps.getDemand(pm, entityKey, ownerKey, pointOfView, saleAssociateKey);
-                    // Echo back the specified demand
                     Location location = LocationSteps.getLocation(pm, demand);
-                    boolean anonymize = !QueryPointOfView.CONSUMER.equals(pointOfView);
-                    message = CommandProcessor.generateTweet(demand, location, anonymize, locale);
+                    Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
+
+                    Map<Long, Proposal> proposals = new HashMap<Long, Proposal>();
+                    Map<Long, Store> stores = new HashMap<Long, Store>();
+                    Map<Long, Registrar> registrars = new HashMap<Long, Registrar>();
+                    List<Long> proposalKeys = demand.getProposalKeys();
+                    if (proposalKeys != null && 0 < proposalKeys.size()) {
+                        List<Long> storeKeys = new ArrayList<Long>();
+                        for (Proposal proposal: BaseSteps.getProposalOperations().getProposals(pm, proposalKeys)) {
+                            // FIXME: filter out proposals not owned by the associate if pointOfView == SALE_ASSOCIATE
+                            proposals.put(proposal.getKey(), proposal);
+                            if(!storeKeys.contains(proposal.getStoreKey())) {
+                                storeKeys.add(proposal.getStoreKey());
+                            }
+                        }
+                        List<Long> registrarKeys = new ArrayList<Long>();
+                        for (Store store: BaseSteps.getStoreOperations().getStores(pm, storeKeys)) {
+                            stores.put(store.getKey(), store);
+                            if(!registrarKeys.contains(store.getRegistrarKey())) {
+                                registrarKeys.add(store.getRegistrarKey());
+                            }
+                        }
+                        for (Registrar registrar: BaseSteps.getRegistrarOperations().getRegistrars(pm, registrarKeys)) {
+                            registrars.put(registrar.getKey(), registrar);
+                        }
+                    }
+
+                    // Echo back the specified demand
+                    publishDemandDetails(consumer, rawCommand, demand, location, influencer, proposals, stores, registrars);
                 }
                 catch(InvalidIdentifierException ex) {
                     message = LabelExtractor.get("cp_command_list_invalid_demand_id", locale);
@@ -349,7 +390,7 @@ public class ListCommandProcessor {
         for(Object tag: tags) {
             if (((String) tag).endsWith("*")) {
                 // Compare the filter to the beginning of each demand criteria
-                String truncatedTag = StringUtils.toUnicode((String) tag);
+                String truncatedTag = StringUtils.toUnicode(((String) tag).getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
                 int usefulLength = truncatedTag.length() - 1;
                 truncatedTag = truncatedTag.substring(0, usefulLength);
                 for (String criterion: criteria) {
@@ -368,5 +409,87 @@ public class ListCommandProcessor {
             }
         }
         return false;
+    }
+
+    /**
+     * Helper composing a MessageGenerator instance to list the Demand & related objects' attributes, plus list all attached Proposals & related attributes
+     *
+     * @param interlocutor Demand owner who issued the !list command
+     * @param rawCommand RawCommand used to get the mail subject of the initial message
+     * @param demand Object to print
+     * @param location Demand's location
+     * @param influencer Demand's influencer
+     * @param proposals Proposals to print
+     * @param stores Proposals' associated stores
+     * @param registrars Stores' associated registrars
+     *
+     * @throws CommunicationException If the sending of the command response fails.
+     */
+    protected static void publishDemandDetails(Consumer interlocutor, RawCommand rawCommand, Demand demand, Location location, Influencer influencer, Map<Long, Proposal> proposals, Map<Long, Store> stores, Map<Long, Registrar> registrars) throws CommunicationException {
+        Locale locale = interlocutor.getLocale();
+        MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+        msgGen.
+            put("demand>owner>name", interlocutor.getName()).
+            fetch(demand).
+            fetch(location, "demand").
+            fetch(influencer).
+            put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
+            put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
+
+        String cancelDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_cancel", msgGen.getParameters(), locale);
+        String updateDemand = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_demand_update", msgGen.getParameters(), locale);
+        String subject = null;
+        if (Source.mail.equals(msgGen.getCommunicationChannel())) {
+            subject = rawCommand.getSubject();
+        }
+        if (subject == null) {
+            subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
+        }
+        subject = MailConnector.prepareSubjectAsResponse(subject, locale);
+
+        msgGen.
+            put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+            put("command>cancelDemand", BaseConnector.prepareMailToBody(cancelDemand)).
+            put("command>updateDemand", BaseConnector.prepareMailToBody(updateDemand));
+
+        MessageGenerator innerMsgGen = new MessageGenerator(rawCommand.getSource(), demand.getHashTags(), locale);
+        ArrayList<String> innerMessages = new ArrayList<String> (demand.getProposalKeys().size());
+
+        Long place = 1L;
+        for(Long proposalKey: demand.getProposalKeys()) {
+            innerMsgGen.
+                put("proposal>orderInList", place).
+                fetch(proposals.get(proposalKey)).
+                fetch(stores.get(proposals.get(proposalKey).getStoreKey())).
+                fetch(registrars.get(stores.get(proposals.get(proposalKey).getStoreKey()).getRegistrarKey()));
+
+            String rateProposal1 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate1", innerMsgGen.getParameters(), locale);
+            String rateProposal2 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate2", innerMsgGen.getParameters(), locale);
+            String rateProposal3 = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_rate3", innerMsgGen.getParameters(), locale);
+            String confirmProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_confirm", innerMsgGen.getParameters(), locale);
+            String declineProposal = LabelExtractor.get(ResourceFileId.fourth, "command_message_body_proposal_decline", innerMsgGen.getParameters(), locale);
+
+            innerMsgGen.
+                put("command>threadSubject", BaseConnector.prepareMailToSubject(subject)).
+                put("command>rateProposal1", BaseConnector.prepareMailToBody(rateProposal1)).
+                put("command>rateProposal2", BaseConnector.prepareMailToBody(rateProposal2)).
+                put("command>rateProposal3", BaseConnector.prepareMailToBody(rateProposal3)).
+                put("command>confirmProposal", BaseConnector.prepareMailToBody(confirmProposal)).
+                put("command>declineProposal", BaseConnector.prepareMailToBody(declineProposal));
+
+            innerMessages.add(innerMsgGen.getMessage(MessageId.LIST_PROPOSALS_OF_ONE_DEMAND_TO_OWNER));
+
+            place ++;
+        }
+        msgGen.put("demand>proposalList", innerMessages);
+
+        String message = msgGen.getMessage(MessageId.LIST_ONE_DEMAND_TO_OWNER);
+
+        communicateToConsumer(
+                msgGen.getCommunicationChannel(),
+                subject,
+                interlocutor,
+                new String[] { message }
+        );
     }
 }

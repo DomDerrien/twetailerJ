@@ -143,9 +143,9 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        String normalizedCriterion = StringUtils.toUnicode(criterion);
+        String normalizedCriterion = StringUtils.toUnicode(criterion.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
         for(String item: criteria) {
-            String normalizedItem = StringUtils.toUnicode(item);
+            String normalizedItem = StringUtils.toUnicode(item.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
             if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
                 return;
             }
@@ -165,9 +165,9 @@ public class SaleAssociate extends Entity {
         if (criteria == null || criterion == null || criterion.length() == 0) {
             return;
         }
-        String normalizedCriterion = StringUtils.toUnicode(criterion);
+        String normalizedCriterion = StringUtils.toUnicode(criterion.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
         for(String item: criteria) {
-            String normalizedItem = StringUtils.toUnicode(item);
+            String normalizedItem = StringUtils.toUnicode(item.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
             if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
                 criteria.remove(item);
                 break;

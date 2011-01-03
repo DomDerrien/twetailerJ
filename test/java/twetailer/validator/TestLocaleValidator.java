@@ -283,24 +283,6 @@ public class TestLocaleValidator {
     }
 
     @Test
-    @Ignore
-    // FIXME: UTF-8 character handling is different on Linux!
-    public void testToUnicode() throws UnsupportedEncodingException {
-        String utf8Str = "àéôüÇ¿€"; // First characters represented on 2 bits, only the Euro sign on
-        String unicodeStr = StringUtils.toUnicode(utf8Str);
-        assertEquals(2 * 6 + 3, utf8Str.length());
-        assertEquals(6 + 1, unicodeStr.length());
-    }
-
-    @Test
-    public void testToUTF8() throws UnsupportedEncodingException {
-        String utf8Str = "àéôüÇ¿€"; // First characters represented on 2 bits, only the Euro sign on
-        String unicodeStr = StringUtils.toUnicode(utf8Str);
-        String extractedUtf8Str = StringUtils.toUTF8(unicodeStr);
-        assertEquals(utf8Str, extractedUtf8Str);
-    }
-
-    @Test
     public void testGetRegularExpressionFilterI() throws IOException {
         LocaleValidator.setValidatorStream(new MockInputStream("") {
             @Override
