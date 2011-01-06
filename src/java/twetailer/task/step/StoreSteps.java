@@ -107,25 +107,17 @@ public class StoreSteps extends BaseSteps {
         return store;
     }
 
-    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ReservedOperationException, InvalidIdentifierException {
+    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException {
         // Verify the logged user rights
-        if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getStoreKey().equals(storeKey)) {
+        if (!isUserAdmin && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getStoreKey().equals(storeKey)) {
             throw new ReservedOperationException("Store instances can only be created by Store admins");
-        }
-        if (!isPrivileged) {
-            // Prevent any unexpected update
-            parameters.remove(Store.REGISTRAR_KEY);
         }
 
         Store store = getStoreOperations().getStore(pm, storeKey);
         Long initialLocationKey = store.getLocationKey();
 
-        store.fromJson(parameters);
+        store.fromJson(parameters, isUserAdmin);
         store = getStoreOperations().updateStore(pm, store);
-
-        if (isPrivileged && parameters.containsKey(Store.REGISTRAR_KEY)) {
-            store.setRegistrarKey(parameters.getLong(Store.REGISTRAR_KEY));
-        }
 
         Long newLocationKey = store.getLocationKey();
         if (!newLocationKey.equals(initialLocationKey)) {

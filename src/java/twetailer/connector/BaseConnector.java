@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import twetailer.CommunicationException;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
 import twitter4j.TwitterException;

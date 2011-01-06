@@ -37,6 +37,11 @@ public class Demand extends Request {
 
     public static final String SALE_ASSOCIATE_KEYS = "saleAssociateKeys";
 
+    // Shortcut
+    public static final String DEMAND_KEY = "demandKey";
+
+    public static final String REFERENCE = "reference";
+
     /** Default constructor */
     public Demand() {
         super();
@@ -176,21 +181,29 @@ public class Demand extends Request {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        super.fromJson(in);
-        if (in.containsKey(PROPOSAL_KEYS)) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        super.fromJson(in, isUserAdmin);
+        if (isUserAdmin && in.containsKey(PROPOSAL_KEYS)) {
             resetProposalKeys();
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addProposalKey(jsonArray.getLong(i));
             }
         }
-        if (in.containsKey(SALE_ASSOCIATE_KEYS)) {
+        if (isUserAdmin && in.containsKey(SALE_ASSOCIATE_KEYS)) {
             resetSaleAssociateKeys();
             JsonArray jsonArray = in.getJsonArray(SALE_ASSOCIATE_KEYS);
             for (int i=0; i<jsonArray.size(); ++i) {
                 addSaleAssociateKey(jsonArray.getLong(i));
             }
         }
+
+        // Shortcut
+        if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
+
         return this;
     }
 }

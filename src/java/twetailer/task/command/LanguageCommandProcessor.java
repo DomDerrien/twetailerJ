@@ -44,7 +44,7 @@ public class LanguageCommandProcessor {
                 };
             }
             else {
-                ConsumerSteps.updateConsumer(pm, consumer.getKey(), getFreshLanguagelParameters(newLanguage), consumer);
+                ConsumerSteps.updateConsumer(pm, consumer.getKey(), getFreshLanguagelParameters(newLanguage), consumer, false);
                 locale = consumer.getLocale();
 
                 messageId = "cp_command_language_given_value_accepted";

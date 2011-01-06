@@ -46,19 +46,27 @@ public class ProposalRestlet extends BaseRestlet {
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long proposalKey = Long.valueOf(resourceId);
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
-            Long saleAssociateKey = null;
-            Long storeKey = null;
-            if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
-                SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
-                saleAssociateKey = saleAssociate.getKey();
-                storeKey = saleAssociate.getStoreKey();
+            Long ownerKey, saleAssociateKey = null, storeKey = null;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY) : null;
             }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+                if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
+                    SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
+                    saleAssociateKey = saleAssociate.getKey();
+                    storeKey = saleAssociate.getStoreKey();
+                }
+            }
+            Long proposalKey = Long.valueOf(resourceId);
             Proposal proposal = ProposalSteps.getProposal(pm, proposalKey, ownerKey, pointOfView, saleAssociateKey, storeKey);
 
-            JsonObject out = ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
+            JsonObject out = isUserAdmin ? proposal.toJson() : ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
 
             if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
                 JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
@@ -93,9 +101,19 @@ public class ProposalRestlet extends BaseRestlet {
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, DataSourceException, ReservedOperationException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
-            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            Long ownerKey, saleAssociateKey;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY) : null;
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            }
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
 
             JsonArray resources;
@@ -106,8 +124,7 @@ public class ProposalRestlet extends BaseRestlet {
             else { // full detail
                 // Get the demands
                 List<Proposal> proposals = ProposalSteps.getProposals(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
-                resources = JsonUtils.toJson(proposals);
-                resources = ProposalSteps.anonymizeProposals(pointOfView, resources);
+                resources = isUserAdmin ? JsonUtils.toJson(proposals) : ProposalSteps.anonymizeProposals(pointOfView, JsonUtils.toJson(proposals));
 
                 if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < proposals.size()) {
                     JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
@@ -179,7 +196,7 @@ public class ProposalRestlet extends BaseRestlet {
                 proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
             }
             else {
-                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getSaleAssociate(loggedUser, pm), LoginServlet.getConsumer(loggedUser, pm));
+                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getSaleAssociate(loggedUser, pm), LoginServlet.getConsumer(loggedUser, pm), isUserAdmin);
             }
 
             return proposal.toJson();

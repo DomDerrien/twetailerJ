@@ -113,10 +113,10 @@ public class SaleAssociateSteps extends BaseSteps {
         return justCreated;
     }
 
-    public static SaleAssociate updateSaleAssociate(PersistenceManager pm, Long saleAssociateKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException {
+    public static SaleAssociate updateSaleAssociate(PersistenceManager pm, Long saleAssociateKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException {
 
         // Verify the logged user rights
-        if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getKey().equals(saleAssociateKey)) {
+        if (!isUserAdmin && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getKey().equals(saleAssociateKey)) {
             throw new ReservedOperationException("SaleAssociate instances can only be updated by Store admins or the user himself");
         }
 
@@ -154,15 +154,8 @@ public class SaleAssociateSteps extends BaseSteps {
             parameters.remove(SaleAssociate.CRITERIA_REMOVE);
         }
 
-        // Neutralize some updates
-        parameters.remove(SaleAssociate.CONSUMER_KEY);
-        if (!isPrivileged) {
-            parameters.remove(SaleAssociate.LOCATION_KEY);
-            parameters.remove(SaleAssociate.STORE_KEY);
-        }
-
         // Merge updates and persist them
-        loggedSaleAssociate.fromJson(parameters);
+        loggedSaleAssociate.fromJson(parameters, isUserAdmin);
         loggedSaleAssociate = getSaleAssociateOperations().updateSaleAssociate(pm, loggedSaleAssociate);
 
         return loggedSaleAssociate;

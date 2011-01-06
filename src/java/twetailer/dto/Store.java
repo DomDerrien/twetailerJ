@@ -236,18 +236,22 @@ public class Store extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
-        // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(LATITUDE)) { setLatitude(in.getDouble(LATITUDE)); }
         if (in.containsKey(LONGITUDE)) { setLongitude(in.getDouble(LONGITUDE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
-        // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
-        // if (in.containsKey(REGISTRAR_KEY)) { setRegistrarKey(in.getLong(REGISTRAR_KEY)); } // Cannot be changed transparently
+        if (isUserAdmin && in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(REGISTRAR_KEY)) { setRegistrarKey(in.getLong(REGISTRAR_KEY)); } // Cannot be changed transparently
         if (in.containsKey(REVIEW_SYSTEM_KEY)) { setReviewSystemKey(in.getLong(REVIEW_SYSTEM_KEY)); } // Store administrators can change it
-        if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
+        if (isUserAdmin && in.containsKey(STATE)) { setState(in.getString(STATE)); }
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 
         // Shortcut

@@ -112,7 +112,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(ex, "doGet", pathInfo);
+            out = BaseRestlet.processException(ex, "doGet", pathInfo, BaseRestlet.debugModeDetected(request));
         }
         finally {
             pm.close();
@@ -168,7 +168,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(ex, "doPost", pathInfo);
+            out = BaseRestlet.processException(ex, "doPost", pathInfo, BaseRestlet.debugModeDetected(request) || BaseRestlet.debugModeDetected(in));
         }
         finally {
             pm.close();

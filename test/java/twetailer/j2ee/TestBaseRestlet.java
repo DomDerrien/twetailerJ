@@ -1206,7 +1206,7 @@ public class TestBaseRestlet {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 if ("debugConsumerKey".equals(name)) {
@@ -1243,7 +1243,7 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 throw new IllegalArgumentException("Done in purpose");
@@ -1311,7 +1311,7 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 throw new IllegalArgumentException("Done in purpose");
@@ -1379,7 +1379,7 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 throw new IllegalArgumentException("Done in purpose");
@@ -1447,7 +1447,7 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if ("debugMode".equals(name)) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
                     return CommandProcessor.DEBUG_INFO_SWITCH;
                 }
                 throw new IllegalArgumentException("Done in purpose");

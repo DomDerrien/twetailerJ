@@ -86,7 +86,7 @@ public class ChannelServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(ex, "doPost", pathInfo);
+            out = BaseRestlet.processException(ex, "doPost", pathInfo, BaseRestlet.debugModeDetected(request) || BaseRestlet.debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);

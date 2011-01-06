@@ -75,72 +75,51 @@ public class ConsumerSteps extends BaseSteps {
         return queryFilters;
     }
 
-    public static Consumer updateConsumer(PersistenceManager pm, Long consumerKey, JsonObject parameters, Consumer loggedConsumer) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
+    public static Consumer updateConsumer(PersistenceManager pm, Long consumerKey, JsonObject parameters, Consumer loggedConsumer, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
 
-        if (!loggedConsumer.getKey().equals(consumerKey)) {
+        Consumer actualConsumer = loggedConsumer;
+        if (isUserAdmin || !loggedConsumer.getKey().equals(consumerKey)) {
             // Redirection in case the action is triggered by an administrator
-            loggedConsumer = getConsumerOperations().getConsumer(pm, consumerKey);
+            actualConsumer = getConsumerOperations().getConsumer(pm, consumerKey);
         }
-
-        //
-        // TODO: handle the account consolidation !
-        //
-        /*
-        boolean isAdminControlled = isAPrivilegedUser(loggedUser);
 
         // Verify the information about the third party access providers
-        String openId = loggedUser.getClaimedId();
-        String newEmail = null, newJabberId = null, newTwitterId = null;
-        if (!isAdminControlled) {
-            newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, openId);
-            newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, openId);
-            newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, openId);
-        }
+        String newEmail = null, newFacebookId = null, newJabberId = null, newTwitterId = null;
+        newEmail = filterOutInvalidValue(parameters, Consumer.EMAIL, actualConsumer, isUserAdmin);
+        newFacebookId = filterOutInvalidValue(parameters, Consumer.FACEBOOK_ID, actualConsumer, isUserAdmin);
+        newJabberId = filterOutInvalidValue(parameters, Consumer.JABBER_ID, actualConsumer, isUserAdmin);
+        newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, actualConsumer, isUserAdmin);
 
-        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-        Consumer consumer;
-        try {
-            // Update the consumer account
-            consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
-            consumer.fromJson(parameters);
-            consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
-        }
-        finally {
-            pm.close();
-        }
+        // Merge updates and persist them
+        actualConsumer.fromJson(parameters, isUserAdmin);
+        actualConsumer = getConsumerOperations().updateConsumer(pm, actualConsumer);
 
         // Move demands to the updated account
-        if (!isAdminControlled && (newEmail != null || newJabberId != null || newTwitterId != null)) {
-            / *
-            Warning:
-            --------
-            Cannot pass the connection to the following operations because they are
-            possibly going to affect different Consumer entities! And the JDO layer
-            will throw an exception like the following one:
-                Exception thrown: javax.jdo.JDOFatalUserException: Illegal argument
-                NestedThrowables: java.lang.IllegalArgumentException: can't operate on multiple entity groups in a single transaction.
-                    Found both Element {
-                      type: "Consumer"
-                      id: 425
-                    }
-                    and Element {
-                      type: "Consumer"
-                      id: 512
-                    }
-             * /
+        if (newEmail != null || newJabberId != null || newTwitterId != null) {
             scheduleConsolidationTasks(Consumer.EMAIL, newEmail, consumerKey);
+            scheduleConsolidationTasks(Consumer.FACEBOOK_ID, newFacebookId, consumerKey);
             scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumerKey);
             scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumerKey);
         }
-         */
 
-        // Neutralize some updates
-        parameters.remove(Consumer.SALE_ASSOCIATE_KEY);
+        return actualConsumer;
+    }
 
-        // Merge updates and persist them
-        loggedConsumer.fromJson(parameters);
-        loggedConsumer = getConsumerOperations().updateConsumer(pm, loggedConsumer);
+    protected static String filterOutInvalidValue(JsonObject parameters, String parameterName, Consumer consumer, boolean isUserAdmin) {
+        // Not yet implemented
+        // See ConsumerRestlet.filterOutInvalidValue()
+        if (isUserAdmin) {
+            if (parameters.containsKey(Consumer.EMAIL)) { consumer.setEmail(parameters.getString(Consumer.EMAIL)); }
+            if (parameters.containsKey(Consumer.FACEBOOK_ID)) { consumer.setFacebookId(parameters.getString(Consumer.FACEBOOK_ID)); }
+            if (parameters.containsKey(Consumer.JABBER_ID)) { consumer.setJabberId(parameters.getString(Consumer.JABBER_ID)); }
+            if (parameters.containsKey(Consumer.OPEN_ID)) { consumer.setOpenID(parameters.getString(Consumer.OPEN_ID)); }
+            if (parameters.containsKey(Consumer.TWITTER_ID)) { consumer.setTwitterId(parameters.getString(Consumer.TWITTER_ID)); }
+        }
+        return null;
+    }
 
-        return loggedConsumer;
+    protected static void scheduleConsolidationTasks(String parameterName, String parameterValue, Long consumerKey) {
+        // Not yet implemented
+        // See ConsumerRestlet.scheduleConsolidationTasks()
     }
 }

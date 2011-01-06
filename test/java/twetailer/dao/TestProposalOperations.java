@@ -127,7 +127,7 @@ public class TestProposalOperations {
         assertEquals(Long.valueOf(222L), object.getStoreKey());
     }
 
-    @Test(expected=ClientException.class)
+    @Test
     public void testCreateIV() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 333L);

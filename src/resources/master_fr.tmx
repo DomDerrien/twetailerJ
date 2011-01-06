@@ -51,7 +51,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Droits réservés \u00a9 2009-2010 Milstein &amp; associates inc.</seg>
+                <seg>Droits réservés \u00a9 2009-2011 Milstein &amp; associates inc.</seg>
             </tuv>
         </tu>
         <tu tuid="product_rich_copyright" dataType="text">
@@ -59,7 +59,7 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>Copyright \u00a9 2009-2010 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
+                <seg>Copyright \u00a9 2009-2011 <a href="http://www.milstein-assoc.com/">Milstein &amp; associates inc.</a></seg>
             </tuv>
         </tu>
         <tu tuid="display_name_pattern" dataType="text">
@@ -100,6 +100,38 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>Dollars américains</seg>
+            </tuv>
+        </tu>
+        <tu tuid="location_postalCode_regExp_CA" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[a-z,A-Z][0-9][a-z,A-Z] *[0-9][a-z,A-Z][0-9]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="location_postalCode_regExp_US" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[0-9][0-9][0-9][0-9][0-9]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="location_postalCode_default_CA" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>A0A 0A0</seg>
+            </tuv>
+        </tu>
+        <tu tuid="location_postalCode_default_US" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>00000</seg>
             </tuv>
         </tu>
         <tu tuid="cl_state_opened" dataType="text">

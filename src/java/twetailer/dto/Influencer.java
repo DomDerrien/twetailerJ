@@ -116,11 +116,21 @@ public class Influencer extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            // No external update allowed
+            return this;
+        }
+
         super.fromJson(in);
-        // if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY))); } // Cannot change the association
+
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        // if (in.containsKey(REFERRAL_ID)) { setReferralId(in.getString(REFERRAL_ID)); } // Cannot change the association
+        if (in.containsKey(REFERRAL_ID)) { setReferralId(in.getString(REFERRAL_ID)); }
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }
 
         // Shortcut

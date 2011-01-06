@@ -86,6 +86,15 @@ public class ReviewSystem extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            // No external update allowed
+            return this;
+        }
+
         super.fromJson(in);
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }

@@ -40,9 +40,6 @@ public class ProposeCommandProcessor {
 
                 // Create new proposal
                 command.put(Command.LOCATION_KEY, store.getLocationKey());
-                if (command.containsKey(Proposal.DEMAND_REFERENCE)) {
-                    command.put(Proposal.DEMAND_KEY, command.getLong(Proposal.DEMAND_REFERENCE));
-                }
 
                 ProposalSteps.createProposal(pm, command, saleAssociate, consumer);
 
@@ -58,7 +55,7 @@ public class ProposeCommandProcessor {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.propose, Demand.class.getName());
 
                 // Update specified proposal
-                ProposalSteps.updateProposal(pm, rawCommand, proposalKey, command, saleAssociate, consumer);
+                ProposalSteps.updateProposal(pm, rawCommand, proposalKey, command, saleAssociate, consumer, false);
 
                 // Update confirmation message will be sent by the ProposalValidator being given it's a valid proposal
             }

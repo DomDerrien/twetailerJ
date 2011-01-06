@@ -264,22 +264,10 @@ public class TestProposal {
         Long key = 12345L;
         JsonObject parameters = new GenericJsonObject();
         parameters.put(Proposal.PROPOSAL_KEY, key);
-        parameters.put(Proposal.DEMAND_REFERENCE, key);
 
         Proposal proposal = new Proposal(parameters);
         assertEquals(key, proposal.getKey());
         assertNull(proposal.getDemandKey()); // Can only be set with Proposal to be created
-    }
-
-    @Test
-    public void testShortcutII() {
-        Long key = 12345L;
-        JsonObject parameters = new GenericJsonObject();
-        parameters.put(Proposal.DEMAND_REFERENCE, key);
-
-        Proposal proposal = new Proposal(parameters);
-        assertNull(proposal.getKey());
-        assertEquals(key, proposal.getDemandKey());
     }
 
     @Test

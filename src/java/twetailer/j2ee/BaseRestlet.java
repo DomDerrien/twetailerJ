@@ -2,7 +2,6 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
@@ -53,8 +52,11 @@ public abstract class BaseRestlet extends HttpServlet {
 
     public static final String ANY_STATE_PARAMETER_KEY = "anyState";
     public static final String ONLY_KEYS_PARAMETER_KEY = "onlyKeys";
+    public static final String CENTER_ONLY_KEY = "centerOnly";
     public static final String MAXIMUM_RESULTS_PARAMETER_KEY = "maximumResults";
     public static final String RELATED_RESOURCE_NAMES = "related";
+    public static final String ON_BEHALF_CONSUMER_KEY = "onBehalfConsumerKey";
+    public static final String ON_BEHALF_ASSOCIATE_KEY = "onBehalfAssociateKey";
 
     protected abstract Logger getLogger();
 
@@ -126,6 +128,7 @@ public abstract class BaseRestlet extends HttpServlet {
     abstract protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin)
             throws DataSourceException, ClientException;
 
+    @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
@@ -152,15 +155,14 @@ public abstract class BaseRestlet extends HttpServlet {
      * @param loggedUser authenticated user descriptor
      * @return <code>true</code> if the user has top privileges
      */
-    @SuppressWarnings("unchecked")
     public boolean isUserAdministrator(OpenIdUser loggedUser) {
+        if (loggedUser != null) {
+            // No logged user accepted, to avoid possible conflicting ownerships
+            return false;
+        }
         UserService userService = getUserService();
         if (userService.isUserLoggedIn()) {
             return userService.isUserAdmin();
-        }
-        if (loggedUser != null && loggedUser.getAttribute("info") != null) {
-            Map<String, String> info = (Map<String, String>) loggedUser.getAttribute("info");
-            return ("dominique.derrien@gmail.com".equals(info.get("email")));
         }
         return false;
     }
@@ -172,7 +174,17 @@ public abstract class BaseRestlet extends HttpServlet {
      * @return <code>true</code> if the debug mode is detected, <code>false</code> otherwise.
      */
     protected static boolean debugModeDetected(HttpServletRequest request) {
-        return CommandProcessor.DEBUG_INFO_SWITCH.equals(request.getParameter("debugMode"));
+        return request.getParameter(CommandProcessor.DEBUG_INFO_SWITCH) != null;
+    }
+
+    /**
+     * Study the request parameter list and checks if there a recognized debug mode switch
+     *
+     * @param parameters Un-marshaled request parameters
+     * @return <code>true</code> if the debug mode is detected, <code>false</code> otherwise.
+     */
+    protected static boolean debugModeDetected(JsonObject parameters) {
+        return parameters != null && parameters.containsKey(CommandProcessor.DEBUG_INFO_SWITCH);
     }
 
     private static final String ROOT = "/";
@@ -183,6 +195,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
 
+        boolean isUserAdmin = false;
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -192,7 +205,7 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new GenericJsonObject(request);
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            isUserAdmin = isUserAdministrator(loggedUser);
             getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
@@ -228,7 +241,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doGet", pathInfo);
+            out = processException(ex, "doGet", pathInfo, isUserAdmin || debugModeDetected(request)); // No need to check 'debugModeDetected(in)' as 'in' is made of the request parameters
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -240,6 +253,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
 
+        boolean isUserAdmin = false;
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -249,7 +263,7 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            isUserAdmin = isUserAdministrator(loggedUser);
             getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
@@ -272,7 +286,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doPost", pathInfo);
+            out = processException(ex, "doPost", pathInfo, isUserAdmin || debugModeDetected(request) || debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -284,6 +298,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
 
+        boolean isUserAdmin = false;
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -293,7 +308,7 @@ public abstract class BaseRestlet extends HttpServlet {
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
-            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            isUserAdmin = isUserAdministrator(loggedUser);
             getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
@@ -303,6 +318,10 @@ public abstract class BaseRestlet extends HttpServlet {
             }
             else if (pathInfo == null || pathInfo.length() == 0 || ROOT.equals(pathInfo)) {
                 throw new RuntimeException("Required path info for resource update");
+            }
+            else if ("/current".equals(pathInfo)) {
+                // Get current resource
+                out.put("resource", updateResource(in, "current", loggedUser, isUserAdmin));
             }
             else {
                 Matcher keyMatcher = ServletUtils.uriKeyPattern.matcher(pathInfo);
@@ -324,7 +343,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doPut", pathInfo);
+            out = processException(ex, "doPut", pathInfo, isUserAdmin || debugModeDetected(request) || debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -335,12 +354,13 @@ public abstract class BaseRestlet extends HttpServlet {
 
         String pathInfo = request.getPathInfo();
 
+        boolean isUserAdmin = false;
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
 
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
-            boolean isUserAdmin = isUserAdministrator(loggedUser);
+            isUserAdmin = isUserAdministrator(loggedUser);
             getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
@@ -372,13 +392,13 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doDelete", pathInfo);
+            out = processException(ex, "doDelete", pathInfo, isUserAdmin || debugModeDetected(request));
         }
 
         out.toStream(response.getOutputStream(), false);
     }
 
-    protected static JsonObject processException(Exception ex, String methodName, String pathInfo) {
+    protected static JsonObject processException(Exception ex, String methodName, String pathInfo, boolean debugModeDetected) {
         String message = "Unexpected exception during BaseRESTServlet." + methodName + "() operation";
         // Special case
         if (ex instanceof com.google.appengine.api.datastore.DatastoreTimeoutException) {
@@ -388,16 +408,21 @@ public abstract class BaseRestlet extends HttpServlet {
         // Prepare the exception report
         JsonObject out = new JsonException("UNEXPECTED_EXCEPTION", message, ex);
         // Send an e-mail to out catch-all list
-        MockOutputStream stackTrace = new MockOutputStream();
-        ex.printStackTrace(new PrintStream(stackTrace));
-        try {
-            MailConnector.reportErrorToAdmins(
-                    "Unexpected error caught in BaseRestlet." + methodName + "()",
-                    "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
-            );
+        if (debugModeDetected) {
+            ex.printStackTrace();
         }
-        catch (MessagingException ex2) {
-            Logger.getLogger(BaseRestlet.class.getName()).severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
+        else {
+            MockOutputStream stackTrace = new MockOutputStream();
+            ex.printStackTrace(new PrintStream(stackTrace));
+            try {
+                MailConnector.reportErrorToAdmins(
+                        "Unexpected error caught in BaseRestlet." + methodName + "()",
+                        "Path info: " + pathInfo + "\n\n--\n\n" + stackTrace.toString()
+                );
+            }
+            catch (MessagingException ex2) {
+                Logger.getLogger(BaseRestlet.class.getName()).severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
+            }
         }
         return out;
     }

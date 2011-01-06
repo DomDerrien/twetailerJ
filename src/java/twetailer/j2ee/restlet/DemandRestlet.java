@@ -42,13 +42,23 @@ public class DemandRestlet extends BaseRestlet {
     public JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long demandKey = Long.valueOf(resourceId);
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
-            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            Long ownerKey, saleAssociateKey;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY) : null;
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            }
+            Long demandKey = Long.valueOf(resourceId);
             Demand demand = DemandSteps.getDemand(pm, demandKey, ownerKey, pointOfView, saleAssociateKey);
 
-            JsonObject out = DemandSteps.anonymizeDemand(pm, pointOfView, demand.toJson(), saleAssociateKey);
+            JsonObject out = isUserAdmin ? demand.toJson() : DemandSteps.anonymizeDemand(pm, pointOfView, demand.toJson(), saleAssociateKey);
 
             if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
                 JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
@@ -79,9 +89,19 @@ public class DemandRestlet extends BaseRestlet {
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
-            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            Long ownerKey, saleAssociateKey;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY) : null;
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+                saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            }
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
 
             JsonArray resources;
@@ -92,8 +112,7 @@ public class DemandRestlet extends BaseRestlet {
             else { // full detail
                 // Get the demands
                 List<Demand> demands = DemandSteps.getDemands(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
-                resources = JsonUtils.toJson(demands);
-                resources = DemandSteps.anonymizeDemands(pointOfView, resources, saleAssociateKey);
+                resources = isUserAdmin ? JsonUtils.toJson(demands) : DemandSteps.anonymizeDemands(pointOfView, JsonUtils.toJson(demands), saleAssociateKey);
 
                 if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < demands.size()) {
                     JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
@@ -148,7 +167,7 @@ public class DemandRestlet extends BaseRestlet {
         try {
             // Update the Demand
             Long demandKey = Long.valueOf(resourceId);
-            Demand demand = DemandSteps.updateDemand(pm, null, demandKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
+            Demand demand = DemandSteps.updateDemand(pm, null, demandKey, parameters, LoginServlet.getConsumer(loggedUser, pm), isUserAdmin);
 
             return demand.toJson();
         }

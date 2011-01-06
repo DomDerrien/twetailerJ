@@ -34,7 +34,7 @@ public class Proposal extends Command {
     @Persistent
     private Long consumerKey;
 
-    public static final String CONSUMER_KEY = "consumerKey";
+    public static final String CONSUMER_KEY = Consumer.CONSUMER_KEY;
 
     @Persistent
     private String comment;
@@ -49,9 +49,7 @@ public class Proposal extends Command {
     @Persistent
     private Long demandKey;
 
-    public static final String DEMAND_KEY = "demandKey";
-
-    public static final String DEMAND_REFERENCE = Demand.REFERENCE;
+    public static final String DEMAND_KEY = Demand.DEMAND_KEY;
 
     // Shortcut
     public static final String PROPOSAL_KEY = "proposal";
@@ -62,7 +60,7 @@ public class Proposal extends Command {
     public static final String PRICE = "price";
 
     @Persistent
-    private Integer score;
+    private Long score;
 
     public static final String SCORE = "score";
 
@@ -162,15 +160,15 @@ public class Proposal extends Command {
         this.price = price;
     }
 
-    public Integer getScore() {
+    public Long getScore() {
         if (score == null) {
-            return 0;
+            return 0L;
         }
         return score;
     }
 
-    public void setScore(Integer score) {
-        this.score = score < 1 || 5 < score ? null : score;
+    public void setScore(Long score) {
+        this.score = score < 1L || 5L < score ? null : score;
     }
 
     public Long getStoreKey() {
@@ -213,23 +211,27 @@ public class Proposal extends Command {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        super.fromJson(in);
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        super.fromJson(in, isUserAdmin);
         if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
-        // if (in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
-        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (isUserAdmin && in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
+        if (isUserAdmin && in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
-        if (getKey() == null && in.containsKey(DEMAND_KEY)) {
+        if ((isUserAdmin || getKey() == null) && in.containsKey(DEMAND_KEY)) {
             setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time
         }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }
-        // if (in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); } // Set by the system from the Consumer !rate action
-        // if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); } // Set by the system from the SaleAssociate own storeKey
+        if (isUserAdmin && in.containsKey(SCORE)) { setScore(in.getLong(SCORE)); } // Set by the system from the Consumer !rate action
+        if (isUserAdmin && in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); } // Set by the system from the SaleAssociate own storeKey
         if (in.containsKey(TOTAL)) { setTotal(in.getDouble(TOTAL)); }
 
         // Shortcut
         if (in.containsKey(PROPOSAL_KEY)) { setKey(in.getLong(PROPOSAL_KEY)); }
-        if (getKey() == null && in.containsKey(DEMAND_REFERENCE)) {
-            setDemandKey(in.getLong(DEMAND_REFERENCE)); // Shortcut; can only be set at creation time
+        if (getKey() == null && in.containsKey(DEMAND_KEY)) {
+            setDemandKey(in.getLong(DEMAND_KEY)); // Shortcut; can only be set at creation time
         }
 
         return this;

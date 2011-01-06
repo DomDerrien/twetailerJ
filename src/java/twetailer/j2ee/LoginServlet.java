@@ -223,7 +223,6 @@ public class LoginServlet extends HttpServlet {
     protected static void attachConsumerToSession(OpenIdUser user) {
         // Create only if does not yet exist, otherwise return the existing instance
         Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(user);
-        // TODO: put this Consumer record in MemCache
         // Attached the consumer identifier to the OpenID user record
         user.setAttribute(AUTHENTICATED_CONSUMER_ID, consumer.getKey());
     }
@@ -235,7 +234,7 @@ public class LoginServlet extends HttpServlet {
      * @return The key of the Consumer instance attached to the OpenID user
      */
     public static Long getConsumerKey(OpenIdUser user) {
-        return (Long) user.getAttribute(AUTHENTICATED_CONSUMER_ID);
+        return user == null ? null : (Long) user.getAttribute(AUTHENTICATED_CONSUMER_ID);
     }
 
     /**
@@ -249,6 +248,9 @@ public class LoginServlet extends HttpServlet {
      * @see LoginServlet#getConsumer(PersistenceManager, OpenIdUser)
      */
     public static Consumer getConsumer(OpenIdUser user) throws InvalidIdentifierException {
+        if (user == null) {
+            return null;
+        }
         PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
         try {
             return getConsumer(user, pm);
@@ -269,8 +271,7 @@ public class LoginServlet extends HttpServlet {
      * @throws InvalidIdentifierException If the Consumer instance retrieval fails
      */
     public static Consumer getConsumer(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException {
-        // TODO: try to get the Consumer record from MemCache
-        return BaseSteps.getConsumerOperations().getConsumer(pm, getConsumerKey(user));
+        return user == null ? null : BaseSteps.getConsumerOperations().getConsumer(pm, getConsumerKey(user));
     }
 
     protected static final String AUTHENTICATED_SALE_ASSOCIATE_ID = "authSA_tId";
@@ -287,6 +288,9 @@ public class LoginServlet extends HttpServlet {
      * @see LoginServlet#getSaleAssociateKey(PersistenceManager, OpenIdUser)
      */
     public static Long getSaleAssociateKey(OpenIdUser user) throws InvalidIdentifierException {
+        if (user == null) {
+            return null;
+        }
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             return getSaleAssociateKey(user, pm);
@@ -307,6 +311,9 @@ public class LoginServlet extends HttpServlet {
      * @throws InvalidIdentifierException If the Consumer instance retrieval fails
      */
     public static Long getSaleAssociateKey(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException {
+        if (user == null) {
+            return null;
+        }
         if (user.getAttribute(SALE_ASSOCIATION_ALREADY_CHECKED) != null) {
             return (Long) user.getAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
         }
@@ -328,6 +335,9 @@ public class LoginServlet extends HttpServlet {
      * @see LoginServlet#getSaleAssociate(PersistenceManager, OpenIdUser)
      */
     public static SaleAssociate getSaleAssociate(OpenIdUser user) throws InvalidIdentifierException, ReservedOperationException {
+        if (user == null) {
+            return null;
+        }
         PersistenceManager pm = BaseOperations.getPersistenceManagerHelper();
         try {
             return getSaleAssociate(user, pm);
@@ -349,7 +359,9 @@ public class LoginServlet extends HttpServlet {
      * @throws ReservedOperationException
      */
     public static SaleAssociate getSaleAssociate(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException, ReservedOperationException {
-        // TODO: try to get the SaleAssociate record from MemCache
+        if (user == null) {
+            return null;
+        }
         try {
             Long saleAssociateKey = getSaleAssociateKey(user, pm);
             return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);

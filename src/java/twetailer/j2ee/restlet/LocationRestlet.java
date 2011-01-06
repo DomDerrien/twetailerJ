@@ -7,6 +7,7 @@ import javax.jdo.PersistenceManager;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.dto.Location;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.task.step.BaseSteps;
@@ -48,19 +49,20 @@ public class LocationRestlet extends BaseRestlet {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
+            boolean centerOnly = parameters.containsKey(BaseRestlet.CENTER_ONLY_KEY);
 
             JsonArray resources;
             if (onlyKeys) {
                 // As the selection needs the entire Location instances to filter within a geo-box,
                 // the corresponding instances are asked even if only their identifiers is forwarded to the users
                 resources = new GenericJsonArray();
-                for (Location location: LocationSteps.getLocations(pm, parameters, true)) {
+                for (Location location: LocationSteps.getLocations(pm, parameters, !centerOnly)) {
                     resources.add(location.getKey());
                 }
             }
             else { // full detail
                 // Get the locations
-                resources = JsonUtils.toJson(LocationSteps.getLocations(pm, parameters, true));
+                resources = JsonUtils.toJson(LocationSteps.getLocations(pm, parameters, !centerOnly));
             }
             return resources;
         }
@@ -82,7 +84,23 @@ public class LocationRestlet extends BaseRestlet {
     }
 
     @Override
-    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+    protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException, NumberFormatException, InvalidIdentifierException {
+        if (!isUserAdmin) {
+            throw new ReservedOperationException("Only Admins can update Location records!");
+        }
+
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Location location = LocationSteps.updateLocation(
+                    pm,
+                    Long.valueOf(resourceId),
+                    parameters,
+                    isUserAdmin
+            );
+            return location.toJson();
+        }
+        finally {
+            pm.close();
+        }
     }
 }

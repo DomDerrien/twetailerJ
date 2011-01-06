@@ -69,9 +69,18 @@ public class Reseller extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            // No external update allowed
+            return this;
+        }
+
         super.fromJson(in);
-        // if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY))); } // Cannot be changed transparently
-        // if (in.containsKey(TOKEN_NB)) { setTokenNb(in.getLong(TOKEN_NB)); } // Cannot be changed transparently
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if (in.containsKey(TOKEN_NB)) { setTokenNb(in.getLong(TOKEN_NB)); }
 
         return this;
     }

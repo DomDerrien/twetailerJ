@@ -319,13 +319,17 @@ public class SaleAssociate extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
         super.fromJson(in);
-        // if (in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
-        if (getKey() == null && in.containsKey(CONSUMER_KEY)) {
+        if (isUserAdmin && in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
+        if ((isUserAdmin || getKey() == null) && in.containsKey(CONSUMER_KEY)) {
             // Cannot change once set at creation time
             setConsumerKey(in.getLong(CONSUMER_KEY));
         }
-        if (getKey() == null && in.containsKey(CREATOR_KEY)) {
+        if ((isUserAdmin || getKey() == null) && in.containsKey(CREATOR_KEY)) {
             // Cannot change once set at creation time
             setCreatorKey(in.getLong(CREATOR_KEY));
         }
@@ -352,9 +356,9 @@ public class SaleAssociate extends Entity {
                 addHashTag(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
-        // if (in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
-        if (in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
+        if (isUserAdmin && in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
+        if (isUserAdmin && in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getString(SCORE)); }
 
         // Shortcut

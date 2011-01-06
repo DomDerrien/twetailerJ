@@ -73,7 +73,7 @@ public class DemandSteps extends BaseSteps {
             if (saleAssociateKey == null) {
                 throw new ReservedOperationException(Action.list, Demand.class.getName());
             }
-            output = getDemandOperations().getDemand(pm, demandKey, ownerKey);
+            output = getDemandOperations().getDemand(pm, demandKey, null);
             if (!output.getSaleAssociateKeys().contains(saleAssociateKey)) {
                 throw new ReservedOperationException(Action.list, Demand.class.getName());
             }
@@ -198,12 +198,20 @@ public class DemandSteps extends BaseSteps {
         // Remove owner information
         if (!QueryPointOfView.CONSUMER.equals(pointOfView)) {
             demand.remove(Demand.OWNER_KEY);
+            demand.remove(Demand.LOCATION_KEY);
         }
 
         // Remove the reference to the sale associates
         JsonArray saleAssociateKeys = demand.getJsonArray(Demand.SALE_ASSOCIATE_KEYS);
         int saleAssociateKeyNb = saleAssociateKeys == null ? 0 : saleAssociateKeys.size();
-        demand.remove(Demand.SALE_ASSOCIATE_KEYS);
+        if (!QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
+            // Let it go with only the logged associate key
+            saleAssociateKeys.removeAll();
+            saleAssociateKeys.add(saleAssociateKey);
+        }
+        else {
+            demand.remove(Demand.SALE_ASSOCIATE_KEYS);
+        }
 
         // TODO: control the cancellerKey
 
@@ -353,6 +361,7 @@ public class DemandSteps extends BaseSteps {
      * @param demandKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
      * @param owner Consumer who owns the demand to be updated
+     * @param isUserAdmin
      * @return Just updated demand
      *
      * @throws DataSourceException if the retrieval of the last created demand or of the location information fail
@@ -360,7 +369,7 @@ public class DemandSteps extends BaseSteps {
      * @throws InvalidStateException if the Demand is not update-able
      * @throws CommunicationException if the notification of a successful closing fails
      */
-    public static Demand updateDemand(PersistenceManager pm, RawCommand rawCommand, Long demandKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Demand updateDemand(PersistenceManager pm, RawCommand rawCommand, Long demandKey, JsonObject parameters, Consumer owner, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
         Demand demand = getDemandOperations().getDemand(pm, demandKey, owner.getKey());
         State currentState = demand.getState();
@@ -564,17 +573,21 @@ public class DemandSteps extends BaseSteps {
                 demand.setLocationKey(null);
             }
 
-            // Neutralize read-only parameters
-            parameters.remove(Demand.SALE_ASSOCIATE_KEYS);
-            parameters.remove(Demand.PROPOSAL_KEYS);
+            boolean resetPublication = true;
+            // TODO: find a way to not force the re-publication is the update does not cover CRITERIA/HASHTAGS/METADATA/QUANTITY
+            // TODO: safe update: CC, RANGE extension
+            // TODO: to evaluate: DUE_DATE/EXPIRATION_DATE, RANGE reduction
 
             // Integrate updates
-            demand.fromJson(parameters);
+            demand.fromJson(parameters, isUserAdmin);
 
             // Prepare as a new Demand
             demand.setState(State.opened); // Will force the re-validation of the entire demand
-            demand.resetProposalKeys(); // All existing proposals are removed
-            demand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
+            if (resetPublication) {
+                demand.resetProposalKeys(); // All existing proposals are removed
+                demand.resetSaleAssociateKeys(); // All existing sale associates need to be recontacted again
+                // TODO: cancel the Proposal, so Associate will know about the update
+            }
 
             // Persist updates
             demand = getDemandOperations().updateDemand(pm, demand);

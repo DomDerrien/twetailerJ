@@ -94,8 +94,8 @@ public class SaleAssociateRestlet extends BaseRestlet {
             SaleAssociate saleAssociate = SaleAssociateSteps.createSaleAssociate(
                     pm,
                     parameters,
-                    isUserAdmin ? null : LoginServlet.getConsumer(loggedUser, pm),
-                    isUserAdmin ? null : LoginServlet.getSaleAssociate(loggedUser, pm),
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    LoginServlet.getSaleAssociate(loggedUser, pm),
                     isUserAdmin
             );
             return saleAssociate.toJson();

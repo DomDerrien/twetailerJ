@@ -124,7 +124,7 @@ public class Command extends Entity {
     @Persistent
     private Source source;
 
-    public static final String SOURCE = "source";
+    public static final String SOURCE = RawCommand.SOURCE;
 
     @Persistent
     private State state = State.opened;
@@ -469,9 +469,13 @@ public class Command extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
         super.fromJson(in);
-        if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
-        if (in.containsKey(CANCELER_KEY)) { setCancelerKey(in.getLong(CANCELER_KEY)); }
+        // if (in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
+        if (isUserAdmin && in.containsKey(CANCELER_KEY)) { setCancelerKey(in.getLong(CANCELER_KEY)); }
         if (in.containsKey(CC)) {
             JsonArray jsonArray = in.getJsonArray(CC);
             resetCC();
@@ -543,12 +547,12 @@ public class Command extends Entity {
             }
         }
         if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
-        if (in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
+        if (isUserAdmin && in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
-        if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
-        if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
-        if (in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); }
+        // if (in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
+        // if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
+        if (isUserAdmin && in.containsKey(STATE)) { setState(in.getString(STATE)); }
+        // if (in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); } // Updated automatically by setState()
         return this;
     }
 

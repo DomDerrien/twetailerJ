@@ -54,9 +54,6 @@ public class Request extends Command {
 
     public static final String RANGE_UNIT = "rangeUnit";
 
-    // Shortcut
-    public static final String REFERENCE = "reference";
-
     /** Default constructor */
     public Request() {
         super();
@@ -191,9 +188,6 @@ public class Request extends Command {
         // if (in.containsKey(INFLUENCER_KEY)) { setInfluencerKey(in.getLong(INFLUENCER_KEY)); } // Cannot be changed transparently
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
-
-        // Shortcut
-        if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
 
         return this;
     }

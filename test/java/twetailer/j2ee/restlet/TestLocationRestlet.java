@@ -16,6 +16,7 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Location;
@@ -110,7 +111,7 @@ public class TestLocationRestlet {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testUpdateResource() throws DataSourceException {
+    public void testUpdateResource() throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
         ops.updateResource(new GenericJsonObject(), "resourceId", user, false);
     }
 }

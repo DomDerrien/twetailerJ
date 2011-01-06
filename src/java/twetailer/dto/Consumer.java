@@ -113,7 +113,7 @@ public class Consumer extends Entity {
     @Persistent
     private Long saleAssociateKey;
 
-    public final static String SALE_ASSOCIATE_KEY = "saleAssociateKey";
+    public final static String SALE_ASSOCIATE_KEY = SaleAssociate.SALEASSOCIATE_KEY;
 
     @Persistent
     private String twitterId;
@@ -263,6 +263,7 @@ public class Consumer extends Entity {
         this.twitterId = twitterId == null || twitterId.length() == 0 ? null : twitterId;
     }
 
+    @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(ADDRESS, getAddress());
@@ -282,25 +283,30 @@ public class Consumer extends Entity {
         return out;
     }
 
+    @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
         super.fromJson(in);
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
-        // if (in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely
-        // if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); } // Cannot be updated remotely
-        // if (in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); } // Cannot be updated remotely
-        // if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely
+        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); } // Cannot be updated remotely
+        if (in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); } // Cannot be updated remotely
+        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); } // Cannot be updated remotely
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        // if (in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); } // Cannot be updated remotely
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
-        // if (in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); } // Cannot be updated remotely
-        if (getKey() == null && in.containsKey(SALE_ASSOCIATE_KEY)) {
+        if (isUserAdmin && in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); } // Cannot be updated remotely
+        if ((isUserAdmin || getKey() == null) && in.containsKey(SALE_ASSOCIATE_KEY)) {
             // Cannot change once set at creation time
             setSaleAssociateKey(in.getLong(SALE_ASSOCIATE_KEY));
         }
-        // if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); } // Cannot be updated remotely
+        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); } // Cannot be updated remotely
 
         // Shortcut
         if (in.containsKey(CONSUMER_KEY)) { setKey(in.getLong(CONSUMER_KEY)); }

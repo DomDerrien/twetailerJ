@@ -282,8 +282,8 @@ public class CommandLineParser {
         matcher = patterns.get(Prefix.locale.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup).toUpperCase(locale));
-            command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)).toUpperCase(locale));
+            command.put(Location.COUNTRY_CODE, getCountryCode(currentGroup));
+            command.put(Location.POSTAL_CODE, getPostalCode(currentGroup, command.getString(Location.COUNTRY_CODE)));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }
@@ -629,11 +629,11 @@ public class CommandLineParser {
     private static String getCountryCode(String pattern) {
         int indexSpace = pattern.lastIndexOf(' ');
         if (indexSpace != -1) {
-            return pattern.substring(indexSpace + 1);
+            return LocaleValidator.checkCountryCode(pattern.substring(indexSpace + 1));
         }
         int indexDash = pattern.lastIndexOf('-');
         if (indexDash != -1) {
-            return pattern.substring(indexDash + 1);
+            return LocaleValidator.checkCountryCode(pattern.substring(indexDash + 1));
         }
         return LocaleValidator.DEFAULT_COUNTRY_CODE;
     }
@@ -647,9 +647,9 @@ public class CommandLineParser {
     private static String getPostalCode(String pattern, String countryCode) {
         String postalCode = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1, pattern.length() - countryCode.length()).replaceAll("\\s", "");
         if (postalCode.charAt(postalCode.length() - 1) == '-') {
-            return postalCode.substring(0, postalCode.length() - 1);
+            return LocaleValidator.standardizePostalCode(postalCode.substring(0, postalCode.length() - 1));
         }
-        return postalCode;
+        return LocaleValidator.standardizePostalCode(postalCode);
     }
 
     /**

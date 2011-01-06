@@ -102,7 +102,16 @@ public class Registrar extends Entity {
     @Override
     public TransferObject fromJson(JsonObject in) {
         super.fromJson(in);
-        // if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY))); } // Cannot be changed transparently
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            // No external update allowed
+            return this;
+        }
+
+        if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
         if (in.containsKey(URL)) { setUrl(in.getString(URL)); }

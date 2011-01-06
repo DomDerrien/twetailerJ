@@ -7,10 +7,12 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.InvalidStateException;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.j2ee.BaseRestlet;
+import twetailer.validator.LocaleValidator;
 import domderrien.jsontools.JsonObject;
 
 public class LocationSteps extends BaseSteps {
@@ -66,8 +68,11 @@ public class LocationSteps extends BaseSteps {
             center = getLocation(pm, parameters.getLong(Location.LOCATION_KEY));
         }
         else if (parameters.containsKey(Location.POSTAL_CODE) && parameters.containsKey(Location.COUNTRY_CODE)) {
-            List<Location> possibleCenters = getLocationOperations().getLocations(pm, parameters.getString(Location.POSTAL_CODE), parameters.getString(Location.COUNTRY_CODE));
+            String postalCode = LocaleValidator.standardizePostalCode(parameters.getString(Location.POSTAL_CODE));
+            String countryCode = LocaleValidator.checkCountryCode(parameters.getString(Location.COUNTRY_CODE));
+            List<Location> possibleCenters = getLocationOperations().getLocations(pm, postalCode, countryCode);
             if (possibleCenters.size() == 0) {
+                parameters.put(Location.POSTAL_CODE, postalCode); // Inject normalize postal code
                 center = getLocationOperations().createLocation(pm, parameters);
             }
             else {
@@ -96,8 +101,21 @@ public class LocationSteps extends BaseSteps {
             boolean hasStore = !parameters.containsKey(Location.HAS_STORE) || parameters.getBoolean(Location.HAS_STORE);
 
             output = getLocationOperations().getLocations(pm, center, range, rangeUnit, hasStore, maximumResults);
+            output.add(center);
         }
 
         return output;
+    }
+
+    public static Location updateLocation(PersistenceManager pm, Long locationKey, JsonObject parameters, boolean isUserAdmin) throws InvalidIdentifierException {
+
+        // Get identified location
+        Location location = getLocationOperations().getLocation(pm, locationKey);
+
+        // Merge updates and persist them
+        location.fromJson(parameters, isUserAdmin);
+        location = getLocationOperations().updateLocation(pm, location);
+
+        return location;
     }
 }

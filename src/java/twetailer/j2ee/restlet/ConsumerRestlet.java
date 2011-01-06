@@ -115,8 +115,10 @@ public class ConsumerRestlet extends BaseRestlet {
                     pm,
                     consumerKey,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser, pm)
+                    LoginServlet.getConsumer(loggedUser, pm),
+                    isUserAdmin
             );
+
             return consumer.toJson();
         }
         finally {

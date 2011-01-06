@@ -93,7 +93,7 @@ public class TestDemandOperations {
         assertNotNull(object.getKey());
     }
 
-    @Test(expected=ClientException.class)
+    @Test
     public void testCreateIII() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 222L);

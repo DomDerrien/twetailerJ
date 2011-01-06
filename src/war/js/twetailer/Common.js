@@ -302,7 +302,11 @@
      */
     module.handleError = function(message, ioArgs, showDebugMessage) {
         if (ioArgs.xhr.status == 403) { // 403 == Forbidden
-            _getLabel('console', 'error_user_access_forbidden');
+            if (showDebugMessage) {
+                alert('Forbidden access! Should be redirected toward the Consumer console at "./".');
+                return;
+            }
+            alert(_getLabel('console', 'error_user_access_forbidden'));
             window.location = './';
             return;
         }
@@ -875,8 +879,8 @@
         if (_previouslySelectedCountryCode != countryCode) {
             var pcField = dijit.byId(postalCodeFieldId);
             if (pcField) {
-                pcField.set('regExp', _getLabel('console', 'location_postalCode_regExp_' + countryCode));
-                pcField.set('placeHolder', _getLabel('console', 'location_postalCode_placeHolder_' + countryCode));
+                pcField.set('regExp', _getLabel('master', 'location_postalCode_regExp_' + countryCode));
+                pcField.set('placeHolder', _getLabel('master', 'location_postalCode_default_' + countryCode));
                 pcField.set('invalidMessage', _getLabel('console', 'location_postalCode_invalid_' + countryCode));
                 pcField.focus();
             }

@@ -371,10 +371,10 @@ public class MessageGenerator {
             parameters.put(prefix + Proposal.DEMAND_KEY, proposal.getDemandKey());
             parameters.put(prefix + Proposal.PRICE, proposal.getPrice());
             String score = noScore;
-            switch(proposal.getScore()) {
-            case 1: score = ":-("; break;
-            case 2: case 3: score = ":-\\|"; break;
-            case 4: case 5: score = ":-)"; break;
+            switch(proposal.getScore().intValue()) {
+                case 1: score = ":-("; break;
+                case 2: case 3: score = ":-\\|"; break;
+                case 4: case 5: score = ":-)"; break;
             }
             parameters.put(prefix + Proposal.SCORE, score);
             parameters.put(prefix + Proposal.TOTAL, proposal.getTotal());

@@ -266,6 +266,19 @@ public class LocaleValidator {
     public static final String DEFAULT_COUNTRY_CODE = Locale.CANADA.getCountry();
 
     /**
+     * Clean-up the postal code format
+     *
+     * @param postalCode user input
+     * @return format for the back-end storage
+     */
+    public static String standardizePostalCode(String postalCode) {
+        //
+        // FIXME: Be sure that the given postal is in upper case for the country's locale?
+        //
+        return postalCode.replaceAll("\\s", "").replaceAll("\\-", "").toUpperCase();
+    }
+
+    /**
      * Verify that the given country code is supported by the system
      *
      * @param countryCode Country code to validate

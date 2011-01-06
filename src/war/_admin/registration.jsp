@@ -59,17 +59,17 @@
     } // endif (useCDN)
     %>
     <style type="text/css">
-    div.action {
-        float: left;
-        text-align: center;
-        padding: 3px 30px;
-        margin: 1px;
-        border-radius: 5px;
-        background-color: #dfd;
-    }
-    div.action.current {
-        background-color: #afa;
-    }
+        div.action {
+            float: left;
+            text-align: center;
+            padding: 3px 30px;
+            margin: 1px;
+            border-radius: 5px;
+            background-color: #dfd;
+        }
+        div.action.current {
+            background-color: #afa;
+        }
     </style>
 </head>
 <body class="tundra">
@@ -105,19 +105,60 @@
             dojoType="dijit.layout.ContentPane"
             id="centerZone"
             region="center"
+            style="margin-top: 5px; margin-bottom: 10px;"
         >
-            <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;">
+            <fieldset class="entityInformation" style="float:right;margin-left:10px;text-align:center;">
+                <legend>Resources</legend>
+                GAE console:
+                    <a href="https://appengine.google.com/dashboard?&app_id=anothersocialeconomy" title="AnotherSocialEconomy">A</a> /
+                    <a href="https://appengine.google.com/dashboard?&app_id=twetailer" title="Twetailer">T</a> /
+                    <a href="http://localhost:9999/_ah/admin" title="Local development environment">D</a>
+                <br />
+                Registration:
+                    <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp" title="AnotherSocialEconomy">A</a> /
+                    <a href="https://twetailer.appspot.com/_admin/registration.jsp" title="Twetailer">T</a> /
+                    <a href="http://localhost:9999/_admin/registration.jsp" title="Local development environment">D</a>
+                <br />
+                Monitoring:
+                    <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp" title="AnotherSocialEconomy">A</a> /
+                    <a href="https://twetailer.appspot.com/_admin/monitoring.jsp" title="Twetailer">T</a> /
+                    <a href="http://localhost:9999/_admin/monitoring.jsp" title="Local development environment">D</a>
+                <br />
+                Associate:
+                    <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp" title="AnotherSocialEconomy">A</a> /
+                    <a href="https://twetailer.appspot.com/console/associate.jsp" title="Twetailer">T</a> /
+                    <a href="http://localhost:9999/console/associate.jsp" title="Local development environment">D</a>
+                <br />
+                <div style="color:grey;font-size:smaller;">ASE / Twetailer / Dev</div>
+            </fieldset>
+            <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;height:100%;">
                 <div dojoType="dijit.layout.ContentPane" jsId="step1">
                     <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
                         <form dojoType="dijit.form.Form" id="locationInformation" onsubmit="localModule.createLocation();return false;">
                             <div>
                                 <label for="<%= Location.POSTAL_CODE %>">Postal Code</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Location.POSTAL_CODE %>" name="<%= Location.POSTAL_CODE %>" required="true" style="width:10em;" type="text" value="" />
+                                <input
+                                    dojoType="dijit.form.ValidationTextBox"
+                                    id="<%= Location.POSTAL_CODE %>"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
+                                    name="<%= Location.POSTAL_CODE %>"
+                                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true }); }"
+                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
+                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
+                                    required="true"
+                                    style="width:6em;"
+                                    type="text"
+                                />
                             </div>
                             <div>
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
-                                <select dojoType="dijit.form.Select" id="<%= Location.COUNTRY_CODE %>" name="<%= Location.COUNTRY_CODE %>">
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    id="<%= Location.COUNTRY_CODE %>"
+                                    name="<%= Location.COUNTRY_CODE %>"
+                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, '<%= Location.POSTAL_CODE %>');"
+                                >
                                     <option value="CA" selected="true">Canada</option>
                                     <option value="US">United States of America</option>
                                 </select>
@@ -135,11 +176,11 @@
                         <form dojoType="dijit.form.Form" id="storeInformation" onsubmit="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();return false;">
                             <div>
                                 <label for="<%= Store.LOCATION_KEY %>">Location Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" required="true" style="width:8em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.NAME %>">Store Name</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.NAME %>" required="true" style="width:20em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.NAME %>" required="true" style="width:30em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.ADDRESS %>">Address</label><br/>
@@ -147,19 +188,19 @@
                             </div>
                             <div>
                                 <label for="<%= Store.EMAIL %>">Email</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.EMAIL %>" required="true" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.EMAIL %>" required="true" style="width:30em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.PHONE_NUMBER %>">Phone Number</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.PHONE_NUMBER %>" required="true" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.PHONE_NUMBER %>" required="true" style="width:12em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= Store.REGISTRAR_KEY %>">Registrar Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REGISTRAR_KEY %>" required="true" style="width:10em;" type="text" value="0" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REGISTRAR_KEY %>" required="true" style="width:8em;" type="text" value="0" />
                             </div>
                             <div>
                                 <label for="<%= Store.REVIEW_SYSTEM_KEY %>">Review System Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" required="true" style="width:10em;" type="text" value="0" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" required="true" style="width:8em;" type="text" value="0" />
                             </div>
                             <div>
                                 <label for="<%= Store.STATE %>">State</label><br/>
@@ -174,7 +215,7 @@
                             </div>
                             <div>
                                 <label for="<%= Store.URL %>">Website URL</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.URL %>" required="true" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.URL %>" required="true" style="width:30em;" type="text" value="" />
                             </div>
                             <br/>
                             <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
@@ -194,11 +235,11 @@
                         <form dojoType="dijit.form.Form" id="saleAssociateInformation" onsubmit="localModule.createSaleAssociate();return false;">
                             <div>
                                 <label for="<%= SaleAssociate.STORE_KEY %>">Store Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" required="true" style="width:10em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" required="true" style="width:8em;" type="text" value="" />
                             </div>
                             <div>
                                 <label for="<%= SaleAssociate.CONSUMER_KEY %>">Consumer Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" required="true" style="width:20em;" type="text" value="" />
+                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" required="true" style="width:8em;" type="text" value="" />
                             </div>
                             <br/>
                             <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);;dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
@@ -248,8 +289,8 @@
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dijit.form.ValidationTextBox');
-        dojo.require('twetailer.Common');
         dojo.require('dojox.analytics.Urchin');
+        dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
             dojo.fadeOut({
@@ -269,6 +310,11 @@
 
     var localModule = new Object();
     localModule.createLocation = function() {
+        var form = dijit.byId('locationInformation');
+        if (!form.validate()) {
+            alert('Postal code has an invalid value');
+            return;
+        }
         dojo.animateProperty({
             node: 'innerStep1',
             properties: { backgroundColor: { end: 'yellow' } }
@@ -299,6 +345,11 @@
         });
     };
     localModule.createStore = function() {
+        var form = dijit.byId('storeInformation');
+        if (!form.validate()) {
+            alert('Some form fields have an invalid value');
+            return;
+        }
         dojo.animateProperty({
             node: 'innerStep2',
             properties: { backgroundColor: { end: 'yellow' } }
@@ -377,6 +428,11 @@
         });
     };
     localModule.createSaleAssociate = function() {
+        var form = dijit.byId('saleAssociateInformation');
+        if (!form.validate()) {
+            alert('Some form fields have an invalid value');
+            return;
+        }
         dojo.animateProperty({
             node: 'innerStep3',
             properties: { backgroundColor: { end: 'yellow' } }

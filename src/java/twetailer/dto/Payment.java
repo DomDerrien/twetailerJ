@@ -5,6 +5,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import domderrien.jsontools.JsonObject;
+import domderrien.jsontools.TransferObject;
 
 /**
  * Define the attribute for the payment operation attached to a confirmed proposal/demand
@@ -136,9 +137,30 @@ public class Payment extends Entity {
 
     public static JsonObject keysToJson(String sequence, JsonObject out) {
         Long[] keys = getKeys(sequence);
-        out.put("consumerKey", keys[0]);
-        out.put("demandKey", keys[1]);
-        out.put("proposalKey", keys[2]);
+        out.put(Consumer.CONSUMER_KEY, keys[0]);
+        out.put(Proposal.DEMAND_KEY, keys[1]);
+        out.put(Proposal.PROPOSAL_KEY, keys[2]);
         return out;
+    }
+
+    @Override
+    public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            // No external update allowed
+            return this;
+        }
+
+        super.fromJson(in);
+
+        if (in.containsKey(AUTHORIZATION_ID)) { setAuthorizationId(in.getString(AUTHORIZATION_ID)); }
+        if (in.containsKey(REFERENCE)) { setReference(in.getString(REFERENCE)); }
+        if (in.containsKey(REQUEST_ID)) { setRequestId(in.getString(REQUEST_ID)); }
+        if (in.containsKey(TRANSACTION_ID)) { setTransactionId(in.getString(TRANSACTION_ID)); }
+
+        return this;
     }
 }

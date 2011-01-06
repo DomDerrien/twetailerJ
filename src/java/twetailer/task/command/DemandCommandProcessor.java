@@ -37,7 +37,7 @@ public class DemandCommandProcessor {
             Long demandKey = command.getLong(Demand.REFERENCE);
             try {
                 // Update specified demand
-                DemandSteps.updateDemand(pm, rawCommand, demandKey, command, consumer);
+                DemandSteps.updateDemand(pm, rawCommand, demandKey, command, consumer, false);
 
                 // Update confirmation message will be sent by the DemandValidator being given it's a valid demand
             }

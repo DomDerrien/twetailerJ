@@ -242,7 +242,7 @@ public class CommandProcessor {
         }
     }
 
-    public final static String DEBUG_INFO_SWITCH = "-lusanga-debug-info";
+    public final static String DEBUG_INFO_SWITCH = "-debugMode";
 
     /**
      * Extract commands from the tables of raw commands and acts accordingly

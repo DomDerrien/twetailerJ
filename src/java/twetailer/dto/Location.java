@@ -112,12 +112,9 @@ public class Location extends Entity {
     }
 
     public void setPostalCode(String postalCode) {
-        //
-        // FIXME: Be sure that the given postal is in upper case for the country's locale?
-        //
         this.postalCode = postalCode;
-        if(this.postalCode != null) {
-            this.postalCode = this.postalCode.replaceAll("\\s", "").replaceAll("\\-", "").toUpperCase();
+        if (this.postalCode != null) {
+            this.postalCode = LocaleValidator.standardizePostalCode(this.postalCode);
         }
     }
 
@@ -134,6 +131,17 @@ public class Location extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+        if (!isUserAdmin) {
+            if (getKey() != null) {
+                // No external update allowed
+                return this;
+            }
+        }
+
         super.fromJson(in);
 
         if (hasNewAttributes(in)) {
@@ -150,7 +158,7 @@ public class Location extends Entity {
         if (in.containsKey(POSTAL_CODE)) { setPostalCode(in.getString(POSTAL_CODE)); }
 
         // Shortcut
-        if (in.containsKey(LOCATION_KEY)) {setKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(LOCATION_KEY)) { setKey(in.getLong(LOCATION_KEY)); }
 
         return this;
     }

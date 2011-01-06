@@ -286,7 +286,7 @@ public class ProposalSteps extends BaseSteps {
     }
 
     /**
-     * Utility method create a proposal with the given parameters and triggering the associated workflow steps
+     * Utility method create a proposal with the given parameters and triggering the associated work flow steps
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
@@ -332,6 +332,7 @@ public class ProposalSteps extends BaseSteps {
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
      * @param owner Sale associate who owns the proposal to be updated
      * @param saConsumerRecord Consumer record attached to the sale associate
+     * @param isUserAdmin
      * @return Just updated proposal
      *
      * @throws DataSourceException if the retrieval of the last created proposal or of the location information fail
@@ -339,9 +340,9 @@ public class ProposalSteps extends BaseSteps {
      * @throws InvalidStateException if the Proposal is not update-able
      * @throws CommunicationException if the communication of the update confirmation fails
      */
-    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
-        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, owner.getKey(), owner.getStoreKey());
+        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, isUserAdmin ? null : owner.getKey(), isUserAdmin ? null : owner.getStoreKey());
         State currentState = proposal.getState();
 
         // Workflow state change
@@ -534,12 +535,8 @@ public class ProposalSteps extends BaseSteps {
         }
         // Normal attribute update
         else if (State.opened.equals(currentState) || State.published.equals(currentState) || State.invalid.equals(currentState)) {
-            // Neutralize read-only parameters
-            parameters.remove(Proposal.DEMAND_KEY);
-            parameters.remove(Proposal.CONSUMER_KEY);
-
             // Integrate updates
-            proposal.fromJson(parameters);
+            proposal.fromJson(parameters, isUserAdmin);
 
             // Prepare as a new Demand
             proposal.setState(State.opened); // Will force the re-validation of the entire demand
@@ -778,7 +775,7 @@ public class ProposalSteps extends BaseSteps {
         }
         else { //  if (parameters.containsKey(Proposal.SCORE)) {
             // Persist the proposal attribute change
-            proposal.setScore(Integer.valueOf((int) parameters.getLong(Proposal.SCORE)));
+            proposal.setScore(Long.valueOf((int) parameters.getLong(Proposal.SCORE)));
             if (parameters.containsKey(Proposal.COMMENT)) {
                 proposal.setComment(parameters.getString(Proposal.COMMENT));
             }

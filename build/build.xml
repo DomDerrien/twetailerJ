@@ -150,7 +150,7 @@
 
     <property name="javadoc.docs.copyright"
         description="Piece of information inserted at the end of all HTML pages produced by JavaDoc."
-        value="Some rights resvered 2009, 2010 AnotherSocialEconomy."
+        value="Some rights resvered 2009, 2011 AnotherSocialEconomy."
     />
     <property name="javadoc.docs.window.title"
         description="Piece of information inserted as the title page of all HTML pages produced by JavaDoc."

@@ -483,6 +483,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateIII() throws DataSourceException {
         com.google.appengine.api.users.User user = new com.google.appengine.api.users.User("test", "test.com");
 
@@ -513,6 +514,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateIVa() throws DataSourceException, TwitterException {
         final String name = "displayName";
         final String screenName = "screenName";
@@ -548,10 +550,10 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateIVb() throws DataSourceException, TwitterException {
         final String screenName = "screenName";
         MockUser user = new MockUser(0, screenName, null);
-        System.err.println("*** twitter: " + user.getName());
 
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -583,6 +585,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateV() throws DataSourceException {
         final String jabberId = "unit@test.net";
         com.google.appengine.api.xmpp.JID user = new com.google.appengine.api.xmpp.JID(jabberId);
@@ -616,6 +619,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateVIa() throws DataSourceException, UnsupportedEncodingException {
         final String email = "unit@test.net";
         final String name = "Mr Unit Test";
@@ -651,10 +655,10 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateVIb() throws DataSourceException, UnsupportedEncodingException {
         final String email = "unit@test.net";
         javax.mail.internet.InternetAddress address = new javax.mail.internet.InternetAddress(email, null);
-        System.err.println("address: " + address.getPersonal());
 
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -686,6 +690,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateVII() throws DataSourceException, UnsupportedEncodingException {
         com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
@@ -725,6 +730,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateVIII() throws DataSourceException, UnsupportedEncodingException {
         com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
@@ -767,6 +773,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateIX() throws DataSourceException, UnsupportedEncodingException {
         com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
@@ -811,6 +818,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateX() throws DataSourceException, UnsupportedEncodingException {
         com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
@@ -849,6 +857,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateXI() throws DataSourceException, UnsupportedEncodingException {
         com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
                 YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
@@ -886,6 +895,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateXII() throws DataSourceException, UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -933,6 +943,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateXIII() throws DataSourceException, UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations();
 
@@ -977,6 +988,7 @@ public class TestConsumerOperations {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testCreateXIV() throws DataSourceException, UnsupportedEncodingException {
         final String openId = "unit@test";
         ConsumerOperations ops = new ConsumerOperations() {

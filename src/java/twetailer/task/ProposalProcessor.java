@@ -96,6 +96,7 @@ public class ProposalProcessor {
                     // Update the demand
                     boolean newlyProposed = !demand.getProposalKeys().contains(proposalKey);
                     demand.addProposalKey(proposalKey);
+                    demand.addSaleAssociateKey(proposal.getOwnerKey());
                     demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
 
                     // Prepare the notification only if worth it
