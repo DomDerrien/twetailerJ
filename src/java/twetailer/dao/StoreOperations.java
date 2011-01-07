@@ -322,14 +322,19 @@ public class StoreOperations extends BaseOperations {
         for (Location location: locations) {
             // Select the corresponding resources
             queryParameters.put(Store.LOCATION_KEY, location.getKey());
-            List<Long> stores = getStoreKeys(pm, queryParameters, limit);
+            List<Long> storeKeys = getStoreKeys(pm, queryParameters, limit);
             // Copy into the list to be returned
-            selection.addAll(stores);
-            if (limit != 0) {
-                if (limit <= selection.size()) {
-                    break;
+            for (Long storeKey: storeKeys) {
+                if (!selection.contains(storeKey)) {
+                    selection.add(storeKey);
+                    if (limit != 0) {
+                        if (limit == 1) {
+                            // Stop accumulating references
+                            return selection;
+                        }
+                        limit = limit - 1;
+                    }
                 }
-                limit = limit - selection.size();
             }
         }
         return selection;

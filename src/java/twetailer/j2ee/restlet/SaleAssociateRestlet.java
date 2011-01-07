@@ -66,7 +66,9 @@ public class SaleAssociateRestlet extends BaseRestlet {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             if (!isUserAdmin) {
-                throw new ReservedOperationException("Restricted access!");
+                if (!LoginServlet.getSaleAssociate(loggedUser, pm).isStoreAdmin()) {
+                    throw new ReservedOperationException("Restricted access!");
+                }
             }
 
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);

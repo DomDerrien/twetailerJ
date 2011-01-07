@@ -1,7 +1,12 @@
 package twetailer.dao;
 
-import javax.jdo.PersistenceManager;
+import java.util.List;
+import java.util.Map;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
+
+import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.RawCommand;
 
@@ -79,6 +84,53 @@ public class RawCommandOperations extends BaseOperations {
         }
         catch(Exception ex) {
             throw new InvalidIdentifierException("Error while retrieving rawCommand for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding RawCommand identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of rawCommand keys matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data rawCommand type
+     *
+     * @see RawCommandOperations#getRawCommandKeys(PersistenceManager, Map<String, Object>, int)
+     */
+    public List<Long> getRawCommandKeys(Map<String, Object> parameters, int limit) throws DataSourceException {
+        PersistenceManager pm = getPersistenceManager();
+        try {
+            return getRawCommandKeys(pm, parameters, limit);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Use the given pairs {attribute; value} to get the corresponding RawCommand identifiers while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param parameters Map of attributes and values to match
+     * @param limit Maximum number of expected results, with 0 means the system will use its default limit
+     * @return Collection of rawCommand keys matching the given criteria
+     *
+     * @throws DataSourceException If given value cannot matched a data rawCommand type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Long> getRawCommandKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+        // Prepare the query
+        Query query = pm.newQuery("select " + RawCommand.KEY + " from " + RawCommand.class.getName());
+        try {
+            Object[] values = prepareQuery(query, parameters, limit);
+            // Select the corresponding resources
+            List<Long> rawCommandKeys = (List<Long>) query.executeWithArray(values);
+            rawCommandKeys.size(); // FIXME: remove workaround for a bug in DataNucleus
+            return rawCommandKeys;
+        }
+        finally {
+            query.closeAll();
         }
     }
 

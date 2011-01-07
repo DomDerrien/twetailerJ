@@ -4,7 +4,7 @@
      Consumer
       -->
     <datastore-index kind="Consumer" ancestor="false" source="manual">
-        <property name="email" direction="asc"/>
+        <property name="email" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
@@ -14,7 +14,7 @@
     </datastore-index>
 
     <datastore-index kind="Consumer" ancestor="false" source="manual">
-        <property name="jabberId" direction="asc"/>
+        <property name="jabberId" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
@@ -24,7 +24,12 @@
     </datastore-index>
 
     <datastore-index kind="Consumer" ancestor="false" source="manual">
-        <property name="twitterId" direction="asc"/>
+        <property name="name" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
+        <property name="twitterId" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
@@ -255,6 +260,11 @@
       -->
     <datastore-index kind="Store" ancestor="false" source="manual">
         <property name="locationKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Store" ancestor="false" source="manual">
+        <property name="name" direction="desc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 

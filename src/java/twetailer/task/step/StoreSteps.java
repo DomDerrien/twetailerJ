@@ -1,7 +1,5 @@
 package twetailer.task.step;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,6 @@ import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.validator.LocaleValidator;
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonObject;
 
 public class StoreSteps extends BaseSteps {
@@ -43,9 +40,12 @@ public class StoreSteps extends BaseSteps {
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
         int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
 
-        List<Location> locations = LocationSteps.getLocations(pm, parameters, true);
+        if (parameters.containsKey(Location.POSTAL_CODE) && parameters.containsKey(Location.COUNTRY_CODE) || parameters.containsKey(Location.LATITUDE) && parameters.containsKey(Location.LONGITUDE)) {
+            List<Location> locations = LocationSteps.getLocations(pm, parameters, true);
 
-        return getStoreOperations().getStoreKeys(pm, queryParameters, locations, maximumResults);
+            return getStoreOperations().getStoreKeys(pm, queryParameters, locations, maximumResults);
+        }
+        return getStoreOperations().getStoreKeys(pm, queryParameters, maximumResults);
     }
 
     /**
@@ -67,14 +67,11 @@ public class StoreSteps extends BaseSteps {
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
+        // Date fields
+        processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
+
+        // String fields
+        processStringFilter(Store.NAME, parameters, queryFilters);
 
         return queryFilters;
     }

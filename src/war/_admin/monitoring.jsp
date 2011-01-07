@@ -140,10 +140,10 @@
                 <input
                     dojoType="dijit.form.ValidationTextBox"
                     id="queryConsumer"
-                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_ccInvalidMessage", locale) %>"
+                    invalidMessage="Must be at least 3 characters long, used to select the Consumers with an e-mail starting with the field value"
                     onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryConsumer', 'email', 'Consumer', 'consumer.key'); }"
-                    placeHolder="<%= LabelExtractor.get(ResourceFileId.third, "shared_email_sample", locale) %>"
-                    regExp="<%= Consumer.EMAIL_REGEXP_VALIDATOR %>"
+                    placeHolder="e-mail address (starts with)"
+                    regExp="\S\S[^\s|\*].*"
                     required="true"
                     type="text"
                 />
@@ -164,8 +164,28 @@
                 <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true });" type="button">Search</button>
 
                 Store by name:
-                <input id="queryStore" dojoType="dijit.form.TextBox" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key'); }" readonly="true" />
-                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key');" type="button">Search</button>
+                <input
+                    id="queryStore"
+                    dojoType="dijit.form.ValidationTextBox"
+                    invalidMessage="Must be at least 3 characters long, used to select the Stores with a name starting with the field value"
+                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key'); }"
+                    placeHolder="name (starts with)"
+                    regExp="\S\S[^\s|\*].*"
+                    required="true"
+                    type="text"
+                />
+                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key');" type="button">Search</button>
+
+                RawCommand after date:
+                <input
+                    id="queyDueDate"
+                    dojoType="dijit.form.DateTextBox"
+                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queyDueDate', 'creationDate', 'RawCommand', 'rawcommand.key'); }"
+                    required="true"
+                    style="width:8em;"
+                    type="text"
+                />
+                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queyDueDate', 'creationDate', 'RawCommand', 'rawcommand.key');" type="button">Search</button>
             </fieldset>
             <div style="float:left;">
                <a id="turnOffRow1" href="javascript:dojo.query('#turnOffRow1').style('display', 'none');dojo.query('#turnOnRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','none');dojo.query('#saleassociateInformation>table').style('display','none');dojo.query('#storeInformation>table').style('display','none');dojo.query('#locationInformation>table').style('display','none');">[&ndash;]</a>
@@ -298,7 +318,6 @@
                         <tr>
                             <td colspan="2" style="text-align:center;">
                                 <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Consumer');" type="button">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('Consumer');" type="button">Delete</button>
                                 <button dojoType="dijit.form.Button" onclick="localModule.getDemandKeys();" type="button">Get demand keys</button>
                             </td>
                         </tr>
@@ -391,7 +410,6 @@
                         <tr>
                             <td colspan="2" style="text-align:center;">
                                 <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('SaleAssociate');" type="button">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.deleteEntity('SaleAssociate');" type="button">Delete</button>
                                 <button dojoType="dijit.form.Button" onclick="localModule.getProposalKeys();" type="button">Get proposal keys</button>
                             </td>
                         </tr>
@@ -491,7 +509,7 @@
                         <tr>
                             <td colspan="2" style="text-align:center;">
                                 <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');" type="button">Update</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="" type="button">Get sale associate keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociateKeys();" type="button">Get sale associate keys</button>
                             </td>
                         </tr>
                     </table>
@@ -580,8 +598,8 @@
                                 <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
                                 <button disabled="true" dojoType="dijit.form.Button" type="button">View map</button>
                                 <br />
-                                <button dojoType="dijit.form.Button" onclick="dijit.byId('locationFilterDialog').show();" type="button">Get location keys</button>
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="dijit.byId('locationFilterDialog').show();" type="button">Get store keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.openLocationFilterDialog();" type="button">Get location keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.openStoreFilterDialog();" type="button">Get store keys</button>
                             </td>
                         </tr>
                     </table>
@@ -1028,7 +1046,7 @@
                             <td><label for="rawcommand.key">Key:</label></td>
                             <td>
                                 <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="rawcommand.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('rawcommand.key', 'RawCommand'); }" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('rawcommand.key', 'RawCommand');" type="button">Fetch</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('rawcommand.key', 'RawCommand');" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
@@ -1065,7 +1083,7 @@
                         </tr>
                         <tr>
                             <td><label for="rawcommand.errorMessage">Error msg:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.errorMessage" name="errorMessage" type="text" /></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="rawcommand.errorMessage" name="errorMessage" ></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.source">Source:</label></td>
@@ -1435,10 +1453,8 @@
         <div class="dijitDialogPaneContentArea">
             <table id="locationFilterTable">
                 <tr>
-                    <td><input dojoType="dijit.form.CheckBox" id="locationFilter.hasStore" type="checkbox" /></td>
-                    <td><label for="locationFilter.hasStore">Has store</label></td>
+                    <td colspan="2" style="color:lightgrey;">Specify either {postalCode;countryCode} or {latitude;longitude} and click 'Search'<br/>&nbsp;</td>
                 </tr>
-                <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>
                     <td><label for="locationFilter.postalCode">Postal code:</label></td>
                     <td>
@@ -1485,10 +1501,14 @@
                         <select dojoType="dijit.form.Select" id="locationFilter.rangeUnit"><option value="km" selected="true">km</option><option value="mi">miles</option></select>
                     </td>
                 </tr>
+                <tr id="hasStoreRow">
+                    <td><input dojoType="dijit.form.CheckBox" id="locationFilter.hasStore" type="checkbox" /></td>
+                    <td><label for="locationFilter.hasStore">Has store</label></td>
+                </tr>
             </table>
         </div>
         <div class="dijitDialogPaneActionBar" style="text-align:right;margin-top:10px;">
-            <button dojoType="dijit.form.Button" id="ok" type="submit">Get location keys</button>
+            <button dojoType="dijit.form.Button" id="ok" type="submit">Search</button>
             <button dojoType="dijit.form.Button" onClick="dijit.byId('locationFilterDialog').hide();" type="button">Cancel</button>
         </div>
     </div>
@@ -1736,7 +1756,30 @@
          };
          localModule.loadEntityKeys('Proposal', parameters);
      };
-     localModule.getLocationKeys = function() {
+     localModule.getSaleAssociateKeys = function() {
+         var parameters = {
+            'storeKey': dijit.byId('store.key').get('value'),
+            '<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>': dijit.byId('saleassociate.consumerKey').get('value'),
+            '<%= BaseRestlet.ON_BEHALF_ASSOCIATE_KEY %>': dijit.byId('saleassociate.key').get('value')
+         };
+         localModule.loadEntityKeys('SaleAssociate', parameters);
+     };
+     localModule.openLocationFilterDialog = function() {
+         dojo.query('#hasStoreRow').style('display', '');
+         var dialog = dijit.byId('locationFilterDialog');
+         dialog.set('execute', localModule.getLocationKeys);
+         dialog.set('title', 'Get Location keys');
+         dialog.show();
+     };
+     localModule.openStoreFilterDialog = function() {
+         dijit.byId('locationFilter.hasStore').set('value', 'on');
+         dojo.query('#hasStoreRow').style('display', 'none');
+         var dialog = dijit.byId('locationFilterDialog');
+         dialog.set('execute', localModule.getStoreKeys);
+         dialog.set('title', 'Get Store keys');
+         dialog.show();
+     };
+     localModule.prepareLocationParameters = function() {
          var parameters = {
             'maximumResults': 0,
             'hasStore': (dijit.byId('locationFilter.hasStore').get('value') == 'on'),
@@ -1752,7 +1795,13 @@
             parameters['latitude'] = dijit.byId('locationFilter.latitude').get('value');
             parameters['longitude'] = dijit.byId('locationFilter.longitude').get('value');
         }
-        localModule.loadEntityKeys('Location', parameters);
+        return parameters;
+    };
+    localModule.getLocationKeys = function() {
+        localModule.loadEntityKeys('Location', localModule.prepareLocationParameters());
+    };
+    localModule.getStoreKeys = function() {
+        localModule.loadEntityKeys('Store', localModule.prepareLocationParameters());
     };
     localModule.resolveLocation = function() {
         dojo.xhrGet({
@@ -1772,26 +1821,33 @@
             url: '/_tasks/validateLocation'
         });
     };
+    localModule._earlyHourTime = new Date(2010,0,1,0,0,0,0);
     localModule.searchEntityKey = function(filterId, filterName, entityName, targetId, parameters) {
         var filterField = dijit.byId(filterId);
         if (filterField.validate && !filterField.validate()) {
             alert('Filter has an invalid value');
             return;
         }
-        var filterValue = filterField.get('value');
-        if (!filterValue) {
-            alert('Filter value is missing');
-            return;
-        }
+
+        var dialog = dijit.byId('entityKeysDialog');
+        dialog.set('title', entityName + ' identifiers');
+        dojo.byId('keyZone').innerHTML = '&nbsp;Loading...';
+        dialog.show();
+
         dojo.animateProperty({
-            node: 'queryFieldset',
+            node: 'keyZone',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         var data = {
             'onlyKeys': true,
             '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
         };
-        data[filterName] = filterValue;
+        if (filterName.indexOf('Date') != -1) {
+            data[filterName] = twetailer.Common.toISOString(filterField.get('value'), localModule._earlyHourTime);
+        }
+        else {
+            data[filterName] = '*' + filterField.get('value');
+        }
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: dojo.mixin(data, parameters || {}),
@@ -1799,22 +1855,33 @@
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
                     var resources = response.resources;
-                    if (resources.length == 0) {
-                        alert('No exact match found');
-                    }
-                    else if (1 < resources.length) {
-                        alert('Multiple matches found:\n\n' + resources);
+                    var keys = response.resources;
+                    var keyNb = keys.length;
+                    var out = [];
+                    if (keyNb == 0) {
+                        out.push('None');
                     }
                     else {
-                        dijit.byId(entityName.toLowerCase() + '.key').set('value', resources[0]);
-                        localModule.fetchEntity(entityName.toLowerCase() + '.key', entityName);
+                        var deco = localModule.decorationOfEntityLinks;
+                        for(var i=0; i<keyNb; i++) {
+                            var key = keys[i];
+                            out.push(deco[0]); out.push(entityName.toLowerCase());
+                            out.push(deco[1]); out.push(key);
+                            out.push(deco[2]); out.push(entityName.toLowerCase());
+                            out.push(deco[3]); out.push(entityName);
+                            out.push(deco[4]); out.push(entityName);
+                            out.push(deco[5]); out.push(key);
+                            out.push(deco[6]); out.push(key);
+                            out.push(deco[7]);
+                        }
                     }
+                    dojo.byId('keyZone').innerHTML = out.join('');
                 }
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: 'queryFieldset',
+                    node: 'keyZone',
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },

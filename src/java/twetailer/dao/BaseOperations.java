@@ -141,6 +141,14 @@ public class BaseOperations {
         return preparation[1];
     }
 
+    public static final char FILTER_EQUAL_TO = '=';
+    public static final char FILTER_NOT_EQUAL_TO = '!';
+    public static final char FILTER_LESS_THAN_OR_EQUAL_TO = '[';
+    public static final char FILTER_GREATER_THAN_OR_EQUAL_TO = ']';
+    public static final char FILTER_LESS_THAN = '<';
+    public static final char FILTER_GREATER_THAN = '>';
+    public static final char FILTER_STARTS_WITH = '*';
+
     /**
      * Prepare the query for many attributes matching many values
      *
@@ -157,13 +165,14 @@ public class BaseOperations {
         StringBuilder parameterDefinitions = new StringBuilder();
         List<Object> values = new ArrayList<Object>(parameters.size());
         String additionalOrder = null; // Just "creationDate desc" initially
+        int parameterIdx = 0;
         for(String parameterName: parameters.keySet()) {
             Object parameterValue = parameters.get(parameterName);
             char prefix = parameterName.charAt(0);
-            if (prefix == '=' || prefix == '!') {
+            if (prefix == FILTER_EQUAL_TO || prefix == FILTER_NOT_EQUAL_TO) {
                 parameterName = parameterName.substring(1);
             }
-            else if (prefix == '<' || prefix == '>') {
+            else if (prefix == FILTER_LESS_THAN || prefix == FILTER_GREATER_THAN || prefix == FILTER_LESS_THAN_OR_EQUAL_TO || prefix == FILTER_GREATER_THAN_OR_EQUAL_TO || prefix == FILTER_STARTS_WITH) {
                 parameterName = parameterName.substring(1);
                 if (additionalOrder != null && !additionalOrder.equals(parameterName)) {
                     throw new DataSourceException("App Engine only support queries with maximum comparisons on one field.");
@@ -171,17 +180,26 @@ public class BaseOperations {
                 additionalOrder = parameterName;
             }
             else {
-                prefix = '=';
+                prefix = FILTER_EQUAL_TO;
             }
-            Object[] preparation = prepareParameter(parameterName + "Value", parameterValue);
-            filterDefinition.append(
-                    " && " +
-                    parameterName +
-                    (prefix == '=' ? " == " : prefix == '<' ? " < " : prefix == '>' ? " > " : " != ") +
-                    parameterName + "Value"
-            );
+            Object[] preparation = prepareParameter(parameterName + "Value" + parameterIdx, parameterValue);
+            filterDefinition.append(" && ");
+            if (prefix == FILTER_STARTS_WITH) {
+                filterDefinition.
+                    append(parameterName).
+                    append(".startsWith(").
+                    append(parameterName).append("Value").append(parameterIdx).
+                    append(")");
+            }
+            else {
+                filterDefinition.
+                    append(parameterName).
+                    append(prefix == FILTER_EQUAL_TO ? " == " : prefix == FILTER_LESS_THAN ? " < " : prefix == FILTER_GREATER_THAN ? " > " : prefix == FILTER_LESS_THAN_OR_EQUAL_TO ? " <= " : prefix == FILTER_GREATER_THAN_OR_EQUAL_TO ? " >= " : " != ").
+                    append(parameterName).append("Value").append(parameterIdx);
+            }
             parameterDefinitions.append(", ").append((String) preparation[0]);
             values.add(preparation[1]);
+            parameterIdx ++;
         }
         query.setOrdering(additionalOrder != null ? additionalOrder + " desc, creationDate desc" : "creationDate desc");
         query.setFilter(filterDefinition.length() == 0 ? null : filterDefinition.substring(" && ".length()));
@@ -189,6 +207,14 @@ public class BaseOperations {
         if (0 < limit) {
             query.setRange(0, limit);
         }
+
+//        System.err.println("**** Query: " + query.toString());
+//        System.err.print("**** Query parameters: ");
+//        for(int jdx = 0; jdx < values.size(); jdx++) {
+//            System.err.print("{" + jdx + ": " + values.get(jdx) + "} ");
+//        }
+//        System.err.println();
+
         return values.toArray();
     }
 }

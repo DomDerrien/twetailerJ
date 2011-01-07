@@ -1,7 +1,5 @@
 package twetailer.task.step;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +13,6 @@ import twetailer.ReservedOperationException;
 import twetailer.dto.Consumer;
 import twetailer.dto.Entity;
 import twetailer.j2ee.BaseRestlet;
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonObject;
 
 public class ConsumerSteps extends BaseSteps {
@@ -51,26 +48,17 @@ public class ConsumerSteps extends BaseSteps {
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
-        if (parameters.containsKey(Consumer.EMAIL)) {
-            queryFilters.put(Consumer.EMAIL, parameters.getString(Consumer.EMAIL));
-        }
+        // Date fields
+        processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
 
-        if (parameters.containsKey(Consumer.JABBER_ID)) {
-            queryFilters.put(Consumer.JABBER_ID, parameters.getString(Consumer.JABBER_ID));
-        }
+        // String fields
+        processStringFilter(Consumer.EMAIL, parameters, queryFilters);
+        processStringFilter(Consumer.JABBER_ID, parameters, queryFilters);
+        processStringFilter(Consumer.NAME, parameters, queryFilters);
+        processStringFilter(Consumer.TWITTER_ID, parameters, queryFilters);
 
-        if (parameters.containsKey(Consumer.TWITTER_ID)) {
-            queryFilters.put(Consumer.TWITTER_ID, parameters.getString(Consumer.TWITTER_ID));
-        }
-
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
+        // Long fields
+        processLongFilter(Consumer.FACEBOOK_ID, parameters, queryFilters);
 
         return queryFilters;
     }

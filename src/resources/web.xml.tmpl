@@ -179,6 +179,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>rawcommand</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.RawCommandRestlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rawcommand</servlet-name>
+        <url-pattern>/API/RawCommand/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>saleassociate</servlet-name>
         <servlet-class>twetailer.j2ee.restlet.SaleAssociateRestlet</servlet-class>
     </servlet>

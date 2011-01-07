@@ -7,7 +7,6 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
-import twetailer.InvalidStateException;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;

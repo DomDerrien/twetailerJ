@@ -4,9 +4,7 @@ import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -44,7 +42,6 @@ import twetailer.task.RobotResponder;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
 import twetailer.validator.CommandSettings.State;
-import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonArray;
@@ -266,20 +263,15 @@ public class ProposalSteps extends BaseSteps {
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
-        if (!parameters.containsKey(BaseRestlet.ANY_STATE_PARAMETER_KEY)) {
-            queryFilters.put(Proposal.STATE_COMMAND_LIST, Boolean.TRUE);
-        }
+        // Date fields
+        processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
 
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) {
-                // Date not set, too bad.
-                log.warning("Date in an invalid format: " + parameters.getString(Entity.MODIFICATION_DATE));
-            }
+        // String fields
+        processStringFilter(Command.HASH_TAGS, parameters, queryFilters);
+
+        // Special fields
+        if (!parameters.containsKey(BaseRestlet.ANY_STATE_PARAMETER_KEY)) {
+            queryFilters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
         }
 
         return queryFilters;

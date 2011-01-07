@@ -1,5 +1,9 @@
 package twetailer.task.step;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Map;
+
 import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
@@ -15,6 +19,8 @@ import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dao.WishOperations;
+import domderrien.i18n.DateUtils;
+import domderrien.jsontools.JsonObject;
 
 public class BaseSteps {
 
@@ -87,4 +93,94 @@ public class BaseSteps {
     public static void setMockSettingsOperations(SettingsOperations settingsOperations) { BaseSteps.settingsOperations = settingsOperations; }
     public static void setMockStoreOperations(StoreOperations storeOperations) { BaseSteps.storeOperations = storeOperations; }
     public static void setMockWishOperations(WishOperations wishOperations) { BaseSteps.wishOperations = wishOperations; }
+
+    /**
+     * Import the value of the 'String' field and insert it in the filter list. If
+     * the parameter has the 'startsWith' syntax, it generates the corresponding
+     * sequence.
+     *
+     * @param fieldName Name of the attribute to process
+     * @param parameters Bag of parameters built client-side
+     * @param queryFilters Bag where the process attribute values are store
+     * @return the filter bag for chaining purposes
+     */
+    protected static Map<String, Object> processStringFilter(String fieldName, JsonObject parameters, Map<String, Object> queryFilters) {
+
+        if (parameters.containsKey(fieldName)) {
+            String value = parameters.getString(fieldName);
+
+            if (value.charAt(0) == BaseOperations.FILTER_STARTS_WITH) {
+                if (value.length() < 3) {
+                    throw new IllegalArgumentException("Filter must be at least 3 characters long for '" + fieldName + "'!");
+                }
+                queryFilters.put(BaseOperations.FILTER_STARTS_WITH + fieldName, value.substring(1));
+            }
+            else {
+                queryFilters.put(fieldName, value);
+            }
+        }
+
+        return queryFilters;
+    }
+
+    /**
+     * Import the value of the 'Long' field.
+     *
+     * @param fieldName Name of the attribute to process
+     * @param parameters Bag of parameters built client-side
+     * @param queryFilters Bag where the process attribute values are store
+     * @return the filter bag for chaining purposes
+     */
+    protected static Map<String, Object> processLongFilter(String fieldName, JsonObject parameters, Map<String, Object> queryFilters) {
+
+        if (parameters.containsKey(fieldName)) {
+            Long value = parameters.getLong(fieldName);
+
+            queryFilters.put(fieldName, value);
+        }
+
+        return queryFilters;
+    }
+
+    /**
+     * Import the value of the 'Boolean' field. The <code>true</code>
+     * value is reported as soon as the parameter is detected in the
+     * parameter list.
+     *
+     * @param fieldName Name of the attribute to process
+     * @param parameters Bag of parameters built client-side
+     * @param queryFilters Bag where the process attribute values are store
+     * @return the filter bag for chaining purposes
+     */
+    protected static Map<String, Object> processBooleanFilter(String fieldName, JsonObject parameters, Map<String, Object> queryFilters) {
+
+        if (!parameters.containsKey(fieldName)) {
+            queryFilters.put(fieldName, Boolean.TRUE);
+        }
+
+        return queryFilters;
+    }
+
+    /**
+     * Import the value of the 'Date' field and insert it in the filter list. As
+     * no dates can be really equal, the prepared filter has the 'less than' syntax.
+     *
+     * @param fieldName Name of the attribute to process
+     * @param parameters Bag of parameters built client-side
+     * @param queryFilters Bag where the process attribute values are store
+     * @return the filter bag for chaining purposes
+     */
+    protected static Map<String, Object> processDateFilter(String fieldName, JsonObject parameters, Map<String, Object> queryFilters) {
+
+        if (parameters.containsKey(fieldName)) {
+            Date lastModificationDate = null;
+            try {
+                lastModificationDate = DateUtils.isoToDate(parameters.getString(fieldName));
+                queryFilters.put('>' + fieldName, lastModificationDate);
+            }
+            catch (ParseException e) { } // Date not set, too bad.
+        }
+
+        return queryFilters;
+    }
 }

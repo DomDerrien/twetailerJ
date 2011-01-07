@@ -1,8 +1,6 @@
 package twetailer.task.step;
 
 import java.text.Collator;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +20,6 @@ import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.validator.LocaleValidator;
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
@@ -59,18 +56,11 @@ public class SaleAssociateSteps extends BaseSteps {
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
-        if (parameters.containsKey(SaleAssociate.STORE_KEY)) {
-            queryFilters.put(SaleAssociate.STORE_KEY, parameters.getLong(SaleAssociate.STORE_KEY));
-        }
+        // Date fields
+        processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
 
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
+        // Long fields
+        processLongFilter(SaleAssociate.STORE_KEY, parameters, queryFilters);
 
         return queryFilters;
     }

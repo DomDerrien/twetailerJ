@@ -2,8 +2,6 @@ package twetailer.task.step;
 
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +21,7 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
+import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
@@ -32,7 +31,6 @@ import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaelzelServlet;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.State;
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
@@ -224,21 +222,15 @@ public class WishSteps extends BaseSteps {
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
+        // Date fields
+        processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
+
+        // String fields
+        processStringFilter(Command.HASH_TAGS, parameters, queryFilters);
+
+        // Special fields
         if (!parameters.containsKey(BaseRestlet.ANY_STATE_PARAMETER_KEY)) {
-            queryFilters.put(Wish.STATE_COMMAND_LIST, Boolean.TRUE);
-        }
-
-        Date lastModificationDate = null;
-        if (parameters.containsKey(Entity.MODIFICATION_DATE)) {
-            try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(Entity.MODIFICATION_DATE));
-                queryFilters.put(">" + Entity.MODIFICATION_DATE, lastModificationDate);
-            }
-            catch (ParseException e) { } // Date not set, too bad.
-        }
-
-        if (parameters.containsKey(Command.HASH_TAGS)) {
-            queryFilters.put(Command.HASH_TAGS, parameters.getString(Command.HASH_TAGS));
+            queryFilters.put(Demand.STATE_COMMAND_LIST, Boolean.TRUE);
         }
 
         return queryFilters;

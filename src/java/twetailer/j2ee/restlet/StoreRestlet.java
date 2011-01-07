@@ -31,6 +31,7 @@ import domderrien.jsontools.JsonUtils;
 public class StoreRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(StoreRestlet.class.getName());
 
+    @Override
     public Logger getLogger() { return log; }
 
     @Override
