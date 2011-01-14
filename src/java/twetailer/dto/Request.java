@@ -166,7 +166,13 @@ public class Request extends Command {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        super.fromJson(in);
+        return fromJson(in, false, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (in.containsKey(EXPIRATION_DATE)) {
             try {
                 Date expirationDate = DateUtils.isoToDate(in.getString(EXPIRATION_DATE));
@@ -185,7 +191,7 @@ public class Request extends Command {
             // To push the given dueDate as the default expirationDate if the exchange is about a demand to be created
             setExpirationDate(getDueDate());
         }
-        // if (in.containsKey(INFLUENCER_KEY)) { setInfluencerKey(in.getLong(INFLUENCER_KEY)); } // Cannot be changed transparently
+        if (isCacheRelated && in.containsKey(INFLUENCER_KEY)) { setInfluencerKey(in.getLong(INFLUENCER_KEY)); } // Cannot be changed transparently
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(RANGE_UNIT)) { setRangeUnit(in.getString(RANGE_UNIT)); }
 

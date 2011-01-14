@@ -79,7 +79,7 @@ public class ConsumerSteps extends BaseSteps {
         newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, actualConsumer, isUserAdmin);
 
         // Merge updates and persist them
-        actualConsumer.fromJson(parameters, isUserAdmin);
+        actualConsumer.fromJson(parameters, isUserAdmin, false);
         actualConsumer = getConsumerOperations().updateConsumer(pm, actualConsumer);
 
         // Move demands to the updated account

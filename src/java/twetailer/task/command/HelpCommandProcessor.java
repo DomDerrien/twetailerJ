@@ -7,9 +7,9 @@ import java.util.Locale;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dao.CacheHandler;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandLineParser;
-import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.CommandSettings.Prefix;
@@ -59,7 +59,7 @@ public class HelpCommandProcessor {
             return;
         }
         // Try to load the message from the cache
-        String message = (String) BaseSteps.getSettingsOperations().getFromCache(keyword + locale.toString());
+        String message = (String) CacheHandler.getFromCache(".helpMsg_" + keyword + "_" + locale.toString());
         // Check if the keyword is a prefix
         if (message == null) {
             JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
@@ -119,7 +119,7 @@ public class HelpCommandProcessor {
             message = LabelExtractor.get(ResourceFileId.second, CommandSettings.HELP_INTRODUCTION_MESSAGE_ID, locale);
         }
         // TODO: save the match into the cache for future queries
-        BaseSteps.getSettingsOperations().setInCache(keyword + locale.toString(), message);
+        CacheHandler.setInCache(".helpMsg_" + keyword + "_" + locale.toString(), message);
         communicateToEmitter(
                 rawCommand,
                 new String[] { message },

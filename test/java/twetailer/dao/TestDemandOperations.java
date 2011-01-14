@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -49,11 +50,14 @@ public class TestDemandOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
+        CacheHandler.injectCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+        CacheHandler.injectCacheFactory(null);
+        CacheHandler.injectCache(null);
     }
 
     @Test(expected=RuntimeException.class)

@@ -355,26 +355,41 @@ public class ListCommandProcessor {
 
         Locale locale = consumer.getLocale();
 
-        // Inform the user about a possible delay
-        String localePart = LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, locale);
-        String message = LabelExtractor.get("cp_command_list_with_new_location", new String[] { localePart }, locale);
-        communicateToConsumer(
-                rawCommand.getSource(),
-                rawCommand.getSubject(),
-                consumer,
-                new String[] { message }
-        );
+        if (LocaleValidator.DEFAULT_POSTAL_CODE_CA.equals(location.getPostalCode()) ||
+            LocaleValidator.DEFAULT_POSTAL_CODE_US.equals(location.getPostalCode()) ||
+            LocaleValidator.DEFAULT_POSTAL_CODE_ALT_US.equals(location.getPostalCode())
+        ) {
+            // Inform the user about the invalid location
+            String message = LabelExtractor.get("cp_command_list_invalid_location", new String[] { location.getPostalCode(), location.getCountryCode() }, locale);
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    consumer,
+                    new String[] { message }
+            );
+        }
+        else {
+            // Inform the user about a possible delay
+            String localePart = LabelExtractor.get("cp_tweet_locale_part", new Object[] { postalCode, countryCode }, locale);
+            String message = LabelExtractor.get("cp_command_list_with_new_location", new String[] { localePart }, locale);
+            communicateToConsumer(
+                    rawCommand.getSource(),
+                    rawCommand.getSubject(),
+                    consumer,
+                    new String[] { message }
+            );
 
-        // Schedule the validation task that will resolve the location geo-coordinates
-        Queue queue = BaseSteps.getBaseOperations().getQueue();
-        queue.add(
-                withUrl("/_tasks/validateLocation").
-                    param(Location.POSTAL_CODE, postalCode).
-                    param(Location.COUNTRY_CODE, countryCode).
-                    param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).
-                    param(Command.KEY, rawCommand.getKey().toString()).
-                    method(Method.GET)
-        );
+            // Schedule the validation task that will resolve the location geo-coordinates
+            Queue queue = BaseSteps.getBaseOperations().getQueue();
+            queue.add(
+                    withUrl("/_tasks/validateLocation").
+                        param(Location.POSTAL_CODE, postalCode).
+                        param(Location.COUNTRY_CODE, countryCode).
+                        param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).
+                        param(Command.KEY, rawCommand.getKey().toString()).
+                        method(Method.GET)
+            );
+        }
     }
 
     /**

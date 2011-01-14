@@ -36,7 +36,17 @@ import domderrien.i18n.LabelExtractor.ResourceFileId;
  * @author Dom Derrien
  */
 public class MailConnector {
+
     private static Logger log = Logger.getLogger(MailConnector.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     //
     // Mail properties (transparently handled by App Engine)
@@ -345,14 +355,14 @@ public class MailConnector {
             messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain(), "ASE admin notifier"));
         }
         catch (UnsupportedEncodingException ex) {
-            log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
+            getLogger().warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
             messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()));
         }
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
         messageToForward.setSubject((from == null ? "" : "Fwd: (" + from + ") ") + subject);
         setContentAsPlainTextAndHtml(messageToForward, body);
 
-        // log.warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
+        // getLogger().warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
 
         Transport.send(messageToForward);
     }
@@ -378,7 +388,7 @@ public class MailConnector {
                 messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
             }
             catch (UnsupportedEncodingException ex) {
-                log.warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
+                getLogger().warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
                 messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
             }
             messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
@@ -398,7 +408,7 @@ public class MailConnector {
             body.append("</table>");
             setContentAsPlainTextAndHtml(messageToForward, body.toString());
 
-            // log.warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
+            // getLogger().warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
 
             Transport.send(messageToForward);
         }

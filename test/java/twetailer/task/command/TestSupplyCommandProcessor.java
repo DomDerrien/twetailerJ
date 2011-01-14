@@ -242,7 +242,7 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
@@ -307,7 +307,7 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
@@ -371,7 +371,7 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);
@@ -385,7 +385,7 @@ public class TestSupplyCommandProcessor {
         });
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Consumer getConsumer(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertTrue(consumerKey == key || saConsumerRecordKey == key);
                 final Consumer consumer = new Consumer();
                 consumer.setKey(consumerKey);
@@ -436,7 +436,7 @@ public class TestSupplyCommandProcessor {
         // SaleAssociateOperations mock
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) {
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(saleAssociateKey, key);
                 SaleAssociate saleAssociate = new SaleAssociate();
                 saleAssociate.setKey(saleAssociateKey);

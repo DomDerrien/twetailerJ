@@ -31,6 +31,7 @@ import domderrien.jsontools.JsonParser;
  */
 @SuppressWarnings("serial")
 public class ChannelServlet extends HttpServlet {
+
     private static Logger log = Logger.getLogger(ChannelServlet.class.getName());
 
     /** Just made available for test purposes */
@@ -57,7 +58,7 @@ public class ChannelServlet extends HttpServlet {
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
-            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+            getLogger().finest("JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (loggedUser == null) {
                 response.setStatus(401); // Unauthorized

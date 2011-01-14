@@ -67,8 +67,10 @@ public class TestProposal {
     Source source = Source.simulated;
     State state = State.closed;
 
+    List<String> cc = new ArrayList<String>(Arrays.asList(new String[] {"cc1", "cc2"}));
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Long consumerKey = 876432L;
+    String currencyCode = "USD";
     Long demandKey = 54321L;
     Long proposalKey = 98760L;
     Double price = 25.99D;
@@ -182,8 +184,10 @@ public class TestProposal {
 
         // Proposal
         object.setAWSCBUIURL(AWSCBUIURL);
-        object.setCriteria(criteria);
+        object.setCC(cc);
         object.setConsumerKey(consumerKey);
+        object.setCriteria(criteria);
+        object.setCurrencyCode(currencyCode);
         object.setDemandKey(demandKey);
         object.setPrice(price);
         object.setQuantity(quantity);
@@ -193,21 +197,23 @@ public class TestProposal {
         Proposal clone = new Proposal(object.toJson());
 
         // Command
-        assertEquals(action, clone.getAction());
-        assertEquals(ownerKey, clone.getOwnerKey());
-        assertEquals(rawCommandId, clone.getRawCommandId());
+        assertEquals(Action.propose, clone.getAction()); // Cannot be overridden
+        assertNull(clone.getOwnerKey()); // Cannot be overridden
+        assertNull(clone.getRawCommandId()); // Cannot be overridden
         assertEquals(source, clone.getSource());
-        assertEquals(state, clone.getState());
+        assertEquals(State.opened, clone.getState());
 
         // Proposal
-        assertEquals(AWSCBUIURL, clone.getAWSCBUIURL());
-        assertEquals(consumerKey, clone.getConsumerKey());
+        assertNull(clone.getAWSCBUIURL()); // Cannot be overridden
+        assertEquals(cc, clone.getCC());
+        assertNull(clone.getConsumerKey()); // Cannot be overridden
+        assertEquals(currencyCode, clone.getCurrencyCode());
         assertEquals(criteria, clone.getCriteria());
         assertEquals(demandKey, clone.getDemandKey());
         assertEquals(quantity, clone.getQuantity());
-        assertNull(clone.getStoreKey()); // Set automatically by the system with the SaleAssociate storeKey
+        assertNull(clone.getStoreKey()); // Cannot be overridden
         assertEquals(total, clone.getTotal());
-        assertFalse(clone.getStateCmdList());
+        assertTrue(clone.getStateCmdList()); // As it has been set to State.opened
     }
 
     @Test

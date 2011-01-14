@@ -8,7 +8,7 @@ import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
 /**
- * Define the attributes of a Twetailer registrator which takes care of the
+ * Define the attributes of a Twetailer registrar which takes care of the
  * retailer registration, training, support, etc., with the system
  *
  * @see twetailer.dto.Entity
@@ -101,15 +101,17 @@ public class Registrar extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        super.fromJson(in);
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
         if (!isUserAdmin) {
             // No external update allowed
             return this;
         }
+
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }

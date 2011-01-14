@@ -3,13 +3,15 @@ package twetailer.dao;
 import java.util.List;
 import java.util.Map;
 
+import javax.jdo.JDOHelper;
+import javax.jdo.ObjectState;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.Consumer;
+import twetailer.dto.Entity;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import domderrien.jsontools.JsonObject;
@@ -20,6 +22,20 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class SaleAssociateOperations extends BaseOperations {
+
+    private static final CacheHandler<SaleAssociate> cacheHandler = new CacheHandler<SaleAssociate>(SaleAssociate.class.getName(), Entity.KEY);
+
+    private static SaleAssociate cacheSaleAssociate(SaleAssociate saleAssociate) {
+        return cacheHandler.cacheInstance(saleAssociate);
+    }
+
+    private static SaleAssociate decacheSaleAssociate(SaleAssociate saleAssociate) {
+        return cacheHandler.decacheInstance(saleAssociate);
+    }
+
+    private static SaleAssociate getCachedSaleAssociate(Long key) {
+        return cacheHandler.getCachedInstance(Entity.KEY, key);
+    }
 
     /**
      * Create the SaleAssociate instance with the given parameters
@@ -120,7 +136,11 @@ public class SaleAssociateOperations extends BaseOperations {
      * @return Just created resource
      */
     public SaleAssociate createSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
-        return pm.makePersistent(saleAssociate);
+        // Persist new sale associate
+        saleAssociate = pm.makePersistent(saleAssociate);
+        // Cache the new instance
+        cacheSaleAssociate(saleAssociate);
+        return saleAssociate;
     }
 
     /**
@@ -153,12 +173,36 @@ public class SaleAssociateOperations extends BaseOperations {
      * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      */
     public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+        return getSaleAssociate(pm, key, true);
+    }
+
+    /**
+     * Use the given key to get the corresponding SaleAssociate instance
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the sale associate
+     * @param useCache If <code>true</code> the SaleAssociate record might come from the cache, otherwise it's loaded from the data store
+     * @return First sale associate matching the given criteria or <code>null</code>
+     *
+     * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
+     */
+    public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the SaleAssociate instance");
         }
+        // Try to get a copy from the cache
+        SaleAssociate saleAssociate = useCache ? getCachedSaleAssociate(key) : null;
+        if (saleAssociate != null) {
+            return saleAssociate;
+        }
         try {
-            SaleAssociate saleAssociate = pm.getObjectById(SaleAssociate.class, key);
+            // Get it from the data store
+            saleAssociate = pm.getObjectById(SaleAssociate.class, key);
             saleAssociate.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
+            // Cache the instance
+            if (useCache) {
+                cacheSaleAssociate(saleAssociate);
+            }
             return saleAssociate;
         }
         catch(Exception ex) {
@@ -174,7 +218,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of sale associates matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data sale associate type
+     * @throws DataSourceException If the data exchange with the data store fails
      *
      * @see SaleAssociatesOperations#getSaleAssociates(PersistenceManager, String, Object)
      */
@@ -197,7 +241,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of sale associates matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data sale associate type
+     * @throws DataSourceException If the data exchange with the data store fails
      */
     @SuppressWarnings("unchecked")
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
@@ -207,7 +251,10 @@ public class SaleAssociateOperations extends BaseOperations {
             value = prepareQuery(query, attribute, value, limit);
             // Select the corresponding resources
             List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.execute(value);
-            saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+            // Cache the data if only one instance is returned
+            if (saleAssociates.size() == 1) {
+                cacheSaleAssociate(saleAssociates.get(0));
+            }
             return saleAssociates;
         }
         finally {
@@ -224,7 +271,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of SaleAssociate identifiers matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data store type
+     * @throws DataSourceException If the data exchange with the data store fails
      */
     @SuppressWarnings("unchecked")
     public List<Long> getSaleAssociateKeys(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
@@ -249,7 +296,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param saleAssociateKeys list of SaleAssociate instance identifiers
      * @return Collection of sale associates matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data store type
+     * @throws DataSourceException If the data exchange with the data store fails
      */
     @SuppressWarnings("unchecked")
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, List<Long> saleAssociateKeys) throws DataSourceException {
@@ -273,7 +320,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of sale associates matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data store type
+     * @throws DataSourceException If the data exchange with the data store fails
      */
     @SuppressWarnings("unchecked")
     public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
@@ -283,7 +330,10 @@ public class SaleAssociateOperations extends BaseOperations {
             Object[] values = prepareQuery(query, parameters, limit);
             // Select the corresponding resources
             List<SaleAssociate> saleAssociates = (List<SaleAssociate>) query.executeWithArray(values);
-            saleAssociates.size(); // FIXME: remove workaround for a bug in DataNucleus
+            // Cache the data if only one instance is returned
+            if (saleAssociates.size() == 1) {
+                cacheSaleAssociate(saleAssociates.get(0));
+            }
             return saleAssociates;
         }
         finally {
@@ -299,7 +349,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Collection of sale associate keys matching the given criteria
      *
-     * @throws DataSourceException If given value cannot matched a data store type
+     * @throws DataSourceException If the data exchange with the data store fails
      */
     @SuppressWarnings("unchecked")
     public List<Long> getSaleAssociateKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
@@ -323,9 +373,11 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param saleAssociate Resource to update
      * @return Updated resource
      *
+     * @throws DataSourceException If the data exchange with the data store fails
+     *
      * @see SaleAssociateOperations#updateSaleAssociate(PersistenceManager, SaleAssociate)
      */
-    public SaleAssociate updateSaleAssociate(SaleAssociate saleAssociate) {
+    public SaleAssociate updateSaleAssociate(SaleAssociate saleAssociate) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
             // Persist updated sale associate
@@ -342,8 +394,29 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param saleAssociate Resource to update
      * @return Updated resource
+     *
+     * @throws DataSourceException If the data exchange with the data store fails
      */
-    public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+    public SaleAssociate updateSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) throws DataSourceException {
+        ObjectState state = JDOHelper.getObjectState(saleAssociate);
+        if (ObjectState.TRANSIENT.equals(state)) {
+            // Get a fresh user copy from the data store
+            SaleAssociate transientSaleAssociate = saleAssociate;
+            try {
+                saleAssociate = getSaleAssociate(pm, saleAssociate.getKey(), false);
+            }
+            catch (InvalidIdentifierException ex) {
+                throw new DataSourceException("Cannot retreive a fresh copy of the consumer key:" + saleAssociate.getKey(), ex);
+            }
+            // Remove the previous copy from the cache
+            decacheSaleAssociate(transientSaleAssociate); // To handle the possibility of an attribute used as a cache key being updated and leaving a wrong entry into the cache
+            // Merge the attribute of the old copy into the fresh one
+            saleAssociate.fromJson(transientSaleAssociate.toJson(), true, true);
+        }
+        // Persist new sale associate
+        saleAssociate = pm.makePersistent(saleAssociate);
+        // Cache the new instance
+        cacheSaleAssociate(saleAssociate);
         return pm.makePersistent(saleAssociate);
     }
 
@@ -387,9 +460,16 @@ public class SaleAssociateOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param saleAssociate Object to delete
+     *
+     * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      */
 
-    public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) {
+    public void deleteSaleAssociate(PersistenceManager pm, SaleAssociate saleAssociate) throws InvalidIdentifierException {
+        ObjectState state = JDOHelper.getObjectState(saleAssociate);
+        if (ObjectState.TRANSIENT.equals(state)) {
+            saleAssociate = getSaleAssociate(pm, saleAssociate.getKey(), false);
+        }
+        decacheSaleAssociate(saleAssociate);
         pm.deletePersistent(saleAssociate);
     }
 }

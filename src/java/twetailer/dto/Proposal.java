@@ -52,7 +52,7 @@ public class Proposal extends Command {
     public static final String DEMAND_KEY = Demand.DEMAND_KEY;
 
     // Shortcut
-    public static final String PROPOSAL_KEY = "proposal";
+    public static final String PROPOSAL_KEY = "proposalKey";
 
     @Persistent
     private Double price = 0.0D;
@@ -211,12 +211,14 @@ public class Proposal extends Command {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
-        super.fromJson(in, isUserAdmin);
-        if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
+        // if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); } // Cannot be overridden
         if (isUserAdmin && in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
         if (isUserAdmin && in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }

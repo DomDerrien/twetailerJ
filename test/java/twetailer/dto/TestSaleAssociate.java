@@ -174,9 +174,9 @@ public class TestSaleAssociate {
         assertEquals(creatorKey, clone.getCreatorKey());
         assertEquals(0, clone.getCriteria().size());
         assertEquals(hashTags, clone.getHashTags());
-        assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
+        assertFalse(clone.getIsStoreAdmin()); // Cannot be overridden
         assertEquals(locationKey, clone.getLocationKey());
-        assertEquals(storeKey, clone.getStoreKey());
+        assertNull(clone.getStoreKey()); // Cannot be overridden
         assertEquals(score, clone.getScore()); // Score cannot be set manually
     }
 

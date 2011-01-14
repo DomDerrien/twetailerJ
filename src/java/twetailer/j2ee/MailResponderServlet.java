@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.CacheHandler;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.HashTag;
@@ -59,6 +60,10 @@ public class MailResponderServlet extends HttpServlet {
         log = mockLogger;
     }
 
+    protected static Logger getLogger() {
+        return log;
+    }
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         processMailedRequest(request, response);
@@ -82,7 +87,7 @@ public class MailResponderServlet extends HttpServlet {
         return responderEndpoints;
     }
 
-    private static final String MESSAGE_ID_LIST = "mailMessageIds";
+    private static final String MESSAGE_ID_LIST = "_mailMessageIds";
 
     @SuppressWarnings("unchecked")
     protected static void processMailedRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -107,16 +112,16 @@ public class MailResponderServlet extends HttpServlet {
             // Check if the message has already been processed
             String messageId = mailMessage.getMessageID();
             if (messageId != null && 0 < messageId.length()) {
-                List<String> lastMailMessageIds = (List<String>) BaseSteps.getSettingsOperations().getFromCache(MESSAGE_ID_LIST);
+                List<String> lastMailMessageIds = (List<String>) CacheHandler.getFromCache(MESSAGE_ID_LIST);
                 if (lastMailMessageIds != null && lastMailMessageIds.contains(messageId)) {
-                    log.warning("**** Email '" + messageId + "' already processed");
+                    getLogger().warning("Email '" + messageId + "' already processed");
                     return;
                 }
                 if (lastMailMessageIds == null) {
                     lastMailMessageIds = new ArrayList<String>();
                 }
                 lastMailMessageIds.add(messageId);
-                BaseSteps.getSettingsOperations().setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
+                CacheHandler.setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
             }
 
             // Extract information about the sender
@@ -138,7 +143,7 @@ public class MailResponderServlet extends HttpServlet {
             }
             if (to == null) {
                 // Put a tracker here...
-                log.warning("**** Email '" + messageId + "' not addressed to Twetailer!");
+                getLogger().warning("Email '" + messageId + "' not addressed to Twetailer!");
                 return;
             }
             StringBuilder ccList = new StringBuilder();
@@ -179,7 +184,7 @@ public class MailResponderServlet extends HttpServlet {
             command = extractFirstLine(messageContent) + command;
             rawCommand.setCommand(command);
 
-            log.warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
+            getLogger().warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
 
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
@@ -206,17 +211,17 @@ public class MailResponderServlet extends HttpServlet {
         }
         catch (MessagingException ex) {
             exception = ex;
-            log.warning("During the message composition -- message " + ex.getMessage());
+            getLogger().warning("During the message composition -- message " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_mail_messaging", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (DatastoreTimeoutException ex) {
             exception = ex;
-            log.warning("During trying to manage data with the back store -- message " + ex.getMessage());
+            getLogger().warning("During trying to manage data with the back store -- message " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
         }
         catch (Exception ex) {
             exception = ex;
-            log.warning("Unexpected issue -- message " + ex.getMessage());
+            getLogger().warning("Unexpected issue -- message " + ex.getMessage());
             rawCommand.setErrorMessage(
                     LabelExtractor.get(
                             "error_unexpected",
@@ -253,7 +258,7 @@ public class MailResponderServlet extends HttpServlet {
                 // catch (UnsupportedEncodingException e) {
                 catch (Exception ex) {
                     // Ignored because we can't do much now
-                    log.warning("Unexpected error -- message " + ex.getMessage());
+                    getLogger().warning("Unexpected error -- message " + ex.getMessage());
 
                     // Note for the testers:
                     //   Don't know how to generate a UnsupportedEncodingException by just
@@ -274,7 +279,7 @@ public class MailResponderServlet extends HttpServlet {
                 );
             }
             catch (MessagingException ex) {
-                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
+                getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex.getMessage());
 
                 // Note for the testers:
                 //   Don't know how to generate a MessagingException by just

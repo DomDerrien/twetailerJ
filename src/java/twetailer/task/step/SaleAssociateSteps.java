@@ -145,7 +145,7 @@ public class SaleAssociateSteps extends BaseSteps {
         }
 
         // Merge updates and persist them
-        loggedSaleAssociate.fromJson(parameters, isUserAdmin);
+        loggedSaleAssociate.fromJson(parameters, isUserAdmin, false);
         loggedSaleAssociate = getSaleAssociateOperations().updateSaleAssociate(pm, loggedSaleAssociate);
 
         return loggedSaleAssociate;

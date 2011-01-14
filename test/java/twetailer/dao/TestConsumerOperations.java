@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.MockQuery;
@@ -51,11 +52,14 @@ public class TestConsumerOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
+        CacheHandler.injectCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+        CacheHandler.injectCacheFactory(null);
+        CacheHandler.injectCache(null);
     }
 
     @Test(expected = RuntimeException.class)
@@ -1071,6 +1075,8 @@ public class TestConsumerOperations {
         assertNotNull(consumers.size());
         assertEquals(1, consumers.size());
         assertEquals(twitterId, consumers.get(0).getTwitterId());
+
+        pm.close();
     }
 
     @Test
@@ -1130,7 +1136,7 @@ public class TestConsumerOperations {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testDeleteWithFailureI() throws InvalidIdentifierException {
+    public void testDeleteWithFailureI() throws InvalidIdentifierException, DataSourceException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
             public void deleteConsumer(PersistenceManager pm, Long key) {
@@ -1141,7 +1147,7 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testDeleteI() throws InvalidIdentifierException {
+    public void testDeleteI() throws InvalidIdentifierException, DataSourceException {
         final Long consumerKey = 54657L;
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -1161,15 +1167,14 @@ public class TestConsumerOperations {
     }
 
     @Test
-    public void testDeleteII() throws InvalidIdentifierException {
+    public void testDeleteII() throws InvalidIdentifierException, DataSourceException {
         final String name = "name";
         Consumer toBeCreated = new Consumer();
         toBeCreated.setName(name);
-        ConsumerOperations ops = new ConsumerOperations();
-        Consumer justCreated = ops.createConsumer(toBeCreated);
+        Consumer justCreated = new ConsumerOperations().createConsumer(toBeCreated);
         assertNotNull(justCreated.getKey());
         assertEquals(name, justCreated.getName());
-        ops.deleteConsumer(justCreated.getKey());
+        new ConsumerOperations().deleteConsumer(justCreated.getKey());
     }
 
     @Test

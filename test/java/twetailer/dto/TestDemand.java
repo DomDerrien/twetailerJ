@@ -71,6 +71,7 @@ public class TestDemand {
     Source source = Source.simulated;
     State state = State.closed;
 
+    List<String> cc = new ArrayList<String>(Arrays.asList(new String[] {"cc1", "cc2"}));
     List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Date expirationDate = new Date(new Date().getTime() + 65536L);
     Long locationKey = 67890L;
@@ -301,6 +302,7 @@ public class TestDemand {
         object.setState(state);
 
         // Demand
+        object.setCC(cc);
         object.setCriteria(criteria);
         object.setExpirationDate(expirationDate);
         object.setLocationKey(locationKey);
@@ -313,22 +315,23 @@ public class TestDemand {
         Demand clone = new Demand(object.toJson());
 
         // Command
-        assertEquals(action, clone.getAction());
-        assertEquals(ownerKey, clone.getOwnerKey());
-        assertEquals(rawCommandId, clone.getRawCommandId());
+        assertEquals(Action.demand, clone.getAction()); // Cannot be overridden
+        assertNull(clone.getOwnerKey()); // Cannot be overridden
+        assertNull(clone.getRawCommandId()); // Cannot be overridden
         assertEquals(source, clone.getSource());
-        assertEquals(state, clone.getState());
+        assertEquals(State.opened, clone.getState());
 
         // Demand
+        assertEquals(cc, clone.getCC());
         assertEquals(criteria, clone.getCriteria());
         assertEquals(DateUtils.dateToISO(expirationDate), DateUtils.dateToISO(clone.getExpirationDate()));
         assertEquals(locationKey, clone.getLocationKey());
-        assertEquals(proposalKeys, clone.getProposalKeys());
+        assertEquals(0, clone.getProposalKeys().size()); // Cannot be overridden
         assertEquals(quantity, clone.getQuantity());
         assertEquals(range, clone.getRange());
         assertEquals(rangeUnit, clone.getRangeUnit());
-        assertEquals(saleAssociateKeys, clone.getSaleAssociateKeys());
-        assertFalse(clone.getStateCmdList());
+        assertEquals(0, clone.getSaleAssociateKeys().size()); // Cannot be overridden
+        assertTrue(clone.getStateCmdList()); // As it has been set to State.opened
     }
 
     @Test

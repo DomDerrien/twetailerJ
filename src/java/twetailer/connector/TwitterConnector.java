@@ -20,7 +20,17 @@ import twitter4j.http.OAuthAuthorization;
  * @author Dom Derrien
  */
 public class TwitterConnector {
+
     private static Logger log = Logger.getLogger(TwitterConnector.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     /* Information for basic authentication -- to be depreciated on June 30, 2010
      * Username: twetailer
@@ -91,11 +101,6 @@ public class TwitterConnector {
     public static final String ASE_TWITTER_ACCESS_SECRET = "oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8";
 
     private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
 
     /**
      * Accessor provided for unit tests
@@ -204,7 +209,7 @@ public class TwitterConnector {
      * @throws TwitterException If the message submission fails
      */
     public static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
-        log.fine("Before sending a DM to " + recipientScreenName + ": " + message);
+        getLogger().fine("Before sending a DM to " + recipientScreenName + ": " + message);
         return account.sendDirectMessage(recipientScreenName, message);
     }
 
@@ -238,7 +243,7 @@ public class TwitterConnector {
      * @throws TwitterException If the message retrieval fails
      */
     public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
-        log.warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
+        getLogger().warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
         return account.getDirectMessages(new Paging(1, sinceId));
     }
 }

@@ -1550,7 +1550,7 @@ public class TestBaseRestlet {
     @SuppressWarnings("unchecked")
     public void testIsAPrivilegedUserIII() {
         ((Map<String, String>) user.getAttribute("info")).put("email", "dominique.derrien@gmail.com");
-        assertTrue(new MockBaseRestlet().isUserAdministrator(user));
+        assertFalse(new MockBaseRestlet().isUserAdministrator(user));
     }
 
     @Test

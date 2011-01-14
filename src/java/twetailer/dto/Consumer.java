@@ -8,7 +8,6 @@ import javax.jdo.annotations.Persistent;
 
 import twetailer.connector.BaseConnector.Source;
 import twetailer.validator.LocaleValidator;
-
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -285,11 +284,13 @@ public class Consumer extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
-        super.fromJson(in);
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
         if (isUserAdmin && in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely

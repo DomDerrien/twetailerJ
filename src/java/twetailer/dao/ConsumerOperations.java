@@ -1,9 +1,12 @@
 package twetailer.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.jdo.JDOHelper;
+import javax.jdo.ObjectState;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -12,6 +15,7 @@ import twetailer.InvalidIdentifierException;
 import twetailer.connector.FacebookConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
+import twetailer.dto.Entity;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
 
@@ -21,6 +25,31 @@ import domderrien.i18n.LabelExtractor;
  * @author Dom Derrien
  */
 public class ConsumerOperations extends BaseOperations {
+
+    // Add entries for JabberId & TwitterId when these connectors start to be heavily used
+    private static final CacheHandler<Consumer> cacheHandler = new CacheHandler<Consumer>(Consumer.class.getName(), new String[] { Entity.KEY, Consumer.EMAIL, Consumer.OPEN_ID });
+
+    private static Consumer cacheConsumer(Consumer consumer) {
+        return cacheHandler.cacheInstance(consumer);
+    }
+
+    private static Consumer decacheConsumer(Consumer consumer) {
+        return cacheHandler.decacheInstance(consumer);
+    }
+
+    private static Consumer getCachedConsumer(Long key) {
+        return cacheHandler.getCachedInstance(Consumer.KEY, key);
+    }
+
+    private static List<Consumer> getCachedConsumers(String key, Object value) {
+        Consumer consumer = cacheHandler.getCachedInstance(key, value);
+        if (consumer != null) {
+            List<Consumer> consumers = new ArrayList<Consumer>();
+            consumers.add(consumer);
+            return consumers;
+        }
+        return null;
+    }
 
     /**
      * Create the Consumer instance if it does not yet exist, or get the existing one
@@ -421,7 +450,11 @@ public class ConsumerOperations extends BaseOperations {
      * @return Just created resource
      */
     public Consumer createConsumer(PersistenceManager pm, Consumer consumer) {
-        return pm.makePersistent(consumer);
+        // Persist new consumer
+        consumer = pm.makePersistent(consumer);
+        // Cache the new instance
+        cacheConsumer(consumer);
+        return consumer;
     }
 
     /**
@@ -454,11 +487,36 @@ public class ConsumerOperations extends BaseOperations {
      * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      */
     public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+        return getConsumer(pm, key, true);
+    }
+
+    /**
+     * Use the given key to get the corresponding Consumer instance
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param key Identifier of the consumer
+     * @param useCache If <code>true</code> the Consumer record might come from the cache, otherwise it's loaded from the data store
+     * @return First consumer matching the given criteria or <code>null</code>
+     *
+     * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
+     */
+    protected Consumer getConsumer(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
         if (key == null || key == 0L) {
             throw new InvalidIdentifierException("Invalid key; cannot retrieve the Consumer instance");
         }
+        // Try to get a copy from the cache
+        Consumer consumer = useCache ? getCachedConsumer(key) : null;
+        if (consumer != null) {
+            return consumer;
+        }
         try {
-            return pm.getObjectById(Consumer.class, key);
+            // Get it from the data store
+            consumer = pm.getObjectById(Consumer.class, key);
+            // Cache the instance
+            if (useCache) {
+                cacheConsumer(consumer);
+            }
+            return consumer;
         }
         catch(Exception ex) {
             throw new InvalidIdentifierException("Error while retrieving consumer for identifier: " + key + " -- ex: " + ex.getMessage(), ex);
@@ -506,10 +564,18 @@ public class ConsumerOperations extends BaseOperations {
             if (Consumer.JABBER_ID.equals(attribute)) {
                 value = getSimplifiedJabberId((String) value);
             }
-            value = prepareQuery(query, attribute, value, 0);
+            // Try to get a copy from the cache
+            List<Consumer> consumers = getCachedConsumers(attribute, value);
+            if (consumers != null) {
+                return consumers;
+            }
             // Select the corresponding consumers
-            List<Consumer> consumers = (List<Consumer>) query.execute(value);
-            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            value = prepareQuery(query, attribute, value, 0);
+            consumers = (List<Consumer>) query.execute(value);
+            // Cache the data if only one instance is returned
+            if (consumers.size() == 1) {
+                cacheConsumer(consumers.get(0));
+            }
             return consumers;
         }
         finally {
@@ -531,8 +597,12 @@ public class ConsumerOperations extends BaseOperations {
         // Select the corresponding resources
         Query query = pm.newQuery(Consumer.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
         try {
+            // TODO: lookup in the cache and only query the ones not cached
             List<Consumer> consumers = (List<Consumer>) query.execute(consumerKeys);
-            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            // Cache the data if only one instance is returned
+            if (consumers.size() == 1) {
+                cacheConsumer(consumers.get(0));
+            }
             return consumers;
         }
         finally {
@@ -558,7 +628,10 @@ public class ConsumerOperations extends BaseOperations {
             Object[] values = prepareQuery(query, parameters, limit);
             // Select the corresponding resources
             List<Consumer> consumers = (List<Consumer>) query.executeWithArray(values);
-            consumers.size(); // FIXME: remove workaround for a bug in DataNucleus
+            // Cache the data if only one instance is returned
+            if (consumers.size() == 1) {
+                cacheConsumer(consumers.get(0));
+            }
             return consumers;
         }
         finally {
@@ -598,12 +671,13 @@ public class ConsumerOperations extends BaseOperations {
      * @param consumer Resource to update
      * @return Updated resource
      *
+     * @throws DataSourceException If the data management failed data store side
+     *
      * @see ConsumerOperations#updateConsumer(PersistenceManager, Consumer)
      */
-    public Consumer updateConsumer(Consumer consumer) {
+    public Consumer updateConsumer(Consumer consumer) throws DataSourceException {
         PersistenceManager pm = getPersistenceManager();
         try {
-            // Persist updated consumer
             return updateConsumer(pm, consumer);
         }
         finally {
@@ -617,9 +691,30 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Resource to update
      * @return Updated resource
+     *
+     * @throws DataSourceException If the data management failed data store side
      */
-    public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
-        return pm.makePersistent(consumer);
+    public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) throws DataSourceException {
+        ObjectState state = JDOHelper.getObjectState(consumer);
+        if (ObjectState.TRANSIENT.equals(state)) {
+            // Get a fresh user copy from the data store
+            Consumer transientConsumer = consumer;
+            try {
+                consumer = getConsumer(pm, consumer.getKey(), false);
+            }
+            catch (InvalidIdentifierException ex) {
+                throw new DataSourceException("Cannot retreive a fresh copy of the consumer key:" + consumer.getKey(), ex);
+            }
+            // Remove the previous copy from the cache
+            decacheConsumer(transientConsumer); // To handle the possibility of an attribute used as a cache key being updated and leaving a wrong entry into the cache
+            // Merge the attribute of the old copy into the fresh one
+            consumer.fromJson(transientConsumer.toJson(), true, true);
+        }
+        // Persist updated consumer
+        consumer = pm.makePersistent(consumer);
+        // Update the cached instance
+        cacheConsumer(consumer);
+        return consumer;
     }
 
     /**
@@ -662,9 +757,16 @@ public class ConsumerOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumer Object to delete
+     *
+     * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      */
 
-    public void deleteConsumer(PersistenceManager pm, Consumer consumer) {
+    public void deleteConsumer(PersistenceManager pm, Consumer consumer) throws InvalidIdentifierException {
+        ObjectState state = JDOHelper.getObjectState(consumer);
+        if (ObjectState.TRANSIENT.equals(state)) {
+            consumer = getConsumer(pm, consumer.getKey(), false);
+        }
+        decacheConsumer(consumer);
         pm.deletePersistent(consumer);
     }
 }

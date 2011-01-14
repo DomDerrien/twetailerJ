@@ -36,11 +36,15 @@ import domderrien.i18n.LabelExtractor;
  */
 public class LocationValidator {
 
-    private static Logger log = Logger.getLogger(DemandValidator.class.getName());
+    private static Logger log = Logger.getLogger(LocationValidator.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -90,7 +94,7 @@ public class LocationValidator {
         if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
             location = LocaleValidator.getGeoCoordinates(location);
             if (Location.INVALID_COORDINATE.equals(location.getLongitude()) && commandKey != null && commandKey != 0L) {
-                log.warning("Invalid location for the command: " + commandKey + " -- [" + postalCode + " " + countryCode + "]");
+                getLogger().warning("Invalid location for the command: " + commandKey + " -- [" + postalCode + " " + countryCode + "]");
                 RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, commandKey);
                 Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
                 Locale locale = consumer.getLocale();
@@ -109,7 +113,7 @@ public class LocationValidator {
                         );
                     }
                     catch (ClientException ex) {
-                        log.warning("Cannot communicate with consumer " + consumerKey + " -- ex: " + ex.getMessage());
+                        getLogger().warning("Cannot communicate with consumer " + consumerKey + " -- ex: " + ex.getMessage());
                     }
                 return;
             }
@@ -124,7 +128,7 @@ public class LocationValidator {
         // Create a task to re-process the raw command
         if (commandKey != null && commandKey != 0L) {
             Queue queue = BaseSteps.getBaseOperations().getQueue();
-            log.warning("Preparing the task: /_tasks/processCommand?key=" + commandKey.toString());
+            getLogger().warning("Preparing the task: /_tasks/processCommand?key=" + commandKey.toString());
             queue.add(
                     withUrl("/_tasks/processCommand").
                         param(Command.KEY, commandKey.toString()).

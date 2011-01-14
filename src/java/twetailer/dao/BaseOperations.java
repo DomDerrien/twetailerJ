@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
@@ -21,6 +22,17 @@ import com.google.appengine.api.taskqueue.QueueFactory;
  * @author Dom Derrien
  */
 public class BaseOperations {
+
+    private static Logger log = Logger.getLogger(BaseOperations.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     private static PersistenceManagerFactory pmfInstance = null;
 
@@ -208,12 +220,13 @@ public class BaseOperations {
             query.setRange(0, limit);
         }
 
-//        System.err.println("**** Query: " + query.toString());
-//        System.err.print("**** Query parameters: ");
+//        StringBuilder out = new StringBuilder("\nQuery: ").append(query.toString());
+//        out.append("\nQuery parameters: ");
 //        for(int jdx = 0; jdx < values.size(); jdx++) {
-//            System.err.print("{" + jdx + ": " + values.get(jdx) + "} ");
+//            out.append("{").append(jdx).append(": ").append(values.get(jdx)).append("} ");
 //        }
-//        System.err.println();
+//        out.append("\n");
+//        getLogger().finest(out);
 
         return values.toArray();
     }

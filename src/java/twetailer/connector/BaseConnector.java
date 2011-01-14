@@ -18,7 +18,17 @@ import twitter4j.TwitterException;
  * @author Dom Derrien
  */
 public class BaseConnector {
+
     private static Logger log = Logger.getLogger(BaseConnector.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     public enum Source {
         simulated,
@@ -29,11 +39,6 @@ public class BaseConnector {
         mail,
         api,
         widget
-    }
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
     }
 
     /**
@@ -136,7 +141,7 @@ public class BaseConnector {
      * @throws CommunicationException If all communication attempts fail
      */
     protected static void communicateToUser(Source source, boolean useCcAccount, String userId, String userName, String subject, String[] messages, Locale locale) throws CommunicationException {
-        log.warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + Arrays.toString(messages));
+        getLogger().warning("Communicating with " + userId + " (medium: " + (source == null ? "null" : source.toString()) + ") -- message: " + Arrays.toString(messages));
         if (Source.simulated.equals(source)) {
             for (String message: messages) {
                 lastCommunications.add(message);
@@ -155,7 +160,7 @@ public class BaseConnector {
                 /*****
                 try {
                     // FIXME: verify that the error is really related to a non following issue!
-                    log.warning("Emitter" + userId + " not following Twetailer");
+                    getLogger().warning("Emitter" + userId + " not following Twetailer");
                     TwitterConnector.sendPublicMessage(LabelExtractor.get("tl_inform_dm_sender_no_more_a_follower", new Object[] { userId }, locale));
                 }
                 catch(TwitterException nestedEx) {

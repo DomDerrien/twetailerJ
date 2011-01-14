@@ -145,16 +145,18 @@ public class Payment extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+
         if (!isUserAdmin) {
             // No external update allowed
             return this;
         }
 
-        super.fromJson(in);
+        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(AUTHORIZATION_ID)) { setAuthorizationId(in.getString(AUTHORIZATION_ID)); }
         if (in.containsKey(REFERENCE)) { setReference(in.getString(REFERENCE)); }

@@ -69,16 +69,18 @@ public class Reseller extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
         if (!isUserAdmin) {
             // No external update allowed
             return this;
         }
 
-        super.fromJson(in);
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(TOKEN_NB)) { setTokenNb(in.getLong(TOKEN_NB)); }
 

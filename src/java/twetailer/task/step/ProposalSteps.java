@@ -49,7 +49,16 @@ import domderrien.jsontools.JsonObject;
 
 public class ProposalSteps extends BaseSteps {
 
-    private final static Logger log = Logger.getLogger(ProposalSteps.class.getName());
+    private static Logger log = Logger.getLogger(ProposalSteps.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     /* legacy *
     protected static AmazonFPS amazonFPS = new AmazonFPS();
@@ -425,7 +434,7 @@ public class ProposalSteps extends BaseSteps {
                     }
                     catch (CommunicationException e) {
                         // Not a critical error, should not block the rest of the process
-                        log.warning("Cannot inform " + demand.getOwnerKey());
+                        getLogger().warning("Cannot inform " + demand.getOwnerKey());
                     }
                 }
 
@@ -512,7 +521,7 @@ public class ProposalSteps extends BaseSteps {
                     }
                     catch (CommunicationException e) {
                         // Not a critical error, should not block the rest of the process
-                        log.warning("Cannot inform " + demand.getOwnerKey());
+                        getLogger().warning("Cannot inform " + demand.getOwnerKey());
                     }
                 }
 
@@ -528,7 +537,7 @@ public class ProposalSteps extends BaseSteps {
         // Normal attribute update
         else if (State.opened.equals(currentState) || State.published.equals(currentState) || State.invalid.equals(currentState)) {
             // Integrate updates
-            proposal.fromJson(parameters, isUserAdmin);
+            proposal.fromJson(parameters, isUserAdmin, false);
 
             // Prepare as a new Demand
             proposal.setState(State.opened); // Will force the re-validation of the entire demand
@@ -759,7 +768,7 @@ public class ProposalSteps extends BaseSteps {
                         }
                         catch (CommunicationException e) {
                             // Too bad, cannot contact the CC-ed person... Don't block the next sending!
-                            log.warning("Cannot inform cc'ed " + coordinate);
+                            getLogger().warning("Cannot inform cc'ed " + coordinate);
                         }
                     }
                 }

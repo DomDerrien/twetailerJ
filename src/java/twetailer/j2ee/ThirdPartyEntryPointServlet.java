@@ -51,6 +51,7 @@ import domderrien.jsontools.JsonParser;
  */
 @SuppressWarnings("serial")
 public class ThirdPartyEntryPointServlet extends HttpServlet {
+
     private static Logger log = Logger.getLogger(ThirdPartyEntryPointServlet.class.getName());
 
     /** Just made available for test purposes */
@@ -58,6 +59,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         log = mockLogger;
     }
 
+    protected static Logger getLogger() {
+        return log;
+    }
 
     private final static String DEMAND_PREFIX = "/Demand";
     private final static String LOCATION_PREFIX = "/Location";
@@ -201,16 +205,16 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
     public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName, HttpServletRequest request) throws ReservedOperationException {
         if (!parameters.containsKey(Influencer.REFERRAL_ID)) { // Missing parameter
-            log.warning("Missing referralId");
+            getLogger().warning("Missing referralId");
             throw new ReservedOperationException(action, entityName);
         }
         String referralId = parameters.getString(Influencer.REFERRAL_ID).trim();
         if (referralId.length() != 0 && !referralId.equals(Influencer.DEFAULT_REFERRAL_ID) && !InfluencerOperations.verifyReferralIdValidity(pm, referralId)) {
-            log.warning("Invalid referralId: " + referralId);
+            getLogger().warning("Invalid referralId: " + referralId);
             parameters.put(Influencer.REFERRAL_ID, Influencer.DEFAULT_REFERRAL_ID); // Reset the given referral identifier!
         }
         else {
-            log.warning("Valid referralId: " + referralId);
+            getLogger().warning("Valid referralId: " + referralId);
         }
     }
 }

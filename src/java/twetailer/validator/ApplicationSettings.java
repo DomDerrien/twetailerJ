@@ -12,6 +12,17 @@ import java.util.logging.Logger;
  */
 public class ApplicationSettings {
 
+    private static Logger log = Logger.getLogger(ApplicationSettings.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
+
     private boolean useCDN = false;
 
     protected final static String USE_CDN_KEY = "useCDN";
@@ -167,13 +178,6 @@ public class ApplicationSettings {
         settings = null;
     }
 
-    private static Logger log = Logger.getLogger(ApplicationSettings.class.getName());
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
-
     protected ApplicationSettings() {
         settings = this;
         try {
@@ -234,7 +238,7 @@ public class ApplicationSettings {
             }
         }
         catch(Exception ex) {
-            log.severe("Application settings cannot be loaded. Relying on default ones");
+            getLogger().severe("Application settings cannot be loaded. Relying on default ones");
         }
     }
 

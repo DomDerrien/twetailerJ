@@ -67,8 +67,8 @@ public class LocationSteps extends BaseSteps {
             center = getLocation(pm, parameters.getLong(Location.LOCATION_KEY));
         }
         else if (parameters.containsKey(Location.POSTAL_CODE) && parameters.containsKey(Location.COUNTRY_CODE)) {
-            String postalCode = LocaleValidator.standardizePostalCode(parameters.getString(Location.POSTAL_CODE));
             String countryCode = LocaleValidator.checkCountryCode(parameters.getString(Location.COUNTRY_CODE));
+            String postalCode = LocaleValidator.standardizePostalCode(parameters.getString(Location.POSTAL_CODE), countryCode);
             List<Location> possibleCenters = getLocationOperations().getLocations(pm, postalCode, countryCode);
             if (possibleCenters.size() == 0) {
                 parameters.put(Location.POSTAL_CODE, postalCode); // Inject normalize postal code
@@ -112,7 +112,7 @@ public class LocationSteps extends BaseSteps {
         Location location = getLocationOperations().getLocation(pm, locationKey);
 
         // Merge updates and persist them
-        location.fromJson(parameters, isUserAdmin);
+        location.fromJson(parameters, isUserAdmin, false);
         location = getLocationOperations().updateLocation(pm, location);
 
         return location;

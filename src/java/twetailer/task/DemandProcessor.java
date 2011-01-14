@@ -65,9 +65,13 @@ public class DemandProcessor {
 
     private static Logger log = Logger.getLogger(DemandProcessor.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -251,7 +255,7 @@ public class DemandProcessor {
                         );
                     }
                     catch (MessagingException e) {
-                        log.severe("Failure while trying to report an unexpected by e-mail!");
+                        getLogger().severe("Failure while trying to report an unexpected by e-mail!");
                     }
                 }
             }
@@ -442,7 +446,7 @@ public class DemandProcessor {
                 );
             }
             catch (MessagingException e) {
-                log.severe("Failure while trying to report an unexpected by e-mail!");
+                getLogger().severe("Failure while trying to report an unexpected by e-mail!");
             }
         }
     }

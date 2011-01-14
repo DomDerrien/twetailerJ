@@ -131,16 +131,16 @@ public class TestCommand {
         // In the translation, the milliseconds are rounded!
         dueDate.set(Calendar.MILLISECOND, 0);
 
-        assertEquals(action, clone.getAction());
+        assertNull(clone.getAction()); // Cannot be overridden
         assertEquals(dueDate.getTime(), clone.getDueDate());
-        assertEquals(cancelerKey, clone.getCancelerKey());
+        assertNull(clone.getCancelerKey()); // Cannot be overridden
         assertEquals(hashTags, clone.getHashTags());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(metadata, clone.getMetadata());
-        assertEquals(ownerKey, clone.getOwnerKey());
-        assertEquals(rawCommandId, clone.getRawCommandId());
+        assertNull(clone.getOwnerKey()); // Cannot be overridden
+        assertNull(clone.getRawCommandId()); // Cannot be overridden
         assertEquals(source, clone.getSource());
-        assertEquals(state, clone.getState());
+        assertEquals(State.opened, clone.getState()); // Default state, cannot be overridden
     }
 
     @Test

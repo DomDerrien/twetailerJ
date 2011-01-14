@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
@@ -19,6 +19,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.ReservedOperationException;
 import twetailer.dao.BaseOperations;
+import twetailer.dao.CacheHandler;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.MockBaseOperations;
@@ -50,10 +51,13 @@ public class TestConsumerRestlet {
         user = MockLoginServlet.buildMockOpenIdUser();
         BaseSteps.resetOperationControllers(true);
         BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        CacheHandler.injectCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
+        CacheHandler.injectCacheFactory(null);
+        CacheHandler.injectCache(null);
     }
 
     @Test(expected=ReservedOperationException.class)
@@ -522,7 +526,7 @@ public class TestConsumerRestlet {
         consumer.setKey(consumerKey);
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) {
+            public Consumer getConsumer(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(consumerKey, key);
                 return consumer;
             }

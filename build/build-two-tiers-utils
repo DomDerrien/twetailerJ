@@ -1,0 +1,8 @@
+#!/bin/bash
+pushd ../two-tiers-utils/
+vi ~/local.build.properties
+ant -f build/build.xml distribute
+cp dist/domderrien-1.5.3*.jar ../twetailerJ/deps/lib/domderrien/
+cp dist/domderrien-1.5.3.jar ../twetailerJ/src/war/WEB-INF/lib/
+vi ~/local.build.properties
+popd

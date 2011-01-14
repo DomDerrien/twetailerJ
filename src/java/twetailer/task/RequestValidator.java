@@ -36,9 +36,13 @@ public class RequestValidator {
 
     private static Logger log = Logger.getLogger(RequestValidator.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     public static final Double RANGE_KM_MIN = Double.valueOf(5.0D);
@@ -54,26 +58,26 @@ public class RequestValidator {
         Locale locale = consumer.getLocale();
         String message = null;
 
-        // System.err.println("========================\n now: " + nowTime + "\n exp: " + wish.getExpirationDate() + "\n due: " + wish.getDueDate() + "\n========================");
+        // getLogger().finest("========================\n now: " + nowTime + "\n exp: " + wish.getExpirationDate() + "\n due: " + wish.getDueDate() + "\n========================");
 
         String wishRef = LabelExtractor.get("cp_tweet_" + messageBaseId + "_reference_part", new Object[] { request.getKey() }, locale);
         if ((request.getCriteria() == null || request.getCriteria().size() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
             message = LabelExtractor.get("dv_report_" + messageBaseId + "_without_tag", new Object[] { wishRef }, locale);
         }
         else if (request.getDueDate() == null || request.getDueDate().getTime() < nowTime) {
-            log.warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\nDue: " + request.getDueDate());
+            getLogger().warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\nDue: " + request.getDueDate());
             message = LabelExtractor.get("dv_report_due_in_past", new Object[] { wishRef }, locale);
         }
         else if (nowTime + oneYear < request.getDueDate().getTime()) {
-            log.warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nDue: " + request.getDueDate());
+            getLogger().warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nDue: " + request.getDueDate());
             message = LabelExtractor.get("dv_report_due_too_far_in_future", new Object[] { wishRef }, locale);
         }
         else if (request.getExpirationDate() == null || request.getExpirationDate().getTime() < nowTime) {
-            log.warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\nExpiration: " + request.getExpirationDate());
+            getLogger().warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\nExpiration: " + request.getExpirationDate());
             message = LabelExtractor.get("dv_report_expiration_in_past", new Object[] { wishRef }, locale);
         }
         else if (nowTime + oneYear < request.getExpirationDate().getTime()) {
-            log.warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nExpiration: " + request.getExpirationDate());
+            getLogger().warning(messageBaseId + ": " + request.getKey() + "\nNow: " + nowDate + "\n+1 year: " + new Date(nowTime + oneYear) + "\nExpiration: " + request.getExpirationDate());
             message = LabelExtractor.get("dv_report_expiration_too_far_in_future", new Object[] { wishRef }, locale);
         }
         else if (request.getDueDate().getTime() < request.getExpirationDate().getTime()) {
@@ -109,13 +113,14 @@ public class RequestValidator {
             }
             else {
                 try {
-                    //
-                    // At this step, it should be possible to call delegate the locale validation
-                    // as done in ListCommandProcess.getLocation()
-                    // ** It might be overkill to create 2 additional tasks if everything can be done here **
-                    //
                     Location location = LocationSteps.getLocation(pm, locationKey);
-                    if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+                    if (LocaleValidator.DEFAULT_POSTAL_CODE_CA.equals(location.getPostalCode()) ||
+                        LocaleValidator.DEFAULT_POSTAL_CODE_US.equals(location.getPostalCode()) ||
+                        LocaleValidator.DEFAULT_POSTAL_CODE_ALT_US.equals(location.getPostalCode())
+                    ) {
+                        message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { wishRef, location.getPostalCode(), location.getCountryCode() }, locale);
+                    }
+                    else if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                         location = LocaleValidator.getGeoCoordinates(location);
                         if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                             message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { wishRef, location.getPostalCode(), location.getCountryCode() }, locale);
@@ -131,6 +136,9 @@ public class RequestValidator {
                     }
                 }
                 catch (InvalidIdentifierException ex) {
+                    message = LabelExtractor.get("dv_report_unable_to_get_locale_information", new Object[] { wishRef }, locale);
+                }
+                catch (DataSourceException ex) {
                     message = LabelExtractor.get("dv_report_unable_to_get_locale_information", new Object[] { wishRef }, locale);
                 }
            }

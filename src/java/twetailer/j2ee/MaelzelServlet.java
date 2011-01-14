@@ -23,8 +23,8 @@ import twetailer.InvalidIdentifierException;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.dao.CacheHandler;
 import twetailer.dao.DemandOperations;
-import twetailer.dao.SettingsOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -32,7 +32,6 @@ import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
-import twetailer.dto.Store;
 import twetailer.dto.Wish;
 import twetailer.task.CommandProcessor;
 import twetailer.task.DemandProcessor;
@@ -44,8 +43,6 @@ import twetailer.task.RobotResponder;
 import twetailer.task.TweetLoader;
 import twetailer.task.WishValidator;
 import twetailer.task.step.BaseSteps;
-import twetailer.task.step.StoreSteps;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
 import twitter4j.TwitterException;
 
@@ -58,9 +55,7 @@ import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
-import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
@@ -74,11 +69,16 @@ import domderrien.jsontools.JsonParser;
  */
 @SuppressWarnings("serial")
 public class MaelzelServlet extends HttpServlet {
+
     private static Logger log = Logger.getLogger(MaelzelServlet.class.getName());
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
         log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     @Override
@@ -89,6 +89,8 @@ public class MaelzelServlet extends HttpServlet {
 
         JsonObject out = new GenericJsonObject();
         TaskOptions retryOptions = null;
+
+        boolean debugModeDetected = BaseRestlet.debugModeDetected(request);
 
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
@@ -126,17 +128,8 @@ public class MaelzelServlet extends HttpServlet {
                     pm.close();
                 }
             }
-            else if ("/reloadCachedData".equals(pathInfo)) {
-                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-                try {
-                    SettingsOperations  settingsOperations = BaseSteps.getSettingsOperations();
-                    Settings settings = settingsOperations.getSettings(pm, false);
-                    settings.setModificationDate(DateUtils.getNowDate());
-                    settingsOperations.updateSettings(pm, settings);
-                }
-                finally {
-                    pm.close();
-                }
+            else if ("/flushMemCache".equals(pathInfo)) {
+                CacheHandler.clearCache();
             }
             else if ("/setupRobotCoordinates".equals(pathInfo)) {
                 PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
@@ -359,16 +352,21 @@ public class MaelzelServlet extends HttpServlet {
                 BaseSteps.getBaseOperations().getQueue().add(retryOptions.method(Method.GET));
             }
             // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                MailConnector.reportErrorToAdmins(
-                        "Unexpected error caught in " + MaelzelServlet.class.getName(),
-                        "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request).toString() + "\n\n--\n\n" + stackTrace.toString()
-                );
+            if (debugModeDetected) {
+                ex.printStackTrace();
             }
-            catch (MessagingException ex2) {
-                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
+            else {
+                MockOutputStream stackTrace = new MockOutputStream();
+                ex.printStackTrace(new PrintStream(stackTrace));
+                try {
+                    MailConnector.reportErrorToAdmins(
+                            "Unexpected error caught in " + MaelzelServlet.class.getName(),
+                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request).toString() + "\n\n--\n\n" + stackTrace.toString()
+                    );
+                }
+                catch (MessagingException ex2) {
+                    getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
+                }
             }
         }
 
@@ -385,6 +383,7 @@ public class MaelzelServlet extends HttpServlet {
         JsonObject in = null;
 
         Locale locale = Locale.ENGLISH;
+        boolean debugModeDetected = BaseRestlet.debugModeDetected(request);
 
         try {
             if (pathInfo == null || pathInfo.length() == 0) {
@@ -399,6 +398,7 @@ public class MaelzelServlet extends HttpServlet {
 
                 // TODO: verify Content-type == "application/json"
                 in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
+                debugModeDetected = debugModeDetected || BaseRestlet.debugModeDetected(in);
 
                 OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
                 String openId = loggedUser.getClaimedId();
@@ -496,16 +496,21 @@ public class MaelzelServlet extends HttpServlet {
             // Prepare the exception report
             out = new JsonException("UNEXPECTED_EXCEPTION", "Unexpected exception during Maelzel.doPost() operation", ex);
             // Send an e-mail to out catch-all list
-            MockOutputStream stackTrace = new MockOutputStream();
-            ex.printStackTrace(new PrintStream(stackTrace));
-            try {
-                MailConnector.reportErrorToAdmins(
-                        "Unexpected error caught in " + MaelzelServlet.class.getName(),
-                        "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
-                );
+            if (debugModeDetected) {
+                ex.printStackTrace();
             }
-            catch (MessagingException ex2) {
-                log.severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
+            else {
+                MockOutputStream stackTrace = new MockOutputStream();
+                ex.printStackTrace(new PrintStream(stackTrace));
+                try {
+                    MailConnector.reportErrorToAdmins(
+                            "Unexpected error caught in " + MaelzelServlet.class.getName(),
+                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
+                    );
+                }
+                catch (MessagingException ex2) {
+                    getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
+                }
             }
         }
 
@@ -545,7 +550,7 @@ public class MaelzelServlet extends HttpServlet {
         else {
             throw new RuntimeException("Unexpected topic: " + topic);
         }
-        log.warning("Code " + code + " for " + topic + ": " + identifier);
+        getLogger().warning("Code " + code + " for " + topic + ": " + identifier);
         return code;
     }
 

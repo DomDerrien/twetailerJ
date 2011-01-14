@@ -206,7 +206,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
             OpenIdUser loggedUser = getLoggedUser(request);
             isUserAdmin = isUserAdministrator(loggedUser);
-            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+            getLogger().finest("JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
@@ -264,7 +264,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
             OpenIdUser loggedUser = getLoggedUser(request);
             isUserAdmin = isUserAdministrator(loggedUser);
-            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+            getLogger().finest("JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
@@ -309,7 +309,7 @@ public abstract class BaseRestlet extends HttpServlet {
 
             OpenIdUser loggedUser = getLoggedUser(request);
             isUserAdmin = isUserAdministrator(loggedUser);
-            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+            getLogger().finest("JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized
@@ -361,7 +361,7 @@ public abstract class BaseRestlet extends HttpServlet {
         try {
             OpenIdUser loggedUser = getLoggedUser(request);
             isUserAdmin = isUserAdministrator(loggedUser);
-            getLogger().finest("*** JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
+            getLogger().finest("JSessionId: " + (request.getSession(false) == null ? "no session" : request.getSession(false).getId()) + " -- isAdmin: " + isUserAdmin + " -- identity: " + (loggedUser == null ? "no record!" : loggedUser.getIdentity()));
 
             if (!isUserAdmin && loggedUser == null) {
                 response.setStatus(401); // Unauthorized

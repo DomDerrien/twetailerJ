@@ -3,6 +3,7 @@ package twetailer.dto;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -10,6 +11,7 @@ import javax.jdo.annotations.Persistent;
 
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
@@ -143,11 +145,13 @@ public class SaleAssociate extends Entity {
         if (criteria == null) {
             criteria = new ArrayList<String>();
         }
-        String normalizedCriterion = StringUtils.toUnicode(criterion.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
-        for(String item: criteria) {
-            String normalizedItem = StringUtils.toUnicode(item.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
-            if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
-                return;
+        if (collator != null) { // Skip the comparison as it's cache related and data can be transfered safely
+            String normalizedCriterion = StringUtils.toUnicode(criterion.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
+            for(String item: criteria) {
+                String normalizedItem = StringUtils.toUnicode(item.getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
+                if (collator.compare(normalizedCriterion, normalizedItem) == 0) {
+                    return;
+                }
             }
         }
         criteria.add(criterion);
@@ -319,11 +323,13 @@ public class SaleAssociate extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
-        super.fromJson(in);
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (isUserAdmin && in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
         if ((isUserAdmin || getKey() == null) && in.containsKey(CONSUMER_KEY)) {
             // Cannot change once set at creation time
@@ -333,7 +339,16 @@ public class SaleAssociate extends Entity {
             // Cannot change once set at creation time
             setCreatorKey(in.getLong(CREATOR_KEY));
         }
-        if (in.containsKey(CRITERIA) || in.containsKey(CRITERIA_ADD) || in.containsKey(CRITERIA_REMOVE)) {
+        if (isCacheRelated) {
+            if (in.containsKey(CRITERIA)) {
+                JsonArray jsonArray = in.getJsonArray(CRITERIA);
+                resetCriteria();
+                for (int i=0; i<jsonArray.size(); ++i) {
+                    addCriterion(jsonArray.getString(i), null);
+                }
+            }
+        }
+        else if (in.containsKey(CRITERIA) || in.containsKey(CRITERIA_ADD) || in.containsKey(CRITERIA_REMOVE)) {
             throw new IllegalArgumentException("Supplied tags should be updated manually to ensure there's no locale-dependend duplicate");
         }
         if (in.containsKey(HASH_TAGS)) {

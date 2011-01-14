@@ -26,6 +26,18 @@
     </filter>
     <filter-mapping>
         <filter-name>appstats</filter-name>
+        <url-pattern>/_ah/mail/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/_ah/xmpp/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/_tasks/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
         <url-pattern>/API/*</url-pattern>
     </filter-mapping>
     <filter-mapping>

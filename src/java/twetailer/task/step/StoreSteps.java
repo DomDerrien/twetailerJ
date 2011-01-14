@@ -113,7 +113,7 @@ public class StoreSteps extends BaseSteps {
         Store store = getStoreOperations().getStore(pm, storeKey);
         Long initialLocationKey = store.getLocationKey();
 
-        store.fromJson(parameters, isUserAdmin);
+        store.fromJson(parameters, isUserAdmin, false);
         store = getStoreOperations().updateStore(pm, store);
 
         Long newLocationKey = store.getLocationKey();

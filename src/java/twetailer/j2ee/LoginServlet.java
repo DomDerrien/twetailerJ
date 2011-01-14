@@ -34,7 +34,8 @@ import com.dyuproject.openid.ext.SRegExtension;
 import com.dyuproject.util.http.UrlEncodedParameterMap;
 
 /**
- * Home Servlet. If authenticated, goes to the home page. If not, goes to the login page.
+ * Login servlet which associates the just authenticated user
+ * to the session
  *
  * @author David Yu
  * @maintainer Dom Derrien
@@ -42,11 +43,36 @@ import com.dyuproject.util.http.UrlEncodedParameterMap;
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 
+    private static Logger log = Logger.getLogger(LoginServlet.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
+
     public static final String FROM_PAGE_URL_KEY = "fromPageURL";
 
-    protected static Listener sregExtension = new SRegExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("nickname"); // .addExchange("firstname").addExchange("lastname");
+    protected static Listener sregExtension =
+        new SRegExtension().
+        addExchange("email").
+        addExchange("country").
+        addExchange("language").
+        addExchange("nickname");
+        // addExchange("firstname").
+        // addExchange("lastname");
 
-    protected static Listener axSchemaExtension = new AxSchemaExtension().addExchange("email").addExchange("country").addExchange("language").addExchange("firstname").addExchange("lastname").addExchange("nickname");
+    protected static Listener axSchemaExtension =
+        new AxSchemaExtension().
+        addExchange("email").
+        addExchange("country").
+        addExchange("language").
+        addExchange("firstname").
+        addExchange("lastname").
+        addExchange("nickname");
 
     protected static Listener relyingPartyListener = new RelyingParty.Listener() {
         public void onDiscovery(OpenIdUser user, HttpServletRequest request) {
@@ -64,8 +90,7 @@ public class LoginServlet extends HttpServlet {
             }
         }
         public void onAccess(OpenIdUser user, HttpServletRequest request) {
-            System.err.println("******** user access: " + user.getIdentity());
-            System.err.println("******** info: " + user.getAttribute("info"));
+            getLogger().finest("Authentication listener:\n- user access: " + user.getIdentity() + "\n- info: " + user.getAttribute("info"));
         }
     };
 
@@ -198,16 +223,19 @@ public class LoginServlet extends HttpServlet {
             }
         }
         catch (UnknownHostException uhe) {
-            Logger.getLogger(LoginServlet.class.getName()).warning("Issue while trying to contact the authentication server -- message " + uhe.getMessage());
+            getLogger().warning("Issue while trying to contact the authentication server -- message " + uhe.getMessage());
             errorMsg = OpenIdServletFilter.ID_NOT_FOUND_MSG;
+            uhe.printStackTrace();
         }
         catch (FileNotFoundException fnfe) {
-            Logger.getLogger(LoginServlet.class.getName()).warning("Issue while accessing a file (?) -- message " + fnfe.getMessage());
+            getLogger().warning("Issue while accessing a file (?) -- message " + fnfe.getMessage());
             errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
+            fnfe.printStackTrace();
         }
         catch (Exception ex) {
-            Logger.getLogger(LoginServlet.class.getName()).warning("Unexpected error -- message " + ex.getMessage());
+            getLogger().warning("Unexpected error -- message " + ex.getMessage());
             errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
+            ex.printStackTrace();
         }
         request.setAttribute(OpenIdServletFilter.ERROR_MSG_ATTR, errorMsg);
         request.getRequestDispatcher(ApplicationSettings.get().getLoginPageURL()).forward(request, response);
@@ -367,7 +395,7 @@ public class LoginServlet extends HttpServlet {
             return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
         }
         catch (Exception ex) {
-            throw new ReservedOperationException("Cannot get the SaleAssociate record!");
+            throw new ReservedOperationException("Cannot get the SaleAssociate record!", ex);
         }
     }
 }

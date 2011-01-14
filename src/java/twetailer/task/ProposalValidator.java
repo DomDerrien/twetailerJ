@@ -49,9 +49,13 @@ public class ProposalValidator {
 
     private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -130,7 +134,7 @@ public class ProposalValidator {
                 }
                 RawCommand rawCommand = proposal.getRawCommandId() == null ? new RawCommand(proposal.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, proposal.getRawCommandId());
                 if (message != null) {
-                    log.warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
+                    getLogger().warning("Invalid state for the proposal: " + proposal.getKey() + " -- message: " + message);
                     proposal.setState(CommandSettings.State.invalid);
                     proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
 
@@ -165,10 +169,10 @@ public class ProposalValidator {
                 }
             }
             catch (DataSourceException ex) {
-                log.warning("Cannot get information for sale associate: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
+                getLogger().warning("Cannot get information for sale associate: " + proposal.getOwnerKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
+                getLogger().warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
             }
         }
     }

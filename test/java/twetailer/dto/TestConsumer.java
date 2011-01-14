@@ -58,7 +58,8 @@ public class TestConsumer {
 
     String address = "North Pole, H0H 0H0, Canada";
     String email = "d.d@d.dom";
-    String imId = "ddd";
+    String facebookId = "64554364532";
+    String jabberId = "ddd";
     String language = Locale.FRENCH.getLanguage();
     Long locationKey = 12345L;
     String name = "dom";
@@ -74,7 +75,7 @@ public class TestConsumer {
 
         object.setAddress(address);
         object.setEmail(email);
-        object.setJabberId(imId);
+        object.setJabberId(jabberId);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
@@ -86,7 +87,7 @@ public class TestConsumer {
 
         assertEquals(address, object.getAddress());
         assertEquals(email, object.getEmail());
-        assertEquals(imId, object.getJabberId());
+        assertEquals(jabberId, object.getJabberId());
         assertEquals(language, object.getLanguage());
         assertEquals(locationKey, object.getLocationKey());
         assertEquals(name, object.getName());
@@ -110,7 +111,8 @@ public class TestConsumer {
 
         object.setAddress(address);
         object.setEmail(email);
-        object.setJabberId(imId);
+        object.setJabberId(jabberId);
+        object.setFacebookId(facebookId);
         object.setLanguage(language);
         object.setLocationKey(locationKey);
         object.setName(name);
@@ -124,9 +126,9 @@ public class TestConsumer {
 
         assertEquals(address, clone.getAddress());
         assertNull(clone.getClosedDemandNb()); // Cannot be overridden
-        assertNull(clone.getEmail()); // Cannot be overridden
-        assertNull(clone.getFacebookId()); // Cannot be overridden
-        assertNull(clone.getJabberId()); // Cannot be overridden
+        assertEquals(email, clone.getEmail());
+        assertEquals(facebookId, clone.getFacebookId());
+        assertEquals(jabberId, clone.getJabberId());
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(name, clone.getName());
@@ -135,7 +137,7 @@ public class TestConsumer {
         assertEquals(preferredConnection, clone.getPreferredConnection());
         assertNull(clone.getPublishedDemandNb()); // Cannot be overridden
         assertEquals(saleAssociateKey, clone.getSaleAssociateKey()); // Cannot be overridden
-        assertNull(clone.getTwitterId()); // Cannot be overridden
+        assertEquals(twitterId, clone.getTwitterId());
     }
 
     @Test

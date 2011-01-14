@@ -181,11 +181,13 @@ public class Demand extends Request {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
-        super.fromJson(in, isUserAdmin);
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (isUserAdmin && in.containsKey(PROPOSAL_KEYS)) {
             resetProposalKeys();
             JsonArray jsonArray = in.getJsonArray(PROPOSAL_KEYS);

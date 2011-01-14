@@ -343,16 +343,37 @@ public class TestCommandLineParser {
 
     @Test
     public void testParseLocaleV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345 us", Locale.ENGLISH);
-        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-1234 us", Locale.ENGLISH);
+        assertEquals("97323-1234", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
     public void testParseLocaleVI() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-12345-us", Locale.ENGLISH);
-        assertEquals("97323-12345", data.getString(Location.POSTAL_CODE));
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale:97323-1234-us", Locale.ENGLISH);
+        assertEquals("97323-1234", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleVII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca ", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleVIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca manger des pommes", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleIX() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 locale: h3c 2n6 ca range:2km", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -366,7 +387,7 @@ public class TestCommandLineParser {
     public void testParseLocaleShortII() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 loc:97343us", Locale.ENGLISH);
         assertEquals("97343", data.getString(Location.POSTAL_CODE));
-        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, data.getString(Location.COUNTRY_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
     }
 
     @Test
@@ -1053,57 +1074,6 @@ public class TestCommandLineParser {
     }
 
     @Test
-    public void testIssueWithPartOfTheTagsLostI() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "ref:249 wii #game locale:h0h0h0 mario range:25 km kart",
-                Locale.ENGLISH
-        );
-
-        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
-        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
-        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testIssueWithPartOfTheTagsLostII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "ref:249 wii hash:game locale:h0h0h0 mario range:25 km kart",
-                Locale.ENGLISH
-        );
-
-        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(3));
-        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
-        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
-    public void testIssueWithPartOfTheTagsLostIII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "ref:249 tags: wii hash:game locale:h0h0h0 mario range:25 km kart",
-                Locale.ENGLISH
-        );
-
-        assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("locale:h0h0h0", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("mario", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
-        assertEquals("kart", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
-        assertEquals(25.0, data.getDouble(Demand.RANGE), 0.0);
-        assertEquals(LocaleValidator.KILOMETER_UNIT, data.getString(Demand.RANGE_UNIT));
-    }
-
-    @Test
     public void testParseAddressI() throws ClientException, ParseException {
         final String address = "12345, Lamb Street, Montreal, Qc, Canada";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "address: " + address, Locale.ENGLISH);
@@ -1440,5 +1410,264 @@ public class TestCommandLineParser {
         data = CommandLineParser.parseCommand(patterns, "rate proposal:59 comment:" + comment + " score::)", Locale.ENGLISH);
         assertEquals(5, data.getLong(Proposal.SCORE));
         assertEquals(comment, data.getString(Proposal.COMMENT));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Ia() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 CA", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Ib() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 Ca any tag", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Ic() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 ca range:5km", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Id() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c ca range:5km", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Ie() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6t5y ca range:5km", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIa() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 ", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 any tag", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIc() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 range:5km", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IId() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c range:5km", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIe() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6t5y range:5km", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIIa() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3c \t 2n6 \t ca any tag", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIIb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3 c2 n6 ca range:5km", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IIIc() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3c-2n6 ca any tag", Locale.ENGLISH);
+        assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_IV() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3 c2 n6 range:5km", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+        assertTrue(data.containsKey(Demand.CRITERIA_ADD));
+        assertEquals(2L, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals("c2", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("n6", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Va() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: ca any tag", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreCA_Vb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:ca any tag", Locale.ENGLISH);
+        assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Ia() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 US", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Ib() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 Us any tag", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Ic() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345-6789 us range:5km", Locale.ENGLISH);
+        assertEquals("12345-6789", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Id() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:1234 us range:5km", Locale.ENGLISH);
+        assertEquals("00000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Ie() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 67 us range:5km", Locale.ENGLISH);
+        assertEquals("00000-0000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIa() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 ", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 any tag", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIc() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 range:5km", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IId() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:1234 range:5km", Locale.ENGLISH);
+        assertEquals("00000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIe() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345-67 range:5km", Locale.ENGLISH);
+        assertEquals("00000-0000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIIa() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 123 \t 45 \t us any tag", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIIb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 123 45-6789 us range:5km", Locale.ENGLISH);
+        assertEquals("12345-6789", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IIIc() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 12345 6789 us any tag", Locale.ENGLISH);
+        assertEquals("00000-0000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_IV() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 12345 6789 range:5km", Locale.ENGLISH);
+        assertEquals("12345", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Demand.RANGE));
+        assertTrue(data.containsKey(Demand.CRITERIA_ADD));
+        assertEquals(1L, data.getJsonArray(Demand.CRITERIA_ADD).size());
+        assertEquals("6789", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Va() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: us any tag", Locale.ENGLISH);
+        assertEquals("00000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    @Test
+    public void testParseLocaleMoreUS_Vb() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:us any tag", Locale.ENGLISH);
+        assertEquals("00000", data.getString(Location.POSTAL_CODE));
+        assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
+        assertTrue(data.containsKey(Command.CRITERIA_ADD));
     }
 }

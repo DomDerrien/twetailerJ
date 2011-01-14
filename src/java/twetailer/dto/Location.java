@@ -112,9 +112,13 @@ public class Location extends Entity {
     }
 
     public void setPostalCode(String postalCode) {
+        setPostalCode(postalCode, null);
+    }
+
+    public void setPostalCode(String postalCode, String countryCode) {
         this.postalCode = postalCode;
         if (this.postalCode != null) {
-            this.postalCode = LocaleValidator.standardizePostalCode(this.postalCode);
+            this.postalCode = LocaleValidator.standardizePostalCode(this.postalCode, countryCode);
         }
     }
 
@@ -131,10 +135,12 @@ public class Location extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+
         if (!isUserAdmin) {
             if (getKey() != null) {
                 // No external update allowed
@@ -142,7 +148,7 @@ public class Location extends Entity {
             }
         }
 
-        super.fromJson(in);
+        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (hasNewAttributes(in)) {
             setCountryCode(null);

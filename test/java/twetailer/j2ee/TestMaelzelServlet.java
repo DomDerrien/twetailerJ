@@ -49,6 +49,7 @@ import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.task.CommandProcessor;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -247,6 +248,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Command.KEY, name);
                 return commandKey.toString();
             }
@@ -304,6 +308,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if (Location.POSTAL_CODE.equals(name)) {
                     return postalCode;
                 }
@@ -357,6 +364,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Demand.KEY, name);
                 return demandKey.toString();
             }
@@ -398,6 +408,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
             }
@@ -439,6 +452,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if(Demand.KEY.equals(name)) {
                     return demandKey.toString();
                 }
@@ -482,6 +498,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Demand.KEY, name);
                 return demandKey.toString();
             }
@@ -523,6 +542,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
             }
@@ -560,6 +582,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
             }
@@ -631,6 +656,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 throw new DatastoreTimeoutException("Done in purpose!");
             }
             @Override
@@ -667,6 +695,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 throw new DatastoreTimeoutException("Done in purpose!");
             }
             @Override
@@ -1724,6 +1755,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if ("consumerKey".equals(name)) {
                     return consumerKey.toString();
                 }
@@ -1774,6 +1808,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if ("consumerKey".equals(name)) {
                     return consumerKey.toString();
                 }
@@ -1841,6 +1878,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if ("ownerKey".equals(name)) {
                     return consumerKey.toString();
                 }
@@ -1893,6 +1933,9 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 if ("ownerKey".equals(name)) {
                     return consumerKey.toString();
                 }
@@ -1943,6 +1986,9 @@ public class TestMaelzelServlet {
                 if ("duration".equals(name)) {
                     return duration;
                 }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
@@ -1976,6 +2022,9 @@ public class TestMaelzelServlet {
             public String getParameter(String name) {
                 if ("duration".equals(name)) {
                     return duration;
+                }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
                 }
                 fail("Parameter query for " + name + " not expected");
                 return null;
@@ -2011,6 +2060,9 @@ public class TestMaelzelServlet {
                 if ("duration".equals(name)) {
                     return duration;
                 }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
@@ -2045,6 +2097,9 @@ public class TestMaelzelServlet {
                 if ("duration".equals(name)) {
                     return duration;
                 }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
@@ -2078,6 +2133,9 @@ public class TestMaelzelServlet {
             public String getParameter(String name) {
                 if ("duration".equals(name)) {
                     return duration;
+                }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
                 }
                 fail("Parameter query for " + name + " not expected");
                 return null;

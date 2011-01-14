@@ -25,11 +25,16 @@ import twetailer.connector.MailConnector;
  */
 @SuppressWarnings("serial")
 public class CatchAllMailHandlerServlet extends HttpServlet {
+
     private static Logger log = Logger.getLogger(CatchAllMailHandlerServlet.class.getName());
 
     /** Just made available for test purposes */
     protected static void setLogger(Logger mockLogger) {
         log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     @Override
@@ -92,7 +97,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
         // catch (MessagingException ex) {
         // catch (IOException ex) {
         catch (Exception ex) {
-            log.severe("Error while processing e-mail from: " + fromName + " -- message: " + ex.getMessage());
+            getLogger().severe("Error while processing e-mail from: " + fromName + " -- message: " + ex.getMessage());
         }
     }
 }

@@ -1,15 +1,11 @@
 package twetailer.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
 
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -22,16 +18,10 @@ import domderrien.jsontools.TransferObject;
  * @author Dom Derrien
  */
 @PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
-public class Settings implements Serializable, TransferObject {
+public class Settings extends Entity implements Serializable, TransferObject {
 
     /** Required to be able to save the settings into the cache */
     private static final long serialVersionUID = -7877518547014483177L;
-
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Long key;
-
-    public static final String KEY = "key";
 
     @Persistent
     private String name;
@@ -46,9 +36,6 @@ public class Settings implements Serializable, TransferObject {
     public static final String APPLICATION_SETTINGS_ID = "appSettings";
 
     @Persistent
-    private Date modificationDate = null;
-
-    @Persistent
     private Long robotConsumerKey = null;
 
     @Persistent
@@ -56,6 +43,7 @@ public class Settings implements Serializable, TransferObject {
 
     /** Default constructor */
     public Settings() {
+        super();
         setName(APPLICATION_SETTINGS_ID);
     }
 
@@ -67,14 +55,6 @@ public class Settings implements Serializable, TransferObject {
     public Settings(JsonObject in) {
         this();
         fromJson(in);
-    }
-
-    public Long getKey() {
-        return key;
-    }
-
-    public void setKey(Long key) {
-        this.key = key;
     }
 
     public String getName() {
@@ -102,14 +82,6 @@ public class Settings implements Serializable, TransferObject {
         this.lastProcessDirectMessageId = lastProcessDirectMessageId;
     }
 
-    public Date getModificationDate() {
-        return modificationDate;
-    }
-
-    public void setModificationDate(Date modificationDate) {
-        this.modificationDate = modificationDate;
-    }
-
     public Long getRobotConsumerKey() {
         return robotConsumerKey;
     }
@@ -130,20 +102,26 @@ public class Settings implements Serializable, TransferObject {
 
     @Override
     public JsonObject toJson() {
-        JsonObject out = new GenericJsonObject();
-        if (getKey() != null) {
-            out.put(KEY, getKey());
-        }
+        JsonObject out = super.toJson();
+
         out.put(NAME, getName());
         out.put(LAST_PROCESSED_DIRECT_MESSAGE_ID, getLastProcessDirectMessageId());
+
         return out;
     }
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        if (in.containsKey(KEY)) { setKey(in.getLong(KEY)); }
+        return fromJson(in, false, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         setName(in.getString(NAME));
         setLastProcessDirectMessageId(in.getLong(LAST_PROCESSED_DIRECT_MESSAGE_ID));
+
         return this;
     }
 }

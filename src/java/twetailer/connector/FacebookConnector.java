@@ -41,7 +41,17 @@ import domderrien.jsontools.JsonParser;
  * @author Dom Derrien
  */
 public class FacebookConnector {
+
     private static Logger log = Logger.getLogger(FacebookConnector.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     /* Information for OAuth authentication
      * Application Id:        161355780552042
@@ -93,11 +103,6 @@ public class FacebookConnector {
     public static final String ASE_MAIN_APP_URL = ApplicationSettings.get().getApplicationWebsite() + "widget/facebook/";
     public static final String LCLHOST_MAIN_APP_URL = "http://localhost:9999/widget/facebook/";
     public static final String VRTBOX_MAIN_APP_URL = "http://10.0.2.2:9999/widget/facebook/";
-
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
-    }
 
     public static final String ATTR_ACCESS_TOKEN = "access_token";
     public static final String ATTR_OAUTH_TOKEN = "oauth_token";
@@ -268,9 +273,9 @@ public class FacebookConnector {
             "&client_secret=" + (inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_SECRET : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET) +
             "&redirect_uri=" + URLEncoder.encode(requestSource, StringUtils.JAVA_UTF8_CHARSET) +
             "&code=" + code;
-        log.warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
+        getLogger().warning("Calling Facebook to get an access token for the logged user -- url: " + tokenURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(tokenURL));
-        log.fine("Generated response: " + dumpResponse(produced));
+        getLogger().fine("Generated response: " + dumpResponse(produced));
 
         try {
             if (getContentType(produced).contains("text/plain")) {
@@ -280,7 +285,7 @@ public class FacebookConnector {
         }
         catch (JsonException ex) {
             String dump = dumpResponse(produced);
-            log.severe("The Facebook Json bag is malformed --ex: " + ex.getMessage() + " -- original: " + dump);
+            getLogger().severe("The Facebook Json bag is malformed --ex: " + ex.getMessage() + " -- original: " + dump);
             throw new IOException("The Facebook Json bag with the logged user information is malformed! -- ex: " + ex.getMessage() + " -- original: " + dump);
         }
     }
@@ -299,9 +304,9 @@ public class FacebookConnector {
         String infoURL = "https://graph.facebook.com/me" +
             "?access_token=" + URLEncoder.encode(accessToken, StringUtils.JAVA_UTF8_CHARSET) +
             "&fields=" + getTwetailerRequestedFields();
-        log.warning("Calling Facebook to the logged user info -- url: " + infoURL);
+        getLogger().warning("Calling Facebook to the logged user info -- url: " + infoURL);
         HTTPResponse produced = getURLFetchService().fetch(getRequest(infoURL));
-        log.fine("Generated response: " + dumpResponse(produced));
+        getLogger().fine("Generated response: " + dumpResponse(produced));
 
         try {
             if (getContentType(produced).contains("text/plain")) {
@@ -311,7 +316,7 @@ public class FacebookConnector {
         }
         catch (JsonException ex) {
             String dump = dumpResponse(produced);
-            log.severe("The Facebook Json bag is malformed --ex: " + ex.getMessage() + " -- original: " + dump);
+            getLogger().severe("The Facebook Json bag is malformed --ex: " + ex.getMessage() + " -- original: " + dump);
             throw new IOException("The Facebook Json bag with the logged user information is malformed! -- ex: " + ex.getMessage() + " -- original: " + dump);
         }
     }
@@ -432,7 +437,7 @@ public class FacebookConnector {
             String encodedPayload = signedRequestParts[1];
             String rawPayload = new String(new Base64(true).decode(encodedPayload.getBytes()));
             JsonObject payload = new JsonParser(rawPayload).getJsonObject();
-            log.fine("Extracted payload: " + payload.toString());
+            getLogger().fine("Extracted payload: " + payload.toString());
 
             if (!ENCRYPTION_ALGORITHM_FACEBOOK_NAME.equals(payload.getString(ATTR_ALGORITHM))) {
                 throw new ServletException("Unexpected encryption algorithm: " + payload.getString(ATTR_ALGORITHM));

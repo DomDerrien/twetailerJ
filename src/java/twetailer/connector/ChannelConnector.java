@@ -6,9 +6,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
-import twetailer.dao.SettingsOperations;
+import twetailer.dao.CacheHandler;
 import twetailer.dto.Consumer;
-import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.api.channel.ChannelFailureException;
 import com.google.appengine.api.channel.ChannelMessage;
@@ -29,7 +28,7 @@ public class ChannelConnector {
 
     protected static String retrieveUniqueChannelId(Consumer consumer) {
         return getUniqueChannelId(consumer);
-        // Temporary hack -> will look-up in memcache first and return null if the user is not connected
+        // Temporary hack -> will look-up in the cache first and return null if the user is not connected
     }
 
     public static String getUserToken(Consumer consumer) {
@@ -39,7 +38,7 @@ public class ChannelConnector {
 
     @SuppressWarnings("unchecked")
     public static void sendMessage(Consumer consumer, JsonObject data) {
-        Map<Long, Long> activeChannels = (Map<Long, Long>) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_IDENTIFIER);
+        Map<Long, Long> activeChannels = (Map<Long, Long>) CacheHandler.getFromCache(MEMCACHE_IDENTIFIER);
         Long expirationDate = activeChannels == null ? null: activeChannels.get(consumer.getKey());
         if (expirationDate != null && DateUtils.getNowCalendar().getTimeInMillis() - 2*60*60*1000 < expirationDate) {
             MockOutputStream buffer = new MockOutputStream();
@@ -62,23 +61,21 @@ public class ChannelConnector {
         }
     }
 
-    public final static String MEMCACHE_IDENTIFIER = "activeChannels";
+    public final static String MEMCACHE_IDENTIFIER = "_jsChannel";
 
     @SuppressWarnings("unchecked")
     public static void register(Consumer consumer) {
-        SettingsOperations ops = BaseSteps.getSettingsOperations();
-        Map<Long, Long> activeChannels = (Map<Long, Long>) ops.getFromCache(MEMCACHE_IDENTIFIER);
+        Map<Long, Long> activeChannels = (Map<Long, Long>) CacheHandler.getFromCache(MEMCACHE_IDENTIFIER);
         if (activeChannels == null) {
             activeChannels = new HashMap<Long, Long>();
-            ops.setInCache(MEMCACHE_IDENTIFIER, activeChannels);
         }
         activeChannels.put(consumer.getKey(), DateUtils.getNowCalendar().getTimeInMillis());
-        ops.setInCache(MEMCACHE_IDENTIFIER, activeChannels);
+        CacheHandler.setInCache(MEMCACHE_IDENTIFIER, activeChannels);
     }
 
     @SuppressWarnings("unchecked")
     public static void unregister(Consumer consumer) {
-        Map<Long, Long> activeChannels = (Map<Long, Long>) BaseSteps.getSettingsOperations().getFromCache(MEMCACHE_IDENTIFIER);
+        Map<Long, Long> activeChannels = (Map<Long, Long>) CacheHandler.getFromCache(MEMCACHE_IDENTIFIER);
         if (activeChannels != null) {
             activeChannels.remove(consumer.getKey());
         }

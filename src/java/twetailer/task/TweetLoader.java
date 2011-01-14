@@ -37,9 +37,13 @@ public class TweetLoader {
 
     private static Logger log = Logger.getLogger(TweetLoader.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -101,13 +105,13 @@ public class TweetLoader {
             DirectMessage dm = messages.get(idx);
             long dmId = dm.getId();
             String message = dm.getText();
-            log.warning("DM id: " + dmId + " -- DM content: " + message);
+            getLogger().warning("DM id: " + dmId + " -- DM content: " + message);
 
             // Get Twetailer account
             twitter4j.User sender = dm.getSender();
             Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, sender); // Creation only occurs if the corresponding Consumer instance is not retrieved
 
-            log.warning("DM emitter: " + consumer.getTwitterId());
+            getLogger().warning("DM emitter: " + consumer.getTwitterId());
             RawCommand rawCommand = new RawCommand(Source.twitter);
             rawCommand.setCommandId(String.valueOf(dm.getId()));
             rawCommand.setEmitterId(consumer.getTwitterId());

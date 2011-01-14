@@ -166,6 +166,13 @@ public class Seed implements TransferObject {
     }
 
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         if (in.containsKey(CITY)) { setCity(in.getString(CITY)); }
         if (in.containsKey(COUNTRY)) { setCountry(in.getString(COUNTRY)); }
         if (in.containsKey(KEY)) { setKey(in.getString(KEY)); }

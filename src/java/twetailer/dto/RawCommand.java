@@ -11,8 +11,6 @@ import twetailer.task.TweetLoader;
 
 import com.google.appengine.api.datastore.Text;
 
-import domderrien.i18n.DateUtils;
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -177,16 +175,18 @@ public class RawCommand extends Entity {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false);
+        return fromJson(in, false, false);
     }
 
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin) {
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+
         if (!isUserAdmin) {
             // No external update allowed
             return this;
         }
 
-        super.fromJson(in);
+        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(COMMAND)) { setCommand(in.getString(COMMAND)); }
         if (in.containsKey(COMMAND_ID)) { setCommandId(in.getString(COMMAND_ID)); }

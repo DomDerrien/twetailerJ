@@ -55,9 +55,13 @@ public class ProposalProcessor {
 
     private static Logger log = Logger.getLogger(ProposalProcessor.class.getName());
 
-    // Setter for injection of a MockLogger at test time
-    protected static void setLogger(Logger mock) {
-        log = mock;
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -161,10 +165,10 @@ public class ProposalProcessor {
                 }
             }
             catch (InvalidIdentifierException ex) {
-                log.warning("Cannot get information related to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());
+                getLogger().warning("Cannot get information related to proposal: " + proposal.getKey() + " -- ex: " + ex.getMessage());
             }
             catch (ClientException ex) {
-                log.warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
+                getLogger().warning("Cannot communicate with sale associate -- ex: " + ex.getMessage());
             }
         }
     }

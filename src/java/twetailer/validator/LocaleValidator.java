@@ -265,17 +265,88 @@ public class LocaleValidator {
 
     public static final String DEFAULT_COUNTRY_CODE = Locale.CANADA.getCountry();
 
+    public static final String DEFAULT_POSTAL_CODE_CA = "H0H0H0";
+    public static final String DEFAULT_POSTAL_CODE_US = "00000";
+    public static final String DEFAULT_POSTAL_CODE_ALT_US = "00000-0000";
     /**
      * Clean-up the postal code format
      *
      * @param postalCode user input
+     * @param countryCode used to guess which regular postal code format to apply
      * @return format for the back-end storage
      */
-    public static String standardizePostalCode(String postalCode) {
-        //
-        // FIXME: Be sure that the given postal is in upper case for the country's locale?
-        //
-        return postalCode.replaceAll("\\s", "").replaceAll("\\-", "").toUpperCase();
+    public static String standardizePostalCode(String postalCode, String countryCode) {
+        postalCode = postalCode.replaceAll("\\s", "").toUpperCase();
+        if (Locale.CANADA.getCountry().equalsIgnoreCase(countryCode)) {
+            postalCode = postalCode.replaceAll("\\-", "");
+            int size = postalCode.length();
+            if (size != 6) {
+                return DEFAULT_POSTAL_CODE_CA;
+            }
+            char letter1 = postalCode.charAt(0);
+            char letter2 = postalCode.charAt(1);
+            char letter3 = postalCode.charAt(2);
+            char letter4 = postalCode.charAt(3);
+            char letter5 = postalCode.charAt(4);
+            char letter6 = postalCode.charAt(5);
+            if (letter1 < 'A' || 'Z' < letter1 ||
+                letter2 < '0' || '9' < letter2 ||
+                letter3 < 'A' || 'Z' < letter3 ||
+                letter4 < '0' || '9' < letter4 ||
+                letter5 < 'A' || 'Z' < letter5 ||
+                letter6 < '0' || '9' < letter6
+            ) {
+                return DEFAULT_POSTAL_CODE_CA;
+            }
+            return postalCode;
+        }
+        else if (Locale.US.getCountry().equalsIgnoreCase(countryCode)) {
+            int size = postalCode.length();
+            while(0 < size && postalCode.charAt(size - 1) == '-') {
+                postalCode = postalCode.substring(0, size -1);
+                size --;
+            }
+            if (size != 5 && size != 10) {
+                if (5 < size) {
+                    return DEFAULT_POSTAL_CODE_ALT_US;
+                }
+                return DEFAULT_POSTAL_CODE_US;
+            }
+            char letter1 = postalCode.charAt(0);
+            char letter2 = postalCode.charAt(1);
+            char letter3 = postalCode.charAt(2);
+            char letter4 = postalCode.charAt(3);
+            char letter5 = postalCode.charAt(4);
+            if (letter1 < '0' || '9' < letter1 ||
+                letter2 < '0' || '9' < letter2 ||
+                letter3 < '0' || '9' < letter3 ||
+                letter4 < '0' || '9' < letter4 ||
+                letter5 < '0' || '9' < letter5
+            ) {
+                if (size == 10) {
+                    char letter6 = postalCode.charAt(5);
+                    char letter7 = postalCode.charAt(6);
+                    char letter8 = postalCode.charAt(7);
+                    char letter9 = postalCode.charAt(8);
+                    char letterA = postalCode.charAt(9);
+                    if (letter6 != '-' ||
+                        letter7 < '0' || '9' < letter7 ||
+                        letter8 < '0' || '9' < letter8 ||
+                        letter9 < '0' || '9' < letter9 ||
+                        letterA < '0' || '9' < letterA
+                    ) {
+                        return DEFAULT_POSTAL_CODE_ALT_US;
+                    }
+                }
+                return DEFAULT_POSTAL_CODE_US;
+            }
+            return postalCode;
+        }
+        char letter1 = postalCode.charAt(0);
+        if (letter1 < 'A' || 'Z' < letter1) {
+            postalCode = postalCode.replaceAll("\\-", "");
+        }
+        return postalCode;
     }
 
     /**

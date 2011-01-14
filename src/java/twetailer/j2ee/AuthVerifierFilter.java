@@ -31,7 +31,17 @@ import domderrien.jsontools.JsonObject;
  * @author Dom Derrien
  */
 public class AuthVerifierFilter implements Filter {
+
     private static Logger log = Logger.getLogger(AuthVerifierFilter.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     @Override
     public void init(FilterConfig config) throws ServletException {
@@ -68,7 +78,7 @@ public class AuthVerifierFilter implements Filter {
                     ((HttpServletResponse) response).sendRedirect(httpRequest.getRequestURL().toString());
                 }
                 else {
-                    log.warning("The Facebook user refused to give credentials to ASE.com -- reason: " + produced.toString());
+                    getLogger().warning("The Facebook user refused to give credentials to ASE.com -- reason: " + produced.toString());
 
                     // Redirect to get a new token
                     String facebookAuthVerifURL = FacebookConnector.bootstrapAuthUrl(httpRequest) + URLEncoder.encode(httpRequest.getRequestURL().toString(), StringUtils.JAVA_UTF8_CHARSET);
@@ -80,7 +90,7 @@ public class AuthVerifierFilter implements Filter {
             }
         }
         catch (IOException ex) {
-            log.severe("Unexpected exception while processing the request -- ex: " + ex.getMessage() + "\n" + dumpRequest(httpRequest));
+            getLogger().severe("Unexpected exception while processing the request -- ex: " + ex.getMessage() + "\n" + dumpRequest(httpRequest));
             throw ex;
         }
     }

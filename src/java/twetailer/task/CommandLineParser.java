@@ -92,7 +92,18 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.dueDate, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.expiration, dateTimePattern, separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.help, "", ""); // Given keywords considered as tags
-            preparePattern(prefixes, patterns, Prefix.locale, "[\\w- ]+(?:ca|us)", separatorFromNonAlpha);
+
+            preparePattern(
+                    prefixes,
+                    patterns,
+                    Prefix.locale,
+                    // Any sequence of characters and spaces and dashes before the country code 'CA'
+                    // Or any sequence of digits and spaces and dashes before the country code 'US'
+                    // Or any sequence of contiguous characters
+                    "\\s*(?:(?:[\\w,\\s,\\-]+ca)|(?:[\\d,\\s,\\-]+us)|(?:[\\w,\\-]+))",
+                    separatorFromNonAlpha
+            );
+
             // FIXME: use DecimalFormatSymbols.getInstance(locale).getCurrencySymbol() in the following expression
             preparePattern(prefixes, patterns, Prefix.metadata, "\\s*\\{[\\s\\'\\\"\\w\\:\\,\\-\\+\\.]*\\}\\s*", "");
             preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
@@ -627,29 +638,46 @@ public class CommandLineParser {
      * @return valid country cod
      */
     private static String getCountryCode(String pattern) {
-        int indexSpace = pattern.lastIndexOf(' ');
-        if (indexSpace != -1) {
-            return LocaleValidator.checkCountryCode(pattern.substring(indexSpace + 1));
+        // Extract the value
+        int endOfPrefix = pattern.indexOf(PREFIX_SEPARATOR) + 1;
+        pattern = pattern.substring(endOfPrefix).trim();
+        // Look for the country code
+        String countryCodePlaceHolder = 1 < pattern.length() ? pattern.substring(pattern.length() - 2).toUpperCase() : "";
+        if (countryCodePlaceHolder.equals(Locale.CANADA.getCountry())) {
+            return Locale.CANADA.getCountry();
         }
-        int indexDash = pattern.lastIndexOf('-');
-        if (indexDash != -1) {
-            return LocaleValidator.checkCountryCode(pattern.substring(indexDash + 1));
+        if (countryCodePlaceHolder.equals(Locale.US.getCountry())) {
+            return Locale.US.getCountry();
         }
-        return LocaleValidator.DEFAULT_COUNTRY_CODE;
+        // Guess the country code from the postal code string
+        char firstLetter = pattern.charAt(0);
+        if ('0' <= firstLetter && firstLetter <= '9') {
+            return Locale.US.getCountry();
+        }
+        if ('A' <= firstLetter && firstLetter <= 'Z' || 'a' <= firstLetter && firstLetter <= 'z') {
+            return Locale.CANADA.getCountry();
+        }
+        // Return the default postal code
+        return LocaleValidator.DEFAULT_COUNTRY_CODE; // Which is CA (Canada)
     }
 
     /**
      * Helper extracting postal code
      *
      * @param pattern Parameters extracted by a regular expression
+     * @param pattern Country code, used to validate the postal code
      * @return valid postal code
      */
     private static String getPostalCode(String pattern, String countryCode) {
-        String postalCode = pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1, pattern.length() - countryCode.length()).replaceAll("\\s", "");
-        if (postalCode.charAt(postalCode.length() - 1) == '-') {
-            return LocaleValidator.standardizePostalCode(postalCode.substring(0, postalCode.length() - 1));
+        // Extract the value
+        int endOfPrefix = pattern.indexOf(PREFIX_SEPARATOR) + 1;
+        pattern = pattern.substring(endOfPrefix);
+        // Remove the country code if present
+        if (pattern.toUpperCase().indexOf(countryCode) == pattern.length() - 2) {
+            pattern = pattern.substring(0, pattern.length() - 2).trim();
         }
-        return LocaleValidator.standardizePostalCode(postalCode);
+        // Process the postal code
+        return LocaleValidator.standardizePostalCode(pattern, countryCode);
     }
 
     /**

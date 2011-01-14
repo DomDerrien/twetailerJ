@@ -44,18 +44,23 @@ import com.google.appengine.api.taskqueue.TaskOptions.Method;
  */
 @SuppressWarnings("serial")
 public class TwitterMailNotificationHandlerServlet extends HttpServlet {
+
     private static Logger log = Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName());
+
+    /** Just made available for test purposes */
+    protected static void setLogger(Logger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     public static final String TWITTER_NOTIFICATION_SUBJECT_SUFFIX = " is now following you on Twitter!";
     public static final String TWITTER_INTRODUCTION_MESSAGE_RATTERN = "\\(([a-zA-Z0-9_]+)\\) is now following your tweets on Twitter";
 
     private static int lengthSubjectSuffix = TWITTER_NOTIFICATION_SUBJECT_SUFFIX.length();
     private static Pattern introductionPattern = Pattern.compile(TWITTER_INTRODUCTION_MESSAGE_RATTERN, Pattern.MULTILINE );
-
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
-        log = mockLogger;
-    }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -82,17 +87,17 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
             boolean isAFollowingNotification = false;
             String subject = mailMessage.getSubject();
             String body = MailConnector.getText(mailMessage);
-            log.warning("Message from: " + mailMessage.getFrom()[0] + " -- subject: " + subject + " -- content: " + body);
+            getLogger().warning("Message from: " + mailMessage.getFrom()[0] + " -- subject: " + subject + " -- content: " + body);
 
             String followerName = "unknown";
             if (subject != null && subject.trim().endsWith(TWITTER_NOTIFICATION_SUBJECT_SUFFIX)) {
                 followerName = subject.substring(0, subject.length() - lengthSubjectSuffix).trim();
-                log.warning("Follower name: " + followerName);
+                getLogger().warning("Follower name: " + followerName);
                 Matcher matcher = introductionPattern.matcher(body);
                 if (matcher.find()) { // Runs the matcher once
                     isAFollowingNotification = true;
                     String followerScreenName = matcher.group(1).trim();
-                    log.warning("Follower screen name: " + followerScreenName);
+                    getLogger().warning("Follower screen name: " + followerScreenName);
                     PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
                     try {
                         try {
@@ -103,15 +108,15 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                             // TODO: call getConsumerKeys()
                             List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.TWITTER_ID, followerScreenName, 1);
                             if (consumers.size() == 0) {
-                                log.warning("Follower account to be created");
+                                getLogger().warning("Follower account to be created");
                                 Consumer consumer = new Consumer();
                                 consumer.setName(followerName);
                                 consumer.setTwitterId(followerScreenName);
                                 consumer = BaseSteps.getConsumerOperations().createConsumer(pm, consumer);
-                                log.warning("Consumer account created for the new Twitter follower: " + followerScreenName);
+                                getLogger().warning("Consumer account created for the new Twitter follower: " + followerScreenName);
                             }
                             else {
-                                log.warning("Follower account id: " + consumers.get(0).getKey());
+                                getLogger().warning("Follower account id: " + consumers.get(0).getKey());
                             }
                         }
                         finally {

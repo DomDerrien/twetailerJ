@@ -53,7 +53,13 @@ public class Wish extends Request {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
-        super.fromJson(in);
+        return fromJson(in, false, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+        super.fromJson(in, isUserAdmin, isCacheRelated);
+
         return this;
     }
 }

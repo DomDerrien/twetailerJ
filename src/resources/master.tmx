@@ -187,7 +187,7 @@
                 Regular expression used to determine a valid Canadian postal code
             </note>
             <tuv xml:lang="en">
-                <seg>[a-z,A-Z][0-9][a-z,A-Z] *[0-9][a-z,A-Z][0-9]</seg>
+                <seg>[a-z,A-Z][0-9][a-z,A-Z]\\s*[0-9][a-z,A-Z][0-9]</seg>
             </tuv>
         </tu>
 
@@ -200,7 +200,7 @@
                 Regular expression used to determine a valid US zipcode
             </note>
             <tuv xml:lang="en">
-                <seg>[0-9][0-9][0-9][0-9][0-9]</seg>
+                <seg>[0-9][0-9][0-9][0-9][0-9](?:-[0-9][0-9][0-9][0-9])?</seg>
             </tuv>
         </tu>
 
@@ -1578,6 +1578,18 @@
             <note/>
             <tuv xml:lang="en">
                 <seg>:-( Please verify the Store number and try again.</seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="cp_command_list_invalid_location" datatype="Text">
+            <prop type="x-version">2</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                {0}: postal code format
+                {1}: detected country code
+            </note>
+            <tuv xml:lang="en">
+                <seg>:-( Please verify the Location (format: {0} {1}) and try again.</seg>
             </tuv>
         </tu>
 

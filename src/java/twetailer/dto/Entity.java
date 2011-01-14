@@ -1,6 +1,8 @@
 package twetailer.dto;
 
+import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -135,6 +137,9 @@ public class Entity implements TransferObject {
     }
 
     public Date getModificationDate() {
+        if (modificationDate == null) {
+            return creationDate;
+        }
         return modificationDate;
     }
 
@@ -169,13 +174,42 @@ public class Entity implements TransferObject {
 
     @Override
     public TransferObject fromJson(JsonObject in) {
+        return fromJson(in, false, false);
+    }
+
+    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        isUserAdmin = isUserAdmin || isCacheRelated;
+
         if (in.containsKey(KEY)) {
             setKey(in.getLong(KEY));
         }
-        // if (in.containsKey(CREATION_DATE)) { ... } // Cannot be set manually
+        if (isCacheRelated && in.containsKey(CREATION_DATE)) {
+            try {
+                Date creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
+                setCreationDate(creationDate);
+            }
+            catch (ParseException ex) {
+                Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(CREATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
+                setCreationDate(null);
+            }
+        }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
-        // if (in.containsKey(MARKED_FOR_DELETION)) { ... } // Cannot be set manually
+        if (isCacheRelated && in.containsKey(MARKED_FOR_DELETION)) { setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION)); }
         updateModificationDate();
+        if (isCacheRelated && in.containsKey(MODIFICATION_DATE)) {
+            try {
+                Date modificationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
+                setModificationDate(modificationDate);
+            }
+            catch (ParseException ex) {
+                Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(CREATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
+                updateModificationDate();
+            }
+        }
+        else {
+            updateModificationDate();
+        }
+
         return this;
     }
 }

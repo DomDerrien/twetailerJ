@@ -126,10 +126,11 @@ public class ConsumerRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
+    /**** Dom: refactoring limit
+     * @throws DataSourceException ***/
 
     @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException {
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException, DataSourceException {
         if (isUserAdmin) {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
@@ -152,10 +153,11 @@ public class ConsumerRestlet extends BaseRestlet {
      * @return Serialized list of the Consumer instances matching the given criteria
 
      * @throws InvalidIdentifierException If the query to the back-end fails
+     * @throws DataSourceException If the data update fails
      *
      * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
      */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long consumerKey) throws InvalidIdentifierException{
+    protected void delegateResourceDeletion(PersistenceManager pm, Long consumerKey) throws InvalidIdentifierException, DataSourceException {
         // Delete the consumer account
         Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey);
         BaseSteps.getConsumerOperations().deleteConsumer(pm, consumer);

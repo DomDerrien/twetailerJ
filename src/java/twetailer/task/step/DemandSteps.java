@@ -570,7 +570,7 @@ public class DemandSteps extends BaseSteps {
             // TODO: to evaluate: DUE_DATE/EXPIRATION_DATE, RANGE reduction
 
             // Integrate updates
-            demand.fromJson(parameters, isUserAdmin);
+            demand.fromJson(parameters, isUserAdmin, false);
 
             // Prepare as a new Demand
             demand.setState(State.opened); // Will force the re-validation of the entire demand

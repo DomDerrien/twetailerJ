@@ -110,7 +110,7 @@ public class TestLocationRestlet {
         assertEquals(0, response.size());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test(expected=ReservedOperationException.class)
     public void testUpdateResource() throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
         ops.updateResource(new GenericJsonObject(), "resourceId", user, false);
     }

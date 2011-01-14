@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -34,11 +35,14 @@ public class TestPaymentOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
+        CacheHandler.injectCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
+        CacheHandler.injectCacheFactory(null);
+        CacheHandler.injectCache(null);
     }
 
     @Test(expected=RuntimeException.class)
