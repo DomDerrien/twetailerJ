@@ -1,6 +1,7 @@
 package twetailer.j2ee;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import twetailer.ClientException;
+import twetailer.DataSourceException;
 import twetailer.ReservedOperationException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
@@ -103,6 +106,13 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 bounds.put("top", searchBounds[3]);
                 out.put("bounds", bounds);
             }
+            else if (DEMAND_PREFIX.equals(pathInfo)) {
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName(), request);
+
+                if (in.containsKey("callback")) {
+                    createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
+                }
+            }
             else {
                 response.setStatus(404); // Not Found
                 out.put("success", false);
@@ -122,7 +132,18 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             pm.close();
         }
 
-        out.toStream(response.getOutputStream(), false);
+        if (in != null && in.containsKey("callback")) {
+            String callbackName = in.getString("callback");
+            getLogger().warning("3rd party for JSONP to: " + callbackName + "(" + out.toString() + ")");
+            OutputStream stream = response.getOutputStream();
+            stream.write(callbackName.getBytes());
+            stream.write("(".getBytes());
+            out.toStream(stream, false);
+            stream.write(")".getBytes());
+        }
+        else {
+            out.toStream(response.getOutputStream(), false);
+        }
     }
 
     @Override
@@ -142,22 +163,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             if (DEMAND_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.demand, Demand.class.getName(), request);
 
-                String email = in.getString(Consumer.EMAIL);
-                if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
-                    throw new IllegalArgumentException("Invalid sender email address");
-                }
-                InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
-                Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
-                if (consumer.getAutomaticLocaleUpdate()) {
-                    String language = in.getString(Consumer.LANGUAGE);
-                    if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
-                        consumer.setLanguage(language);
-                        BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
-                    }
-                }
-
-                in.put(Demand.SOURCE, Source.widget.toString());
-                DemandSteps.createDemand(pm, in, consumer);
+                createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
             else {
                 response.setStatus(404); // Not Found
@@ -216,5 +222,38 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         else {
             getLogger().warning("Valid referralId: " + referralId);
         }
+    }
+
+    /**
+     * Helper verifying the given e-mail address, creating or retrieving the corresponding Consumer
+     * record, and creating the specified Demand. The success of the operation pushes a copy of the
+     * just created record back to the caller. It doesn't mean that the Demand is valid--the validation
+     * will be done asynchronously by the task DemandValidator.
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param in Request parameters
+     * @param out Bag to be sent back to the user, if everything is successful
+     *
+     * @throws DataSourceException If the Consumer record manipulation fails
+     * @throws ClientException If the Demand record creation fails
+     */
+    protected static void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+        String email = in.getString(Consumer.EMAIL);
+        if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
+            throw new IllegalArgumentException("Invalid sender email address");
+        }
+        InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
+        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
+        if (consumer.getAutomaticLocaleUpdate()) {
+            String language = in.getString(Consumer.LANGUAGE);
+            if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
+                consumer.setLanguage(language);
+                BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
+            }
+        }
+
+        in.put(Demand.SOURCE, Source.widget.toString());
+        Demand demand = DemandSteps.createDemand(pm, in, consumer);
+        out.put("resource", demand.toJson());
     }
 }
