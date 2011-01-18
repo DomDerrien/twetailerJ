@@ -108,15 +108,19 @@ public class BaseConnector {
         // Then the caller will have to rely decide which subject to send, in the user's locale and with possibly arguments related to the order
         //
 
-        // TODO: implement the fall back mechanism
         String userId =
             Source.twitter.equals(source) ? consumer.getTwitterId() :
                 Source.jabber.equals(source) ? consumer.getJabberId() :
                     Source.mail.equals(source) ? consumer.getEmail() :
-                        Source.facebook.equals(source) ? consumer.getEmail() : // FIXME: replace by getFacebookId() when Facebook connector is OK
+                        Source.facebook.equals(source) ? consumer.getEmail() : // consumer.getFacebookId() :
                             Source.widget.equals(source) ? consumer.getEmail() :
                                 null;
         String userName = consumer.getName();
+        if (userId == null && !Source.simulated.equals(source)) {
+            // Fall back mechanism
+            source = Source.mail;
+            userId = consumer.getEmail();
+        }
         if (userId != null || Source.simulated.equals(source)) {
             communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
             MailConnector.sendCopyToAdmins(source, consumer, subject, messages);
@@ -234,7 +238,7 @@ public class BaseConnector {
      *
      * @param message Message to process
      * @param limit Size of part length not to exceed
-     * @return Array of message parts extracted as suggested, or splitted because the initial parts were too long
+     * @return Array of message parts extracted as suggested, or split because the initial parts were too long
      */
     protected static List<String> checkMessageLength(String message, int limit) {
         if (limit < MINIMAL_MESSAGE_LENGTH) {
@@ -251,7 +255,7 @@ public class BaseConnector {
             // Initial conditions
             int separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
             while(separatorIdx != -1) {
-                if (separatorIdx == 0 || separatorIdx - 1 == message.length() || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
+                if (separatorIdx == 0 || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
                     break;
                 }
                 // Find the next non-escaped separator
@@ -272,7 +276,7 @@ public class BaseConnector {
                 message = message.substring(head.length() + (separatorIdx == -1 ? 0 : 1));
                 separatorIdx = message.indexOf(SUGGESTED_MESSAGE_SEPARATOR);
                 while(separatorIdx != -1) {
-                    if (separatorIdx == 0 || separatorIdx - 1 == message.length() || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
+                    if (separatorIdx == 0 || message.charAt(separatorIdx - 1) != ESCAPED_MESSAGE_SEPARATOR) {
                         break;
                     }
                     // Find the next non-escaped separator
@@ -313,7 +317,7 @@ public class BaseConnector {
             else if (thisC == ESCAPED_MESSAGE_SEPARATOR) {
                 if (nextC == SUGGESTED_MESSAGE_SEPARATOR) {
                     ++ idx;
-                    nextC = idx == limit -1 ? 0 : command.charAt(idx + 1);
+                    nextC = idx == limit - 1 ? 0 : command.charAt(idx + 1);
                     temp.append('%').append('7').append('C');
                 }
                 else {

@@ -68,8 +68,7 @@ public class MailConnector {
      */
     public static MimeMessage getMailMessage(HttpServletRequest request) throws IOException, MessagingException {
         // Extract the incoming message
-        Properties properties = new Properties();
-        Session session = Session.getDefaultInstance(properties, null);
+        Session session = Session.getDefaultInstance(new Properties(), null);
         MimeMessage mailMessage = new MimeMessage(session, request.getInputStream());
         return mailMessage;
     }
@@ -174,8 +173,7 @@ public class MailConnector {
     public static void sendMailMessage(boolean useCcAccount, String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
         InternetAddress recipient = new InternetAddress(receiverId, recipientName, StringUtils.JAVA_UTF8_CHARSET);
 
-        Properties properties = new Properties();
-        Session session = Session.getDefaultInstance(properties, null);
+        Session session = Session.getDefaultInstance(new Properties(), null);
 
         MimeMessage mailMessage = new MimeMessage(session);
         mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
@@ -347,19 +345,17 @@ public class MailConnector {
             throw new MessagingException("Done in purpose!");
         }
 
-        Properties properties = new Properties();
-        Session session = Session.getDefaultInstance(properties, null);
+        Session session = Session.getDefaultInstance(new Properties(), null);
 
         MimeMessage messageToForward = new MimeMessage(session);
-        try {
-            messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain(), "ASE admin notifier"));
-        }
-        catch (UnsupportedEncodingException ex) {
-            getLogger().warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
-            messageToForward.setFrom(new InternetAddress("admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()));
-        }
+        messageToForward.setFrom(
+            prepareInternetAddress(
+                StringUtils.JAVA_UTF8_CHARSET,
+                "ASE admin notifier",
+                "admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()
+        ));
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
-        messageToForward.setSubject((from == null ? "" : "Fwd: (" + from + ") ") + subject);
+        messageToForward.setSubject(from == null ? subject : "Fwd: (" + from + ") " + subject);
         setContentAsPlainTextAndHtml(messageToForward, body);
 
         // getLogger().warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
@@ -373,24 +369,33 @@ public class MailConnector {
         "</td></tr>"
     };
 
+    /**
+     * Send the given messages to "administrators" list. It's used to 
+     * track easily all messages sent by the system to any recipient.
+     *
+     * @param source Mechanism used to sent the given messages to the specified consumer
+     * @param consumer Original recipient of the given messages
+     * @param subject Original email subject of the communication to the consumer
+     * @param messages Set of messages sent to the consumer
+     *
+     * @throws CommunicationException If the message sending fails
+     */
     public static void sendCopyToAdmins(Source source, Consumer consumer, String subject, String[] messages) throws CommunicationException {
-        if (foolMessagePost) {
-            foolMessagePost = false;
-            throw new CommunicationException("Done in purpose!");
-        }
-
         try {
-            Properties properties = new Properties();
-            Session session = Session.getDefaultInstance(properties, null);
+            if (foolMessagePost) {
+                foolMessagePost = false;
+                throw new MessagingException("Done in purpose!");
+            }
+
+            Session session = Session.getDefaultInstance(new Properties(), null);
 
             MimeMessage messageToForward = new MimeMessage(session);
-            try {
-                messageToForward.setFrom(new InternetAddress("twetailer@gmail.com", "ASE admin notifier"));
-            }
-            catch (UnsupportedEncodingException ex) {
-                getLogger().warning("Cannot encode 'ASE admin notifier' -- ex: " + ex.getMessage());
-                messageToForward.setFrom(new InternetAddress("twetailer@gmail.com"));
-            }
+            messageToForward.setFrom(
+                prepareInternetAddress(
+                    StringUtils.JAVA_UTF8_CHARSET,
+                    "ASE admin notifier",
+                    "admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()
+            ));
             messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
             messageToForward.setSubject("Silent copy");
 
@@ -400,7 +405,7 @@ public class MailConnector {
             body.append(tableParts[0]).append("Subject").append(tableParts[1]).append(subject).append(tableParts[2]);
             body.append(tableParts[0]).append("Date").append(tableParts[1]).append(DateUtils.dateToISO(DateUtils.getNowDate())).append(tableParts[2]);
             body.append(tableParts[0]).append("Message").append(tableParts[1]);
-            for (int idx = 0; idx < messages.length; idx ++) {
+            for (int idx = 0, limit = messages == null ? 0 : messages.length; idx < limit; idx ++) {
                 body.append(messages[idx]);
             }
             body.append(tableParts[2]);
@@ -464,6 +469,9 @@ public class MailConnector {
         int charsetPartIdx = contentType.indexOf("charset");
         if (charsetPartIdx != -1) {
             charset = contentType.substring(contentType.indexOf('=', charsetPartIdx + 1) + 1).trim();
+        }
+        else {
+            charset = "UTF-8";
         }
 
         return new String(out.toByteArray(), charset);

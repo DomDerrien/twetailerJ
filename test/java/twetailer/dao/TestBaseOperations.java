@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.MockQuery;
 import javax.jdo.PersistenceManager;
 
@@ -51,6 +53,7 @@ public class TestBaseOperations {
     @Before
     public void setUp() throws Exception {
         BaseSteps.resetOperationControllers(true);
+        BaseOperations.setLogger(new MockLogger(BaseOperations.class.getName(), null));
         helper.setUp();
     }
 
@@ -63,6 +66,8 @@ public class TestBaseOperations {
     public void testGetPersistenceManagerFactory() throws IOException {
         PersistenceManager pm = new BaseOperations().getPersistenceManager();
         assertNotNull(pm);
+        
+        assertNotNull(BaseOperations.getLogger());
     }
 
     @Test
@@ -468,7 +473,7 @@ public class TestBaseOperations {
             public void setFilter(String arg) {
                 assertNotNull(arg);
                 assertNotSame(0, arg.length());
-                assertTrue(arg.contains("name == nameValue"));
+                assertTrue(arg.contains("name == nameValue")); // Can finish by "0" or "1" as each value reference is indexed
             }
         };
 
@@ -487,7 +492,7 @@ public class TestBaseOperations {
             public void setFilter(String arg) {
                 assertNotNull(arg);
                 assertNotSame(0, arg.length());
-                assertTrue(arg.contains("name != nameValue"));
+                assertTrue(arg.contains("name != nameValue")); // Can finish by "0" or "1" as each value reference is indexed
             }
         };
 
@@ -496,7 +501,7 @@ public class TestBaseOperations {
 
     @Test
     @SuppressWarnings("serial")
-    public void testPrepareQueryWithParameterLessThanValue() throws DataSourceException {
+    public void testPrepareQueryWithParameterLessThanValueI() throws DataSourceException {
         final Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("key", 111L);
         parameters.put("<name", "test");
@@ -506,7 +511,7 @@ public class TestBaseOperations {
             public void setFilter(String arg) {
                 assertNotNull(arg);
                 assertNotSame(0, arg.length());
-                assertTrue(arg.contains("name < nameValue"));
+                assertTrue(arg.contains("name < nameValue")); // Can finish by "0" or "1" as each value reference is indexed
             }
         };
 
@@ -515,7 +520,26 @@ public class TestBaseOperations {
 
     @Test
     @SuppressWarnings("serial")
-    public void testPrepareQueryWithParameterGreaterThanValue() throws DataSourceException {
+    public void testPrepareQueryWithParameterLessThanValueII() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("[name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name <= nameValue")); // Can finish by "0" or "1" as each value reference is indexed
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterGreaterThanValueI() throws DataSourceException {
         final Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("key", 111L);
         parameters.put(">name", "test");
@@ -525,7 +549,45 @@ public class TestBaseOperations {
             public void setFilter(String arg) {
                 assertNotNull(arg);
                 assertNotSame(0, arg.length());
-                assertTrue(arg.contains("name > nameValue"));
+                assertTrue(arg.contains("name > nameValue")); // Can finish by "0" or "1" as each value reference is indexed
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterGreaterThanValueII() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("]name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name >= nameValue")); // Can finish by "0" or "1" as each value reference is indexed
+            }
+        };
+
+        BaseOperations.prepareQuery(query, parameters, 12345);
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPrepareQueryWithParameterStartsWith() throws DataSourceException {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("key", 111L);
+        parameters.put("*name", "test");
+
+        MockQuery query = new MockQuery() {
+            @Override
+            public void setFilter(String arg) {
+                assertNotNull(arg);
+                assertNotSame(0, arg.length());
+                assertTrue(arg.contains("name.startsWith(nameValue")); // Can finish by "0)" or "1)" as each value reference is indexed
             }
         };
 

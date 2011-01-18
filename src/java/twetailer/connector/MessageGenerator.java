@@ -341,14 +341,12 @@ public class MessageGenerator {
      * @return The object instance, ready to be chained to another <code>fetch()</code> call
      */
     public MessageGenerator fetchRequest(Request request, String prefix) {
-        if (request != null) {
-            // Command
-            fetchCommand(request, prefix);
-            // Demand
-            parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(request.getExpirationDate(), userLocale));
-            parameters.put(prefix + Demand.RANGE, request.getRange());
-            parameters.put(prefix + Demand.RANGE_UNIT, request.getRangeUnit());
-        }
+        // Command
+        fetchCommand(request, prefix);
+        // Demand
+        parameters.put(prefix + Demand.EXPIRATION_DATE, serializeDate(request.getExpirationDate(), userLocale));
+        parameters.put(prefix + Demand.RANGE, request.getRange());
+        parameters.put(prefix + Demand.RANGE_UNIT, request.getRangeUnit());
         return this;
     }
 
@@ -370,13 +368,8 @@ public class MessageGenerator {
             parameters.put(prefix + Proposal.CURRENCY_CODE, LabelExtractor.get(ResourceFileId.master, "currencySymbol_" + proposal.getCurrencyCode(), (String) null, userLocale));
             parameters.put(prefix + Proposal.DEMAND_KEY, proposal.getDemandKey());
             parameters.put(prefix + Proposal.PRICE, proposal.getPrice());
-            String score = noScore;
-            switch(proposal.getScore().intValue()) {
-                case 1: score = ":-("; break;
-                case 2: case 3: score = ":-\\|"; break;
-                case 4: case 5: score = ":-)"; break;
-            }
-            parameters.put(prefix + Proposal.SCORE, score);
+            Long score = proposal.getScore();
+            parameters.put(prefix + Proposal.SCORE, score == 0L ? noScore : score == 1 ? ":-(" : score == 2L || score == 3L ? ":-\\|" : ":-)");
             parameters.put(prefix + Proposal.TOTAL, proposal.getTotal());
         }
         return this;
@@ -568,18 +561,17 @@ public class MessageGenerator {
      * @return The identified data
      */
     public Object get(String key) {
-        return parameters.remove(key);
+        return parameters.get(key);
     }
 
     /**
      * Helper to remove individual parameters
      *
      * @param key Identifier of the message to add or override
-     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     * @return value previously associated the key, or null
      */
-    public MessageGenerator remove(String key) {
-        parameters.remove(key);
-        return this;
+    public Object remove(String key) {
+        return parameters.remove(key);
     }
 
     /**

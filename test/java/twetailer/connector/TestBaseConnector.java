@@ -193,6 +193,11 @@ public class TestBaseConnector {
     }
 
     @Test
+    public void testCommunicateToConsumerVIII() throws CommunicationException {
+        BaseConnector.communicateToConsumer(Source.facebook, "", new Consumer() { @Override public String getEmail() { return "unit@test.net"; } }, new String[0]);
+    }
+
+    @Test
     public void testCommunicateManyMessagesI() throws CommunicationException {
         BaseConnector.resetLastCommunicationInSimulatedMode();
         assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
@@ -280,7 +285,7 @@ public class TestBaseConnector {
     public void testCheckMessageLengthIIIb() {
         String part1 = "blah blah blah";
         String part2 = "and more";
-        String message = part1 + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + part2;
+        String message = part1 + "  " + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + part2;
         List<String> output = BaseConnector.checkMessageLength(message, 1000);
         assertNotNull(output);
         assertEquals(4, output.size());
@@ -365,6 +370,52 @@ public class TestBaseConnector {
         assertEquals(2, output.size());
         assertEquals(part1, output.get(0));
         assertEquals(part2, output.get(1));
+    }
+
+    @Test
+    public void testCheckMessageLengthVIIa() {
+        // Verify the trim
+        String part = "blah blah blah";
+        String message = BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + part;
+        List<String> output = BaseConnector.checkMessageLength(message, 1024);
+        assertNotNull(output);
+        assertEquals(2, output.size());
+        assertEquals("", output.get(0));
+        assertEquals(part, output.get(1));
+    }
+
+    @Test
+    public void testCheckMessageLengthVIIb() {
+        // Verify the trim
+        String part = "blah blah blah";
+        String message = part + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR;
+        List<String> output = BaseConnector.checkMessageLength(message, 1024);
+        assertNotNull(output);
+        assertEquals(1, output.size());
+        assertEquals(part, output.get(0));
+    }
+
+    @Test
+    public void testCheckMessageLengthVIIIa() {
+        // Verify the trim
+        String part = "blah blah blah";
+        String message = part + BaseConnector.ESCAPED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR;
+        List<String> output = BaseConnector.checkMessageLength(message, 1024);
+        assertNotNull(output);
+        assertEquals(1, output.size());
+        assertEquals(part + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR, output.get(0));
+    }
+
+    @Test
+    public void testCheckMessageLengthVIIIb() {
+        // Verify the trim
+        String part = "blah blah blah";
+        String message = part + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR + part + BaseConnector.ESCAPED_MESSAGE_SEPARATOR + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR;
+        List<String> output = BaseConnector.checkMessageLength(message, 1024);
+        assertNotNull(output);
+        assertEquals(2, output.size());
+        assertEquals(part, output.get(0));
+        assertEquals(part + BaseConnector.SUGGESTED_MESSAGE_SEPARATOR, output.get(1));
     }
 
     @Test
@@ -517,5 +568,35 @@ public class TestBaseConnector {
         String in = "blah \\| blah|blah \r \n \t  blah";
         assertEquals("blah%20%7C%20blah%7Cblah%20blah", BaseConnector.urlEncodeValue(in, true));
         assertEquals("blah%20%7C%20blah%0Ablah%20blah", BaseConnector.urlEncodeValue(in, false));
+    }
+
+    @Test
+    public void testUrlEncodeValueI() {
+        assertEquals("", BaseConnector.urlEncodeValue("", true));
+    }
+
+    @Test
+    public void testUrlEncodeValueII() {
+        assertEquals("AnotherSoc1alEc0nomy", BaseConnector.urlEncodeValue("AnotherSoc1alEc0nomy", true));
+    }
+
+    @Test
+    public void testUrlEncodeValueIII() {
+        assertEquals("%20another%2ESOCIAL%20%E9%E7%F4%F1%F4m%FF", BaseConnector.urlEncodeValue(" another.SOCIAL éçôñômÿ ", true));
+    }
+
+    @Test
+    public void testUrlEncodeValueIV() {
+        assertEquals("Another%20Social%20Economy", BaseConnector.urlEncodeValue("Another     Social\t\t\r\n\t\t\r\nEconomy", true));
+    }
+
+    @Test
+    public void testUrlEncodeValueV() {
+        assertEquals("%7CAnother%7CSocial%5CEconomy%7C", BaseConnector.prepareMailToSubject("|Another\\|Social\\Economy\\|"));
+    }
+
+    @Test
+    public void testUrlEncodeValueVI() {
+        assertEquals("%0AAnother%7CSocial%5CEconomy%7C", BaseConnector.prepareMailToBody("|Another\\|Social\\Economy\\|"));
     }
 }

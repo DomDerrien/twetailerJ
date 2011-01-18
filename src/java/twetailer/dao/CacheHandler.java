@@ -42,7 +42,7 @@ public class CacheHandler<T extends Entity> {
     }
 
     /// Accessor dealing with the previously retrieved or inject Cache related instances
-    private static Cache getCache() throws CacheException {
+    protected static Cache getCache() throws CacheException {
         if (localCache == null) {
             if (localCacheFactory == null) {
                 localCache = CacheManager.getInstance().getCacheFactory().createCache(Collections.emptyMap());

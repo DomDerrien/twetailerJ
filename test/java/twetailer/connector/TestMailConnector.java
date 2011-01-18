@@ -3,17 +3,20 @@ package twetailer.connector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Properties;
 
+import javamocks.io.MockInputStream;
 import javamocks.util.logging.MockLogger;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.MockServletInputStream;
@@ -26,6 +29,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import twetailer.CommunicationException;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Consumer;
 import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -44,6 +50,7 @@ public class TestMailConnector {
         BaseConnector.setLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
         emailDomain = ApplicationSettings.get().getProductEmailDomain();
+        MailConnector.setLogger(new MockLogger("MailConnector", null));
     }
 
     @Before
@@ -59,6 +66,11 @@ public class TestMailConnector {
     @Test
     public void testConstructor() {
         new MailConnector();
+    }
+
+    @Test
+    public void testGetLogger() {
+        MailConnector.getLogger();
     }
 
     public static MockServletInputStream prepareEmptyStream(String from, String name) {
@@ -922,5 +934,119 @@ public class TestMailConnector {
         assertEquals("Katelyn", ((InternetAddress) mailMessage.getFrom()[0]).getPersonal());
         assertEquals("confirmer proposition:690001 \n--\nCette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.\n\n*** Dom ****\nSystem responds with ... from this Mac Mail\n\n:-( The System encountered an unexpected error! You can resend your message, or, report incident identifier: 323-0.", MailConnector.alternateGetText(mailMessage));
         assertEquals(0, stream.getNotProcessedContents().length());
+    }
+
+    @Test(expected=MessagingException.class)
+    public void testReportErrorToAdminsI() throws MessagingException {
+        MailConnector.foolNextMessagePost();
+        MailConnector.reportErrorToAdmins("fooled attempt", "fooled attempt");
+    }
+
+    @Test
+    public void testReportErrorToAdminsII() throws MessagingException {
+        MailConnector.reportErrorToAdmins("subject", "body");
+    }
+
+    @Test
+    public void testReportErrorToAdminsIII() throws MessagingException {
+        MailConnector.reportErrorToAdmins("test@unit.org", "subject", "body");
+    }
+
+    @Test(expected=CommunicationException.class)
+    public void testSendCopyToAdminsI() throws CommunicationException {
+        MailConnector.foolNextMessagePost();
+        MailConnector.sendCopyToAdmins(Source.mail, new Consumer(), "fooled message", null);
+    }
+
+    @Test
+    public void testSendCopyToAdminsII() throws CommunicationException {
+        MailConnector.sendCopyToAdmins(Source.mail, new Consumer(), "fooled message", null);
+    }
+
+    @Test
+    public void testSendCopyToAdminsIII() throws CommunicationException {
+        MailConnector.sendCopyToAdmins(Source.mail, new Consumer(), "fooled message", new String[0]);
+    }
+
+    @Test
+    public void testSendCopyToAdminsIV() throws CommunicationException {
+        MailConnector.sendCopyToAdmins(Source.mail, new Consumer(), "fooled message", new String[] { "one", "two", "three" });
+    }
+
+    @Test
+    public void testAlternateGetTextI() throws MessagingException, IOException {
+        Session session =  Session.getDefaultInstance(new Properties(), null);
+        assertNull(MailConnector.alternateGetText(new MimeMessage(session) {
+            @Override
+            public InputStream getRawInputStream() {
+                return null;
+            }
+        }));
+    }
+
+    private static String reference = "confirmer proposition:690001 \n--\nCette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.";
+
+    @Test
+    public void testAlternateGetTextII() throws MessagingException, IOException {
+        Session session =  Session.getDefaultInstance(new Properties(), null);
+        String content = MailConnector.alternateGetText(new MimeMessage(session) {
+            @Override
+            public InputStream getRawInputStream() {
+                return new MockInputStream(
+                    "confirmer proposition:690001=20=0A--=0A=\n" +
+                    "Cette commande va =C3=AAtre trait=C3=A9e automatiquement par le moteur de =\n" +
+                    "AnotherSocialEconomy.com.="
+                );
+            }
+            @Override
+            public String getContentType() {
+                return "text/plain"; // charset will be defaulted on UTF-8
+            }
+        });
+        assertNotNull(content);
+        assertEquals(reference, content);
+    }
+
+    @Test
+    public void testAlternateGetTextIII() throws MessagingException, IOException {
+        Session session =  Session.getDefaultInstance(new Properties(), null);
+        String content = MailConnector.alternateGetText(new MimeMessage(session) {
+            @Override
+            public InputStream getRawInputStream() {
+                return new MockInputStream(
+                    "confirmer proposition:690001=20=0A--=0A=\r\n" +
+                    "Cette commande va =EAtre trait=E9e automatiquement par le moteur de =\r\n" +
+                    "AnotherSocialEconomy.com.="
+                );
+            }
+            @Override
+            public String getContentType() {
+                return "text/plain; charset=iso-8859-1";
+            }
+        });
+        assertNotNull(content);
+        assertEquals(reference, content);
+    }
+
+    @Test
+    public void testAlternateGetTextIV() throws MessagingException, IOException {
+        Session session =  Session.getDefaultInstance(new Properties(), null);
+        String content = MailConnector.alternateGetText(new MimeMessage(session) {
+            @Override
+            public InputStream getRawInputStream() {
+                return new MockInputStream(
+                    "confirmer proposition:690001=20\n" +
+                    "--\n" +
+                    "Cette commande va =EAtre trait=E9e automatiquement par le moteur de =\n" +
+                    "AnotherSocialEconomy.com.="
+                );
+            }
+            @Override
+            public String getContentType() {
+                return "text/plain; charset=iso-8859-1";
+            }
+        });
+        assertNotNull(content);
+        assertEquals(reference, content);
     }
 }

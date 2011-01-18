@@ -87,7 +87,7 @@ public class FacebookConnector {
             "&redirect_uri=";
     }
 
-    public static String getAppUrl(HttpServletRequest request) throws UnsupportedEncodingException {
+    public static String getAppUrl(HttpServletRequest request) {
         inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
         inVirtualBox = "10.0.2.2".equals(request.getServerName());
         return inLocalHost ? FB_LCLHOST_APP_URL : inVirtualBox ? FB_VRTBOX_APP_URL : FB_ASE_APP_URL;
@@ -323,6 +323,11 @@ public class FacebookConnector {
 
     private static URLFetchService urlFS;
 
+    /// For unit test purposes
+    protected static void injectURLFetchService(URLFetchService urlFS) {
+        FacebookConnector.urlFS = urlFS;
+    }
+
     /**
      * Behavior injector for the unit tests
      *
@@ -430,12 +435,15 @@ public class FacebookConnector {
      */
     public static JsonObject processSignedRequest(HttpServletRequest request) throws ServletException {
         try {
+            inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
+            inVirtualBox = "10.0.2.2".equals(request.getServerName());
+
             String signedRequest = request.getParameter("signed_request");
             String[] signedRequestParts = signedRequest.split("\\.");
             String signature = signedRequestParts[0];
 
             String encodedPayload = signedRequestParts[1];
-            String rawPayload = new String(new Base64(true).decode(encodedPayload.getBytes()));
+            String rawPayload = new String(Base64.decodeBase64(encodedPayload));
             JsonObject payload = new JsonParser(rawPayload).getJsonObject();
             getLogger().fine("Extracted payload: " + payload.toString());
 
@@ -444,18 +452,18 @@ public class FacebookConnector {
             }
 
             try {
-                inLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName());
-                inVirtualBox = "10.0.2.2".equals(request.getServerName());
                 SecretKeySpec secretKeySpec = new SecretKeySpec((inLocalHost ? DEV_LCLHOST_FACEBOOK_APP_SECRET : inVirtualBox ? DEV_VRTBOX_FACEBOOK_APP_SECRET : ASE_FACEBOOK_APP_SECRET).getBytes(), ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 Mac messageAuthenticationCode = Mac.getInstance(ENCRYPTION_ALGORITHM_STANDARD_NAME);
                 messageAuthenticationCode.init(secretKeySpec);
-                if (!Arrays.equals(new Base64(true).decode(signature.getBytes()), messageAuthenticationCode.doFinal(encodedPayload.getBytes()))) {
+                if (!Arrays.equals(Base64.decodeBase64(signature), messageAuthenticationCode.doFinal(encodedPayload.getBytes()))) {
                     throw new ServletException("Non-matching signature for request");
                 }
             }
+            // Note for testers: cannot be thrown by the normal testing & production environment
             catch (NoSuchAlgorithmException ex) {
                 throw new ServletException("Unknown hash algorithm " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
             }
+            // Note for testers: cannot be thrown by the normal testing & production environment
             catch (InvalidKeyException ex) {
                 throw new ServletException("Wrong key for " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
             }
