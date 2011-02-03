@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -39,8 +41,8 @@ public class MailConnector {
 
     private static Logger log = Logger.getLogger(MailConnector.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -53,7 +55,7 @@ public class MailConnector {
     //
     // Common mail properties
     //   mail.transport.protocol: smtp/pop3/imap
-    //   mail.host: appspotmail.com
+    //   mail.host: ApplicationSettings.get().getEmailDomain()
     //   mail.user: anothersocialeconomy
     //   mail.password: ???
     //
@@ -104,7 +106,7 @@ public class MailConnector {
             }
             catch (UnsupportedEncodingException ex) {
                 // Too bad! The recipient will only see the e-mail address
-                Logger.getLogger(MailConnector.class.getName()).warning("Invalid email user name: " + name + " -- message: " + ex.getMessage());
+                getLogger().warning("Invalid email user name: " + name + " -- message: " + ex.getMessage());
 
                 // Note for the testers:
                 //   Don't know how to generate a UnsupportedEncodingException by just
@@ -370,7 +372,7 @@ public class MailConnector {
     };
 
     /**
-     * Send the given messages to "administrators" list. It's used to 
+     * Send the given messages to "administrators" list. It's used to
      * track easily all messages sent by the system to any recipient.
      *
      * @param source Mechanism used to sent the given messages to the specified consumer

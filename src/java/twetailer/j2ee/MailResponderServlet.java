@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
+import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 import javax.mail.Message;
@@ -55,8 +56,8 @@ import domderrien.jsontools.JsonObject;
 public class MailResponderServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MailResponderServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -87,7 +88,7 @@ public class MailResponderServlet extends HttpServlet {
         return responderEndpoints;
     }
 
-    private static final String MESSAGE_ID_LIST = "_mailMessageIds";
+    protected static final String MESSAGE_ID_LIST = "_mailMessageIds";
 
     @SuppressWarnings("unchecked")
     protected static void processMailedRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -113,16 +114,21 @@ public class MailResponderServlet extends HttpServlet {
             String messageId = mailMessage.getMessageID();
             if (messageId != null && 0 < messageId.length()) {
                 List<String> lastMailMessageIds = (List<String>) CacheHandler.getFromCache(MESSAGE_ID_LIST);
-                if (lastMailMessageIds != null && lastMailMessageIds.contains(messageId)) {
-                    getLogger().warning("Email '" + messageId + "' already processed");
-                    return;
+                if (lastMailMessageIds != null) {
+                    if (lastMailMessageIds.contains(messageId)) {
+                        getLogger().warning("Email '" + messageId + "' already processed");
+                        return;
+                    }
                 }
-                if (lastMailMessageIds == null) {
+                else {
                     lastMailMessageIds = new ArrayList<String>();
                 }
                 lastMailMessageIds.add(messageId);
                 CacheHandler.setInCache(MESSAGE_ID_LIST, lastMailMessageIds);
             }
+
+            // Fill up the message to persist
+            rawCommand.setCommandId(messageId);
 
             // Extract information about the sender
             InternetAddress address = (InternetAddress) (mailMessage.getFrom()[0]);
@@ -132,6 +138,10 @@ public class MailResponderServlet extends HttpServlet {
             if (mailMessage.getContentLanguage() != null) {
                 language = LocaleValidator.checkLanguage(mailMessage.getContentLanguage()[0]);
             }
+
+            // Fill up the message to persist
+            rawCommand.setEmitterId(email.toLowerCase());
+            rawCommand.setSubject(subject);
 
             // Extract information about a supported receiver
             InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
@@ -144,24 +154,29 @@ public class MailResponderServlet extends HttpServlet {
             if (to == null) {
                 // Put a tracker here...
                 getLogger().warning("Email '" + messageId + "' not addressed to Twetailer!");
-                return;
+                throw new RuntimeException("Message received without the To: field!");
             }
             StringBuilder ccList = new StringBuilder();
             recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.CC));
-            if (recipients != null && 0 < recipients.length) {
-                // TODO: push this code below to fallback on the consumer locale
-                Locale locale = language == null ? Locale.ENGLISH : new Locale(language);
-                CommandLineParser.loadLocalizedSettings(locale);
-                JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
-                String ccPrefix = prefixes.getJsonArray(Prefix.cc.toString()).getString(0);
-                for (int idx = 0; idx < recipients.length; idx ++) {
-                    String ccAddress = recipients[idx].getAddress();
-                    if (!getResponderEndpoints().contains(ccAddress)) {
-                        ccList.append(Command.SPACE).append(ccPrefix).append(CommandLineParser.PREFIX_SEPARATOR).append(ccAddress);
+            if (recipients != null) {
+                if (0 < recipients.length) {
+                    // TODO: push this code below to fall back on the consumer locale
+                    Locale locale = language == null ? Locale.ENGLISH : new Locale(language);
+                    CommandLineParser.loadLocalizedSettings(locale);
+                    JsonObject prefixes = CommandLineParser.localizedPrefixes.get(locale);
+                    String ccPrefix = prefixes.getJsonArray(Prefix.cc.toString()).getString(0);
+                    for (int idx = 0; idx < recipients.length; idx ++) {
+                        String ccAddress = recipients[idx].getAddress();
+                        if (!getResponderEndpoints().contains(ccAddress)) {
+                            ccList.append(Command.SPACE).append(ccPrefix).append(CommandLineParser.PREFIX_SEPARATOR).append(ccAddress);
+                        }
                     }
+                    command = ccList.insert(0, command).toString();
                 }
-                command = ccList.insert(0, command).toString();
             }
+
+            // Fill up the message to persist
+            rawCommand.setToId(to.toLowerCase());
 
             // Add vertical information
             String toBase = to.substring(0, to.indexOf('@'));
@@ -169,11 +184,6 @@ public class MailResponderServlet extends HttpServlet {
                 command += " #" + HashTag.getSupportedHashTag(toBase); // To change 'eztoff' in 'golf', for example
             }
 
-            // Fill up the message to persist
-            rawCommand.setCommandId(messageId);
-            rawCommand.setEmitterId(email.toLowerCase());
-            rawCommand.setToId(to.toLowerCase());
-            rawCommand.setSubject(subject);
             String messageContent;
             try {
                 messageContent = MailConnector.getText(mailMessage);
@@ -182,6 +192,8 @@ public class MailResponderServlet extends HttpServlet {
                 messageContent = MailConnector.alternateGetText(mailMessage);
             }
             command = extractFirstLine(messageContent) + command;
+
+            // Fill up the message to persist
             rawCommand.setCommand(command);
 
             getLogger().warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
@@ -327,35 +339,33 @@ public class MailResponderServlet extends HttpServlet {
         }
         // Detect the hard line break
         int end = in.indexOf('\n', begin);
+        in += "     "; // Just to be sure the buffer is long enough for the detection of the footer separator
+        int limit = in.length();
         while (true) {
             if (end == -1) {
-                end = in.length();
+                end = limit;
                 break;
             }
-            else if (end == in.length() - 1) {
+            if(in.charAt(end + 1) == '\n') {
                 break;
             }
-            else if (end + 1 < in.length() && in.charAt(end + 1) == '\n') {
+            if(in.charAt(end + 1) == '\r' && in.charAt(end + 2) == '\n') {
                 break;
             }
-            else if (end + 2 < in.length() && in.charAt(end + 1) == '\r' && in.charAt(end + 2) == '\n') {
+            if(in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\n') {
                 break;
             }
-            else if (end + 3 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\n') {
+            if(in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\n') {
                 break;
             }
-            else if (end + 4 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\n') {
+            if(in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\r' && in.charAt(end + 4) == '\n') {
                 break;
             }
-            else if (end + 4 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == '\r' && in.charAt(end + 4) == '\n') {
+            if(in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\r' && in.charAt(end + 5) == '\n') {
                 break;
             }
-            else if (end + 5 < in.length() && in.charAt(end + 1) == '-' && in.charAt(end + 2) == '-' && in.charAt(end + 3) == ' ' && in.charAt(end + 4) == '\r' && in.charAt(end + 5) == '\n') {
-                break;
-            }
-            else {
-                end = in.indexOf('\n', end + 1);
-            }
+            // Jump to the next return-to-line
+            end = in.indexOf('\n', end + 1);
         }
         // Trim trailing separators
         cursor = in.charAt(end - 1);

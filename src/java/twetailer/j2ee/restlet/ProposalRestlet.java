@@ -12,10 +12,8 @@ import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
-import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
-import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.dto.Command.QueryPointOfView;
 import twetailer.j2ee.BaseRestlet;
@@ -49,7 +47,9 @@ public class ProposalRestlet extends BaseRestlet {
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
             Long ownerKey, saleAssociateKey = null, storeKey = null;
             if (isUserAdmin) {
-                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                if (QueryPointOfView.CONSUMER.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) ||
+                    QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)
+                ) {
                     throw new IllegalArgumentException("Missing one of the identity identifiers!");
                 }
                 ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
@@ -58,9 +58,8 @@ public class ProposalRestlet extends BaseRestlet {
             else {
                 ownerKey = LoginServlet.getConsumerKey(loggedUser);
                 if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
-                    SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
-                    saleAssociateKey = saleAssociate.getKey();
-                    storeKey = saleAssociate.getStoreKey();
+                    saleAssociateKey = LoginServlet.getSaleAssociateKey(loggedUser, pm);
+                    storeKey = LoginServlet.getStoreKey(loggedUser, pm);
                 }
             }
             Long proposalKey = Long.valueOf(resourceId);
@@ -68,8 +67,8 @@ public class ProposalRestlet extends BaseRestlet {
 
             JsonObject out = isUserAdmin ? proposal.toJson() : ProposalSteps.anonymizeProposal(pointOfView, proposal.toJson());
 
-            if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
-                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+            if (parameters.containsKey(RELATED_RESOURCES_ENTRY_POINT_KEY)) {
+                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCES_ENTRY_POINT_KEY);
                 JsonObject relatedResources = new GenericJsonObject();
                 int idx = relatedResourceNames.size();
                 while (0 < idx) {
@@ -85,7 +84,7 @@ public class ProposalRestlet extends BaseRestlet {
                     }
                 }
                 if (0 < relatedResources.size()) {
-                    out.put(RELATED_RESOURCE_NAMES, relatedResources);
+                    out.put(RELATED_RESOURCES_ENTRY_POINT_KEY, relatedResources);
                 }
             }
 
@@ -101,10 +100,12 @@ public class ProposalRestlet extends BaseRestlet {
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, DataSourceException, ReservedOperationException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
+            QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
             Long ownerKey, saleAssociateKey;
             if (isUserAdmin) {
-                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) || QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                if (QueryPointOfView.CONSUMER.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY) ||
+                    QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) && !parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)
+                ) {
                     throw new IllegalArgumentException("Missing one of the identity identifiers!");
                 }
                 ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
@@ -126,8 +127,8 @@ public class ProposalRestlet extends BaseRestlet {
                 List<Proposal> proposals = ProposalSteps.getProposals(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
                 resources = isUserAdmin ? JsonUtils.toJson(proposals) : ProposalSteps.anonymizeProposals(pointOfView, JsonUtils.toJson(proposals));
 
-                if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < proposals.size()) {
-                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+                if (parameters.containsKey(RELATED_RESOURCES_ENTRY_POINT_KEY) && 0 < proposals.size()) {
+                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCES_ENTRY_POINT_KEY);
                     JsonObject relatedResources = new GenericJsonObject();
                     int idx = relatedResourceNames.size();
                     while (0 < idx) {
@@ -157,7 +158,7 @@ public class ProposalRestlet extends BaseRestlet {
                         }
                     }
                     if (0 < relatedResources.size()) {
-                        resources.getJsonObject(0).put(RELATED_RESOURCE_NAMES, relatedResources);
+                        resources.getJsonObject(0).put(RELATED_RESOURCES_ENTRY_POINT_KEY, relatedResources);
                     }
                 }
             }
@@ -188,15 +189,30 @@ public class ProposalRestlet extends BaseRestlet {
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
+            // Get the demand owner key
+            Long associateKey = null, consumerKey = null;
+            if (isUserAdmin) {
+                if (parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY)) {
+                    consumerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+                }
+                if (parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    associateKey = parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY);
+                }
+            }
+            else {
+                consumerKey = LoginServlet.getConsumerKey(loggedUser);
+                associateKey = LoginServlet.getSaleAssociateKey(loggedUser);
+            }
+
             // Update the proposal
             Proposal proposal = null;
             Long proposalKey = Long.valueOf(resourceId);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.SALE_ASSOCIATE);
             if (QueryPointOfView.CONSUMER.equals(pointOfView)) {
-                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
+                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, consumerKey);
             }
             else {
-                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, LoginServlet.getSaleAssociate(loggedUser, pm), LoginServlet.getConsumer(loggedUser, pm), isUserAdmin);
+                proposal = ProposalSteps.updateProposal(pm, null, proposalKey, parameters, associateKey, consumerKey, isUserAdmin);
             }
 
             return proposal.toJson();
@@ -206,57 +222,15 @@ public class ProposalRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
-
     @Override
     protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        if (isUserAdmin) {
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                Long proposalKey = Long.valueOf(resourceId);
-                // Get the sale associate
-                SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
-                if (saleAssociate == null) {
-                    throw new ClientException("Current user is not a Sale Associate!");
-                }
-                delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
-                return;
-            }
-            finally {
-                pm.close();
-            }
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long proposalKey = Long.valueOf(resourceId);
+            ProposalSteps.deleteProposal(pm, proposalKey, LoginServlet.getSaleAssociateKey(loggedUser, pm), LoginServlet.getConsumerKey(loggedUser));
         }
-        throw new ClientException("Restricted access!");
-    }
-
-    /**
-     * Delete the Proposal instances based on the specified criteria.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param proposalKey Identifier of the resource to delete
-     * @param saleAssociate Resource owner
-     * @param stopRecursion Should be <code>false</code> if the associated Proposals need to be affected too
-     * @return Serialized list of the Consumer instances matching the given criteria
-
-     * @throws DataSourceException If the query to the back-end fails
-     *
-     * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
-     */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long proposalKey, SaleAssociate saleAssociate, boolean stopRecursion) throws InvalidIdentifierException{
-        // Delete consumer's proposals
-        Proposal proposal = BaseSteps.getProposalOperations().getProposal(pm, proposalKey, saleAssociate.getKey(), null);
-        BaseSteps.getProposalOperations().deleteProposal(pm, proposal);
-        if (!stopRecursion && proposal.getDemandKey() != null) {
-            // Clean-up the attached demand
-            try {
-                Demand demand = BaseSteps.getDemandOperations().getDemand(pm, proposal.getDemandKey(), saleAssociate.getConsumerKey());
-                demand.removeProposalKey(proposalKey);
-                BaseSteps.getDemandOperations().updateDemand(pm, demand);
-            }
-            catch(InvalidIdentifierException ex) {
-                // Demand not accessible, that's fine.
-                // Worse case, the orphan objects will be collected later
-            }
+        finally {
+            pm.close();
         }
     }
 }

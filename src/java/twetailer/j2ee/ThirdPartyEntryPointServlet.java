@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +19,6 @@ import twetailer.DataSourceException;
 import twetailer.ReservedOperationException;
 import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.InfluencerOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
@@ -27,6 +28,7 @@ import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.DemandSteps;
 import twetailer.task.step.StoreSteps;
+import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
@@ -57,8 +59,8 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(ThirdPartyEntryPointServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -66,9 +68,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         return log;
     }
 
-    private final static String DEMAND_PREFIX = "/Demand";
-    private final static String LOCATION_PREFIX = "/Location";
-    private final static String STORE_PREFIX = "/Store";
+    protected final static String DEMAND_PREFIX = "/Demand";
+    protected final static String LOCATION_PREFIX = "/Location";
+    protected final static String STORE_PREFIX = "/Store";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -78,19 +80,19 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
-        JsonObject in = null;
+        response.setStatus(200);
+        JsonObject in = new GenericJsonObject(request);
 
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
-            in = new GenericJsonObject(request);
 
             if (LOCATION_PREFIX.equals(pathInfo)) {
-                verifyReferralId(pm, in, Action.list, Location.class.getName(), request);
-                // TODO
+                verifyReferralId(pm, in, Action.list, Location.class.getName());
+                // TODO ...
             }
             else if (STORE_PREFIX.equals(pathInfo)) {
-                verifyReferralId(pm, in, Action.list, Store.class.getName(), request);
+                verifyReferralId(pm, in, Action.list, Store.class.getName());
                 List<Store> stores = StoreSteps.getStores(pm, in);
                 JsonArray list = new GenericJsonArray();
                 for (Store store: stores) {
@@ -107,11 +109,11 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 out.put("bounds", bounds);
             }
             else if (DEMAND_PREFIX.equals(pathInfo)) {
-                verifyReferralId(pm, in, Action.demand, Demand.class.getName(), request);
-
-                if (in.containsKey("callback")) {
-                    createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName());
+                if (!in.containsKey("callback")) {
+                    throw new IllegalArgumentException("Invalid JSONP call!");
                 }
+                createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
             else {
                 response.setStatus(404); // Not Found
@@ -126,13 +128,15 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
             out = BaseRestlet.processException(ex, "doGet", pathInfo, BaseRestlet.debugModeDetected(request));
         }
         finally {
             pm.close();
         }
 
-        if (in != null && in.containsKey("callback")) {
+        if (in.containsKey("callback")) {
             String callbackName = in.getString("callback");
             getLogger().warning("3rd party for JSONP to: " + callbackName + "(" + out.toString() + ")");
             OutputStream stream = response.getOutputStream();
@@ -153,6 +157,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
+        response.setStatus(200);
         JsonObject in = null;
 
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
@@ -161,7 +166,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             if (DEMAND_PREFIX.equals(pathInfo)) {
-                verifyReferralId(pm, in, Action.demand, Demand.class.getName(), request);
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName());
 
                 createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
@@ -178,7 +183,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(ex, "doPost", pathInfo, BaseRestlet.debugModeDetected(request) || BaseRestlet.debugModeDetected(in));
+            out.put("success", false);
+            out.put("reason", ex.getMessage());
+            out = BaseRestlet.processException(ex, "doPost", pathInfo, BaseRestlet.debugModeDetected(in));
         }
         finally {
             pm.close();
@@ -186,8 +193,6 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         out.toStream(response.getOutputStream(), false);
     }
-
-
 
     @Override
     public void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -209,13 +214,13 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         out.toStream(response.getOutputStream(), false);
     }
 
-    public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName, HttpServletRequest request) throws ReservedOperationException {
+    public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName) throws ReservedOperationException {
         if (!parameters.containsKey(Influencer.REFERRAL_ID)) { // Missing parameter
             getLogger().warning("Missing referralId");
             throw new ReservedOperationException(action, entityName);
         }
         String referralId = parameters.getString(Influencer.REFERRAL_ID).trim();
-        if (referralId.length() != 0 && !referralId.equals(Influencer.DEFAULT_REFERRAL_ID) && !InfluencerOperations.verifyReferralIdValidity(pm, referralId)) {
+        if (!BaseSteps.getInfluencerOperations().verifyReferralIdValidity(pm, referralId)) {
             getLogger().warning("Invalid referralId: " + referralId);
             parameters.put(Influencer.REFERRAL_ID, Influencer.DEFAULT_REFERRAL_ID); // Reset the given referral identifier!
         }
@@ -237,7 +242,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
      * @throws DataSourceException If the Consumer record manipulation fails
      * @throws ClientException If the Demand record creation fails
      */
-    protected static void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+    protected void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
         String email = in.getString(Consumer.EMAIL);
         if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
             throw new IllegalArgumentException("Invalid sender email address");
@@ -246,7 +251,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
         if (consumer.getAutomaticLocaleUpdate()) {
             String language = in.getString(Consumer.LANGUAGE);
-            if (language != null && 0 < language.length() && !consumer.getLanguage().equals(language)) {
+            if (language != null && 0 < language.length() && !consumer.getLanguage().equals(LocaleValidator.checkLanguage(language))) {
                 consumer.setLanguage(language);
                 BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
             }

@@ -185,7 +185,7 @@ public class Demand extends Request {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (isUserAdmin && in.containsKey(PROPOSAL_KEYS)) {

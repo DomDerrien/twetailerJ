@@ -40,7 +40,8 @@ public class TestMessageGenerator {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseConnector.setLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
+        MessageGenerator.setMockLogger(new MockLogger("test", null));
     }
 
     @Before

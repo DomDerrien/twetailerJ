@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//
-// TODO: move this class in Settings and have the list as an attribute there
-//
-
 /**
  * Define the list of supported hash tags
  *

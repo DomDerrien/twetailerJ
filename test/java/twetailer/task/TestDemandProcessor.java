@@ -65,10 +65,9 @@ public class TestDemandProcessor {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        DemandProcessor.setLogger(new MockLogger("test", null));
+        DemandProcessor.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
-
 
     @Before
     public void setUp() throws Exception {

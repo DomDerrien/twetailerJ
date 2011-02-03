@@ -44,6 +44,7 @@ public class TestBaseOperations {
     @BeforeClass
     public static void setUpBeforeClass() {
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+        BaseOperations.setMockLogger(new MockLogger("test", null));
     }
 
     @AfterClass
@@ -53,7 +54,6 @@ public class TestBaseOperations {
     @Before
     public void setUp() throws Exception {
         BaseSteps.resetOperationControllers(true);
-        BaseOperations.setLogger(new MockLogger(BaseOperations.class.getName(), null));
         helper.setUp();
     }
 
@@ -66,7 +66,7 @@ public class TestBaseOperations {
     public void testGetPersistenceManagerFactory() throws IOException {
         PersistenceManager pm = new BaseOperations().getPersistenceManager();
         assertNotNull(pm);
-        
+
         assertNotNull(BaseOperations.getLogger());
     }
 

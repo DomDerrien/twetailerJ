@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import twetailer.connector.BaseConnector.Source;
+import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -56,7 +57,9 @@ public class TestConsumer {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 54645L;
     String address = "North Pole, H0H 0H0, Canada";
+    Long closedDemandNb = 43223L;
     String email = "d.d@d.dom";
     String facebookId = "64554364532";
     String jabberId = "ddd";
@@ -66,6 +69,7 @@ public class TestConsumer {
     String openID = "http://dom.my-openid.org";
     String phoneNumber = "514-123-4567 #890";
     Source preferredConnection = Source.jabber;
+    Long publishedDemandNb = 653432L;
     Long saleAssociateKey = 76543453L;
     String twitterId = "Katelyn";
 
@@ -74,6 +78,7 @@ public class TestConsumer {
         Consumer object = new Consumer();
 
         object.setAddress(address);
+        object.setClosedDemandNb(closedDemandNb);
         object.setEmail(email);
         object.setJabberId(jabberId);
         object.setLanguage(language);
@@ -82,6 +87,7 @@ public class TestConsumer {
         object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setPreferredConnection(preferredConnection);
+        object.setPublishedDemandNb(publishedDemandNb);
         object.setSaleAssociateKey(saleAssociateKey);
         object.setTwitterId(twitterId);
 
@@ -107,9 +113,15 @@ public class TestConsumer {
 
     @Test
     public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Consumer object = new Consumer();
 
+        object.setKey(key);
+
         object.setAddress(address);
+        object.setClosedDemandNb(closedDemandNb);
         object.setEmail(email);
         object.setJabberId(jabberId);
         object.setFacebookId(facebookId);
@@ -119,38 +131,201 @@ public class TestConsumer {
         object.setOpenID(openID);
         object.setPhoneNumber(phoneNumber);
         object.setPreferredConnection(preferredConnection);
+        object.setPublishedDemandNb(publishedDemandNb);
         object.setSaleAssociateKey(saleAssociateKey);
         object.setTwitterId(twitterId);
 
-        Consumer clone = new Consumer(object.toJson());
+        Consumer clone = new Consumer();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(key, clone.getKey());
 
         assertEquals(address, clone.getAddress());
-        assertNull(clone.getClosedDemandNb()); // Cannot be overridden
+        assertEquals(closedDemandNb, clone.getClosedDemandNb());
         assertEquals(email, clone.getEmail());
         assertEquals(facebookId, clone.getFacebookId());
         assertEquals(jabberId, clone.getJabberId());
         assertEquals(language, clone.getLanguage());
         assertEquals(locationKey, clone.getLocationKey());
         assertEquals(name, clone.getName());
-        assertNull(clone.getOpenID()); // Cannot be overridden
+        assertEquals(openID, clone.getOpenID());
         assertEquals(phoneNumber, clone.getPhoneNumber());
         assertEquals(preferredConnection, clone.getPreferredConnection());
-        assertNull(clone.getPublishedDemandNb()); // Cannot be overridden
-        assertEquals(saleAssociateKey, clone.getSaleAssociateKey()); // Cannot be overridden
+        assertEquals(publishedDemandNb, clone.getPublishedDemandNb());
+        assertEquals(saleAssociateKey, clone.getSaleAssociateKey());
         assertEquals(twitterId, clone.getTwitterId());
     }
 
     @Test
     public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Consumer object = new Consumer();
 
-        assertNull(object.getLocationKey());
-        assertNull(object.getTwitterId());
+        Consumer clone = new Consumer();
+        clone.fromJson(object.toJson(), true, true);
 
-        Consumer clone = new Consumer(object.toJson());
-
+        assertNull(clone.getAddress());
+        assertNull(clone.getClosedDemandNb());
+        assertNull(clone.getEmail());
+        assertNull(clone.getFacebookId());
+        assertNull(clone.getJabberId());
+        assertEquals(LocaleValidator.DEFAULT_LANGUAGE, clone.getLanguage());
         assertNull(clone.getLocationKey());
+        assertNull(clone.getName());
+        assertNull(clone.getOpenID());
+        assertNull(clone.getPhoneNumber());
+        assertEquals(Source.mail, clone.getPreferredConnection());
+        assertNull(clone.getPublishedDemandNb());
+        assertNull(clone.getSaleAssociateKey());
         assertNull(clone.getTwitterId());
+    }
+
+    @Test
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
+        Consumer object = new Consumer();
+
+        object.setKey(key);
+
+        object.setAddress(address);
+        object.setClosedDemandNb(closedDemandNb);
+        object.setEmail(email);
+        object.setJabberId(jabberId);
+        object.setFacebookId(facebookId);
+        object.setLanguage(language);
+        object.setLocationKey(locationKey);
+        object.setName(name);
+        object.setOpenID(openID);
+        object.setPhoneNumber(phoneNumber);
+        object.setPreferredConnection(preferredConnection);
+        object.setPublishedDemandNb(publishedDemandNb);
+        object.setSaleAssociateKey(saleAssociateKey);
+        object.setTwitterId(twitterId);
+
+        Consumer clone = new Consumer();
+        clone.fromJson(object.toJson(), true, false);
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(address, clone.getAddress());
+        assertEquals(closedDemandNb, clone.getClosedDemandNb());
+        assertEquals(email, clone.getEmail());
+        assertEquals(facebookId, clone.getFacebookId());
+        assertEquals(jabberId, clone.getJabberId());
+        assertEquals(language, clone.getLanguage());
+        assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(name, clone.getName());
+        assertEquals(openID, clone.getOpenID());
+        assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(preferredConnection, clone.getPreferredConnection());
+        assertEquals(publishedDemandNb, clone.getPublishedDemandNb());
+        assertEquals(saleAssociateKey, clone.getSaleAssociateKey());
+        assertEquals(twitterId, clone.getTwitterId());
+    }
+
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
+        Consumer object = new Consumer();
+
+        // object.setKey(key);
+
+        object.setAddress(address);
+        object.setClosedDemandNb(closedDemandNb);
+        object.setEmail(email);
+        object.setJabberId(jabberId);
+        object.setFacebookId(facebookId);
+        object.setLanguage(language);
+        object.setLocationKey(locationKey);
+        object.setName(name);
+        object.setOpenID(openID);
+        object.setPhoneNumber(phoneNumber);
+        object.setPreferredConnection(preferredConnection);
+        object.setPublishedDemandNb(publishedDemandNb);
+        object.setSaleAssociateKey(saleAssociateKey);
+        object.setTwitterId(twitterId);
+
+        Consumer clone = new Consumer();
+        clone.fromJson(object.toJson());
+
+        // assertNull(clone.getKey());
+
+        assertEquals(address, clone.getAddress());
+        assertNull(clone.getClosedDemandNb());
+        assertEquals(email, clone.getEmail());
+        assertEquals(facebookId, clone.getFacebookId());
+        assertEquals(jabberId, clone.getJabberId());
+        assertEquals(language, clone.getLanguage());
+        assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(name, clone.getName());
+        assertEquals(openID, clone.getOpenID());
+        assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(preferredConnection, clone.getPreferredConnection());
+        assertNull(clone.getPublishedDemandNb());
+        assertEquals(saleAssociateKey, clone.getSaleAssociateKey());
+        assertEquals(twitterId, clone.getTwitterId());
+    }
+
+    @Test
+    public void testJsonCommandsV() {
+        //
+        // User update for an existing object (lowest)
+        //
+        Consumer object = new Consumer();
+
+        object.setKey(key);
+
+        object.setAddress(address);
+        object.setClosedDemandNb(closedDemandNb);
+        object.setEmail(email);
+        object.setJabberId(jabberId);
+        object.setFacebookId(facebookId);
+        object.setLanguage(language);
+        object.setLocationKey(locationKey);
+        object.setName(name);
+        object.setOpenID(openID);
+        object.setPhoneNumber(phoneNumber);
+        object.setPreferredConnection(preferredConnection);
+        object.setPublishedDemandNb(publishedDemandNb);
+        object.setSaleAssociateKey(saleAssociateKey);
+        object.setTwitterId(twitterId);
+
+        Consumer clone = new Consumer();
+        clone.fromJson(object.toJson());
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(address, clone.getAddress());
+        assertNull(clone.getClosedDemandNb());
+        assertNull(clone.getEmail());
+        assertNull(clone.getFacebookId());
+        assertNull(clone.getJabberId());
+        assertEquals(language, clone.getLanguage());
+        assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(name, clone.getName());
+        assertNull(clone.getOpenID());
+        assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(preferredConnection, clone.getPreferredConnection());
+        assertNull(clone.getPublishedDemandNb());
+        assertNull(clone.getSaleAssociateKey());
+        assertNull(clone.getTwitterId());
+    }
+
+    @Test
+    public void testJsonCommandsVI() {
+        Consumer object = new Consumer();
+
+        JsonObject json = new GenericJsonObject();
+
+        object.fromJson(json, true, true);
+        assertNull(object.getClosedDemandNb());
+        assertNull(object.getPublishedDemandNb());
     }
 
     @Test
@@ -189,6 +364,21 @@ public class TestConsumer {
         assertEquals(emailId.toLowerCase(), object.getEmail());
         object.setEmail(null);
         assertNull(object.getEmail());
+    }
+
+    @Test
+    public void testSetFacebookId() {
+        String facebookId = "SuperGénial";
+        Consumer object = new Consumer();
+        assertNull(object.getFacebookId());
+        object.setFacebookId(facebookId);
+        assertEquals(facebookId, object.getFacebookId());
+        object.setFacebookId("");
+        assertNull(object.getFacebookId());
+        object.setFacebookId(facebookId);
+        assertEquals(facebookId, object.getFacebookId());
+        object.setFacebookId(null);
+        assertNull(object.getFacebookId());
     }
 
     @Test

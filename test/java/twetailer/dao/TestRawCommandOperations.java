@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
@@ -16,11 +21,14 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.dto.Entity;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
+import domderrien.i18n.DateUtils;
 
 public class TestRawCommandOperations {
 
@@ -35,14 +43,14 @@ public class TestRawCommandOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
@@ -167,5 +175,20 @@ public class TestRawCommandOperations {
         assertNotNull(justCreated.getKey());
         assertEquals(tag, justCreated.getCommand());
         ops.deleteRawCommand(justCreated.getKey());
+    }
+
+    @Test
+    public void testGetRawCommandKeys() throws DataSourceException, ParseException {
+        RawCommandOperations ops = new RawCommandOperations();
+        RawCommand item = new RawCommand();
+        item.setCommandId("Zobi la mouche!");
+        item = ops.createRawCommand(item);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(BaseOperations.FILTER_GREATER_THAN_OR_EQUAL_TO + Entity.CREATION_DATE, DateUtils.isoToDate("2000-01-01T00:00:00"));
+
+        List<Long> selected = ops.getRawCommandKeys(parameters, 0);
+        assertNotNull(selected);
+        assertEquals(item.getKey(), selected.get(0));
     }
 }

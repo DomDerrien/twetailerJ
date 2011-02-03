@@ -57,10 +57,9 @@ public class TestProposalValidator {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ProposalValidator.setLogger(new MockLogger("test", null));
+        ProposalValidator.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
-
 
     @Before
     public void setUp() throws Exception {

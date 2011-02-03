@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import twetailer.CommunicationException;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -21,8 +23,8 @@ public class BaseConnector {
 
     private static Logger log = Logger.getLogger(BaseConnector.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 

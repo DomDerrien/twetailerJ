@@ -49,10 +49,9 @@ public class TestLocationValidator {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        LocationValidator.setLogger(new MockLogger("test", null));
+        LocationValidator.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
-
 
     @Before
     public void setUp() throws Exception {
@@ -65,7 +64,7 @@ public class TestLocationValidator {
     public void tearDown() throws Exception {
         helper.tearDown();
 
-        LocaleValidator.setValidatorStream(null);
+        LocaleValidator.setMockValidatorStream(null);
         BaseConnector.resetLastCommunicationInSimulatedMode();
     }
 
@@ -157,7 +156,7 @@ public class TestLocationValidator {
             }
         });
         // LocaleValidator mock
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
                 + longitude + "</longt>\n</geodata>"));
 
         LocationValidator.process(new MockPersistenceManager(), postalCode, countryCode, consumerKey, rawCommandKey);
@@ -207,7 +206,7 @@ public class TestLocationValidator {
             }
         });
         // LocaleValidator mock
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>" + latitude + "</latt>\n\t<longt>"
                 + longitude + "</longt>\n</geodata>"));
 
         LocationValidator.process(new MockPersistenceManager(), postalCode, countryCode, consumerKey, rawCommandKey);
@@ -254,7 +253,7 @@ public class TestLocationValidator {
             }
         });
         // LocaleValidator mock
-        LocaleValidator.setValidatorStream(new MockInputStream(""));
+        LocaleValidator.setMockValidatorStream(new MockInputStream(""));
 
         LocationValidator.process(new MockPersistenceManager(), postalCode, countryCode, consumerKey, rawCommandKey);
 
@@ -313,7 +312,7 @@ public class TestLocationValidator {
             }
         });
         // LocaleValidator mock
-        LocaleValidator.setValidatorStream(new MockInputStream(""));
+        LocaleValidator.setMockValidatorStream(new MockInputStream(""));
         // TwitterAccout mock
         final Twitter mockTwitterAccount = new Twitter() {
             @Override

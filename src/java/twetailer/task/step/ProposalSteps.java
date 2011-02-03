@@ -11,6 +11,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -51,8 +53,8 @@ public class ProposalSteps extends BaseSteps {
 
     private static Logger log = Logger.getLogger(ProposalSteps.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -101,7 +103,7 @@ public class ProposalSteps extends BaseSteps {
                 }
             }
             catch (Exception ex) {
-                throw new ReservedOperationException(Action.list, Proposal.class.getName());
+                throw new ReservedOperationException(Action.list, Proposal.class.getName(), ex);
             }
         }
         else if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
@@ -331,8 +333,8 @@ public class ProposalSteps extends BaseSteps {
      * @param rawCommand Reference of the command which initiated the process, is <code>null</code> if initiated by a REST API call
      * @param proposalKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
-     * @param owner Sale associate who owns the proposal to be updated
-     * @param saConsumerRecord Consumer record attached to the sale associate
+     * @param ownerKey Key of the sale associate who owns the proposal to be updated
+     * @param saConsumerRecordKey Key of the consumer record attached to the sale associate
      * @param isUserAdmin
      * @return Just updated proposal
      *
@@ -341,9 +343,11 @@ public class ProposalSteps extends BaseSteps {
      * @throws InvalidStateException if the Proposal is not update-able
      * @throws CommunicationException if the communication of the update confirmation fails
      */
-    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, Long ownerKey, Long saConsumerRecordKey, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
-        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, isUserAdmin ? null : owner.getKey(), isUserAdmin ? null : owner.getStoreKey());
+        SaleAssociate owner = getSaleAssociateOperations().getSaleAssociate(pm, ownerKey);
+        Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saConsumerRecordKey);
+        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, isUserAdmin ? null : ownerKey, isUserAdmin ? null : owner.getStoreKey());
         State currentState = proposal.getState();
 
         // Workflow state change
@@ -567,7 +571,7 @@ public class ProposalSteps extends BaseSteps {
      * @param rawCommand Reference of the command which initiated the process, is <code>null</code> if initiated by a REST API call
      * @param proposalKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
-     * @param demandOwner Owner of the demand associated to the identified proposal
+     * @param demandOwner Key of the owner of the demand associated to the identified proposal
      * @return Just updated proposal
      *
      * @throws DataSourceException if the retrieval of the last created proposal or of the location information fail
@@ -576,7 +580,7 @@ public class ProposalSteps extends BaseSteps {
      * @throws ReservedOperationException if the Consumer does not own the Demand associated to the identified Proposal
      * @throws CommunicationException If the result of the operation cannot be communicated to the SaleAssociate owning the concerned Proposal
      */
-    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, Consumer demandOwner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException, CommunicationException {
+    public static Proposal updateProposal(PersistenceManager pm, RawCommand rawCommand, Long proposalKey, JsonObject parameters, Long demandOwnerKey) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException, CommunicationException {
 
         // Verify the correct parameter sequence
         if (parameters.size() != 2 && parameters.size() != 3 ||
@@ -591,7 +595,8 @@ public class ProposalSteps extends BaseSteps {
         Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, null, null);
 
         // Verify the consumer owns the associated demand and its state
-        Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), demandOwner.getKey());
+        Consumer demandOwner = getConsumerOperations().getConsumer(pm, demandOwnerKey);
+        Demand demand = getDemandOperations().getDemand(pm, proposal.getDemandKey(), demandOwnerKey);
 
         if (parameters.containsKey(Command.STATE)) {
             boolean confirmProposal = State.confirmed.toString().equals(parameters.getString(Command.STATE));
@@ -611,7 +616,7 @@ public class ProposalSteps extends BaseSteps {
             // Persist the proposal state change
             proposal.setState(newState);
             if (!confirmProposal) {
-                proposal.setCancelerKey(demandOwner.getKey());
+                proposal.setCancelerKey(demandOwnerKey);
             }
             proposal = getProposalOperations().updateProposal(pm, proposal);
 
@@ -620,7 +625,7 @@ public class ProposalSteps extends BaseSteps {
                 List<Long> proposalKeys = demand.getProposalKeys();
                 if (1 < proposalKeys.size()) {
                     // Schedule the other proposal cancellation
-                    MaelzelServlet.triggerProposalCancellationTask(proposalKeys, demandOwner.getKey(), proposalKey);
+                    MaelzelServlet.triggerProposalCancellationTask(proposalKeys, demandOwnerKey, proposalKey);
 
                     // Clean-up the list of associated proposals
                     demand.resetProposalKeys();
@@ -894,16 +899,16 @@ public class ProposalSteps extends BaseSteps {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param proposalKey Resource identifier
-     * @param owner Sale associate who owns the proposal to be deleted
-     * @param saConsumerRecord Consumer record attached to the sale associate
+     * @param ownerKey Key of the sale associate who owns the proposal to be deleted
+     * @param saConsumerRecordKey Key of the consumer record attached to the sale associate
      *
      * @throws DataSourceException if the retrieval of the last created proposal or of the location information fail
      * @throws InvalidIdentifierException if there's an issue with the proposal identifier is invalid
-     * @throws InvalidStateException if the proposal is not already cancelled
+     * @throws InvalidStateException if the proposal is not already canceled
      */
-    public static void deleteProposal(PersistenceManager pm, Long proposalKey, SaleAssociate owner, Consumer saConsumerRecord) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
+    public static void deleteProposal(PersistenceManager pm, Long proposalKey, Long ownerKey, Long saConsumerRecordKey) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
 
-        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, owner.getKey(), null);
+        Proposal proposal = getProposalOperations().getProposal(pm, proposalKey, ownerKey, null);
 
         State currentState = proposal.getState();
         if (!State.cancelled.equals(currentState)) {

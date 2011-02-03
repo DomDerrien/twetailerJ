@@ -50,10 +50,9 @@ public class TestRobotResponder {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        // RobotResponder.setLogger(new MockLogger("test", null));
+        // RobotResponder.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
-
 
     @Before
     public void setUp() throws Exception {

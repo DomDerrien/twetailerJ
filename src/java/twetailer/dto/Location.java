@@ -126,10 +126,10 @@ public class Location extends Entity {
     public JsonObject toJson() {
         JsonObject out = super.toJson();
         out.put(COUNTRY_CODE, getCountryCode());
-        out.put(HAS_STORE, getHasStore());
+        out.put(HAS_STORE, hasStore());
         out.put(LATITUDE, getLatitude());
         out.put(LONGITUDE, getLongitude());
-        out.put(POSTAL_CODE, getPostalCode());
+        if (getPostalCode() != null) { out.put(POSTAL_CODE, getPostalCode()); }
         return out;
     }
 
@@ -139,16 +139,14 @@ public class Location extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
+        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (!isUserAdmin) {
             if (getKey() != null) {
-                // No external update allowed
-                return this;
+                throw new IllegalArgumentException("Reserved operation");
             }
         }
-
-        super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (hasNewAttributes(in)) {
             setCountryCode(null);

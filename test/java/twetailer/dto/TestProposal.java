@@ -1,23 +1,15 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.connector.BaseConnector.Source;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
+import twetailer.validator.LocaleValidator;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -60,21 +52,14 @@ public class TestProposal {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 98760L;
     String AWSCBUIURL = "Very long long text!";
-    Action action = Action.cancel;
-    Long ownerKey = 12345L;
-    Long rawCommandId = 67890L;
-    Source source = Source.simulated;
-    State state = State.closed;
-
-    List<String> cc = new ArrayList<String>(Arrays.asList(new String[] {"cc1", "cc2"}));
-    List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
     Long consumerKey = 876432L;
-    String currencyCode = "USD";
+    String comment = "Super génial";
+    String currencyCode = "EUR";
     Long demandKey = 54321L;
-    Long proposalKey = 98760L;
     Double price = 25.99D;
-    Long quantity = 15L;
+    Long score = 5L;
     Long storeKey = 45678L;
     Double total = 32.36D;
 
@@ -82,187 +67,185 @@ public class TestProposal {
     public void testAccessors() {
         Proposal object = new Proposal();
 
-        // Command
-        object.setAction(action);
-        object.setAction(action.toString());
-        object.setOwnerKey(ownerKey);
-        object.setRawCommandId(rawCommandId);
-        object.setSource(source);
-        object.setSource(source.toString());
-        object.setState(state);
-        object.setState(state.toString());
-
-        // Proposal
         object.setAWSCBUIURL(AWSCBUIURL);
         object.setConsumerKey(consumerKey);
-        object.setCriteria(criteria);
+        object.setComment(comment);
+        object.setCurrencyCode(currencyCode);
         object.setDemandKey(demandKey);
         object.setPrice(price);
-        object.setQuantity(quantity);
+        object.setScore(score);
         object.setStoreKey(storeKey);
         object.setTotal(total);
 
-        // Command
-        assertEquals(action, object.getAction());
-        assertEquals(action, object.getAction());
-        assertEquals(ownerKey, object.getOwnerKey());
-        assertEquals(rawCommandId, object.getRawCommandId());
-        assertEquals(source, object.getSource());
-        assertEquals(state, object.getState());
-
-        // Proposal
         assertEquals(AWSCBUIURL, object.getAWSCBUIURL());
-        assertEquals(criteria, object.getCriteria());
         assertEquals(consumerKey, object.getConsumerKey());
+        assertEquals(comment, object.getComment());
+        assertEquals(currencyCode, object.getCurrencyCode());
         assertEquals(demandKey, object.getDemandKey());
-        assertEquals(quantity, object.getQuantity());
+        assertEquals(price, object.getPrice());
+        assertEquals(score, object.getScore());
         assertEquals(storeKey, object.getStoreKey());
         assertEquals(total, object.getTotal());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testResetCriteriaI() {
-        Proposal object = new Proposal();
-
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("first"); // Add it twice
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("second");
-        assertEquals(2, object.getCriteria().size());
-
-        object.removeCriterion("first"); // Remove first
-        assertEquals(1, object.getCriteria().size());
-
-        object.resetCriteria(); // Reset all
-        assertEquals(0, object.getCriteria().size());
-
-        object.setCriteria(null); // Failure!
-    }
-
-    @Test
-    public void testResetCriteriaII() {
-        Proposal object = new Proposal();
-
-        object.resetLists(); // To force the criteria list creation
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.resetLists(); // To be sure there's no error
-        object.removeCriterion("first"); // Remove first
-
-        object.resetLists(); // To be sure there's no error
-        object.resetCriteria(); // Reset all
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetAction() {
-        Proposal object = new Proposal();
-
-        object.setAction((Action) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetState() {
-        Proposal object = new Proposal();
-
-        object.setState((State) null);
-    }
-
     @Test
     public void testJsonProposalsI() {
+        //
+        // Cache related copy (highest)
+        //
         Proposal object = new Proposal();
 
-        // Command
-        object.setAction(action);
-        object.setOwnerKey(ownerKey);
-        object.setRawCommandId(rawCommandId);
-        object.setSource(source);
-        object.setState(state);
+        object.setKey(key);
 
-        // Proposal
         object.setAWSCBUIURL(AWSCBUIURL);
-        object.setCC(cc);
         object.setConsumerKey(consumerKey);
-        object.setCriteria(criteria);
+        object.setComment(comment);
         object.setCurrencyCode(currencyCode);
         object.setDemandKey(demandKey);
         object.setPrice(price);
-        object.setQuantity(quantity);
+        object.setScore(score);
         object.setStoreKey(storeKey);
         object.setTotal(total);
 
-        Proposal clone = new Proposal(object.toJson());
+        Proposal clone = new Proposal();
+        clone.fromJson(object.toJson(), true, true);
 
-        // Command
-        assertEquals(Action.propose, clone.getAction()); // Cannot be overridden
-        assertNull(clone.getOwnerKey()); // Cannot be overridden
-        assertNull(clone.getRawCommandId()); // Cannot be overridden
-        assertEquals(source, clone.getSource());
-        assertEquals(State.opened, clone.getState());
-
-        // Proposal
-        assertNull(clone.getAWSCBUIURL()); // Cannot be overridden
-        assertEquals(cc, clone.getCC());
-        assertNull(clone.getConsumerKey()); // Cannot be overridden
+        assertEquals(AWSCBUIURL, clone.getAWSCBUIURL());
+        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(comment, clone.getComment());
         assertEquals(currencyCode, clone.getCurrencyCode());
-        assertEquals(criteria, clone.getCriteria());
         assertEquals(demandKey, clone.getDemandKey());
-        assertEquals(quantity, clone.getQuantity());
-        assertNull(clone.getStoreKey()); // Cannot be overridden
+        assertEquals(price, clone.getPrice());
+        assertEquals(score, clone.getScore());
+        assertEquals(storeKey, clone.getStoreKey());
         assertEquals(total, clone.getTotal());
-        assertTrue(clone.getStateCmdList()); // As it has been set to State.opened
     }
 
     @Test
-    public void testJsonProposalsII() {
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Proposal object = new Proposal();
-        object.setSource(source);
 
-        // Command
-        assertNull(object.getRawCommandId());
+        Proposal clone = new Proposal();
+        clone.fromJson(object.toJson(), true, true);
 
-        // Proposal
-        assertNull(object.getConsumerKey());
-        assertNull(object.getDemandKey());
-        assertEquals(0, object.getCriteria().size());
-        assertNull(object.getStoreKey());
-
-        Proposal clone = new Proposal(object.toJson());
-
-        // Command
-        assertNull(clone.getRawCommandId());
-
-        // Proposal
+        assertNull(clone.getAWSCBUIURL());
         assertNull(clone.getConsumerKey());
+        assertNull(clone.getComment());
+        assertEquals(LocaleValidator.DEFAULT_CURRENCY_CODE, clone.getCurrencyCode());
         assertNull(clone.getDemandKey());
-        assertEquals(0, clone.getCriteria().size());
+        assertEquals(0.0D, clone.getPrice().doubleValue(), 0);
+        assertEquals(0L, clone.getScore().longValue());
         assertNull(clone.getStoreKey());
+        assertEquals(0.0D, clone.getTotal().doubleValue(), 0);
     }
 
     @Test
-    public void testJsonProposalsIII() {
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
         Proposal object = new Proposal();
-        object.setSource(source);
 
-        object.resetLists();
+        object.setKey(key);
 
-        // Proposal
-        assertNull(object.getCriteria());
+        object.setAWSCBUIURL(AWSCBUIURL);
+        object.setConsumerKey(consumerKey);
+        object.setComment(comment);
+        object.setCurrencyCode(currencyCode);
+        object.setDemandKey(demandKey);
+        object.setPrice(price);
+        object.setScore(score);
+        object.setStoreKey(storeKey);
+        object.setTotal(total);
 
-        Proposal clone = new Proposal(object.toJson());
+        Proposal clone = new Proposal();
+        clone.fromJson(object.toJson(), true, false);
 
-        // Proposal
-        assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
+        assertNull(clone.getAWSCBUIURL());
+        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(comment, clone.getComment());
+        assertEquals(currencyCode, clone.getCurrencyCode());
+        assertEquals(demandKey, clone.getDemandKey());
+        assertEquals(price, clone.getPrice());
+        assertEquals(score, clone.getScore());
+        assertEquals(storeKey, clone.getStoreKey());
+        assertEquals(total, clone.getTotal());
     }
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetSource() {
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
         Proposal object = new Proposal();
 
-        object.setSource((Source) null);
+        // object.setKey(key);
+
+        object.setAWSCBUIURL(AWSCBUIURL);
+        object.setConsumerKey(consumerKey);
+        object.setComment(comment);
+        object.setCurrencyCode(currencyCode);
+        object.setDemandKey(demandKey);
+        object.setPrice(price);
+        object.setScore(score);
+        object.setStoreKey(storeKey);
+        object.setTotal(total);
+
+        Proposal clone = new Proposal();
+        clone.fromJson(object.toJson());
+
+        assertNull(clone.getAWSCBUIURL());
+        assertNull(clone.getConsumerKey());
+        assertNull(clone.getComment());
+        assertEquals(currencyCode, clone.getCurrencyCode());
+        assertEquals(demandKey, clone.getDemandKey());
+        assertEquals(price, clone.getPrice());
+        assertEquals(0L, clone.getScore().longValue());
+        assertNull(clone.getStoreKey());
+        assertEquals(total, clone.getTotal());
+    }
+
+    @Test
+    public void testJsonCommandsV() {
+        //
+        // User update for an existing object (lowest)
+        //
+        Proposal object = new Proposal();
+
+        object.setKey(key);
+
+        object.setAWSCBUIURL(AWSCBUIURL);
+        object.setConsumerKey(consumerKey);
+        object.setComment(comment);
+        object.setCurrencyCode(currencyCode);
+        object.setDemandKey(demandKey);
+        object.setPrice(price);
+        object.setScore(score);
+        object.setStoreKey(storeKey);
+        object.setTotal(total);
+
+        Proposal clone = new Proposal();
+        clone.fromJson(object.toJson());
+
+        assertNull(clone.getAWSCBUIURL());
+        assertNull(clone.getConsumerKey());
+        assertNull(clone.getComment());
+        assertEquals(currencyCode, clone.getCurrencyCode());
+        assertNull(clone.getDemandKey());
+        assertEquals(price, clone.getPrice());
+        assertEquals(0L, clone.getScore().longValue());
+        assertNull(clone.getStoreKey());
+        assertEquals(total, clone.getTotal());
+    }
+
+    @Test
+    public void testJsonCommandsVI() {
+        Proposal object = new Proposal();
+        JsonObject json = new GenericJsonObject();
+        object.fromJson(json, true, true);
     }
 
     @Test
@@ -274,61 +257,6 @@ public class TestProposal {
         Proposal proposal = new Proposal(parameters);
         assertEquals(key, proposal.getKey());
         assertNull(proposal.getDemandKey()); // Can only be set with Proposal to be created
-    }
-
-    @Test
-    public void testSetStateCommandList() {
-        Proposal proposal = new Proposal();
-        // proposal.getState() == State.opened by default
-        assertTrue(proposal.getStateCmdList());
-
-        proposal.setState(State.cancelled);
-        assertFalse(proposal.getStateCmdList());
-
-        proposal.setState(State.invalid);
-        assertTrue(proposal.getStateCmdList());
-
-        proposal.setState(State.declined);
-        assertFalse(proposal.getStateCmdList());
-
-        proposal.setState(State.published);
-        assertTrue(proposal.getStateCmdList());
-
-        proposal.setState(State.markedForDeletion);
-        assertFalse(proposal.getStateCmdList());
-
-        proposal.setState(State.opened);
-        assertTrue(proposal.getStateCmdList());
-
-        proposal.setState(State.closed);
-        assertFalse(proposal.getStateCmdList());
-    }
-
-    @Test
-    public void testGetSerialized() {
-        Proposal proposal = new Proposal();
-        proposal.addCriterion("one");
-        proposal.addCriterion("two");
-        proposal.addCriterion("three");
-
-        assertEquals("one two three", proposal.getSerializedCriteria());
-    }
-
-    @Test
-    public void testGetStateCmdList() {
-        Proposal proposal = new Proposal();
-        assertTrue(proposal.getStateCmdList());
-        proposal.setStateCmdList(null);
-        assertTrue(proposal.getStateCmdList());
-        proposal.setStateCmdList(false);
-        assertFalse(proposal.getStateCmdList());
-        proposal.setStateCmdList(true);
-        assertTrue(proposal.getStateCmdList());
-    }
-
-    @Test
-    public void testGetAWSCBUIURL() {
-        assertNull(new Proposal().getAWSCBUIURL());
     }
 
     @Test
@@ -359,14 +287,32 @@ public class TestProposal {
     }
 
     @Test
-    public void testFromJson() {
+    public void testResetList() throws JsonException {
         Proposal object = new Proposal();
-        object.setKey(12345L);
+        object.resetLists(); // Inherited, tests done by parent objects
+    }
 
-        JsonObject json = new GenericJsonObject();
-        json.put(Proposal.DEMAND_KEY, 545456L);
+    @Test
+    public void testSetCurrencyCode() throws JsonException {
+        Proposal object = new Proposal();
+        object.setCurrencyCode(null);
+        assertEquals(LocaleValidator.DEFAULT_CURRENCY_CODE, object.getCurrencyCode());
+    }
 
-        object.fromJson(json);
-        assertNull(object.getDemandKey());
+    @Test
+    public void testSetScore() throws JsonException {
+        Proposal object = new Proposal();
+
+        object.setScore(null);
+        assertEquals(0L, object.getScore().longValue());
+
+        object.setScore(0L);
+        assertEquals(0L, object.getScore().longValue());
+
+        object.setScore(2L);
+        assertEquals(2L, object.getScore().longValue());
+
+        object.setScore(10L);
+        assertEquals(0L, object.getScore().longValue());
     }
 }

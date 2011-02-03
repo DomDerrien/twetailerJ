@@ -32,9 +32,25 @@ public class TestReservedOperationException {
     }
 
     @Test
-    public void testConstructorIII() {
-        Exception ex = new ReservedOperationException(Action.list);
+    public void testConstructorIIIa() {
+        Exception ex = new ReservedOperationException(Action.list, "test", new IllegalArgumentException("test"));
         assertTrue(ex.getMessage().contains(Action.list.toString()));
+    }
+
+    @Test
+    public void testConstructorIIIb() {
+        Exception ex = new ReservedOperationException(Action.list, null, new IllegalArgumentException("test"));
+        assertTrue(ex.getMessage().contains(Action.list.toString()));
+    }
+
+    @Test
+    public void testConstructorIVa() {
+        new ReservedOperationException(Action.list, "test");
+    }
+
+    @Test
+    public void testConstructorIVb() {
+        new ReservedOperationException(Action.list, null);
     }
 
     @Test(expected=RuntimeException.class)

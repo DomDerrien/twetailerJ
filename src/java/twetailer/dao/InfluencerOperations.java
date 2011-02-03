@@ -131,7 +131,24 @@ public class InfluencerOperations extends BaseOperations {
 
     public static final char INFORMATION_SEPARATOR = '-';
 
-    public static boolean verifyReferralIdValidity(PersistenceManager pm, String referralId) {
+    /**
+     * Verifies the referral identifier syntax and look-up into the
+     * data store to be sure that the given identifier has not been forged
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param referralId identifier to process
+     * @return <code>true</code> if the identifier is really associated to an valid Influencer record
+     */
+    public boolean verifyReferralIdValidity(PersistenceManager pm, String referralId) {
+        if (referralId == null) {
+            return false;
+        }
+        if (Influencer.DEFAULT_REFERRAL_ID.equals(referralId)) {
+            return true;
+        }
+        if (referralId.length() < 5) {
+            return false;
+        }
         int limit = referralId.length();
         int idx = 0, firstDash = -1, secondDash = -1;
         while (idx < limit) {
@@ -167,6 +184,9 @@ public class InfluencerOperations extends BaseOperations {
         return true;
     }
 
+    /**
+     * Extracts the Influencer record key from the given referral identifier
+     */
     public static Long getInfluencerKey(String referralId) {
         if (referralId == null || referralId.length() < 2) {
             return Long.valueOf(Influencer.DEFAULT_REFERRAL_ID);
@@ -175,6 +195,9 @@ public class InfluencerOperations extends BaseOperations {
         return Long.valueOf(referralId.substring(0, referralId.indexOf(InfluencerOperations.INFORMATION_SEPARATOR)));
     }
 
+    /**
+     * Extracts the variable part in the referral identifier (last two digits after the second dash)
+     */
     public static Long getReferralVariableIndex(String referralId) {
         if (referralId == null || referralId.length() < 2) {
             return Long.valueOf(Influencer.DEFAULT_REFERRAL_ID);

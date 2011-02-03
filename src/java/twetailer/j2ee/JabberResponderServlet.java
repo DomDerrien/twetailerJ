@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
+import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
@@ -51,8 +52,8 @@ public class JabberResponderServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(JabberResponderServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 

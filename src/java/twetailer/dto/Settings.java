@@ -116,7 +116,7 @@ public class Settings extends Entity implements Serializable, TransferObject {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         setName(in.getString(NAME));

@@ -1,6 +1,7 @@
 package twetailer.task.step;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -91,16 +92,18 @@ public class LocationSteps extends BaseSteps {
             output = new ArrayList<Location>();
         }
         else if (!withBounds || !parameters.containsKey(Demand.RANGE)) {
-            output = new ArrayList<Location>(1);
-            output.add(center);
+            output = Arrays.asList(new Location[] { center });
         }
         else {
             Double range = parameters.getDouble(Demand.RANGE);
             String rangeUnit = parameters.getString(Demand.RANGE_UNIT);
-            boolean hasStore = !parameters.containsKey(Location.HAS_STORE) || parameters.getBoolean(Location.HAS_STORE);
+            boolean hasStore = parameters.containsKey(Location.HAS_STORE) && parameters.getBoolean(Location.HAS_STORE);
 
             output = getLocationOperations().getLocations(pm, center, range, rangeUnit, hasStore, maximumResults);
-            output.add(center);
+            if (!hasStore || hasStore && center.hasStore()) {
+                output = new ArrayList<Location>(output);
+                output.add(center);
+            }
         }
 
         return output;

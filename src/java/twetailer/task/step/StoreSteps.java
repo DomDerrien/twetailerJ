@@ -76,7 +76,7 @@ public class StoreSteps extends BaseSteps {
         return queryFilters;
     }
 
-    public static Store createStore(PersistenceManager pm, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws ClientException {
+    public static Store createStore(PersistenceManager pm, JsonObject parameters, boolean isPrivileged) throws ClientException {
         // Verify the logged user rights
         if (!isPrivileged) {
             throw new ReservedOperationException("Store instances can only be created by admins");
@@ -104,11 +104,7 @@ public class StoreSteps extends BaseSteps {
         return store;
     }
 
-    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException {
-        // Verify the logged user rights
-        if (!isUserAdmin && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getStoreKey().equals(storeKey)) {
-            throw new ReservedOperationException("Store instances can only be created by Store admins");
-        }
+    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException {
 
         Store store = getStoreOperations().getStore(pm, storeKey);
         Long initialLocationKey = store.getLocationKey();
@@ -126,5 +122,14 @@ public class StoreSteps extends BaseSteps {
         }
 
         return store;
+    }
+
+    public static void deleteStore(PersistenceManager pm, Long storeKey, boolean isPrivileged) throws InvalidIdentifierException {
+        // Verify the logged user rights
+        if (!isPrivileged) {
+            Store store = getStoreOperations().getStore(pm, storeKey);
+            store.setMarkedForDeletion(Boolean.TRUE);
+            getStoreOperations().updateStore(pm, store);
+        }
     }
 }

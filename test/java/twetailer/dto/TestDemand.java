@@ -1,32 +1,21 @@
 package twetailer.dto;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import twetailer.connector.BaseConnector.Source;
-import twetailer.validator.LocaleValidator;
-import twetailer.validator.CommandSettings.Action;
-import twetailer.validator.CommandSettings.State;
-
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -65,100 +54,21 @@ public class TestDemand {
         assertNotNull(object.getCreationDate());
     }
 
-    Action action = Action.cancel;
-    Long ownerKey = 12345L;
-    Long rawCommandId = 67890L;
-    Source source = Source.simulated;
-    State state = State.closed;
-
-    List<String> cc = new ArrayList<String>(Arrays.asList(new String[] {"cc1", "cc2"}));
-    List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    Date expirationDate = new Date(new Date().getTime() + 65536L);
-    Long locationKey = 67890L;
-    List<Long> proposalKeys = new ArrayList<Long>(Arrays.asList(new Long[] {12345L, 67890L}));
-    Long quantity = 15L;
-    Double range = 25.52D;
-    String rangeUnit = LocaleValidator.MILE_UNIT;
-    List<Long> saleAssociateKeys = new ArrayList<Long>(Arrays.asList(new Long[] {1111L, 2222L}));
+    Long key = 543452L;
+    List<Long> proposalKeys = Arrays.asList(new Long[] {12345L, 67890L});
+    List<Long> saleAssociateKeys = Arrays.asList(new Long[] {1111L, 2222L});
 
     @Test
     public void testAccessors() {
         Demand object = new Demand();
 
-        // Command
-        object.setAction(action);
-        object.setAction(action.toString());
-        object.setOwnerKey(ownerKey);
-        object.setRawCommandId(rawCommandId);
-        object.setSource(source);
-        object.setSource(source.toString());
-        object.setState(state);
-        object.setState(state.toString());
-
         // Demand
-        object.setCriteria(criteria);
-        object.setExpirationDate(expirationDate);
-        object.setLocationKey(locationKey);
         object.setProposalKeys(proposalKeys);
-        object.setQuantity(quantity);
-        object.setRange(range);
-        object.setRangeUnit(rangeUnit);
         object.setSaleAssociateKeys(saleAssociateKeys);
 
-        // Command
-        assertEquals(action, object.getAction());
-        assertEquals(action, object.getAction());
-        assertEquals(ownerKey, object.getOwnerKey());
-        assertEquals(rawCommandId, object.getRawCommandId());
-        assertEquals(source, object.getSource());
-        assertEquals(state, object.getState());
-
         // Demand
-        assertEquals(criteria, object.getCriteria());
-        assertEquals(expirationDate, object.getExpirationDate());
-        assertEquals(locationKey, object.getLocationKey());
         assertEquals(proposalKeys, object.getProposalKeys());
-        assertEquals(quantity, object.getQuantity());
-        assertEquals(range, object.getRange());
-        assertEquals(rangeUnit, object.getRangeUnit());
         assertEquals(saleAssociateKeys, object.getSaleAssociateKeys());
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testResetCriteriaI() {
-        Demand object = new Demand();
-
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("first"); // Add it twice
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("second");
-        assertEquals(2, object.getCriteria().size());
-
-        object.removeCriterion("first"); // Remove first
-        assertEquals(1, object.getCriteria().size());
-
-        object.resetCriteria(); // Reset all
-        assertEquals(0, object.getCriteria().size());
-
-        object.setCriteria(null); // Failure!
-    }
-
-    @Test
-    public void testResetCriteriaII() {
-        Demand object = new Demand();
-
-        object.resetLists(); // To force the criteria list creation
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.resetLists(); // To be sure there's no error
-        object.removeCriterion("first"); // Remove first
-
-        object.resetLists(); // To be sure there's no error
-        object.resetCriteria(); // Reset all
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -204,56 +114,6 @@ public class TestDemand {
     }
 
     @Test(expected=IllegalArgumentException.class)
-    public void testSetAction() {
-        Demand object = new Demand();
-
-        object.setAction((Action) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testResetExpirationDate() {
-        Demand object = new Demand();
-
-        object.setExpirationDate(null);
-    }
-
-    /** Relaxed validation because user's can give invalid dates up-front!
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetExpirationDateInPast() {
-        Demand object = new Demand();
-
-        object.setExpirationDate(new Date(12345L));
-    }
-    */
-
-    @Test
-    public void testSetRangeUnit() {
-        Demand object = new Demand();
-
-        object.setRangeUnit(LocaleValidator.MILE_UNIT.toLowerCase(Locale.ENGLISH));
-        assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
-
-        object.setRangeUnit(LocaleValidator.MILE_UNIT.toUpperCase(Locale.ENGLISH));
-        assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
-
-        object.setRangeUnit(LocaleValidator.ALTERNATE_MILE_UNIT.toUpperCase(Locale.ENGLISH));
-        assertEquals(LocaleValidator.MILE_UNIT, object.getRangeUnit());
-
-        object.setRangeUnit("zzz");
-        assertEquals(LocaleValidator.KILOMETER_UNIT, object.getRangeUnit());
-
-        object.setRangeUnit(null);
-        assertEquals(LocaleValidator.KILOMETER_UNIT, object.getRangeUnit());
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetState() {
-        Demand object = new Demand();
-
-        object.setState((State) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
     public void testResetSaleAssociateKeysI() {
         Demand object = new Demand();
 
@@ -291,111 +151,100 @@ public class TestDemand {
     }
 
     @Test
-    public void testJsonDemandsI() {
+    public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Demand object = new Demand();
 
-        // Command
-        object.setAction(action);
-        object.setOwnerKey(ownerKey);
-        object.setRawCommandId(rawCommandId);
-        object.setSource(source);
-        object.setState(state);
+        object.setKey(key);
 
-        // Demand
-        object.setCC(cc);
-        object.setCriteria(criteria);
-        object.setExpirationDate(expirationDate);
-        object.setLocationKey(locationKey);
         object.setProposalKeys(proposalKeys);
-        object.setQuantity(quantity);
-        object.setRange(range);
-        object.setRangeUnit(rangeUnit);
         object.setSaleAssociateKeys(saleAssociateKeys);
 
-        Demand clone = new Demand(object.toJson());
+        Demand clone = new Demand();
+        clone.fromJson(object.toJson(), true, true);
 
-        // Command
-        assertEquals(Action.demand, clone.getAction()); // Cannot be overridden
-        assertNull(clone.getOwnerKey()); // Cannot be overridden
-        assertNull(clone.getRawCommandId()); // Cannot be overridden
-        assertEquals(source, clone.getSource());
-        assertEquals(State.opened, clone.getState());
+        assertEquals(key, clone.getKey());
 
-        // Demand
-        assertEquals(cc, clone.getCC());
-        assertEquals(criteria, clone.getCriteria());
-        assertEquals(DateUtils.dateToISO(expirationDate), DateUtils.dateToISO(clone.getExpirationDate()));
-        assertEquals(locationKey, clone.getLocationKey());
-        assertEquals(0, clone.getProposalKeys().size()); // Cannot be overridden
-        assertEquals(quantity, clone.getQuantity());
-        assertEquals(range, clone.getRange());
-        assertEquals(rangeUnit, clone.getRangeUnit());
-        assertEquals(0, clone.getSaleAssociateKeys().size()); // Cannot be overridden
-        assertTrue(clone.getStateCmdList()); // As it has been set to State.opened
+        assertEquals(2, clone.getProposalKeys().size());
+        for (int idx = 0; idx < object.getProposalKeys().size(); idx ++) {
+            assertEquals(object.getProposalKeys().get(idx), clone.getProposalKeys().get(idx));
+        }
+        assertEquals(2, clone.getSaleAssociateKeys().size());
+        for (int idx = 0; idx < object.getSaleAssociateKeys().size(); idx ++) {
+            assertEquals(object.getSaleAssociateKeys().get(idx), clone.getSaleAssociateKeys().get(idx));
+        }
     }
 
     @Test
-    public void testJsonDemandsII() {
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Demand object = new Demand();
-        object.setSource(source);
 
-        // Command
-        assertNull(object.getRawCommandId());
+        Demand clone = new Demand();
+        clone.fromJson(object.toJson(), true, true);
 
-        // Demand
-        assertNull(object.getLocationKey());
-        assertEquals(0, object.getCriteria().size());
-        assertEquals(0, object.getProposalKeys().size());
-        assertEquals(0, object.getSaleAssociateKeys().size());
+        assertEquals(0, clone.getProposalKeys().size());
+        assertEquals(0, clone.getSaleAssociateKeys().size());
 
-        Demand clone = new Demand(object.toJson());
+        object.resetLists();
 
-        // Command
-        assertNull(clone.getRawCommandId());
+        clone = new Demand();
+        clone.fromJson(object.toJson(), true, true);
 
-        // Demand
-        assertNull(clone.getLocationKey());
-        assertEquals(0, clone.getCriteria().size());
         assertEquals(0, clone.getProposalKeys().size());
         assertEquals(0, clone.getSaleAssociateKeys().size());
     }
 
     @Test
-    public void testJsonDemandsIII() {
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
         Demand object = new Demand();
-        object.setSource(source);
 
-        object.resetLists();
+        object.setKey(key);
 
-        // Demand
-        assertNull(object.getCriteria());
-        assertNull(object.getProposalKeys());
-        assertNull(object.getSaleAssociateKeys());
+        object.setProposalKeys(proposalKeys);
+        object.setSaleAssociateKeys(saleAssociateKeys);
 
-        Demand clone = new Demand(object.toJson());
+        Demand clone = new Demand();
+        clone.fromJson(object.toJson(), true, false);
 
-        // Demand
-        assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
-        assertEquals(0, clone.getProposalKeys().size()); // Not null because the clone object creation creates empty List<Long>
-        assertEquals(0, clone.getSaleAssociateKeys().size()); // Not null because the clone object creation creates empty List<Long>
+        assertEquals(key, clone.getKey());
+
+        assertEquals(2, clone.getProposalKeys().size());
+        for (int idx = 0; idx < object.getProposalKeys().size(); idx ++) {
+            assertEquals(object.getProposalKeys().get(idx), clone.getProposalKeys().get(idx));
+        }
+        assertEquals(2, clone.getSaleAssociateKeys().size());
+        for (int idx = 0; idx < object.getSaleAssociateKeys().size(); idx ++) {
+            assertEquals(object.getSaleAssociateKeys().get(idx), clone.getSaleAssociateKeys().get(idx));
+        }
     }
 
     @Test
-    public void testInvalidDateFormat() throws JsonException {
-        Demand object = new Demand();
-        object.setSource(source);
-        Date date = object.getExpirationDate();
-
-        object.fromJson(new JsonParser("{'" + Demand.EXPIRATION_DATE + "':'2009-01-01Tzzz'}").getJsonObject());
-
-        assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(object.getExpirationDate())); // Corrupted date did not alter the original date
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetSource() {
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
         Demand object = new Demand();
 
-        object.setSource((Source) null);
+        object.setKey(key);
+
+        object.setProposalKeys(proposalKeys);
+        object.setSaleAssociateKeys(saleAssociateKeys);
+
+        Demand clone = new Demand();
+        clone.fromJson(object.toJson());
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(0, clone.getProposalKeys().size());
+        assertEquals(0, clone.getSaleAssociateKeys().size());
     }
 
     @Test
@@ -405,44 +254,6 @@ public class TestDemand {
         parameters.put(Demand.REFERENCE, key);
 
         assertEquals(key, new Demand(parameters).getKey());
-    }
-
-    @Test
-    public void testSetStateCommandList() {
-        Demand demand = new Demand();
-        // demand.getState() == State.opened by default
-        assertTrue(demand.getStateCmdList());
-
-        demand.setState(State.cancelled);
-        assertFalse(demand.getStateCmdList());
-
-        demand.setState(State.invalid);
-        assertTrue(demand.getStateCmdList());
-
-        demand.setState(State.declined);
-        assertFalse(demand.getStateCmdList());
-
-        demand.setState(State.published);
-        assertTrue(demand.getStateCmdList());
-
-        demand.setState(State.markedForDeletion);
-        assertFalse(demand.getStateCmdList());
-
-        demand.setState(State.opened);
-        assertTrue(demand.getStateCmdList());
-
-        demand.setState(State.closed);
-        assertFalse(demand.getStateCmdList());
-    }
-
-    @Test
-    public void testGetSerialized() {
-        Demand demand = new Demand();
-        demand.addCriterion("one");
-        demand.addCriterion("two");
-        demand.addCriterion("three");
-
-        assertEquals("one two three", demand.getSerializedCriteria());
     }
 
     @Test
@@ -457,27 +268,9 @@ public class TestDemand {
         demand.addProposalKey(3333L);
 
         assertEquals("1111 2222 3333", demand.getSerializedProposalKeys(defaultLabel));
-    }
 
-    @Test
-    public void testGetStateCmdList() {
-        Demand demand = new Demand();
-        assertTrue(demand.getStateCmdList());
-        demand.setStateCmdList(null);
-        assertTrue(demand.getStateCmdList());
-        demand.setStateCmdList(false);
-        assertFalse(demand.getStateCmdList());
-        demand.setStateCmdList(true);
-        assertTrue(demand.getStateCmdList());
-    }
-
-    @Test
-    public void testGetDueDate() {
-        Demand demand = new Demand();
-        Date now = DateUtils.getNowDate();
-        demand.setExpirationDate(now);
-        demand.setDueDate(null);
-        assertEquals(now, demand.getDueDate());
+        demand.resetLists();
+        assertEquals(defaultLabel, demand.getSerializedProposalKeys(defaultLabel));
     }
 
     @Test
@@ -496,64 +289,5 @@ public class TestDemand {
         demand.removeProposalKey(54321L);
         assertEquals(1, demand.getProposalKeys().size());
         assertEquals(Long.valueOf(12345L), demand.getProposalKeys().get(0));
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetRange() {
-        new Demand().setRange((Double) null);
-    }
-
-    @Test
-    public void testFromJsonI() {
-        Calendar now = DateUtils.getNowCalendar();
-        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
-
-        JsonObject parameters = new GenericJsonObject();
-        parameters.put(Demand.EXPIRATION_DATE, DateUtils.dateToISO(now.getTime()));
-
-        assertEquals(now.getTime(), new Demand(parameters).getDueDate());
-    }
-
-    @Test
-    public void testFromJsonII() {
-        Long key = 12345L;
-        Calendar now = DateUtils.getNowCalendar();
-        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
-
-        Demand demand = new Demand();
-        Date dueDate = demand.getDueDate();
-
-        JsonObject parameters = new GenericJsonObject();
-        parameters.put(Entity.KEY, key);
-        parameters.put(Demand.EXPIRATION_DATE, DateUtils.dateToISO(now.getTime()));
-
-        demand.fromJson(parameters);
-        assertEquals(dueDate, demand.getDueDate());
-    }
-
-    @Test
-    public void testFromJsonIII() {
-        Calendar now = DateUtils.getNowCalendar();
-        now.set(Calendar.MILLISECOND, 0); // as milliseconds are ignored by the ISO format
-
-        JsonObject parameters = new GenericJsonObject();
-        parameters.put(Command.DUE_DATE, DateUtils.dateToISO(now.getTime()));
-
-        assertEquals(now.getTime(), new Demand(parameters).getExpirationDate());
-    }
-
-    @Test
-    public void testFromJsonIV() {
-        Long key = 12345L;
-
-        Demand demand = new Demand();
-        Date expirationDate = demand.getExpirationDate();
-        demand.setDueDate(null);
-
-        JsonObject parameters = new GenericJsonObject();
-        parameters.put(Entity.KEY, key);
-
-        demand.fromJson(parameters);
-        assertEquals(expirationDate, demand.getExpirationDate());
     }
 }

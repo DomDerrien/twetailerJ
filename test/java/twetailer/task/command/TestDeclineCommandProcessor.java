@@ -18,6 +18,7 @@ import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dto.Command;
@@ -73,7 +74,6 @@ public class TestDeclineCommandProcessor {
     }
 
     @Test
-    @Ignore
     public void testProcessCommandDeclineIII() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long consumerKey = 6666L;
@@ -105,13 +105,21 @@ public class TestDeclineCommandProcessor {
     }
 
     @Test
-    @Ignore
     public void testProcessCommandDeclineIV() throws TwitterException, DataSourceException, ClientException {
         final Long proposalKey = 4444L;
         final Long demandKey = 5555L;
         final Long consumerKey = 6666L;
         final Long saleAssociateKey = 7777L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // ProposalOperations mock
         BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override

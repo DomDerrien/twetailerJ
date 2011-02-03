@@ -9,6 +9,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.LoginServlet;
@@ -71,16 +72,13 @@ public class StoreRestlet extends BaseRestlet {
 
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        if (!isUserAdmin) {
+            throw new ReservedOperationException("Only Admins can create Store records!");
+        }
+
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Store store = StoreSteps.createStore(
-                    pm,
-                    parameters,
-                    LoginServlet.getConsumer(loggedUser, pm),
-                    LoginServlet.getSaleAssociate(loggedUser, pm),
-                    isUserAdmin
-            );
-            return store.toJson();
+            return StoreSteps.createStore(pm, parameters, isUserAdmin).toJson();
         }
         finally {
             pm.close();
@@ -91,12 +89,19 @@ public class StoreRestlet extends BaseRestlet {
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, NumberFormatException, ReservedOperationException, InvalidIdentifierException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
+            Long storeKey = Long.valueOf(resourceId);
+
+            if (!isUserAdmin) {
+                SaleAssociate saleAssociate = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (!saleAssociate.getStoreKey().equals(storeKey)) {
+                    throw new ReservedOperationException("Only Admins can create Store records!");
+                }
+            }
+
             Store store = StoreSteps.updateStore(
                     pm,
-                    Long.valueOf(resourceId),
+                    storeKey,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser, pm),
-                    LoginServlet.getSaleAssociate(loggedUser, pm),
                     isUserAdmin
             );
             return store.toJson();
@@ -106,43 +111,19 @@ public class StoreRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
-
     @Override
     protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        if (isUserAdmin) {
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                Long storeKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, storeKey);
-                return;
-            }
-            finally {
-                pm.close();
-            }
+        if (!isUserAdmin) {
+            throw new ReservedOperationException("Restricted access!");
         }
-        throw new ClientException("Restricted access!");
-    }
 
-    /**
-     * Delete the Store instances based on the specified criteria.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param storeKey Identifier of the resource to delete
-     * @return Serialized list of the Store instances matching the given criteria
-
-     * @throws DataSourceException If the query to the back-end fails
-     *
-     * @see SaleAssociateRestlet#delegateResourceDeletion(PersistenceManager, Long)
-     */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long storeKey) throws InvalidIdentifierException{
-        // Delete the store account
-        Store store = BaseSteps.getStoreOperations().getStore(pm, storeKey);
-        BaseSteps.getStoreOperations().deleteStore(pm, store);
-        // Delete attached sale associates
-//        List<Long> saleAssociateKeys = BaseSteps.getSaleAssociateOperations().getSaleAssociateKeys(pm, SaleAssociate.STORE_KEY, storeKey, 0);
-//        for (Long key: saleAssociateKeys) {
-//            new SaleAssociateRestlet().delegateResourceDeletion(pm, key);
-//        }
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long storeKey = Long.valueOf(resourceId);
+            StoreSteps.deleteStore(pm, storeKey, isUserAdmin);
+        }
+        finally {
+            pm.close();
+        }
     }
 }

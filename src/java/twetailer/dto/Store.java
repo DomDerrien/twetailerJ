@@ -215,22 +215,18 @@ public class Store extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(ADDRESS, getAddress());
+        if (getAddress() != null) { out.put(ADDRESS, getAddress()); }
         out.put(CLOSED_PROPOSAL_NB, getClosedProposalNb() == null ? 0L : getClosedProposalNb());
-        out.put(EMAIL, getEmail());
+        if (getEmail() != null) { out.put(EMAIL, getEmail()); }
         out.put(LATITUDE, getLatitude());
         out.put(LONGITUDE, getLongitude());
-        out.put(NAME, getName());
-        out.put(PHONE_NUMBER, getPhoneNumber());
+        if (getName() != null) { out.put(NAME, getName()); }
+        if (getPhoneNumber() != null) { out.put(PHONE_NUMBER, getPhoneNumber()); }
         out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
-        if (getRegistrarKey() != null) {
-            out.put(REGISTRAR_KEY, getRegistrarKey());
-        }
-        if (getReviewSystemKey() != null) {
-            out.put(REVIEW_SYSTEM_KEY, getReviewSystemKey());
-        }
+        if (getRegistrarKey() != null) { out.put(REGISTRAR_KEY, getRegistrarKey()); }
+        if (getReviewSystemKey() != null) { out.put(REVIEW_SYSTEM_KEY, getReviewSystemKey()); }
         out.put(STATE, getState().toString());
-        out.put(URL, getUrl());
+        if (getUrl() != null) { out.put(URL, getUrl()); }
         return out;
     }
 
@@ -240,7 +236,7 @@ public class Store extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }

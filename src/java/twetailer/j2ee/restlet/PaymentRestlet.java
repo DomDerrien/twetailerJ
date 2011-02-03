@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.task.step.BaseSteps;
 
@@ -24,33 +25,31 @@ public class PaymentRestlet extends BaseRestlet {
 
     public Logger getLogger() { return log; }
 
-    protected static SaleAssociateRestlet saleAssociateRestlet = new SaleAssociateRestlet();
-
     @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        throw new ClientException("Restricted access!");
-    }
-
-    @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        throw new ClientException("Restricted access!");
-    }
-
-    @Override
-    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException {
+    protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException {
         if (isUserAdmin) {
             return BaseSteps.getPaymentOperations().getPayment(Long.valueOf(resourceId)).toJson();
         }
-        throw new RuntimeException("Not yet implemented!");
+        throw new ReservedOperationException("Restricted access!");
     }
 
     @Override
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        throw new RuntimeException("Restricted access!");
+    }
+
+    @Override
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        throw new RuntimeException("Restricted access!");
     }
 
     @Override
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
+        throw new RuntimeException("Restricted access!");
+    }
+
+    @Override
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        throw new RuntimeException("Restricted access!");
     }
 }

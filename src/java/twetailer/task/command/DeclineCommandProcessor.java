@@ -43,7 +43,7 @@ public class DeclineCommandProcessor {
             String message = null;
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
-                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshDeclineParameters(), consumer);
+                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshDeclineParameters(), consumer.getKey());
                 // Echo back the successful confirmation
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
                 message = LabelExtractor.get("cp_command_decline_acknowledge_proposal_declination", new Object[] { proposalRef }, locale);

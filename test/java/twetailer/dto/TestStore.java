@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.dto.Store.State;
+
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -50,57 +52,214 @@ public class TestStore {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 7654365L;
+    Long closedProposalNb = 6453222L;
     String address = "North Pole, H0H 0H0, Canada";
     String email = "d.d@d.dom";
-    Long locationKey = 12345L;
+    Double latitude = 45.0D;
+    Double longitude = -27.5D;
     String name = "dom";
     String phoneNumber = "514-123-4567 #890";
+    Long publishedProposalNb = 645645L;
+    Long registrarKey = 65324354L;
+    Long reviewSystemKey = 76547095L;
+    State state = State.waiting;
+    String url = "http://unit-test.org";
 
     @Test
     public void testAccessors() {
         Store object = new Store();
 
+        object.setKey(key);
+
         object.setAddress(address);
+        object.setClosedProposalNb(closedProposalNb);
         object.setEmail(email);
-        object.setLocationKey(locationKey);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
         object.setName(name);
         object.setPhoneNumber(phoneNumber);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setRegistrarKey(registrarKey);
+        object.setReviewSystemKey(reviewSystemKey);
+        object.setState(state);
+        object.setState(state.toString());
+        object.setUrl(url);
+
+        assertEquals(key, object.getKey());
 
         assertEquals(address, object.getAddress());
+        assertEquals(closedProposalNb, object.getClosedProposalNb());
         assertEquals(email, object.getEmail());
-        assertEquals(locationKey, object.getLocationKey());
+        assertEquals(latitude, object.getLatitude());
+        assertEquals(longitude, object.getLongitude());
         assertEquals(name, object.getName());
         assertEquals(phoneNumber, object.getPhoneNumber());
+        assertEquals(publishedProposalNb, object.getPublishedProposalNb());
+        assertEquals(registrarKey, object.getRegistrarKey());
+        assertEquals(reviewSystemKey, object.getReviewSystemKey());
+        assertEquals(state, object.getState());
+        assertEquals(url, object.getUrl());
     }
 
     @Test
     public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Store object = new Store();
 
+        object.setKey(key);
+
         object.setAddress(address);
+        object.setClosedProposalNb(closedProposalNb);
         object.setEmail(email);
-        object.setLocationKey(locationKey);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
         object.setName(name);
         object.setPhoneNumber(phoneNumber);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setRegistrarKey(registrarKey);
+        object.setReviewSystemKey(reviewSystemKey);
+        object.setState(state);
+        object.setUrl(url);
 
-        Store clone = new Store(object.toJson());
+        Store clone = new Store();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(key, clone.getKey());
 
         assertEquals(address, clone.getAddress());
+        assertEquals(closedProposalNb, clone.getClosedProposalNb());
         assertEquals(email, clone.getEmail());
-        assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(latitude, clone.getLatitude());
+        assertEquals(longitude, clone.getLongitude());
         assertEquals(name, clone.getName());
         assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(publishedProposalNb, clone.getPublishedProposalNb());
+        assertEquals(registrarKey, clone.getRegistrarKey());
+        assertEquals(reviewSystemKey, clone.getReviewSystemKey());
+        assertEquals(state, clone.getState());
+        assertEquals(url, clone.getUrl());
     }
 
     @Test
     public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Store object = new Store();
 
-        assertNull(object.getLocationKey());
+        Store clone = new Store();
+        clone.fromJson(object.toJson(), true, true);
 
-        Store clone = new Store(object.toJson());
+        assertNull(clone.getAddress());
+        assertEquals(0L, clone.getClosedProposalNb().longValue());
+        assertNull(clone.getEmail());
+        assertEquals(Location.INVALID_COORDINATE, clone.getLatitude());
+        assertEquals(Location.INVALID_COORDINATE, clone.getLongitude());
+        assertNull(clone.getName());
+        assertNull(clone.getPhoneNumber());
+        assertEquals(0L, clone.getPublishedProposalNb().longValue());
+        assertNull(clone.getRegistrarKey());
+        assertNull(clone.getReviewSystemKey());
+        assertEquals(State.referenced, clone.getState());
+        assertNull(clone.getUrl());
+    }
 
-        assertNull(clone.getLocationKey());
+    @Test
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
+        Store object = new Store();
+
+        object.setKey(key);
+
+        object.setAddress(address);
+        object.setClosedProposalNb(closedProposalNb);
+        object.setEmail(email);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
+        object.setName(name);
+        object.setPhoneNumber(phoneNumber);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setRegistrarKey(registrarKey);
+        object.setReviewSystemKey(reviewSystemKey);
+        object.setState(state);
+        object.setUrl(url);
+
+        Store clone = new Store();
+        clone.fromJson(object.toJson(), true, false);
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(address, clone.getAddress());
+        assertEquals(closedProposalNb, clone.getClosedProposalNb());
+        assertEquals(email, clone.getEmail());
+        assertEquals(latitude, clone.getLatitude());
+        assertEquals(longitude, clone.getLongitude());
+        assertEquals(name, clone.getName());
+        assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertEquals(publishedProposalNb, clone.getPublishedProposalNb());
+        assertEquals(registrarKey, clone.getRegistrarKey());
+        assertEquals(reviewSystemKey, clone.getReviewSystemKey());
+        assertEquals(state, clone.getState());
+        assertEquals(url, clone.getUrl());
+    }
+
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update (lower)
+        //
+        Store object = new Store();
+
+        // object.setKey(key);
+
+        object.setAddress(address);
+        object.setClosedProposalNb(closedProposalNb);
+        object.setEmail(email);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
+        object.setName(name);
+        object.setPhoneNumber(phoneNumber);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setRegistrarKey(registrarKey);
+        object.setReviewSystemKey(reviewSystemKey);
+        object.setState(state);
+        object.setUrl(url);
+
+        Store clone = new Store();
+        clone.fromJson(object.toJson());
+
+        assertEquals(address, clone.getAddress());
+        assertNull(clone.getClosedProposalNb());
+        assertEquals(email, clone.getEmail());
+        assertEquals(latitude, clone.getLatitude());
+        assertEquals(longitude, clone.getLongitude());
+        assertEquals(name, clone.getName());
+        assertEquals(phoneNumber, clone.getPhoneNumber());
+        assertNull(clone.getPublishedProposalNb());
+        assertNull(clone.getRegistrarKey());
+        assertEquals(reviewSystemKey, clone.getReviewSystemKey());
+        assertEquals(State.referenced, clone.getState());
+        assertEquals(url, clone.getUrl());
+    }
+
+    @Test
+    public void testJsonCommandsV() {
+        //
+        // User update (lower)
+        //
+        JsonObject json = new GenericJsonObject();
+
+        Store clone = new Store();
+        clone.fromJson(json, true, true);
+
+        assertNull(clone.getClosedProposalNb());
+        assertNull(clone.getPublishedProposalNb());
+        assertEquals(State.referenced, clone.getState());
     }
 
     @Test
@@ -154,5 +313,37 @@ public class TestStore {
         assertNull(store.getPhoneNumber());
         store.setPhoneNumber("test");
         assertEquals("test", store.getPhoneNumber());
+    }
+
+    @Test
+    public void testSetLatitude() {
+        Store object = new Store();
+
+        assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
+
+        object.setLatitude(null);
+        assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
+
+        object.setLatitude(90.00001);
+        assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
+
+        object.setLatitude(-90.00001);
+        assertEquals(Location.INVALID_COORDINATE, object.getLatitude());
+    }
+
+    @Test
+    public void testSetLongitude() {
+        Store object = new Store();
+
+        assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
+
+        object.setLongitude(null);
+        assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
+
+        object.setLongitude(180.00001);
+        assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
+
+        object.setLongitude(-180.00001);
+        assertEquals(Location.INVALID_COORDINATE, object.getLongitude());
     }
 }

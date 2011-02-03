@@ -50,7 +50,7 @@ public class TestProposalProcessor {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ProposalProcessor.setLogger(new MockLogger("test", null));
+        ProposalProcessor.setMockLogger(new MockLogger("test", null));
     }
 
     @Before

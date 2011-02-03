@@ -51,14 +51,14 @@ public class TestProposalOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test(expected=RuntimeException.class)
@@ -131,7 +131,7 @@ public class TestProposalOperations {
         assertEquals(Long.valueOf(222L), object.getStoreKey());
     }
 
-    @Test
+    @Test(expected=ClientException.class)
     public void testCreateIV() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 333L);

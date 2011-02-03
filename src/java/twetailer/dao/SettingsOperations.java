@@ -83,11 +83,10 @@ public class SettingsOperations extends BaseOperations {
             query.declareParameters("String value");
             query.setUnique(true);
             settings = (Settings) query.execute(Settings.APPLICATION_SETTINGS_ID);
-            if (settings != null) {
-                return settings;
+            if (settings == null) {
+                // Create the settings instance on the fly
+                settings = pm.makePersistent(new Settings());
             }
-            // Create the settings instance on the fly
-            settings = pm.makePersistent(new Settings());
             if (useCache) {
                 cacheSettings(settings);
             }

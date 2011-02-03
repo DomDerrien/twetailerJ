@@ -65,13 +65,9 @@ public class SaleAssociateSteps extends BaseSteps {
         return queryFilters;
     }
 
-    public static SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isPrivileged) throws DataSourceException, ClientException {
+    public static SaleAssociate createSaleAssociate(PersistenceManager pm, JsonObject parameters, Long creatorKey, Long storeKey, boolean isUserAdmin) throws DataSourceException, ClientException {
 
-        // Verify the logged user rights
-        if (!isPrivileged && !loggedSaleAssociate.isStoreAdmin()) {
-            throw new ReservedOperationException("SaleAssociate instances can only be created by Store admins");
-        }
-        parameters.put(SaleAssociate.CREATOR_KEY, isPrivileged ? 0L : loggedConsumer.getKey());
+        parameters.put(SaleAssociate.CREATOR_KEY, creatorKey);
 
         // Verify the consumerKey existence
         if (!parameters.containsKey(SaleAssociate.CONSUMER_KEY)) {
@@ -86,8 +82,8 @@ public class SaleAssociateSteps extends BaseSteps {
         }
 
         // Adjust the storeKey
-        if (!isPrivileged) {
-            parameters.put(SaleAssociate.STORE_KEY, loggedSaleAssociate.getStoreKey());
+        if (!isUserAdmin) {
+            parameters.put(SaleAssociate.STORE_KEY, storeKey);
         }
 
         // Propagate the store location
@@ -103,40 +99,33 @@ public class SaleAssociateSteps extends BaseSteps {
         return justCreated;
     }
 
-    public static SaleAssociate updateSaleAssociate(PersistenceManager pm, Long saleAssociateKey, JsonObject parameters, Consumer loggedConsumer, SaleAssociate loggedSaleAssociate, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException {
+    public static SaleAssociate updateSaleAssociate(PersistenceManager pm, Long saleAssociateKey, JsonObject parameters, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, ReservedOperationException {
 
-        // Verify the logged user rights
-        if (!isUserAdmin && !loggedSaleAssociate.isStoreAdmin() && !loggedSaleAssociate.getKey().equals(saleAssociateKey)) {
-            throw new ReservedOperationException("SaleAssociate instances can only be updated by Store admins or the user himself");
-        }
-
-        if (!loggedSaleAssociate.getKey().equals(saleAssociateKey)) {
-            // Redirection in case the action is triggered by an administrator
-            loggedSaleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
-        }
+        SaleAssociate saleAssociate = getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
+        Consumer saConsumerRecord = getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
 
         // Handle manually the supplied tags update
         if (parameters.containsKey(SaleAssociate.CRITERIA) || parameters.containsKey(SaleAssociate.CRITERIA_ADD) || parameters.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
-            Locale locale = loggedConsumer.getLocale();
+            Locale locale = saConsumerRecord.getLocale();
             Collator collator = LocaleValidator.getCollator(locale);
             if (parameters.containsKey(SaleAssociate.CRITERIA)) {
-                loggedSaleAssociate.resetCriteria();
+                saleAssociate.resetCriteria();
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
+                    saleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             Command.removeDuplicates(parameters, SaleAssociate.CRITERIA_ADD, SaleAssociate.CRITERIA_REMOVE);
             if (parameters.containsKey(SaleAssociate.CRITERIA_REMOVE)) {
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA_REMOVE);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.removeCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
+                    saleAssociate.removeCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             if (parameters.containsKey(SaleAssociate.CRITERIA_ADD)) {
                 JsonArray jsonArray = parameters.getJsonArray(SaleAssociate.CRITERIA_ADD);
                 for (int i=0; i<jsonArray.size(); ++i) {
-                    loggedSaleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
+                    saleAssociate.addCriterion(jsonArray.getString(i).toLowerCase(locale), collator);
                 }
             }
             parameters.remove(SaleAssociate.CRITERIA);
@@ -145,9 +134,19 @@ public class SaleAssociateSteps extends BaseSteps {
         }
 
         // Merge updates and persist them
-        loggedSaleAssociate.fromJson(parameters, isUserAdmin, false);
-        loggedSaleAssociate = getSaleAssociateOperations().updateSaleAssociate(pm, loggedSaleAssociate);
+        saleAssociate.fromJson(parameters, isUserAdmin, false);
+        saleAssociate = getSaleAssociateOperations().updateSaleAssociate(pm, saleAssociate);
 
-        return loggedSaleAssociate;
+        return saleAssociate;
+    }
+
+    public static void deleteSaleAssociate(PersistenceManager pm, Long saleAssociateKey, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException {
+
+        // Verify the logged user rights
+        if (!isUserAdmin) {
+            throw new ReservedOperationException("SaleAssociate instances can only be deleted by Store admins");
+        }
+
+        getSaleAssociateOperations().deleteSaleAssociate(pm, saleAssociateKey);
     }
 }

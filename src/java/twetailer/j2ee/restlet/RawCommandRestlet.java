@@ -22,7 +22,6 @@ import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.JsonUtils;
 
 /**
  * Restlet entry point for the Payment entity control.
@@ -34,16 +33,6 @@ public class RawCommandRestlet extends BaseRestlet {
     private static Logger log = Logger.getLogger(PaymentRestlet.class.getName());
 
     public Logger getLogger() { return log; }
-
-    @Override
-    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        throw new ReservedOperationException("Restricted access!");
-    }
-
-    @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        throw new ReservedOperationException("Restricted access!");
-    }
 
     @Override
     protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws InvalidIdentifierException, ReservedOperationException {
@@ -67,14 +56,24 @@ public class RawCommandRestlet extends BaseRestlet {
                 return new GenericJsonArray((List) BaseSteps.getRawCommandOperations().getRawCommandKeys(queryFilters, 0));
             }
             catch (ParseException ex) {
-                ex.printStackTrace();
+                throw new DataSourceException("Cannot parse date: " + parameters.getString(Entity.CREATION_DATE), ex);
             }
         }
         throw new ReservedOperationException("Restricted access!");
     }
 
     @Override
+    protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        throw new RuntimeException("Restricted access!");
+    }
+
+    @Override
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException {
-        throw new ReservedOperationException("Restricted access!");
+        throw new RuntimeException("Restricted access!");
+    }
+
+    @Override
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
+        throw new RuntimeException("Restricted access!");
     }
 }

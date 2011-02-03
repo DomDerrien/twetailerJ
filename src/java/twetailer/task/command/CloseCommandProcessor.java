@@ -46,7 +46,7 @@ public class CloseCommandProcessor {
             String message = null;
             Long entityKey = command.getLong(Demand.REFERENCE);
             try {
-                DemandSteps.updateDemand(pm, rawCommand, entityKey, getFreshCloseParameters(), consumer, false);
+                DemandSteps.updateDemand(pm, rawCommand, entityKey, getFreshCloseParameters(), consumer.getKey(), false);
                 return;
             }
             catch(InvalidIdentifierException ex) {
@@ -73,7 +73,7 @@ public class CloseCommandProcessor {
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.close, Demand.class.getName());
-                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshCloseParameters(), saleAssociate, consumer, false);
+                ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshCloseParameters(), saleAssociate.getKey(), consumer.getKey(), false);
                 return;
             }
             catch(InvalidIdentifierException ex) {

@@ -201,7 +201,7 @@ public class DemandSteps extends BaseSteps {
         // Remove the reference to the sale associates
         JsonArray saleAssociateKeys = demand.getJsonArray(Demand.SALE_ASSOCIATE_KEYS);
         int saleAssociateKeyNb = saleAssociateKeys == null ? 0 : saleAssociateKeys.size();
-        if (!QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
+        if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
             // Let it go with only the logged associate key
             saleAssociateKeys.removeAll();
             saleAssociateKeys.add(saleAssociateKey);
@@ -315,7 +315,7 @@ public class DemandSteps extends BaseSteps {
             }
         }
 
-        if (!parameters.containsKey(Demand.LOCATION_KEY) || !parameters.containsKey(Demand.RANGE) || !parameters.containsKey(Demand.RANGE_UNIT)) {
+        if (owner.getPublishedDemandNb() != null && (!parameters.containsKey(Demand.LOCATION_KEY) || !parameters.containsKey(Demand.RANGE) || !parameters.containsKey(Demand.RANGE_UNIT))) {
             // Inherits some attributes from the last created demand
             List<Demand> lastDemands = getDemands(pm, lastDemandQueryParameters, owner.getKey(), QueryPointOfView.CONSUMER, null);
             if (0 < lastDemands.size()) {
@@ -351,7 +351,7 @@ public class DemandSteps extends BaseSteps {
      * @param rawCommand Reference of the command which initiated the process, is <code>null</code> if initiated by a REST API call
      * @param demandKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
-     * @param owner Consumer who owns the demand to be updated
+     * @param ownerKey Key of the consumer who owns the demand to be updated
      * @param isUserAdmin
      * @return Just updated demand
      *
@@ -360,9 +360,10 @@ public class DemandSteps extends BaseSteps {
      * @throws InvalidStateException if the Demand is not update-able
      * @throws CommunicationException if the notification of a successful closing fails
      */
-    public static Demand updateDemand(PersistenceManager pm, RawCommand rawCommand, Long demandKey, JsonObject parameters, Consumer owner, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Demand updateDemand(PersistenceManager pm, RawCommand rawCommand, Long demandKey, JsonObject parameters, Long ownerKey, boolean isUserAdmin) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
-        Demand demand = getDemandOperations().getDemand(pm, demandKey, owner.getKey());
+        Consumer owner = BaseSteps.getConsumerOperations().getConsumer(pm, ownerKey);
+        Demand demand = getDemandOperations().getDemand(pm, demandKey, ownerKey);
         State currentState = demand.getState();
 
         // Workflow state change
@@ -457,7 +458,7 @@ public class DemandSteps extends BaseSteps {
             }
             // Cancel
             else if (!State.closed.equals(currentState) && State.cancelled.toString().equals(proposedState)) {
-                demand.setCancelerKey(owner.getKey());
+                demand.setCancelerKey(ownerKey);
 
                 // Confirm the demand canceling to the owner
                 if (rawCommand != null) {
@@ -495,7 +496,7 @@ public class DemandSteps extends BaseSteps {
 
                     // Cancel the associated Proposal
                     proposal.setState(State.cancelled);
-                    proposal.setCancelerKey(owner.getKey());
+                    proposal.setCancelerKey(ownerKey);
                     proposal = getProposalOperations().updateProposal(pm, proposal);
 
                     // Notify SaleAssociate about the confirmed Demand cancellation
@@ -533,7 +534,7 @@ public class DemandSteps extends BaseSteps {
                 }
                 else if (State.published.equals(currentState)) {
                     // Schedule the other proposal cancellation
-                    MaelzelServlet.triggerProposalCancellationTask(demand.getProposalKeys(), owner.getKey(), null);
+                    MaelzelServlet.triggerProposalCancellationTask(demand.getProposalKeys(), ownerKey, null);
 
                     // Detach the SaleAssociates and the Proposals
                     demand.resetProposalKeys();
@@ -598,15 +599,15 @@ public class DemandSteps extends BaseSteps {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demandKey Resource identifier
-     * @param owner Consumer who owns the demand to delete
+     * @param owner Key of the consumer who owns the demand to delete
      *
      * @throws DataSourceException if the retrieval of the last created demand or of the location information fail
      * @throws InvalidIdentifierException if there's an issue with the Demand identifier is invalid
-     * @throws InvalidStateException if the Demand is not already cancelled
+     * @throws InvalidStateException if the Demand is not already canceled
      */
-    public static void deleteDemand(PersistenceManager pm, Long demandKey, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
+    public static void deleteDemand(PersistenceManager pm, Long demandKey, Long ownerKey) throws DataSourceException, InvalidIdentifierException, InvalidStateException {
 
-        Demand demand = getDemandOperations().getDemand(pm, demandKey, owner.getKey());
+        Demand demand = getDemandOperations().getDemand(pm, demandKey, ownerKey);
 
         State currentState = demand.getState();
         if (!State.cancelled.equals(currentState)) {

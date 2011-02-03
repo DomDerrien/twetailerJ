@@ -75,8 +75,18 @@ public class TestCloseCommandProcessor {
 
     @Test
     public void testProcessCommandCloseI() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 654980834L;
         final Long demandKey = 5555L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -101,7 +111,11 @@ public class TestCloseCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -327,8 +341,18 @@ public class TestCloseCommandProcessor {
 
     @Test
     public void testProcessCommandCloseIV() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 76459032090954L;
         final Long demandKey = 5555L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -345,7 +369,11 @@ public class TestCloseCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

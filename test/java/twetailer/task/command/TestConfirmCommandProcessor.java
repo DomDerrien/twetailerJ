@@ -272,6 +272,15 @@ public class TestConfirmCommandProcessor {
         final Long saleAssociateKey = 542476L;
         final Long storeKey = 7777L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // ProposalOperations mock
         BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override
@@ -333,6 +342,15 @@ public class TestConfirmCommandProcessor {
         final Long saleAssociateKey = 542476L;
         final Long storeKey = 7777L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // ProposalOperations mock
         BaseSteps.setMockProposalOperations(new ProposalOperations() {
             @Override

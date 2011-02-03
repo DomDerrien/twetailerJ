@@ -25,6 +25,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.dto.Consumer;
+import twetailer.dto.Entity;
 import twetailer.dto.SaleAssociate;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
@@ -49,14 +50,14 @@ public class TestSaleAssociateOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test(expected=RuntimeException.class)
@@ -178,12 +179,20 @@ public class TestSaleAssociateOperations {
         object = ops.createSaleAssociate(object);
 
         List<SaleAssociate> objects = ops.getSaleAssociates(SaleAssociate.CONSUMER_KEY, object.getConsumerKey(), 1);
-        assertNotSame(0, objects.size());
+        assertEquals(1, objects.size());
         assertEquals(object.getKey(), objects.get(0).getKey());
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void testGetsII() throws ClientException, DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        List<SaleAssociate> objects = ops.getSaleAssociates(SaleAssociate.CONSUMER_KEY, 12345L, 1);
+        assertEquals(0, objects.size());
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testGetsIII() throws ClientException, DataSourceException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         SaleAssociateOperations ops = new SaleAssociateOperations() {
             @Override
@@ -227,6 +236,23 @@ public class TestSaleAssociateOperations {
         ops.updateSaleAssociate(new SaleAssociate());
     }
 
+    @Test(expected=DataSourceException.class)
+    public void testUpdateIII() throws ClientException, DataSourceException {
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
+        SaleAssociateOperations ops = new SaleAssociateOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return pm; // Return always the same object to be able to verify it has been closed
+            }
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose");
+            }
+        };
+
+        ops.updateSaleAssociate(new SaleAssociate());
+    }
+
     @Test
     public void testGetExtendedI() throws DataSourceException, InvalidIdentifierException {
         Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
@@ -236,7 +262,7 @@ public class TestSaleAssociateOperations {
 
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
 
-        SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey());
+        SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey(), true);
         assertNotNull(selected);
         assertEquals(item.getKey(), selected.getKey());
         assertNotNull(selected.getCriteria()); // No more nullified by the JPO by creation process - appengine 1.2.8
@@ -263,6 +289,21 @@ public class TestSaleAssociateOperations {
         assertNotSame(0, selected.getCriteria().size());
         assertEquals("first", selected.getCriteria().get(0));
         assertEquals("second", selected.getCriteria().get(1));
+    }
+
+    @Test
+    public void testGetExtendedII() throws DataSourceException, InvalidIdentifierException {
+        Consumer consumer = new ConsumerOperations().createConsumer(new User("test", "domain"));
+
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate item = ops.createSaleAssociate(consumer, 111L);
+        CacheHandler.resetInCache(SaleAssociate.class.getName() + "_key_" + item.getKey());
+
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
+
+        SaleAssociate selected = ops.getSaleAssociate(pm, item.getKey(), true);
+        assertNotNull(selected);
+        assertEquals(item.getKey(), selected.getKey());
     }
 
     @Test
@@ -340,6 +381,18 @@ public class TestSaleAssociateOperations {
     }
 
     @Test
+    public void testGetsFromMapII() throws DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(SaleAssociate.CONSUMER_KEY, 12345L);
+
+        List<SaleAssociate> selection = ops.getSaleAssociates(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test
     public void testGetKeysFromMapI() throws DataSourceException {
         SaleAssociateOperations ops = new SaleAssociateOperations();
 
@@ -380,5 +433,14 @@ public class TestSaleAssociateOperations {
         assertNull(object.getConsumerKey());
         object.setConsumerKey(111L);
         ops.deleteSaleAssociate(ops.getPersistenceManager(), object);
+    }
+
+    @Test
+    public void testDeleteIII() throws ClientException, DataSourceException {
+        SaleAssociateOperations ops = new SaleAssociateOperations();
+        SaleAssociate object = ops.createSaleAssociate(new SaleAssociate());
+        assertNull(object.getConsumerKey());
+        object.setConsumerKey(111L);
+        ops.deleteSaleAssociate(ops.getPersistenceManager(), new CacheHandler<SaleAssociate>(SaleAssociate.class.getName(), Entity.KEY).getCachedInstance(Entity.KEY, object.getKey()));
     }
 }

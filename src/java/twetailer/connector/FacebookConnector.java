@@ -5,12 +5,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javamocks.util.logging.MockLogger;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -44,8 +45,8 @@ public class FacebookConnector {
 
     private static Logger log = Logger.getLogger(FacebookConnector.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -321,11 +322,11 @@ public class FacebookConnector {
         }
     }
 
-    private static URLFetchService urlFS;
+    private static URLFetchService mockUrlFS;
 
     /// For unit test purposes
-    protected static void injectURLFetchService(URLFetchService urlFS) {
-        FacebookConnector.urlFS = urlFS;
+    public static void injectMockURLFetchService(URLFetchService urlFS) {
+        FacebookConnector.mockUrlFS = urlFS;
     }
 
     /**
@@ -334,10 +335,10 @@ public class FacebookConnector {
      * @return Instance of the App Engine service
      */
     protected static URLFetchService getURLFetchService() {
-        if (urlFS == null) {
-            urlFS = URLFetchServiceFactory.getURLFetchService();
+        if (mockUrlFS == null) {
+            mockUrlFS = URLFetchServiceFactory.getURLFetchService();
         }
-        return urlFS;
+        return mockUrlFS;
     }
 
     /**
@@ -460,12 +461,8 @@ public class FacebookConnector {
                 }
             }
             // Note for testers: cannot be thrown by the normal testing & production environment
-            catch (NoSuchAlgorithmException ex) {
-                throw new ServletException("Unknown hash algorithm " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
-            }
-            // Note for testers: cannot be thrown by the normal testing & production environment
-            catch (InvalidKeyException ex) {
-                throw new ServletException("Wrong key for " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
+            catch (GeneralSecurityException ex) {
+                throw new ServletException("Unexpected error while dealing with encryption algorithms for: " + ENCRYPTION_ALGORITHM_STANDARD_NAME, ex);
             }
 
             return payload;

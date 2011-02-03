@@ -11,6 +11,7 @@ import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.MockCache;
 import javax.cache.MockCacheFactory;
+import javax.jdo.MockPersistenceManager;
 import javax.jdo.MockPersistenceManagerFactory;
 import javax.jdo.PersistenceManager;
 
@@ -40,19 +41,19 @@ public class TestSettingsOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
     public void testGetSettingsI() throws DataSourceException {
-        CacheHandler.injectCache(new MockCache(Collections.emptyMap()) {
+        CacheHandler.injectMockCache(new MockCache(Collections.emptyMap()) {
             @Override
             public Object get(Object key) {
                 return null;
@@ -82,6 +83,29 @@ public class TestSettingsOperations {
     }
 
     @Test
+    public void testGetSettingsIII() throws DataSourceException {
+        SettingsOperations ops = new SettingsOperations();
+
+        Settings settings = ops.getSettings();
+        assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
+
+        settings = ops.getSettings();
+        assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
+
+        CacheHandler.resetInCache(Settings.class.getName() + "_name_" + Settings.APPLICATION_SETTINGS_ID);
+
+        settings = ops.getSettings();
+        assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
+
+        CacheHandler.clearCache();
+
+        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
+        settings = ops.getSettings(pm, false); // Don't use cache
+        assertEquals(Long.valueOf(1L), settings.getLastProcessDirectMessageId());
+        pm.close();
+    }
+
+    @Test
     public void testSetInCacheI() throws DataSourceException {
         Long data = 12345L;
         CacheHandler.setInCache("test", data);
@@ -91,8 +115,8 @@ public class TestSettingsOperations {
     @Test
     public void testSetInCacheII() throws DataSourceException {
         Long data = 12345L;
-        CacheHandler.injectCache(null);
-        CacheHandler.injectCacheFactory(new MockCacheFactory() {
+        CacheHandler.injectMockCache(null);
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory() {
             @Override
             @SuppressWarnings("unchecked")
             public Cache createCache(Map arg0) throws CacheException {
@@ -128,158 +152,11 @@ public class TestSettingsOperations {
         }
     }
 
-    /************
-    @Test(expected=RuntimeException.class)
-    public void testUpdateSettingsII() throws ClientException, DataSourceException {
-        final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
-        SettingsOperations ops = new SettingsOperations() {
-            @Override
-            public PersistenceManager getPersistenceManager() {
-                return pm; // Return always the same object to be able to verify it has been closed
-            }
-            @Override
-            public Settings updateSettings(PersistenceManager pm, Settings settings) {
-                throw new RuntimeException("Done in purpose");
-            }
-        };
-
-        ops.updateSettings(new Settings());
-    }
-
     @Test
-    public void testUpdateSettingsInCacheI() throws DataSourceException {
-        Settings settings = new Settings();
-        settings.setRobotConsumerKey(12345L);
-        SettingsOperations ops = new SettingsOperations();
-        ops.cacheSettings(settings);
-        Settings settingsAfterUpdate = ops.getCachedSettings();
-        assertEquals(settings.getRobotConsumerKey(), settingsAfterUpdate.getRobotConsumerKey());
-    }
-
-    @Test
-    public void testCreateManySettingsI() throws DataSourceException {
+    public void testUpdateSettingsII() throws DataSourceException {
         // Retrieve default settings and update one field
         SettingsOperations ops = new SettingsOperations();
-        PersistenceManager pm = ops.getPersistenceManager();
-        try {
-            Settings settings = new Settings();
-            settings.setLastProcessDirectMessageId(111L);
-            ops.updateSettings(pm, settings);
-
-            settings = new Settings();
-            settings.setLastProcessDirectMessageId(222L);
-            ops.updateSettings(pm, settings); // Save but does not replace the first one
-
-            settings = new Settings();
-            settings.setLastProcessDirectMessageId(333L);
-            ops.updateSettings(pm, settings); // Save but does not replace the first one
-        }
-        finally {
-            pm.close();
-        }
-
-        // Verify the default settings has persisted
-        Settings updated = ops.getSettings(false);
-        assertEquals(Long.valueOf(111L), updated.getLastProcessDirectMessageId());
+        Settings settings = ops.getSettings();
+        ops.updateSettings(ops.getSettings()); // Second call will get them from cache
     }
-
-    @Test
-    public void testCreateManySettingsII() throws DataSourceException {
-        // Retrieve default settings and update one field
-        SettingsOperations ops = new SettingsOperations();
-
-        Settings settings = new Settings();
-        settings.setLastProcessDirectMessageId(111L);
-        ops.updateSettings(settings);
-
-        settings = new Settings();
-        settings.setLastProcessDirectMessageId(222L);
-        ops.updateSettings(settings); // The first one is reloaded, updated, and persisted
-
-        settings = new Settings();
-        settings.setLastProcessDirectMessageId(333L);
-        ops.updateSettings(settings); // The first one is reloaded, updated, and persisted
-
-        // Verify the default settings has persisted
-        Settings updated = ops.getSettings(false);
-        assertEquals(Long.valueOf(333L), updated.getLastProcessDirectMessageId());
-    }
-
-    @Test
-    public void testGetSettingFromCache() throws DataSourceException {
-        SettingsOperations ops = new SettingsOperations();
-
-        ops.getSettings(); // No data in cache
-
-        Settings settings = new Settings();
-        settings.setLastProcessDirectMessageId(111L);
-        ops.updateSettings(settings);
-
-        ops.getSettings(); // Data loaded from the cache
-    }
-
-    @Test
-    public void testGetSettingsIII() throws DataSourceException {
-        SettingsOperations ops = new SettingsOperations() {
-            @Override
-            public Settings getCachedSettings() {
-                Settings settings = new Settings();
-                settings.setLastProcessDirectMessageId(12345L);
-                return settings;
-            }
-        };
-        Settings settings = ops.getSettings(new MockPersistenceManager(), true);
-        assertEquals(Long.valueOf(12345L), settings.getLastProcessDirectMessageId());
-    }
-
-    @Test
-    public void testGetSettingsIV() throws ClientException, DataSourceException {
-        SettingsOperations ops = new SettingsOperations() {
-            @Override
-            public Settings getCachedSettings() {
-                return null;
-            }
-            @Override
-            public Settings getSettings(PersistenceManager pm) {
-                return new Settings();
-            }
-        };
-
-        ops.getSettings(new MockPersistenceManager(), true);
-    }
-
-    @Test
-    public void testGetSettingsV() throws ClientException, DataSourceException {
-        SettingsOperations ops = new SettingsOperations() {
-            @Override
-            public Settings getCachedSettings() {
-                return new Settings();
-            }
-            @Override
-            public Settings getSettings(PersistenceManager pm) {
-                fail("Call not expected!");
-                return null;
-            }
-        };
-
-        ops.getSettings(new MockPersistenceManager(), true);
-    }
-
-    @Test
-    public void testGetSettingsVI() throws ClientException, DataSourceException {
-        SettingsOperations ops = new SettingsOperations() {
-            @Override
-            public Settings getCachedSettings() {
-                fail("Call not expected!");
-                return null;
-            }
-            @Override
-            public Settings getSettings(PersistenceManager pm) {
-                return new Settings();
-            }
-        };
-
-        ops.getSettings(new MockPersistenceManager(), false);
-    }
-*********/
 }

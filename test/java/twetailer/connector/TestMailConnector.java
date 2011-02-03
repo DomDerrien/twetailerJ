@@ -3,6 +3,7 @@ package twetailer.connector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,9 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
 import twetailer.validator.ApplicationSettings;
 
+import com.google.appengine.api.mail.dev.LocalMailService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalMailServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
@@ -47,10 +50,10 @@ public class TestMailConnector {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseConnector.setLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
+        MailConnector.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
         emailDomain = ApplicationSettings.get().getProductEmailDomain();
-        MailConnector.setLogger(new MockLogger("MailConnector", null));
     }
 
     @Before
@@ -73,7 +76,7 @@ public class TestMailConnector {
         MailConnector.getLogger();
     }
 
-    public static MockServletInputStream prepareEmptyStream(String from, String name) {
+    public static MockServletInputStream prepareEmptyStream(String from, String name, String emailDomain) {
         MockServletInputStream stream = new MockServletInputStream();
         stream.setData(
                 "MIME-Version: 1.0\n" +
@@ -94,7 +97,7 @@ public class TestMailConnector {
     public void testGetMailMessage0() throws IOException, MessagingException {
         final String from = "test-emitter@appspot.com";
         final String name = "Mr Emitter";
-        final MockServletInputStream stream = prepareEmptyStream(from, name);
+        final MockServletInputStream stream = prepareEmptyStream(from, name, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -111,25 +114,15 @@ public class TestMailConnector {
         assertEquals(0, stream.getNotProcessedContents().length());
     }
 
-    public static MockServletInputStream prepareTextStream(String from, String name, String subject, String message) {
+    public static MockServletInputStream prepareTextStream(String from, String name, String subject, String message, String emailDomain) {
         MockServletInputStream stream = new MockServletInputStream();
         stream.setData(
                 "MIME-Version: 1.0\n" +
                 "Date: Fri, 06 Nov 2009 20:01:37 -0500\n" +
-                (
-                        from == null && name == null ?
-                                ""  :
-                                from == null ?
-                                        "From:\n"  :
-                                        "From: " + name + "<" + from + ">\n"
-                ) +
+                ( from == null && name == null ? ""  : from == null ? "From:\n"  : "From: " + name + " <" + from + ">\n" ) +
                 "To: Twetailer <assistant@" + emailDomain + ">\n" +
                 "Cc: unit@test.net\n" +
-                (
-                        subject == null ?
-                                "" :
-                                "Subject: " + subject + "\n"
-                ) +
+                ( subject == null ? "" : "Subject: " + subject + "\n" ) +
                 "Content-Type: text/plain; charset=UTF-8\n" +
                 "\n" +
                 message
@@ -143,7 +136,7 @@ public class TestMailConnector {
         final String name = "Mr Emitter";
         final String subject = "Not important!";
         final String message = "wii console Mario Kart"; // FIXME: -- àéüôç";
-        final MockServletInputStream stream = prepareTextStream(from, name, subject, message);
+        final MockServletInputStream stream = prepareTextStream(from, name, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -507,14 +500,21 @@ public class TestMailConnector {
 
     @Test
     public void testSendMailMessageI() throws UnsupportedEncodingException, MessagingException {
+        String subject = LabelExtractor.get("mc_mail_subject_response_prefix", Locale.ENGLISH) + "subject";
         MailConnector.sendMailMessage(
                 false,
                 "testId",
                 "testName",
-                LabelExtractor.get("mc_mail_subject_response_prefix", Locale.ENGLISH) + "subject",
+                subject,
                 "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals(subject, service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -527,6 +527,12 @@ public class TestMailConnector {
                 "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("subject", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -539,6 +545,12 @@ public class TestMailConnector {
                 "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -563,6 +575,12 @@ public class TestMailConnector {
                 "******************\n******************\ntest exhaustif pour voir où est \nla faute...\n******************\n******************",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -575,6 +593,12 @@ public class TestMailConnector {
                 null,
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -587,6 +611,12 @@ public class TestMailConnector {
                 "",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -599,6 +629,12 @@ public class TestMailConnector {
                 "<p style='border:2px solid red;'>test exhaustif pour voir où est<br/>la faute...</p>",
                 Locale.ENGLISH
         );
+
+        LocalMailService service = LocalMailServiceTestConfig.getLocalMailService();
+        assertEquals(1, service.getSentMessages().size());
+        assertEquals("", service.getSentMessages().get(0).getSubject());
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testId"));
+        assertTrue(service.getSentMessages().get(0).getTo(0).contains("testName"));
     }
 
     @Test
@@ -744,7 +780,7 @@ public class TestMailConnector {
             "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
             "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
             "Cc: dominique.derrien@gmail.com\n" +
-            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "To: assistant@" + emailDomain + "\n" +
             "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
             "X-Mailer: Apple Mail (2.1082)\n" +
             "\n" +
@@ -824,7 +860,7 @@ public class TestMailConnector {
             "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
             "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
             "Cc: dominique.derrien@gmail.com\n" +
-            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "To: assistant@" + emailDomain + "\n" +
             "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
             "X-Mailer: Apple Mail (2.1082)\n" +
             "\n" +
@@ -904,7 +940,7 @@ public class TestMailConnector {
             "Date: Mon, 20 Dec 2010 20:36:26 -0500\n" +
             "Message-Id: <D285AB1E-3B97-4075-99DB-0231ADA194B2@gmail.com>\n" +
             "Cc: dominique.derrien@gmail.com\n" +
-            "To: assistant@anothersocialeconomy.appspotmail.com\n" +
+            "To: assistant@" + emailDomain + "\n" +
             "Mime-Version: 1.0 (Apple Message framework v1082)\n" +
             "X-Mailer: Apple Mail (2.1082)\n" +
             "\n" +

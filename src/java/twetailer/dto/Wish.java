@@ -4,7 +4,6 @@ import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 
 import domderrien.jsontools.JsonObject;
-import domderrien.jsontools.TransferObject;
 
 /**
  * Define the attributes of a consumer wish
@@ -43,23 +42,6 @@ public class Wish extends Request {
      */
     protected Wish resetLists() {
         super.resetLists();
-        return this;
-    }
-
-    @Override
-    public JsonObject toJson() {
-        return super.toJson();
-    }
-
-    @Override
-    public TransferObject fromJson(JsonObject in) {
-        return fromJson(in, false, false);
-    }
-
-    public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
-        super.fromJson(in, isUserAdmin, isCacheRelated);
-
         return this;
     }
 }

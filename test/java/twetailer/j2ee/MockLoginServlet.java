@@ -14,6 +14,7 @@ public class MockLoginServlet extends LoginServlet {
     public static final String DEFAULT_OPEN_ID = "http://unit.test";
     public static final Long DEFAULT_CONSUMER_KEY = 8045232434334L;
     public static final Long DEFAULT_SALE_ASSOCIATE_KEY = 560909864524L;
+    public static final Long DEFAULT_STORE_KEY = 645987654L;
 
     /**
      * Create a Mock OpenIdUser instance
@@ -32,6 +33,45 @@ public class MockLoginServlet extends LoginServlet {
      */
     public static OpenIdUser buildMockOpenIdUser(Long consumerKey) {
         return buildMockOpenIdUser(DEFAULT_OPEN_ID, consumerKey);
+    }
+
+    /**
+     * Update the record to prevent any attempt to check against the database
+     * if the given user record has an associate record attached
+     *
+     * @param user record to update
+     * @return safe consumer record
+     */
+    public static OpenIdUser setAsNotAnAssociate(OpenIdUser user) {
+        user.removeAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID);
+        user.removeAttribute(AUTHENTICATED_STORE_ID);
+        user.setAttribute(SALE_ASSOCIATION_ALREADY_CHECKED, Boolean.TRUE);
+        return user;
+    }
+
+    /**
+     * Create a Mock OpenIdUser instance with associate rights
+     *
+     * @return Fake OpenID user
+     */
+    public static OpenIdUser buildMockOpenIdAssociate() {
+        return buildMockOpenIdAssociate(DEFAULT_CONSUMER_KEY, DEFAULT_SALE_ASSOCIATE_KEY, DEFAULT_STORE_KEY);
+    }
+
+    /**
+     * Create a Mock OpenIdUser instance with associate rights
+     *
+     * @param consumerKey Reference of the Consumer instance to mock
+     * @param saleAssociateKey Reference of the SaleAssociate to attach to the record
+     * @param saleAssociateKey Reference of the Store to attach to the record
+     * @return Fake OpenID user
+     */
+    public static OpenIdUser buildMockOpenIdAssociate(Long consumerKey, Long saleAssociateKey, Long storeKey) {
+        OpenIdUser user = buildMockOpenIdUser(DEFAULT_OPEN_ID, consumerKey);
+        user.setAttribute(AUTHENTICATED_SALE_ASSOCIATE_ID, saleAssociateKey);
+        user.setAttribute(AUTHENTICATED_STORE_ID, storeKey);
+        user.setAttribute(SALE_ASSOCIATION_ALREADY_CHECKED, Boolean.TRUE);
+        return user;
     }
 
     /**

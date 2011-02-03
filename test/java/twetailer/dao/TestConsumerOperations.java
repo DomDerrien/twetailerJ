@@ -3,6 +3,7 @@ package twetailer.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +26,7 @@ import org.junit.Test;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.FacebookConnector;
 import twetailer.dto.Consumer;
 import twetailer.j2ee.LoginServlet;
 import twetailer.task.step.BaseSteps;
@@ -38,6 +40,8 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.LabelExtractor;
+import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonObject;
 
 public class TestConsumerOperations {
 
@@ -52,14 +56,14 @@ public class TestConsumerOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test(expected = RuntimeException.class)
@@ -906,13 +910,16 @@ public class TestConsumerOperations {
             public PersistenceManager getPersistenceManager() {
                 return new MockPersistenceManagerFactory().getPersistenceManager();
             }
+            @Override
+            public Consumer updateConsumer(PersistenceManager  pm, Consumer consumer) {
+                return consumer;
+            }
         };
 
         // Create the user once
         final String openId = "unit@test";
         Consumer consumer = new Consumer();
         consumer.setEmail(openId);
-        consumer.setName("");
         consumer = ops.createConsumer(consumer);
 
         // Verify there's one instance
@@ -956,8 +963,6 @@ public class TestConsumerOperations {
         Consumer consumer = new Consumer();
         consumer.setEmail(openId);
         consumer = ops.createConsumer(consumer);
-        consumer.setName("");
-        consumer = ops.updateConsumer(consumer);
 
         // Verify there's one instance
         Query query = new Query(Consumer.class.getSimpleName());
@@ -994,6 +999,50 @@ public class TestConsumerOperations {
     @Test
     @SuppressWarnings("deprecation")
     public void testCreateXIV() throws DataSourceException, UnsupportedEncodingException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        // Create the user once
+        final String openId = "unit@test";
+        Consumer consumer = new Consumer();
+        consumer.setEmail(openId);
+        consumer.setName("initial name");
+        consumer = ops.createConsumer(consumer);
+
+        // Verify there's one instance
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Creates the data for a user identified by its OpenID
+        com.dyuproject.openid.OpenIdUser user = com.dyuproject.openid.OpenIdUser.populate("http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT, LoginServlet.YAHOO_OPENID_SERVER_URL);
+        Map<String, Object> json = new HashMap<String, Object>();
+        // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate",
+        // g: attributes, h: "identifier"}
+        json.put("a", openId);
+        Map<String, String> info = new HashMap<String, String>();
+        info.put("email", openId);
+        info.put("nickname", "marcelus");
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("info", info);
+        json.put("g", attributes);
+        user.fromJSON(json);
+
+        // Create the second user
+        Consumer secondConsumer = ops.createConsumer(user);
+
+        // Verify there's one instance
+        query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        assertEquals(consumer.getKey(), secondConsumer.getKey());
+        assertEquals(openId, secondConsumer.getOpenID());
+        assertEquals(openId, secondConsumer.getEmail());
+        assertEquals("initial name", secondConsumer.getName());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXV() throws DataSourceException, UnsupportedEncodingException {
         final String openId = "unit@test";
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
@@ -1101,24 +1150,6 @@ public class TestConsumerOperations {
         assertTrue(pm.isClosed());
     }
 
-    /*
-     * After the upgrade to the Java SDK 1.2.5, the limitation of having to use the same PM even for detached object has
-     * been removed
-     *
-     * @Test(expected=javax.jdo.JDOFatalUserException.class) public void testUpdateIII() throws DataSourceException {
-     *
-     * ConsumerOperations ops = new ConsumerOperations() {
-     *
-     * @Override public PersistenceManager getPersistenceManager() { return new
-     * MockPersistenceManagerFactory().getPersistenceManager(); } }; // Create the user once Consumer consumer =
-     * ops.createConsumer(new User("test", "domain"));
-     *
-     * // Update it consumer.setTwitterId(12345L);
-     *
-     * // Persist the update consumer = ops.updateConsumer(consumer); // This is going to throw the JDOFatalUserExcepion
-     * because the update should be done with the same PersistenceManager instance }
-     */
-
     @Test
     public void testGetSimplifiedJabberIdI() {
         String base = "d.d@d.dom";
@@ -1194,6 +1225,18 @@ public class TestConsumerOperations {
     }
 
     @Test
+    public void testGetsFromKeysII() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        List<Long> parameters = new ArrayList<Long>();
+        parameters.add(12345L);
+
+        List<Consumer> selection = ops.getConsumers(ops.getPersistenceManager(), parameters);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test
     public void testGetsFromMapI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
 
@@ -1211,6 +1254,18 @@ public class TestConsumerOperations {
     }
 
     @Test
+    public void testGetsFromMapII() throws DataSourceException {
+        ConsumerOperations ops = new ConsumerOperations();
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put(Consumer.EMAIL, "unit@test.org");
+
+        List<Consumer> selection = ops.getConsumers(ops.getPersistenceManager(), parameters, 1);
+        assertNotNull(selection);
+        assertEquals(0, selection.size());
+    }
+
+    @Test
     public void testGetKeysFromMapI() throws DataSourceException {
         ConsumerOperations ops = new ConsumerOperations();
 
@@ -1225,5 +1280,451 @@ public class TestConsumerOperations {
         assertNotNull(selection);
         assertEquals(1, selection.size());
         assertEquals(object.getKey(), selection.get(0));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXVI() throws DataSourceException, UnsupportedEncodingException {
+        final Long consumerKey = 12345L;
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                if (Consumer.FACEBOOK_ID.equals(key)) {
+                    Consumer consumer = new Consumer();
+                    consumer.setKey(consumerKey);
+                    consumer.setFacebookId(facebookId);
+                    consumers.add(consumer);
+                }
+                return consumers;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+        assertEquals(consumerKey, consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+
+        // No creation occurred as it has been serve by the injected mock
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXVII() throws DataSourceException, UnsupportedEncodingException {
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(Consumer.NAME, "name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify creation occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("name", consumer.getName());
+        assertNull(consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXVIII() throws DataSourceException, UnsupportedEncodingException {
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "");
+        consumerData.put(FacebookConnector.ATTR_NAME, "name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify creation occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("name", consumer.getName());
+        assertNull(consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXIX() throws DataSourceException, UnsupportedEncodingException {
+        final Long consumerKey = 12345L;
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                if (Consumer.EMAIL.equals(key)) {
+                    Consumer consumer = new Consumer();
+                    consumer.setKey(consumerKey);
+                    consumer.setEmail("email");
+                    consumer.setName("initial name");
+                    consumers.add(consumer);
+                }
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(facebookId, consumer.getFacebookId());
+                assertEquals("initial name", consumer.getName());
+                return consumer;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_NAME, "name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify no update occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("initial name", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXX() throws DataSourceException, UnsupportedEncodingException {
+        final Long consumerKey = 12345L;
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                if (Consumer.EMAIL.equals(key)) {
+                    Consumer consumer = new Consumer();
+                    consumer.setKey(consumerKey);
+                    consumer.setEmail("email");
+                    // No initial name
+                    consumers.add(consumer);
+                }
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(facebookId, consumer.getFacebookId());
+                assertEquals("new name", consumer.getName());
+                return consumer;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_NAME, "new name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify no update occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("new name", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXXI() throws DataSourceException, UnsupportedEncodingException {
+        final Long consumerKey = 12345L;
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                if (Consumer.EMAIL.equals(key)) {
+                    Consumer consumer = new Consumer();
+                    consumer.setKey(consumerKey);
+                    consumer.setEmail("email");
+                    // No initial name
+                    consumers.add(consumer);
+                }
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(facebookId, consumer.getFacebookId());
+                assertEquals("email", consumer.getName());
+                return consumer;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify no update occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("email", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXXII() throws DataSourceException, UnsupportedEncodingException {
+        final Long consumerKey = 12345L;
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                if (Consumer.EMAIL.equals(key)) {
+                    Consumer consumer = new Consumer();
+                    consumer.setKey(consumerKey);
+                    consumer.setEmail("email");
+                    // No initial name
+                    consumers.add(consumer);
+                }
+                return consumers;
+            }
+            @Override
+            public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
+                assertEquals(facebookId, consumer.getFacebookId());
+                assertEquals("email", consumer.getName());
+                return consumer;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_NAME, "");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify no update occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("email", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXXIII() throws DataSourceException, UnsupportedEncodingException {
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) {
+                List<Consumer> consumers = new ArrayList<Consumer>();
+                return consumers;
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_NAME, "new name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify creation occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("new name", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testCreateXXIV() throws DataSourceException, UnsupportedEncodingException {
+        final String facebookId = "54657687";
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public List<Consumer> getConsumers(PersistenceManager pm, String key, Object value, int limit) throws DataSourceException {
+                throw new DataSourceException("done in purpose!");
+            }
+        };
+
+        JsonObject consumerData = new GenericJsonObject();
+        consumerData.put(FacebookConnector.ATTR_EMAIL, "email");
+        consumerData.put(FacebookConnector.ATTR_NAME, "new name");
+        consumerData.put(FacebookConnector.ATTR_UID, facebookId);
+
+        // Create the user
+        Consumer consumer = ops.createConsumer(consumerData);
+
+        // Verify creation occurred
+        Query query = new Query(Consumer.class.getSimpleName());
+        assertEquals(1, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
+
+        // Verify attributes
+        assertNotNull(consumer.getKey());
+        assertEquals(facebookId, consumer.getFacebookId());
+        assertEquals("new name", consumer.getName());
+        assertEquals("email", consumer.getEmail());
+    }
+
+    @Test(expected=DataSourceException.class)
+    public void testUpdateTransientConsumer() throws DataSourceException {
+        final Long consumerKey = 23456L;
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
+                assertFalse(useCache);
+                assertEquals(consumerKey, key);
+                throw new InvalidIdentifierException("done in purpose!");
+            }
+        };
+
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        ops.updateConsumer(null, consumer);
+    }
+
+    @Test
+    public void testDeleteTransientConsumer() throws DataSourceException, InvalidIdentifierException {
+        Consumer consumer = new Consumer();
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+        };
+
+        consumer = ops.createConsumer(consumer);
+
+        PersistenceManager pm = ops.getPersistenceManager();
+        try {
+            consumer = ops.getConsumer(pm, consumer.getKey(), false);
+            ops.deleteConsumer(pm, consumer);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    @Test
+    public void testDeleteTransientConsumerII() throws DataSourceException, InvalidIdentifierException {
+        Consumer consumer = new Consumer();
+
+        ConsumerOperations ops = new ConsumerOperations() {
+            @Override
+            public PersistenceManager getPersistenceManager() {
+                return new MockPersistenceManagerFactory().getPersistenceManager();
+            }
+        };
+
+        consumer = ops.createConsumer(consumer);
+
+        PersistenceManager pm = ops.getPersistenceManager();
+        try {
+            ops.deleteConsumer(pm, consumer.getKey());
+        }
+        finally {
+            pm.close();
+        }
     }
 }

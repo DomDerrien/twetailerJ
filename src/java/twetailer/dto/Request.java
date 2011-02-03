@@ -170,7 +170,7 @@ public class Request extends Command {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(EXPIRATION_DATE)) {

@@ -41,6 +41,7 @@ public class TestPayment {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 54423453L;
     String authorizationId = "<trelkjdjsahrs/sdadse/wq>";
     String reference = "4435243.4343.65765";
     String requestId = "64654";
@@ -62,32 +63,77 @@ public class TestPayment {
     }
 
     @Test
-    public void testToJsonI() {
+    public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Payment object = new Payment();
+
+        object.setKey(key);
 
         object.setAuthorizationId(authorizationId);
         object.setReference(reference);
         object.setRequestId(requestId);
         object.setTransactionId(transactionId);
 
-        JsonObject json = object.toJson();
+        Payment clone = new Payment();
+        clone.fromJson(object.toJson(), true, true);
 
-        assertEquals(authorizationId, json.getString(Payment.AUTHORIZATION_ID));
-        assertEquals(reference, json.getString(Payment.REFERENCE));
-        assertEquals(requestId, json.getString(Payment.REQUEST_ID));
-        assertEquals(transactionId, json.getString(Payment.TRANSACTION_ID));
+        assertEquals(key, object.getKey());
+
+        assertEquals(authorizationId, object.getAuthorizationId());
+        assertEquals(reference, object.getReference());
+        assertEquals(requestId, object.getRequestId());
+        assertEquals(transactionId, object.getTransactionId());
     }
 
     @Test
-    public void testToJsonII() {
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Payment object = new Payment();
 
-        JsonObject json = object.toJson();
+        Payment clone = new Payment();
+        clone.fromJson(object.toJson(), true, true);
 
-        assertNull(json.getString(Payment.AUTHORIZATION_ID));
-        assertNull(json.getString(Payment.REFERENCE));
-        assertNull(json.getString(Payment.REQUEST_ID));
-        assertNull(json.getString(Payment.TRANSACTION_ID));
+        assertNull(object.getAuthorizationId());
+        assertNull(object.getReference());
+        assertNull(object.getRequestId());
+        assertNull(object.getTransactionId());
+    }
+
+    @Test
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
+        Payment object = new Payment();
+
+        object.setKey(key);
+
+        object.setAuthorizationId(authorizationId);
+        object.setReference(reference);
+        object.setRequestId(requestId);
+        object.setTransactionId(transactionId);
+
+        Payment clone = new Payment();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(key, object.getKey());
+
+        assertEquals(authorizationId, object.getAuthorizationId());
+        assertEquals(reference, object.getReference());
+        assertEquals(requestId, object.getRequestId());
+        assertEquals(transactionId, object.getTransactionId());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testJsonCommandsIV() {
+        //
+        // User update (lower)
+        //
+        new Payment().fromJson(null);
     }
 
     @Test

@@ -112,8 +112,10 @@ public class RegistrarOperations extends BaseOperations {
             // Select the corresponding resources
             Query query = pm.newQuery(Registrar.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
             try {
-                registrars = (List<Registrar>) query.execute(registrarKeys);
-                registrars.size(); // FIXME: remove workaround for a bug in DataNucleus
+                List<Registrar> results = (List<Registrar>) query.execute(registrarKeys);
+                results.size(); // FIXME: remove workaround for a bug in DataNucleus
+                // Copies the non-modifiable registrar list if it has to be updated later
+                registrars = defaultRequired ? new ArrayList<Registrar>(results) : results;
             }
             finally {
                 query.closeAll();
@@ -123,7 +125,7 @@ public class RegistrarOperations extends BaseOperations {
             try {
                 registrars.add(getRegistrar(pm, 0L));
             }
-            catch (InvalidIdentifierException e) {} // Impossible Exception is this case!
+            catch (InvalidIdentifierException e) {} // Impossible Exception is this case as Registrar(0L) is hardcoded!
         }
         return registrars;
     }

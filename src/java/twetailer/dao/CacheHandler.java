@@ -3,10 +3,14 @@ package twetailer.dao;
 import java.util.Collections;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheFactory;
 import javax.cache.CacheManager;
+import javax.cache.MockCache;
+import javax.cache.MockCacheFactory;
 
 import twetailer.dto.Entity;
 import domderrien.jsontools.JsonObject;
@@ -15,8 +19,8 @@ public class CacheHandler<T extends Entity> {
 
     private static Logger log = Logger.getLogger(CacheHandler.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -30,15 +34,15 @@ public class CacheHandler<T extends Entity> {
     /**
      * Accessor for the unit tests
      */
-    public static void injectCache(Cache mockCache) {
-        localCache = mockCache;
+    public static void injectMockCache(MockCache mockCache) {
+        CacheHandler.localCache = mockCache;
     }
 
     /**
      * Accessor for the unit tests
      */
-    public static void injectCacheFactory(CacheFactory mockCacheFactory) {
-        localCacheFactory = mockCacheFactory;
+    public static void injectMockCacheFactory(MockCacheFactory mockCacheFactory) {
+        CacheHandler.localCacheFactory = mockCacheFactory;
     }
 
     /// Accessor dealing with the previously retrieved or inject Cache related instances
@@ -134,8 +138,11 @@ public class CacheHandler<T extends Entity> {
     private String[] keys = new String[1];
 
     private CacheHandler(String className) {
+        if (className.indexOf('.') == -1) {
+            throw new IllegalArgumentException("'" + className + "' is not a fully qualified class name");
+        }
         this.className = className;
-        keyPrefix = className.substring(className.lastIndexOf('.')) + "_";
+        keyPrefix = className + "_";
     }
 
     /**

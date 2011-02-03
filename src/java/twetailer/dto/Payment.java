@@ -149,11 +149,10 @@ public class Payment extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
 
         if (!isUserAdmin) {
-            // No external update allowed
-            return this;
+            throw new IllegalArgumentException("Reserved operation");
         }
 
         super.fromJson(in, isUserAdmin, isCacheRelated);

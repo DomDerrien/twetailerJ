@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Command;
 import twetailer.dto.Demand;
@@ -43,6 +45,17 @@ import domderrien.jsontools.JsonParser;
  * @author Dom Derrien
  */
 public class MessageGenerator {
+
+    private static Logger log = Logger.getLogger(MessageGenerator.class.getName());
+
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     /**
      * Identifiers of the message the class can handle transparently
@@ -461,7 +474,7 @@ public class MessageGenerator {
             }
             catch(JsonException ex) {
                 // Malformed metadata are just not echoed back
-                Logger.getLogger(MessageGenerator.class.getName()).info("Malformed metadata in " + prefix + ".key=" + command.getKey() + ": " + metadata + " -- message: " + ex.getMessage());
+                getLogger().info("Malformed metadata in " + prefix + ".key=" + command.getKey() + ": " + metadata + " -- message: " + ex.getMessage());
             }
         }
         parameters.put(prefix + Command.QUANTITY, command.getQuantity());

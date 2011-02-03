@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
+import javamocks.util.logging.MockLogger;
 import twetailer.dao.CacheHandler;
 import twetailer.dto.Consumer;
 
@@ -18,6 +19,17 @@ import domderrien.i18n.DateUtils;
 import domderrien.jsontools.JsonObject;
 
 public class ChannelConnector {
+
+    private static Logger log = Logger.getLogger(ChannelConnector.class.getName());
+
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
+        log = mockLogger;
+    }
+
+    protected static Logger getLogger() {
+        return log;
+    }
 
     /**
      * Generates a unique identifier for the consumer. Note that
@@ -64,17 +76,17 @@ public class ChannelConnector {
         return channelService.createChannel(retrieveUniqueChannelId(consumer));
     }
 
-    private static ChannelService service;
+    private static ChannelService mockService;
 
     /// For unit test purposes
-    protected static void injectChannelService(ChannelService mockService) {
-        service = mockService;
+    public static void injectMockChannelService(ChannelService service) {
+        ChannelConnector.mockService = service;
     }
 
     /// For unit test purposes
     protected static ChannelService getService() {
-        if (service != null) {
-            return service;
+        if (mockService != null) {
+            return mockService;
         }
         return ChannelServiceFactory.getChannelService();
     }
@@ -101,10 +113,10 @@ public class ChannelConnector {
                 getService().sendMessage(new ChannelMessage(retrieveUniqueChannelId(consumer), buffer.getStream().toString()));
             }
             catch (IOException ex) {
-                Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot prepare JsonObject for sending over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
+                getLogger().severe("Cannot prepare JsonObject for sending over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
             }
             catch(ChannelFailureException ex) {
-                Logger.getLogger(ChannelConnector.class.getName()).severe("Cannot send data to: " + consumer.getName() + " over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
+                getLogger().severe("Cannot send data to: " + consumer.getName() + " over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
             }
         }
     }

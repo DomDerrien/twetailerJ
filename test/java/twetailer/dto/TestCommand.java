@@ -27,6 +27,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import domderrien.i18n.DateUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
@@ -64,18 +65,20 @@ public class TestCommand {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 1221L;
+
     Action action = Action.cancel;
+    Long cancelerKey = 43322L;
+    List<String> cc = Arrays.asList(new String[] {"first", "second"});
+    List<String> criteria = Arrays.asList(new String[] {"first", "second"});
     Calendar dueDate = DateUtils.getNowCalendar();
-    List<String> cc = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    List<String> tags = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    List<String> hashTags = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    Long locationKey = 87541L;
+    List<String> hashTags = Arrays.asList(new String[] {"first", "second"});
+    String metadata = "{'name':'value'}";
     Long ownerKey = 12345L;
+    Long quantity = 32L;
     Long rawCommandId = 67890L;
     Source source = Source.simulated;
-    Long cancelerKey = 76545L;
     State state = State.closed;
-    String metadata = "{}";
 
     @Test
     public void testAccessors() {
@@ -83,14 +86,14 @@ public class TestCommand {
 
         object.setAction(action);
         object.setAction(action.toString());
-        object.setDueDate(dueDate.getTime());
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(tags);
+        object.setCriteria(criteria);
+        object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
-        object.setLocationKey(locationKey);
         object.setMetadata(metadata);
         object.setOwnerKey(ownerKey);
+        object.setQuantity(quantity);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setSource(source.toString());
@@ -98,14 +101,14 @@ public class TestCommand {
         object.setState(state.toString());
 
         assertEquals(action, object.getAction());
-        assertEquals(dueDate.getTime(), object.getDueDate());
         assertEquals(cancelerKey, object.getCancelerKey());
         assertEquals(cc, object.getCC());
-        assertEquals(tags, object.getCriteria());
+        assertEquals(criteria, object.getCriteria());
+        assertEquals(dueDate.getTime(), object.getDueDate());
         assertEquals(hashTags, object.getHashTags());
-        assertEquals(locationKey, object.getLocationKey());
         assertEquals(metadata, object.getMetadata());
         assertEquals(ownerKey, object.getOwnerKey());
+        assertEquals(quantity, object.getQuantity());
         assertEquals(rawCommandId, object.getRawCommandId());
         assertEquals(source, object.getSource());
         assertEquals(state, object.getState());
@@ -113,86 +116,296 @@ public class TestCommand {
 
     @Test
     public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Command object = new Command();
 
+        object.setKey(key);
+
         object.setAction(action);
-        object.setDueDate(dueDate.getTime());
         object.setCancelerKey(cancelerKey);
+        object.setCC(cc);
+        object.setCriteria(criteria);
+        object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
-        object.setLocationKey(locationKey);
         object.setMetadata(metadata);
         object.setOwnerKey(ownerKey);
+        object.setQuantity(quantity);
         object.setRawCommandId(rawCommandId);
         object.setSource(source);
         object.setState(state);
 
-        Command clone = new Command(object.toJson());
+        Command clone = new Command();
+        clone.fromJson(object.toJson(), true, true);
 
         // In the translation, the milliseconds are rounded!
         dueDate.set(Calendar.MILLISECOND, 0);
 
-        assertNull(clone.getAction()); // Cannot be overridden
+        assertEquals(key, clone.getKey());
+
+        assertEquals(action, clone.getAction());
+        assertEquals(cancelerKey, clone.getCancelerKey());
+        assertEquals(cc.size(), clone.getCC().size());
+        for (int idx=0; idx < object.getCC().size(); idx++) {
+            assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
+        }
+        assertEquals(criteria.size(), clone.getCriteria().size());
+        for (int idx=0; idx < object.getCriteria().size(); idx++) {
+            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        }
         assertEquals(dueDate.getTime(), clone.getDueDate());
-        assertNull(clone.getCancelerKey()); // Cannot be overridden
-        assertEquals(hashTags, clone.getHashTags());
-        assertEquals(locationKey, clone.getLocationKey());
+        assertEquals(hashTags.size(), clone.getHashTags().size());
+        for (int idx=0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
         assertEquals(metadata, clone.getMetadata());
-        assertNull(clone.getOwnerKey()); // Cannot be overridden
-        assertNull(clone.getRawCommandId()); // Cannot be overridden
+        assertEquals(ownerKey, clone.getOwnerKey());
+        assertEquals(quantity, clone.getQuantity());
+        assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
-        assertEquals(State.opened, clone.getState()); // Default state, cannot be overridden
+        assertEquals(state, clone.getState());
     }
 
     @Test
     public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
         Command object = new Command();
-        object.setSource(source);
-        object.setCC(cc);
-        object.setCriteria(tags);
-        object.setHashTags(hashTags);
 
-        assertNull(object.getRawCommandId());
+        Command clone = new Command();
+        clone.fromJson(object.toJson(), true, true);
 
-        Command clone = new Command(object.toJson());
-
+        assertNull(clone.getAction());
+        assertNull(clone.getCancelerKey());
+        assertEquals(0, clone.getCC().size());
+        assertEquals(0, clone.getCriteria().size());
+        assertNull(clone.getDueDate());
+        assertEquals(0, clone.getHashTags().size());
+        assertNull(clone.getMetadata());
+        assertNull(clone.getOwnerKey());
+        assertEquals(1L, clone.getQuantity().longValue());
         assertNull(clone.getRawCommandId());
-        assertEquals(object.getCC().size(), clone.getCC().size());
-        assertEquals(object.getCC().get(0), clone.getCC().get(0));
-        assertEquals(object.getCriteria().size(), clone.getCriteria().size());
-        assertEquals(object.getCriteria().get(0), clone.getCriteria().get(0));
-        assertEquals(object.getHashTags().size(), clone.getHashTags().size());
-        assertEquals(object.getHashTags().get(0), clone.getHashTags().get(0));
+        assertNull(clone.getSource());
+        assertEquals(State.opened, clone.getState());
     }
 
     @Test
-    public void testJsonDemandsIII() {
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
         Command object = new Command();
+
+        object.setKey(key);
+
+        object.setAction(action);
+        object.setCancelerKey(cancelerKey);
+        object.setCC(cc);
+        object.setCriteria(criteria);
+        object.setDueDate(dueDate.getTime());
+        object.setHashTags(hashTags);
+        object.setMetadata(metadata);
+        object.setOwnerKey(ownerKey);
+        object.setQuantity(quantity);
+        object.setRawCommandId(rawCommandId);
         object.setSource(source);
+        object.setState(state);
 
-        // Demand
-        assertEquals(0, object.getCC().size());
-        assertEquals(0, object.getCriteria().size());
-        assertEquals(0, object.getHashTags().size());
+        Command clone = new Command();
+        clone.fromJson(object.toJson(), true, false);
 
-        Command clone = new Command(object.toJson());
+        // In the translation, the milliseconds are rounded!
+        dueDate.set(Calendar.MILLISECOND, 0);
 
-        // Demand
-        assertEquals(0, clone.getCC().size());
-        assertEquals(0, clone.getCriteria().size());
-        assertEquals(0, clone.getHashTags().size());
+        assertEquals(key, clone.getKey());
 
-        // Demand
-        object.resetLists();
-        assertNull(object.getCC());
-        assertNull(object.getCriteria());
-        assertNull(object.getHashTags());
+        assertNull(clone.getAction());
+        assertEquals(cancelerKey, clone.getCancelerKey());
+        assertEquals(cc.size(), clone.getCC().size());
+        for (int idx=0; idx < object.getCC().size(); idx++) {
+            assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
+        }
+        assertEquals(criteria.size(), clone.getCriteria().size());
+        for (int idx=0; idx < object.getCriteria().size(); idx++) {
+            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        }
+        assertEquals(dueDate.getTime(), clone.getDueDate());
+        assertEquals(hashTags.size(), clone.getHashTags().size());
+        for (int idx=0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertEquals(metadata, clone.getMetadata());
+        assertEquals(ownerKey, clone.getOwnerKey());
+        assertEquals(quantity, clone.getQuantity());
+        assertNull(clone.getRawCommandId());
+        assertNull(clone.getSource());
+        assertEquals(state, clone.getState());
+    }
 
-        clone = new Command(object.toJson());
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
+        Command object = new Command();
 
-        // Demand
-        assertEquals(0, clone.getCC().size()); // Not null because the clone object creation creates empty List<String>
-        assertEquals(0, clone.getCriteria().size()); // Not null because the clone object creation creates empty List<String>
-        assertEquals(0, clone.getHashTags().size()); // Not null because the clone object creation creates empty List<String>
+        // object.setKey(key);
+
+        object.setAction(action);
+        object.setCancelerKey(cancelerKey);
+        object.setCC(cc);
+        object.setCriteria(criteria);
+        object.setDueDate(dueDate.getTime());
+        object.setHashTags(hashTags);
+        object.setMetadata(metadata);
+        object.setOwnerKey(ownerKey);
+        object.setQuantity(quantity);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
+        object.setState(state);
+
+        Command clone = new Command();
+        clone.fromJson(object.toJson());
+
+        // In the translation, the milliseconds are rounded!
+        dueDate.set(Calendar.MILLISECOND, 0);
+
+        // assertNull(clone.getKey());
+
+        assertNull(clone.getAction());
+        assertNull(clone.getCancelerKey());
+        assertEquals(cc.size(), clone.getCC().size());
+        for (int idx=0; idx < object.getCC().size(); idx++) {
+            assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
+        }
+        assertEquals(criteria.size(), clone.getCriteria().size());
+        for (int idx=0; idx < object.getCriteria().size(); idx++) {
+            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        }
+        assertEquals(dueDate.getTime(), clone.getDueDate());
+        assertEquals(hashTags.size(), clone.getHashTags().size());
+        for (int idx=0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertEquals(metadata, clone.getMetadata());
+        assertEquals(ownerKey, clone.getOwnerKey());
+        assertEquals(quantity, clone.getQuantity());
+        assertNull(clone.getRawCommandId());
+        assertEquals(source, clone.getSource());
+        assertEquals(State.opened, clone.getState());
+    }
+
+    @Test
+    public void testJsonCommandsV() {
+        //
+        // User update for an existing object (lowest)
+        //
+        Command object = new Command();
+
+        object.setKey(key);
+
+        object.setAction(action);
+        object.setCancelerKey(cancelerKey);
+        object.setCC(cc);
+        object.setCriteria(criteria);
+        object.setDueDate(dueDate.getTime());
+        object.setHashTags(hashTags);
+        object.setMetadata(metadata);
+        object.setOwnerKey(ownerKey);
+        object.setQuantity(quantity);
+        object.setRawCommandId(rawCommandId);
+        object.setSource(source);
+        object.setState(state);
+
+        Command clone = new Command();
+        clone.fromJson(object.toJson());
+
+        // In the translation, the milliseconds are rounded!
+        dueDate.set(Calendar.MILLISECOND, 0);
+
+        assertEquals(key, clone.getKey());
+
+        assertNull(clone.getAction());
+        assertNull(clone.getCancelerKey());
+        assertEquals(cc.size(), clone.getCC().size());
+        for (int idx=0; idx < object.getCC().size(); idx++) {
+            assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
+        }
+        assertEquals(criteria.size(), clone.getCriteria().size());
+        for (int idx=0; idx < object.getCriteria().size(); idx++) {
+            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        }
+        assertEquals(dueDate.getTime(), clone.getDueDate());
+        assertEquals(hashTags.size(), clone.getHashTags().size());
+        for (int idx=0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertEquals(metadata, clone.getMetadata());
+        assertNull(clone.getOwnerKey());
+        assertEquals(quantity, clone.getQuantity());
+        assertNull(clone.getRawCommandId());
+        assertNull(clone.getSource());
+        assertEquals(State.opened, clone.getState());
+    }
+
+    @Test
+    public void testJsonCommandsVI() {
+        //
+        // User update for a new object (lowest) with wrong due date
+        //
+        Command object = new Command();
+        object.setDueDate(dueDate.getTime());
+
+        JsonObject json = new GenericJsonObject();
+        json.put(Command.DUE_DATE, "corrupted date");
+
+        object.fromJson(json);
+        assertNull(object.getDueDate());
+    }
+
+    @Test
+    public void testJsonCommandsVII() {
+        //
+        // User update for a new object (lowest) without state value
+        //
+        Command object = new Command();
+        assertEquals(State.opened, object.getState());
+
+        object.fromJson(new GenericJsonObject(), true, false);
+        assertEquals(State.opened, object.getState());
+    }
+
+    @Test
+    public void testJsonCommandsVIII() {
+        //
+        // User update for a new object (lowest) with commands to add & remove series of values
+        //
+        Command object = new Command();
+        object.addCoordinate("1");
+        object.addCriterion("1");
+        object.addHashTag("1");
+
+        JsonObject json = new GenericJsonObject();
+        JsonArray add = new GenericJsonArray();
+        JsonArray remove = new GenericJsonArray();
+        add.add("2");
+        remove.add("1");
+        json.put(Command.CC_ADD, add);
+        json.put(Command.CC_REMOVE, remove);
+        json.put(Command.CRITERIA_ADD, add);
+        json.put(Command.CRITERIA_REMOVE, remove);
+        json.put(Command.HASH_TAGS_ADD, add);
+        json.put(Command.HASH_TAGS_REMOVE, remove);
+
+        object.fromJson(json);
+        assertEquals(1, object.getCC().size());
+        assertEquals("2", object.getCC().get(0));
+        assertEquals(1, object.getCriteria().size());
+        assertEquals("2", object.getCriteria().get(0));
+        assertEquals(1, object.getHashTags().size());
+        assertEquals("2", object.getHashTags().get(0));
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -553,7 +766,7 @@ public class TestCommand {
     }
 
     @Test
-    public void testResetdCC() {
+    public void testResetCC() {
         Command command = new Command();
         assertEquals(0, command.getCC().size());
         command.addCoordinate("a");
@@ -606,17 +819,17 @@ public class TestCommand {
     }
 
     @Test
-    public void testResetdCriteria() {
-        Command command = new Command();
-        assertEquals(0, command.getCriteria().size());
-        command.addCriterion("a");
-        assertEquals(1, command.getCriteria().size());
-        command.resetCriteria();
-        assertEquals(0, command.getCriteria().size());
-        command.resetLists();
-        assertNull(command.getCriteria());
-        command.resetCriteria(); // No issue reported
-        assertNull(command.getCriteria());
+    public void testResetCriteria() {
+        Command object = new Command();
+        assertEquals(0, object.getCriteria().size());
+        object.addCriterion("a");
+        assertEquals(1, object.getCriteria().size());
+        object.resetCriteria();
+        assertEquals(0, object.getCriteria().size());
+        object.resetLists();
+        assertNull(object.getCriteria());
+        object.resetCriteria(); // No issue reported
+        assertNull(object.getCriteria());
     }
 
     @Test
@@ -634,20 +847,15 @@ public class TestCommand {
     @Test
     public void testGetDefaultSerializedHashTagsIII() {
         String defaultValue = "default";
-        Command command = new Command();
-        command.addHashTag("a");
-        assertEquals("#a", command.getSerializedHashTags(defaultValue));
+        Command object = new Command();
+        object.addHashTag("a");
+        assertEquals("#a", object.getSerializedHashTags(defaultValue));
     }
 
     @Test
-    public void testDueDateFromJson() {
-        Command command = new Command();
-        assertNull(command.getDueDate());
-
-        JsonObject json = new GenericJsonObject();
-        json.put(Command.DUE_DATE, "2T2");
-
-        command.fromJson(json);
-        assertNull(command.getDueDate());
+    public void testtoJsonI() {
+        Command object = new Command();
+        object.resetLists();
+        object.toJson();
     }
 }

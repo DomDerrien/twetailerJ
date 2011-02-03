@@ -78,9 +78,9 @@ public class ReviewSystem extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(EMAIL, getEmail());
-        out.put(NAME, getName());
-        out.put(URL, getUrl());
+        if (getEmail() != null) { out.put(EMAIL, getEmail()); }
+        if (getName() != null) { out.put(NAME, getName()); }
+        if (getUrl() != null) { out.put(URL, getUrl()); }
         return out;
     }
 
@@ -90,12 +90,11 @@ public class ReviewSystem extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         if (!isUserAdmin) {
-            // No external update allowed
-            return this;
+            throw new IllegalArgumentException("Reserved operation");
         }
 
-        isUserAdmin = isUserAdmin || isCacheRelated;
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }

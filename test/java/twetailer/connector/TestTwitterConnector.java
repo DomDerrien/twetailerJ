@@ -18,7 +18,8 @@ public class TestTwitterConnector {
     @Before
     public void setUp() throws Exception {
         TwitterConnector.resetAccountLists();
-        TwitterConnector.setLogger(new MockLogger("test", null));
+        TwitterConnector.setMockLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
     }
 
     @Test

@@ -518,9 +518,9 @@
             }).domNode
         );
 
-        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
-        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_associate_criteriaGroup') }, fieldSet),
-        table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div);
+        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_associate_criteriaGroup') }, fieldSet);
+        table = dojo.create('table', { style: 'width: 100%'}, fieldSet);
         tbody = dojo.create('tbody', null, table);
 
         // Rows with the associates's criteria
@@ -528,8 +528,8 @@
         dojo.create('label', { 'for': 'criteria', innerHTML: _getLabel('console', 'profile_associate_criteriaLabel') }, dojo.create('td', { colspan: 4 }, row));
 
         row = dojo.create('tr', null, tbody);
-        dojo.create('td', { innerHTML: '&nbsp;', style: 'width: 25%;' }, row)
-        dojo.create('td', { colspan: 3, }, row).appendChild(
+        dojo.create('td', { innerHTML: '&nbsp;', style: 'width: 25%;' }, row);
+        dojo.create('td', { colspan: 3 }, row).appendChild(
             new dijit.form.Textarea({
                 id: 'criteria',
                 name: 'criteria',
@@ -643,7 +643,8 @@
             filteredData['hashTags'] = target;
         }
         // Check criteria (normal tags)
-        source = associate['criteria'] || [], target = filledData['criteria'].split('\n');
+        source = associate['criteria'] || [];
+        target = filledData['criteria'].split('\n');
         fieldHasNewValue = false;
         // Normalize the proposed entries
         for (var idx = 0, iLimit = target.length; idx < iLimit; idx++) {
@@ -673,7 +674,8 @@
             filteredData['criteria'] = target;
         }
         // Check thresholds
-        source = associate['score'], target = '1:' + dijit.byId('requiredHashTagNb').get('value') + '.' + dijit.byId('requiredCriteriaNb').get('value');
+        source = associate['score'];
+        target = '1:' + dijit.byId('requiredHashTagNb').get('value') + '.' + dijit.byId('requiredCriteriaNb').get('value');
         if (source != target) {
             objectHasNewValue = true;
             filteredData['score'] = target;

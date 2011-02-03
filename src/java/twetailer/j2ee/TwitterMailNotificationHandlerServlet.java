@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -47,8 +49,8 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(TwitterMailNotificationHandlerServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 

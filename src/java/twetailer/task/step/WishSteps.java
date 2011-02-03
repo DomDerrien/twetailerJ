@@ -44,14 +44,12 @@ public class WishSteps extends BaseSteps {
      * @param wishKey Identifier of the wish to retrieve
      * @param ownerKey Identifier of the wishes' owner
      * @param pointOfView Helps deciding which attributes can be exposed
-     * @param saleAssociateKey  Identifier of the sale associate who create one of the proposal attached to the retrieved wish, used if <code>pointOfView == saleAssociate</code>
      * @return Identified wish
      *
-     * @throws ReservedOperationException If <code>saleAssociatePointOfView</code> is <code>true</code> and if the <code>saleAssociateKey</code> is <code>null</code>,
-     *                                    and if the sale associate has proposed nothing to this wish
+     * @throws ReservedOperationException If an SaleAssociate and an Anonymous tries to get the data
      * @throws InvalidIdentifierException If the resource retrieval on the back-end fails
      */
-    public static Wish getWish(PersistenceManager pm, Long wishKey, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey) throws ReservedOperationException, InvalidIdentifierException {
+    public static Wish getWish(PersistenceManager pm, Long wishKey, Long ownerKey, QueryPointOfView pointOfView) throws ReservedOperationException, InvalidIdentifierException {
         Wish output = null;
 
         if (QueryPointOfView.CONSUMER.equals(pointOfView)) {
@@ -74,14 +72,13 @@ public class WishSteps extends BaseSteps {
      * @param parameters Filters of the selection
      * @param ownerKey Identifier of the wishes' owner
      * @param pointOfView Helps deciding which attributes can be exposed
-     * @param saleAssociateKey  Identifier of the sale associate who create one of the proposal attached to the selected wishes, used if <code>pointOfView == saleAssociate</code>
      * @return List of matching wishes, can be empty
      *
-     * @throws ReservedOperationException If <code>saleAssociatePointOfView</code> is <code>true</code> and if the <code>saleAssociateKey</code> is <code>null</code>
+     * @throws ReservedOperationException If an SaleAssociate and an Anonymous tries to get the data
      * @throws InvalidIdentifierException If the information about the locations for a search in an area is invalid
      * @throws DataSourceException If the resource selection on the back-end fails
      */
-    public static List<Wish> getWishes(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey) throws ReservedOperationException, InvalidIdentifierException, DataSourceException {
+    public static List<Wish> getWishes(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView) throws ReservedOperationException, InvalidIdentifierException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
         int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
@@ -97,9 +94,7 @@ public class WishSteps extends BaseSteps {
             throw new ReservedOperationException(Action.list, Wish.class.getName());
         }
         else { // if (QueryPointOfView.anonymous.equals(pointOfView)) {
-            List<Location> locations = LocationSteps.getLocations(pm, parameters, true);
-
-            output = getWishOperations().getWishes(pm, queryParameters, locations, maximumResults);
+            throw new ReservedOperationException(Action.list, Wish.class.getName());
         }
 
         return output;
@@ -112,13 +107,12 @@ public class WishSteps extends BaseSteps {
      * @param parameters Filters of the selection
      * @param ownerKey Identifier of the wishes' owner
      * @param pointOfView Helps deciding which attributes can be exposed
-     * @param saleAssociateKey  Identifier of the sale associate who create one of the proposal attached to the selected wishes, used if <code>pointOfView == saleAssociate</code>
      * @return List of matching wish identifiers, can be empty
      *
-     * @throws ReservedOperationException If <code>saleAssociatePointOfView</code> is <code>true</code> and if the <code>saleAssociateKey</code> is <code>null</code>
+     * @throws ReservedOperationException If an SaleAssociate and an Anonymous tries to get the data
      * @throws DataSourceException If the resource selection on the back-end fails
      */
-    public static List<Long> getWishKeys(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView, Long saleAssociateKey) throws ReservedOperationException, DataSourceException {
+    public static List<Long> getWishKeys(PersistenceManager pm, JsonObject parameters, Long ownerKey, QueryPointOfView pointOfView) throws ReservedOperationException, DataSourceException {
 
         Map<String, Object> queryParameters = prepareQueryForSelection(parameters);
         int maximumResults = parameters.containsKey(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) ? (int) parameters.getLong(BaseRestlet.MAXIMUM_RESULTS_PARAMETER_KEY) : 0;
@@ -143,29 +137,13 @@ public class WishSteps extends BaseSteps {
     /**
      * Remove nominative information from the Wish record
      *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param pointOfView Identify the anonymization point of view
      * @param wish Entity to purge
-     * @param saleAssociateKey Identifier of the concerned sale associate, used to get his list of proposal keys
      * @return Cleaned up Wish instance
      *
-     * @throws DataSourceException If the retrieval of the proposal keys created by the sale associate fails
+     * @throws ReservedOperationException If an SaleAssociate and an Anonymous tries to get the data
      */
-    public static JsonObject anonymizeWish(PersistenceManager pm, QueryPointOfView pointOfView, JsonObject wish, Long saleAssociateKey) throws DataSourceException {
-        List<Long> saleAssociateProposalKeys = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? ProposalSteps.getProposalKeys(pm, saleAssociateKey) : null;
-        return anonymizeWish(pointOfView, wish, saleAssociateKey, saleAssociateProposalKeys);
-    }
-
-    /**
-     * Remove nominative information from the Wish record
-     *
-     * @param pointOfView Identify the anonymization point of view
-     * @param wish Entity to purge
-     * @param saleAssociateKey Identifier of the concerned sale associate
-     * @param saleAssociateProposalKeys List of proposal identifiers the sale associate has created
-     * @return Cleaned up Wish instance
-     */
-    protected static JsonObject anonymizeWish(QueryPointOfView pointOfView, JsonObject wish, Long saleAssociateKey,  List<Long> saleAssociateProposalKeys) {
+    public static JsonObject anonymizeWish(QueryPointOfView pointOfView, JsonObject wish) throws ReservedOperationException {
 
         // Remove owner information
         if (!QueryPointOfView.CONSUMER.equals(pointOfView)) {
@@ -179,10 +157,12 @@ public class WishSteps extends BaseSteps {
             // No alteration
         }
         else if (QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView)) {
-            // No allowed, exception already thrown
+            // Not allowed, exception should have already been thrown
+            throw new ReservedOperationException(Action.list, Wish.class.getName());
         }
         else { // if (QueryPointOfView.ANONYMOUS.equals(pointOfView)) {
-            // No alteration
+            // Not allowed, exception should have already been thrown
+            throw new ReservedOperationException(Action.list, Wish.class.getName());
         }
 
         // Remove information about CC-ed users
@@ -198,17 +178,16 @@ public class WishSteps extends BaseSteps {
      *
      * @param pointOfView Identify the anonymization point of view
      * @param wishes List of entities to purge
-     * @param saleAssociateKey Identifier of the concerned sale associate
      * @return List of cleaned up Wish instances
      *
+     * @throws ReservedOperationException If an SaleAssociate and an Anonymous tries to get the data
      * @throws DataSourceException If the retrieval of the proposal keys created by the sale associate fails
      */
-    public static JsonArray anonymizeWishes(QueryPointOfView pointOfView, JsonArray wishes, Long saleAssociateKey) throws DataSourceException {
-        List<Long> saleAssociateProposalKeys = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? ProposalSteps.getProposalKeys(saleAssociateKey) : null;
+    public static JsonArray anonymizeWishes(QueryPointOfView pointOfView, JsonArray wishes) throws DataSourceException, ReservedOperationException {
         int idx = wishes.size();
         while (0 < idx) {
             -- idx;
-            anonymizeWish(pointOfView, wishes.getJsonObject(idx), saleAssociateKey, saleAssociateProposalKeys);
+            anonymizeWish(pointOfView, wishes.getJsonObject(idx));
         }
         return wishes;
     }
@@ -265,7 +244,7 @@ public class WishSteps extends BaseSteps {
 
         if (!parameters.containsKey(Wish.LOCATION_KEY) || !parameters.containsKey(Wish.RANGE) || !parameters.containsKey(Wish.RANGE_UNIT)) {
             // Inherits some attributes from the last created wish
-            List<Wish> lastWishes = getWishes(pm, lastWishQueryParameters, owner.getKey(), QueryPointOfView.CONSUMER, null);
+            List<Wish> lastWishes = getWishes(pm, lastWishQueryParameters, owner.getKey(), QueryPointOfView.CONSUMER);
             if (0 < lastWishes.size()) {
                 Wish lastWish = lastWishes.get(0);
                 if (!parameters.containsKey(Wish.LOCATION_KEY) && lastWish.getLocationKey() != null) { parameters.put(Wish.LOCATION_KEY, lastWish.getLocationKey()); }
@@ -294,7 +273,7 @@ public class WishSteps extends BaseSteps {
      * @param rawCommand Reference of the command which initiated the process, is <code>null</code> if initiated by a REST API call
      * @param wishKey Resource identifier
      * @param parameters Parameters produced by the Command line parser or transmitted via the REST API
-     * @param owner Consumer who owns the wish to be updated
+     * @param ownerKey Key of the consumer who owns the wish to be updated
      * @return Just updated wish
      *
      * @throws DataSourceException if the retrieval of the last created wish or of the location information fail
@@ -302,9 +281,10 @@ public class WishSteps extends BaseSteps {
      * @throws InvalidStateException if the Wish is not update-able
      * @throws CommunicationException if the notification of a successful closing fails
      */
-    public static Wish updateWish(PersistenceManager pm, RawCommand rawCommand, Long wishKey, JsonObject parameters, Consumer owner) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
+    public static Wish updateWish(PersistenceManager pm, RawCommand rawCommand, Long wishKey, JsonObject parameters, Long ownerKey) throws DataSourceException, InvalidIdentifierException, InvalidStateException, CommunicationException {
 
-        Wish wish = getWishOperations().getWish(pm, wishKey, owner.getKey());
+        Consumer owner = getConsumerOperations().getConsumer(pm, ownerKey);
+        Wish wish = getWishOperations().getWish(pm, wishKey, ownerKey);
         State currentState = wish.getState();
 
         // Workflow state change

@@ -71,16 +71,9 @@ public class LocationRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
-
     @Override
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         return BaseSteps.getLocationOperations().createLocation(parameters).toJson();
-    }
-
-    @Override
-    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-        throw new RuntimeException("Not yet implemented!");
     }
 
     @Override
@@ -102,5 +95,10 @@ public class LocationRestlet extends BaseRestlet {
         finally {
             pm.close();
         }
+    }
+
+    @Override
+    protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
+        throw new RuntimeException("Not yet implemented!");
     }
 }

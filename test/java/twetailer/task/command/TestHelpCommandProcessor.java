@@ -59,14 +59,14 @@ public class TestHelpCommandProcessor {
     @Before
     public void setUp() throws Exception {
         new TestCommandProcessor().setUp();
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         new TestCommandProcessor().tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class TestHelpCommandProcessor {
     public void testProcessRawCommandWithDataFromCache() throws JsonException, TwitterException, DataSourceException, ParseException, ClientException {
         final String data = "test";
         // BaseOperations Cache mock
-        CacheHandler.injectCache(new MockCache(Collections.emptyMap()) {
+        CacheHandler.injectMockCache(new MockCache(Collections.emptyMap()) {
             @Override
             public Object get(Object key) {
                 return data;

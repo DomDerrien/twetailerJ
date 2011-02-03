@@ -45,14 +45,14 @@ public class TestStoreOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test(expected=RuntimeException.class)
@@ -532,5 +532,31 @@ public class TestStoreOperations {
                 selection.get(1).equals(first.getKey()) && selection.get(0).equals(second.getKey()));
         // assertEquals(first.getKey(), selection.get(1).getKey()); // Should be second because of ordered by descending date
         // assertEquals(second.getKey(), selection.get(0).getKey()); // but dates are so closed that sometimes first is returned first...
+    }
+
+    @Test
+    public void testGetKeysExtendedIII() throws InvalidIdentifierException, DataSourceException {
+        Location where = new Location();
+        where.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
+        where.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
+        where = new LocationOperations().createLocation(where);
+
+        List<Location> places = new ArrayList<Location>();
+        places.add(where);
+        places.add(where);
+
+        StoreOperations ops = new StoreOperations() {
+            @Override
+            public List<Long> getStoreKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                List<Long> results = new ArrayList<Long>();
+                results.add(123L);
+                results.add(234L);
+                return results;
+            }
+        };
+
+        List<Long> selection = ops.getStoreKeys(null, new HashMap<String, Object>(), places, 0);
+        assertNotNull(selection);
+        assertEquals(2, selection.size());
     }
 }

@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -20,18 +19,23 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.MockHttpServletRequest;
 import javax.servlet.http.MockHttpServletResponse;
+import javax.servlet.http.MockHttpSession;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.ReservedOperationException;
 import twetailer.connector.MailConnector;
 import twetailer.task.CommandProcessor;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.CommandSettings.Action;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
@@ -66,25 +70,11 @@ public class TestBaseRestlet {
                 @Override public boolean isUserLoggedIn() { return false; }
             };
         }
-        @Override
-        protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-            return null;
-        }
-        @Override
-        protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-        }
-        @Override
-        protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-            return null;
-        }
-        @Override
-        protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-            return null;
-        }
-        @Override
-        protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-            return null;
-        }
+        @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException { return null; }
+        @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException { }
+        @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException { return null; }
+        @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException { return null; }
+        @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException { return null; }
     }
 
     private static LocalServiceTestHelper  helper;
@@ -116,15 +106,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testDoGetI() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -153,7 +138,6 @@ public class TestBaseRestlet {
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
             protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-                assertEquals(in, parameters.getMap());
                 return resources;
             }
         };
@@ -167,15 +151,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testDoGetII() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -204,7 +183,6 @@ public class TestBaseRestlet {
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
             protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-                assertEquals(in, parameters.getMap());
                 return resources;
             }
         };
@@ -218,7 +196,6 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testDoGetIII() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
@@ -231,10 +208,6 @@ public class TestBaseRestlet {
                 }
                 fail("No attribute gathering expected for: " + key);
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -255,7 +228,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals("current", id);
                 assertEquals(user, loggedUser);
                 resource.put("id", id);
@@ -276,15 +248,10 @@ public class TestBaseRestlet {
     @SuppressWarnings("serial")
     public void testDoGetIV() throws IOException {
         final String uid = "uid1212";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -313,7 +280,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject getResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
                 assertEquals(user, loggedUser);
                 resource.put("id", id);
@@ -333,15 +299,10 @@ public class TestBaseRestlet {
     @Test
     public void testDoGetV() throws IOException {
         final String uid = "<!uid1212:>";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -381,15 +342,10 @@ public class TestBaseRestlet {
     @Test
     public void testDoGetVI() throws IOException {
         final String uid = "<!uid1212:>";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -398,6 +354,13 @@ public class TestBaseRestlet {
                 }
                 fail("No attribute gathering expected for: " + key);
                 return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -416,15 +379,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testDoGetVII() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -453,7 +411,6 @@ public class TestBaseRestlet {
         MockBaseRestlet mockRestlet = new MockBaseRestlet() {
             @Override
             protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
-                assertEquals(in, parameters.getMap());
                 return resources;
             }
         };
@@ -466,15 +423,10 @@ public class TestBaseRestlet {
 
     @Test
     public void testdoPutI() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -509,15 +461,10 @@ public class TestBaseRestlet {
 
     @Test
     public void testdoPutII() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -554,15 +501,10 @@ public class TestBaseRestlet {
     @SuppressWarnings("serial")
     public void testdoPutIII() throws IOException {
         final String uid = "uid1212";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -588,7 +530,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject updateResource(JsonObject parameters, String id, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals(uid, id);
                 assertEquals(user, loggedUser);
                 resource.put("id", id);
@@ -609,15 +550,10 @@ public class TestBaseRestlet {
     @Test
     public void testdoPutIV() throws IOException {
         final String uid = "<!uid1212:>";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -653,15 +589,10 @@ public class TestBaseRestlet {
     @Test
     public void testdoPutV() throws IOException {
         final String uid = "<!uid1212:>";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -691,15 +622,10 @@ public class TestBaseRestlet {
 
     @Test
     public void testdoPutVI() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -735,15 +661,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testdoPostI() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -770,7 +691,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
                 resource.put("id", uid);
                 return resource;
@@ -790,15 +710,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testdoPostII() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -825,7 +740,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
                 resource.put("id", uid);
                 return resource;
@@ -845,15 +759,10 @@ public class TestBaseRestlet {
     @Test
     public void testdoPostIII() throws IOException {
         final String uid = "uid1212";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -889,15 +798,10 @@ public class TestBaseRestlet {
     @Test
     public void testdoPostIV() throws IOException {
         final String uid = "<!uid1212:>";
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/" + uid;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -928,15 +832,10 @@ public class TestBaseRestlet {
     @Test
     @SuppressWarnings("serial")
     public void testdoPostV() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return "/";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -963,7 +862,6 @@ public class TestBaseRestlet {
             @Override
             protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException {
                 JsonObject resource = new GenericJsonObject();
-                assertEquals(in, parameters.getMap());
                 assertEquals(user, loggedUser);
                 resource.put("id", uid);
                 return resource;
@@ -1249,8 +1147,11 @@ public class TestBaseRestlet {
                 throw new IllegalArgumentException("Done in purpose");
             }
             @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -1260,47 +1161,6 @@ public class TestBaseRestlet {
                 return stream;
             }
         };
-        new MockBaseRestlet().doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'isException':true"));
-        assertTrue(stream.contains("'success':false"));
-    }
-
-    @Test
-    public void testDoGetFailingInDebugModeII() throws IOException {
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public Map<String, ?> getParameterMap() {
-                throw new DatastoreTimeoutException("Done in purpose");
-            }
-        };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-        new MockBaseRestlet().doGet(mockRequest, mockResponse);
-        assertTrue(stream.contains("'isException':true"));
-        assertTrue(stream.contains("'success':false"));
-    }
-
-    @Test
-    public void testDoGetFailingInDebugModeIII() throws IOException {
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
-            @Override
-            public Map<String, ?> getParameterMap() {
-                throw new DatastoreTimeoutException("Done in purpose");
-            }
-        };
-        final MockServletOutputStream stream = new MockServletOutputStream();
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
-            @Override
-            public ServletOutputStream getOutputStream() {
-                return stream;
-            }
-        };
-        MailConnector.foolNextMessagePost(); // Will make CatchAllMailHandlerServlet.composeAndPostMailMessage() throwing a MessagingException!
         new MockBaseRestlet().doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'isException':true"));
         assertTrue(stream.contains("'success':false"));
@@ -1568,15 +1428,10 @@ public class TestBaseRestlet {
 
     @Test
     public void testDoGetUnauthorized() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public Object getAttribute(String key) {
@@ -1613,15 +1468,10 @@ public class TestBaseRestlet {
 
     @Test
     public void testDoPostUnauthorized() throws IOException {
-        final Map<String, ?> in = new HashMap<String, Object>();
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getPathInfo() {
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return in;
             }
             @Override
             public ServletInputStream getInputStream() {
@@ -1651,5 +1501,1244 @@ public class TestBaseRestlet {
         assertTrue(stream.contains("Unauthorized"));
         assertTrue(stream.contains("success"));
         assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGetUserService() {
+        new BaseRestlet() {
+            @Override protected Logger getLogger() { return new MockLogger("test", null); }
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { }
+            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+        }.getUserService();
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testIsUserAdministratorI() {
+        assertTrue(new BaseRestlet() {
+            @Override protected Logger getLogger() { return new MockLogger("test", null); }
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { }
+            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        }.isUserAdministrator(null));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testIsUserAdministratorII() {
+        assertFalse(new BaseRestlet() {
+            @Override protected Logger getLogger() { return new MockLogger("test", null); }
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { }
+            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return false; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        }.isUserAdministrator(null));
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testIsUserAdministratorIII() {
+        assertFalse(new BaseRestlet() {
+            @Override protected Logger getLogger() { return new MockLogger("test", null); }
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { }
+            @Override protected JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException { return null; }
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return false; }
+                    @Override public boolean isUserLoggedIn() { return false; }
+
+                };
+            }
+        }.isUserAdministrator(null));
+    }
+
+    @Test
+    public void testDebugModeI() {
+        assertFalse(BaseRestlet.debugModeDetected(new MockHttpServletRequest()));
+    }
+
+    @Test
+    public void testDebugModeII() {
+        assertFalse(BaseRestlet.debugModeDetected(new GenericJsonObject()));
+    }
+
+    @Test
+    public void testDebugModeIII() {
+        assertTrue(BaseRestlet.debugModeDetected(new MockHttpServletRequest() {
+            @Override public String getParameter(String name) { return CommandProcessor.DEBUG_INFO_SWITCH.equals(name) ? "yes" : null; }
+        }));
+    }
+
+    @Test
+    public void testDebugModeIV() {
+        JsonObject json = new GenericJsonObject();
+        json.put(CommandProcessor.DEBUG_INFO_SWITCH, "yes");
+        assertTrue(BaseRestlet.debugModeDetected(json));
+    }
+
+    @Test
+    public void testGet_LogSessionInfoI() throws IOException {
+        //
+        // Not logged user, not admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    public void testGet_LogSessionInfoII() throws IOException {
+        //
+        // Logged user, not admin, one session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return new MockHttpSession();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+//            @Override
+//            public ServletInputStream getInputStream() {
+//                return new MockServletInputStream("{}");
+//            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGet_LogSessionInfoIII() throws IOException {
+        //
+        // Not logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGet_LogSessionInfoIV() throws IOException {
+        //
+        // Logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGet_LogSessionInfoV() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(key)) {
+                    return "yes";
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new ReservedOperationException(Action.list, "Done in purpose!"); }
+        };
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(403, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testGet_LogSessionInfoVI() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(key)) {
+                    return "yes";
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new RuntimeException("Done in purpose!"); }
+        };
+        mockRestlet.doGet(mockRequest, mockResponse);
+
+        assertEquals(500, mockResponse.getStatus());
+    }
+
+    @Test
+    public void testPost_LogSessionInfoI() throws IOException {
+        //
+        // Not logged user, not admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+          @Override
+          public ServletInputStream getInputStream() {
+              return new MockServletInputStream("{}");
+          }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    public void testPost_LogSessionInfoII() throws IOException {
+        //
+        // Logged user, not admin, one session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return new MockHttpSession();
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPost_LogSessionInfoIII() throws IOException {
+        //
+        // Not logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPost_LogSessionInfoIV() throws IOException {
+        //
+        // Logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPost_LogSessionInfoV() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new ReservedOperationException(Action.list, "Done in purpose!"); }
+        };
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(403, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPost_LogSessionInfoVI() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new RuntimeException("Done in purpose!"); }
+        };
+        mockRestlet.doPost(mockRequest, mockResponse);
+
+        assertEquals(500, mockResponse.getStatus());
+    }
+
+    @Test
+    public void testPut_LogSessionInfoI() throws IOException {
+        //
+        // Not logged user, not admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+          @Override
+          public ServletInputStream getInputStream() {
+              return new MockServletInputStream("{}");
+          }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    public void testPut_LogSessionInfoII() throws IOException {
+        //
+        // Logged user, not admin, one session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return new MockHttpSession();
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPut_LogSessionInfoIII() throws IOException {
+        //
+        // Not logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPut_LogSessionInfoIV() throws IOException {
+        //
+        // Logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPut_LogSessionInfoV() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonObject updateResource(JsonObject parameters, String key, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new ReservedOperationException(Action.list, "Done in purpose!"); }
+        };
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(403, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testPut_LogSessionInfoVI() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/current";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected JsonObject updateResource(JsonObject parameters, String key, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new RuntimeException("Done in purpose!"); }
+        };
+        mockRestlet.doPut(mockRequest, mockResponse);
+
+        assertEquals(500, mockResponse.getStatus());
+    }
+
+    @Test
+    public void testDelete_LogSessionInfoI() throws IOException {
+        //
+        // Not logged user, not admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+          @Override
+          public ServletInputStream getInputStream() {
+              return new MockServletInputStream("{}");
+          }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(401, mockResponse.getStatus());
+        assertTrue(stream.contains("reason"));
+        assertTrue(stream.contains("Unauthorized"));
+        assertTrue(stream.contains("success"));
+        assertTrue(stream.contains("false"));
+    }
+
+    @Test
+    public void testDelete_LogSessionInfoII() throws IOException {
+        //
+        // Logged user, not admin, one session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return new MockHttpSession();
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet();
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelete_LogSessionInfoIII() throws IOException {
+        //
+        // Not logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return null;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelete_LogSessionInfoIV() throws IOException {
+        //
+        // Logged user, admin, no session
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected UserService getUserService() {
+                return new UserService() {
+                    @Override public String createLoginURL(String arg0) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1) { return null; }
+                    @Override public String createLoginURL(String arg0, String arg1, String arg2, Set<String> arg3) { return null; }
+                    @Override public String createLogoutURL(String arg0) { return null; }
+                    @Override public String createLogoutURL(String arg0, String arg1) { return null; }
+                    @Override public User getCurrentUser() { return null; }
+                    @Override public boolean isUserAdmin() { return true; }
+                    @Override public boolean isUserLoggedIn() { return true; }
+
+                };
+            }
+        };
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelete_LogSessionInfoV() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected void deleteResource(String key, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new ReservedOperationException(Action.list, "Done in purpose!"); }
+        };
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(403, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testDelete_LogSessionInfoVI() throws IOException {
+        //
+        // Logged user, not admin, no session, debug mode
+        //
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public HttpSession getSession(boolean createSession) {
+                assertEquals(false, createSession);
+                return null;
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+            }
+            @Override
+            public Object getAttribute(String key) {
+                if (OpenIdUser.ATTR_NAME.equals(key)) {
+                    return user;
+                }
+                fail("No attribute gathering expected for: " + key);
+                return null;
+            }
+            @Override
+            public String getPathInfo() {
+                return "/12345";
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+        MockBaseRestlet mockRestlet = new MockBaseRestlet() {
+            @Override protected void deleteResource(String key, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ReservedOperationException { throw new RuntimeException("Done in purpose!"); }
+        };
+        mockRestlet.doDelete(mockRequest, mockResponse);
+
+        assertEquals(500, mockResponse.getStatus());
     }
 }

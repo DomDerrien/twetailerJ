@@ -1,7 +1,5 @@
 package twetailer.dto;
 
-import java.text.DecimalFormatSymbols;
-
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -42,7 +40,7 @@ public class Proposal extends Command {
     public static final String COMMENT = "comment";
 
     @Persistent
-    private String currencyCode = DecimalFormatSymbols.getInstance(LocaleValidator.DEFAULT_LOCALE).getInternationalCurrencySymbol();
+    private String currencyCode = LocaleValidator.DEFAULT_CURRENCY_CODE;
 
     public static final String CURRENCY_CODE = "currencyCode";
 
@@ -138,6 +136,9 @@ public class Proposal extends Command {
     }
 
     public void setCurrencyCode(String currencyCode) {
+        if (currencyCode == null) {
+            currencyCode = LocaleValidator.DEFAULT_CURRENCY_CODE;
+        }
         this.currencyCode = currencyCode;
     }
 
@@ -168,7 +169,7 @@ public class Proposal extends Command {
     }
 
     public void setScore(Long score) {
-        this.score = score < 1L || 5L < score ? null : score;
+        this.score = score != null && (score < 1L || 5L < score) ? null : score;
     }
 
     public Long getStoreKey() {
@@ -215,14 +216,14 @@ public class Proposal extends Command {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
-        // if (in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); } // Cannot be overridden
+        if (isCacheRelated && in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
         if (isUserAdmin && in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
         if (isUserAdmin && in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
-        if ((isUserAdmin || getKey() == null) && in.containsKey(DEMAND_KEY)) {
+        if ((getKey() == null || isUserAdmin) && in.containsKey(DEMAND_KEY)) {
             setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time
         }
         if (in.containsKey(PRICE)) { setPrice(in.getDouble(PRICE)); }

@@ -433,6 +433,15 @@ public class TestSupplyCommandProcessor {
         final String tag2 = newTag;
         final String tag3 = "tag3";
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // SaleAssociateOperations mock
         BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override

@@ -57,14 +57,12 @@ public class TestLocation {
         assertNotNull(object.getCreationDate());
     }
 
-    String countryCode = RobotResponder.ROBOT_COUNTRY_CODE;
+    Long key = 4354L;
+    String countryCode = "US";
     Boolean hasStore = Boolean.TRUE;
     Double latitude = 45.0D;
     Double longitude = -27.5D;
-    String postalCode = RobotResponder.ROBOT_POSTAL_CODE;
-    String name = "dom";
-    String phoneNumber = "514-123-4567 #890";
-    Long twitterId = 54321L;
+    String postalCode = "00000";
 
     @Test
     public void testAccessors() {
@@ -168,8 +166,13 @@ public class TestLocation {
     }
 
     @Test
-    public void testJsonCommands() {
+    public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Location object = new Location();
+
+        object.setKey(key);
 
         object.setCountryCode(countryCode);
         object.setHasStore(hasStore);
@@ -177,13 +180,104 @@ public class TestLocation {
         object.setLongitude(longitude);
         object.setPostalCode(postalCode);
 
-        Location clone = new Location(object.toJson());
+        Location clone = new Location();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(key, clone.getKey());
 
         assertEquals(countryCode, clone.getCountryCode());
         assertEquals(hasStore, clone.hasStore());
         assertEquals(latitude, clone.getLatitude());
         assertEquals(longitude, clone.getLongitude());
         assertEquals(postalCode, clone.getPostalCode());
+    }
+
+    @Test
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
+        Location object = new Location();
+
+        Location clone = new Location();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, clone.getCountryCode());
+        assertFalse(clone.hasStore());
+        assertEquals(Location.INVALID_COORDINATE, clone.getLatitude());
+        assertEquals(Location.INVALID_COORDINATE, clone.getLongitude());
+        assertNull(clone.getPostalCode());
+    }
+
+    @Test
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
+        Location object = new Location();
+
+        object.setKey(key);
+
+        object.setCountryCode(countryCode);
+        object.setHasStore(hasStore);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
+        object.setPostalCode(postalCode);
+
+        Location clone = new Location();
+        clone.fromJson(object.toJson(), true, false);
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(countryCode, clone.getCountryCode());
+        assertEquals(hasStore, clone.hasStore());
+        assertEquals(latitude, clone.getLatitude());
+        assertEquals(longitude, clone.getLongitude());
+        assertEquals(postalCode, clone.getPostalCode());
+    }
+
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
+        Location object = new Location();
+
+        // object.setKey(key);
+
+        object.setCountryCode(countryCode);
+        object.setHasStore(hasStore);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
+        object.setPostalCode(postalCode);
+
+        Location clone = new Location();
+        clone.fromJson(object.toJson());
+
+        assertEquals(countryCode, clone.getCountryCode());
+        assertEquals(hasStore, clone.hasStore());
+        assertEquals(latitude, clone.getLatitude());
+        assertEquals(longitude, clone.getLongitude());
+        assertEquals(postalCode, clone.getPostalCode());
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testJsonCommandsV() {
+        //
+        // User update for an existing object (lowest)
+        //
+        Location object = new Location();
+
+        object.setKey(key);
+
+        object.setCountryCode(countryCode);
+        object.setHasStore(hasStore);
+        object.setLatitude(latitude);
+        object.setLongitude(longitude);
+        object.setPostalCode(postalCode);
+
+        Location clone = new Location();
+        clone.fromJson(object.toJson());
     }
 
     @Test

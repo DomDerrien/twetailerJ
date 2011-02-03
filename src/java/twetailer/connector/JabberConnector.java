@@ -67,8 +67,8 @@ public class JabberConnector {
     /**
      * Made available only for test purposes
      */
-    public static void injectMockXMPPService(MockXMPPService mock) {
-        mockService = mock;
+    public static void injectMockXMPPService(MockXMPPService mockService) {
+        JabberConnector.mockService = mockService;
     }
 
     protected static XMPPService getXMPPService() {

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -27,8 +29,8 @@ public class MailComposerServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(MailComposerServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -71,17 +73,23 @@ public class MailComposerServlet extends HttpServlet {
                 subject = redirection[2];
                 body = body.substring(endOfFirstLine + 3);
             }
+            else {
+                throw new MessagingException("Incorrect message header. Message not forwared!");
+            }
 
             getLogger().warning("Redirects email to: " + name);
             MailConnector.sendMailMessage(true, email, name, subject, body, Locale.ENGLISH);
+            response.setStatus(200); // OK
         }
         catch (MessagingException ex) {
             // Nothing to do with a corrupted message...
             getLogger().warning("During the message composition -- message " + ex.getMessage());
+            response.setStatus(500); // Server error
         }
         catch (IOException ex) {
             // Nothing to do with a corrupted message...
             getLogger().warning("During the message sending -- message " + ex.getMessage());
+            response.setStatus(500); // Server error
         }
     }
 }

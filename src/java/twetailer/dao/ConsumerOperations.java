@@ -405,10 +405,9 @@ public class ConsumerOperations extends BaseOperations {
                     existingConsumer.setFacebookId(facebookId);
                     String existingName = existingConsumer.getName();
                     if (existingName == null) { // setName("") reset the field to <code>null</code>
-                        existingConsumer.setName(name.length() == 0 ? email : name);
+                        existingConsumer.setName(name == null || name.length() == 0 ? email : name);
                     }
-                    existingConsumer = updateConsumer(pm, existingConsumer);
-                    return existingConsumer;
+                    return updateConsumer(pm, existingConsumer);
                 }
             }
             catch (DataSourceException e) { }

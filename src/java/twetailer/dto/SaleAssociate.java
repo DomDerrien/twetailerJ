@@ -3,7 +3,6 @@ package twetailer.dto;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
@@ -11,7 +10,6 @@ import javax.jdo.annotations.Persistent;
 
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
-import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
@@ -295,9 +293,9 @@ public class SaleAssociate extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(CONSUMER_KEY, getConsumerKey());
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         out.put(CLOSED_PROPOSAL_NB, getClosedProposalNb() == null ? 0L : getClosedProposalNb());
-        out.put(CREATOR_KEY, getCreatorKey());
+        if (getCreatorKey() != null) { out.put(CREATOR_KEY, getCreatorKey()); }
         if (getCriteria() != null && 0 < getCriteria().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(String criterion: getCriteria()) {
@@ -316,7 +314,7 @@ public class SaleAssociate extends Entity {
             out.put(IS_STORE_ADMIN, Boolean.TRUE);
         }
         out.put(PUBLISHED_PROPOSAL_NB, getPublishedProposalNb() == null ? 0L : getPublishedProposalNb());
-        out.put(STORE_KEY, getStoreKey());
+        if (getStoreKey() != null) { out.put(STORE_KEY, getStoreKey()); }
         out.put(SCORE, getScore());
         return out;
     }
@@ -327,15 +325,15 @@ public class SaleAssociate extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (isUserAdmin && in.containsKey(CLOSED_PROPOSAL_NB)) { setClosedProposalNb(in.getLong(CLOSED_PROPOSAL_NB)); } // Cannot be updated remotely
-        if ((isUserAdmin || getKey() == null) && in.containsKey(CONSUMER_KEY)) {
+        if ((getKey() == null || isUserAdmin) && in.containsKey(CONSUMER_KEY)) {
             // Cannot change once set at creation time
             setConsumerKey(in.getLong(CONSUMER_KEY));
         }
-        if ((isUserAdmin || getKey() == null) && in.containsKey(CREATOR_KEY)) {
+        if ((getKey() == null || isUserAdmin) && in.containsKey(CREATOR_KEY)) {
             // Cannot change once set at creation time
             setCreatorKey(in.getLong(CREATOR_KEY));
         }

@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.Collator;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javamocks.io.MockInputStream;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
@@ -40,7 +42,7 @@ public class LocaleValidator {
     public static final Double DEFAULT_RANGE = 25.0D;
 
     /**
-     * Use 3rd party service to resolve the geo-coordinates of the given location
+     * Use 3rd party service to resolve the geocoordinates of the given location
      *
      * @param command Parameters as received by the REST API
      * @return Pair of coordinates {latitude, longitude}
@@ -54,9 +56,9 @@ public class LocaleValidator {
     }
 
     /**
-     * Use 3rd party service to resolve the geo-coordinates of the given location
+     * Use 3rd party service to resolve the geocoordinates of the given location
      *
-     * @param location Information as received from the datastore
+     * @param location Information as received from the data store
      * @return Given parameter for operation chaining
      */
     public static Location getGeoCoordinates(Location location) {
@@ -87,7 +89,7 @@ public class LocaleValidator {
     protected static Pattern US_POSTAL_CODE_PATTERN = Pattern.compile("^\\d\\d\\d\\d\\d(?:-\\d\\d\\d\\d(?:\\d\\d)?:)?$", Pattern.CASE_INSENSITIVE);
 
     /**
-     * Use 3rd party service to resolve the geo-coordinates of the given location
+     * Use 3rd party service to resolve the geocoordinates of the given location
      *
      * @param postalCode Postal code
      * @param countryCode Code of the country to consider
@@ -146,15 +148,15 @@ public class LocaleValidator {
         return coordinates;
     }
 
-    private static InputStream testValidatorStream;
+    private static MockInputStream testValidatorStream;
 
     /** Just for unit test purposes */
-    public static void setValidatorStream(InputStream stream) {
+    public static void setMockValidatorStream(MockInputStream stream) {
         testValidatorStream = stream;
     }
 
     /**
-     * Use 3rd party service to resolve the geo-coordinates of the given location
+     * Use 3rd party service to resolve the geocoordinates of the given location
      *
      * @param address To be localized
      * @return Pair of coordinates {latitude, longitude}
@@ -164,7 +166,7 @@ public class LocaleValidator {
      * @throws URISyntaxException If the syntax of the URL is invalid
      */
     protected static Double[] getGeoCoordinates(String address) throws IOException, JsonException, URISyntaxException {
-        Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
+        Double[] coordinates = new Double[] { Location.INVALID_COORDINATE, Location.INVALID_COORDINATE };
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(address)));
         String line = reader.readLine();
@@ -225,9 +227,10 @@ public class LocaleValidator {
         return new URL("http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + address).openStream();
     }
 
-    public static final Locale DEFAULT_LOCALE = Locale.US;
+    public static final Locale DEFAULT_LOCALE = Locale.CANADA;
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
     public static final String DEFAULT_DISPLAY_LANGUAGE = DEFAULT_LOCALE.getDisplayLanguage(DEFAULT_LOCALE);
+    public static final String DEFAULT_CURRENCY_CODE = DecimalFormatSymbols.getInstance(DEFAULT_LOCALE).getInternationalCurrencySymbol();
 
     private static final String FRENCH_LANGUAGE = Locale.FRENCH.getLanguage();
     private static final String ENGLISH_LANGUAGE = Locale.ENGLISH.getLanguage();
@@ -263,7 +266,7 @@ public class LocaleValidator {
         return DEFAULT_LOCALE; // Default language
     }
 
-    public static final String DEFAULT_COUNTRY_CODE = Locale.CANADA.getCountry();
+    public static final String DEFAULT_COUNTRY_CODE = DEFAULT_LOCALE.getCountry();
 
     public static final String DEFAULT_POSTAL_CODE_CA = "H0H0H0";
     public static final String DEFAULT_POSTAL_CODE_US = "00000";

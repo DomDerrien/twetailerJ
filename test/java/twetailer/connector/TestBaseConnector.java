@@ -34,7 +34,7 @@ public class TestBaseConnector {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseConnector.setLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 

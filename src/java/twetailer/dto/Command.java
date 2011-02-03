@@ -64,7 +64,7 @@ public class Command extends Entity {
     }
 
     @Persistent
-    private Action action = null;
+    private Action action;
 
     public static final String ACTION = "action";
 
@@ -458,10 +458,10 @@ public class Command extends Entity {
             out.put(HASH_TAGS, jsonArray);
         }
         if (getMetadata() != null) { out.put(META_DATA, getMetadata()); }
-        out.put(OWNER_KEY, getOwnerKey());
+        if (getOwnerKey() != null) { out.put(OWNER_KEY, getOwnerKey()); }
         out.put(QUANTITY, getQuantity());
         if (getRawCommandId() != null) { out.put(RAW_COMMAND_ID, getRawCommandId()); }
-        out.put(SOURCE, getSource().toString());
+        if (getSource() != null) { out.put(SOURCE, getSource().toString()); }
         out.put(STATE, getState().toString());
         out.put(STATE_COMMAND_LIST, getStateCmdList());
         return out;
@@ -473,7 +473,7 @@ public class Command extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (isCacheRelated && in.containsKey(ACTION)) { setAction(in.getString(ACTION)); }
@@ -549,12 +549,11 @@ public class Command extends Entity {
             }
         }
         if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
-        if (isUserAdmin && in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
+        if ((getKey() == null || isUserAdmin) && in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
         if (isCacheRelated && in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
-        if ((isCacheRelated || getKey() == null) && in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
+        if ((getKey() == null || isCacheRelated) && in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (isUserAdmin && in.containsKey(STATE)) { setState(in.getString(STATE)); }
-        if (isCacheRelated && in.containsKey(STATE_COMMAND_LIST)) { in.getBoolean(STATE_COMMAND_LIST); } // Updated automatically by setState()
         return this;
     }
 

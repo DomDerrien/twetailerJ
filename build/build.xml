@@ -615,6 +615,7 @@
     </target>
 
     <target name="step-clean-compiled" unless="testcase">
+        <delete dir="docs/test-reports" includeemptydirs="yes" failonerror="false" />
         <delete dir="src/war/WEB-INF/classes/twetailer" includeemptydirs="yes" failonerror="false" />
     </target>
 
@@ -1059,6 +1060,7 @@
             <fileset dir="src/war/WEB-INF/classes">
                 <!-- Instrument all the application classes -->
                 <include name="**/*.class" />
+                <exclude name="**/openid/*.class" />
                 <exclude name="**/Test*.class" />
                 <exclude name="**/Mock*.class" />
             </fileset>
@@ -1113,6 +1115,7 @@
         <cobertura-report datafile="${temp.dir}/cobertura.ser" destdir="docs/test-reports/cobertura-html">
             <fileset dir="src/java">
                 <include name="**/*.java" />
+                <exclude name="**/openid/*.class" />
                 <exclude name="**/Test*.java" />
                 <exclude name="**/Mock*.java" />
             </fileset>

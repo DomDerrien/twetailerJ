@@ -1,7 +1,9 @@
 package twetailer.j2ee;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -15,6 +17,7 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.cache.MockCache;
 import javax.jdo.PersistenceManager;
 import javax.servlet.MockServletInputStream;
 import javax.servlet.MockServletOutputStream;
@@ -36,19 +39,23 @@ import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.TwitterConnector;
+import twetailer.dao.CacheHandler;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.ProposalOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SettingsOperations;
+import twetailer.dao.WishOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
 import twetailer.dto.Settings;
+import twetailer.dto.Wish;
 import twetailer.task.CommandProcessor;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.LocaleValidator;
@@ -65,6 +72,7 @@ import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
 import com.google.appengine.api.datastore.DatastoreTimeoutException;
 import com.google.appengine.api.taskqueue.MockQueue;
+import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.xmpp.MockXMPPService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -80,7 +88,7 @@ public class TestMaelzelServlet {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        MaelzelServlet.setLogger(new MockLogger("test", null));
+        MaelzelServlet.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
@@ -110,6 +118,13 @@ public class TestMaelzelServlet {
             public String getPathInfo() {
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -129,6 +144,13 @@ public class TestMaelzelServlet {
             public String getPathInfo() {
                 return "";
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -147,10 +169,6 @@ public class TestMaelzelServlet {
             @Override
             public String getPathInfo() {
                 return "/zzz";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -199,6 +217,13 @@ public class TestMaelzelServlet {
             @Override
             public String getPathInfo() {
                 return "/loadTweets";
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -253,10 +278,6 @@ public class TestMaelzelServlet {
                 }
                 assertEquals(Command.KEY, name);
                 return commandKey.toString();
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -326,6 +347,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -370,6 +398,13 @@ public class TestMaelzelServlet {
                 assertEquals(Demand.KEY, name);
                 return demandKey.toString();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -413,6 +448,13 @@ public class TestMaelzelServlet {
                 }
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -464,6 +506,13 @@ public class TestMaelzelServlet {
                 fail("Call not expected for: " + name);
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -503,6 +552,13 @@ public class TestMaelzelServlet {
                 }
                 assertEquals(Demand.KEY, name);
                 return demandKey.toString();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -548,6 +604,13 @@ public class TestMaelzelServlet {
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -588,6 +651,13 @@ public class TestMaelzelServlet {
                 assertEquals(Proposal.KEY, name);
                 return proposalKey.toString();
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -614,10 +684,6 @@ public class TestMaelzelServlet {
             @Override
             public String getParameter(String name) {
                 return "12345";
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -662,10 +728,6 @@ public class TestMaelzelServlet {
                 throw new DatastoreTimeoutException("Done in purpose!");
             }
             @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-            @Override
             public Enumeration<String> getParameterNames() {
                 return new Enumeration<String>() {
                     @Override public boolean hasMoreElements() { return false;}
@@ -699,10 +761,6 @@ public class TestMaelzelServlet {
                     return "true";
                 }
                 throw new DatastoreTimeoutException("Done in purpose!");
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -1112,7 +1170,7 @@ public class TestMaelzelServlet {
 
     @Test
     @SuppressWarnings("serial")
-    public void testWaitForVerificationCodeIV() throws IOException, TwitterException, ClientException {
+    public void testWaitForVerificationCodeIVa() throws IOException, TwitterException, ClientException {
         final String openId = "http://openId";
         final String identifier = "unit_test_ca";
         final String topic = Consumer.TWITTER_ID;
@@ -1169,6 +1227,160 @@ public class TestMaelzelServlet {
                 assertEquals(identifier, screenName);
                 assertEquals(msg1, text);
                 throw new TwitterException("Done in purpose!");
+            }
+        });
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testWaitForVerificationCodeIVb() throws IOException, TwitterException, ClientException {
+        final String openId = "http://openId";
+        final String identifier = "unit_test_ca";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Expected messages
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+
+        // To inject the mock account
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(msg1, text);
+                throw new TwitterException("Done in purpose!") {
+                    @Override
+                    public int getStatusCode() {
+                        return 403;
+                    }
+                    @Override
+                    public String getMessage() {
+                        return "<xml><error>You cannot send messages to users who are not following you.</error></xml>";
+                    }
+                };
+            }
+        });
+
+        servlet.doPost(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':false"));
+
+        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testWaitForVerificationCodeIVc() throws IOException, TwitterException, ClientException {
+        final String openId = "http://openId";
+        final String identifier = "unit_test_ca";
+        final String topic = Consumer.TWITTER_ID;
+
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/processVerificationCode";
+            }
+            @Override
+            public ServletInputStream getInputStream() {
+                return new MockServletInputStream(
+                        "{'topic':'" + topic + "'" +
+                        ",'waitForCode':" + Boolean.TRUE +
+                        ",'" + Consumer.LANGUAGE + "':'" + LocaleValidator.DEFAULT_LANGUAGE + "'" +
+                        ",'" + topic + "':'" + identifier + "'" +
+                        "}"
+                );
+            }
+            @Override
+            public Object getAttribute(String name) {
+                if (OpenIdUser.ATTR_NAME.equals(name)) {
+                    OpenIdUser user = OpenIdUser.populate(
+                            "http://www.yahoo.com",
+                            YadisDiscovery.IDENTIFIER_SELECT,
+                            LoginServlet.YAHOO_OPENID_SERVER_URL
+                    );
+                    Map<String, Object> json = new HashMap<String, Object>();
+                    // {a: "claimId", b: "identity", c: "assocHandle", d: associationData, e: "openIdServer", f: "openIdDelegate", g: attributes, h: "identifier"}
+                    json.put("a", openId);
+                    user.fromJSON(json);
+                    return user;
+                }
+                fail("Attribute access not expected for: " + name);
+                return null;
+            }
+        };
+
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        // Expected messages
+        final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
+
+        // To inject the mock account
+        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+            @Override
+            public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
+                assertEquals(identifier, screenName);
+                assertEquals(msg1, text);
+                throw new TwitterException("Done in purpose!") {
+                    @Override
+                    public int getStatusCode() {
+                        return 403;
+                    }
+                    @Override
+                    public String getMessage() {
+                        return "<xml><error>service not available...</error></xml>";
+                    }
+                };
             }
         });
 
@@ -1767,6 +1979,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1819,10 +2038,6 @@ public class TestMaelzelServlet {
                 }
                 fail("Parameter query for " + name + " not expected");
                 return null;
-            }
-            @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
             }
             @Override
             public Enumeration<String> getParameterNames() {
@@ -1890,6 +2105,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -1946,10 +2168,6 @@ public class TestMaelzelServlet {
                 return null;
             }
             @Override
-            public Map<String, ?> getParameterMap() {
-                return new HashMap<String, Object>();
-            }
-            @Override
             public Enumeration<String> getParameterNames() {
                 return new Enumeration<String>() {
                     @Override public boolean hasMoreElements() { return false;}
@@ -1992,6 +2210,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -2028,6 +2253,13 @@ public class TestMaelzelServlet {
                 }
                 fail("Parameter query for " + name + " not expected");
                 return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -2066,6 +2298,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -2102,6 +2341,13 @@ public class TestMaelzelServlet {
                 }
                 fail("Parameter query for " + name + " not expected");
                 return null;
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
@@ -2140,6 +2386,13 @@ public class TestMaelzelServlet {
                 fail("Parameter query for " + name + " not expected");
                 return null;
             }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();
         MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
@@ -2154,5 +2407,284 @@ public class TestMaelzelServlet {
 
         MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1000 / 20, queue.getHistory().size());
+    }
+
+    @Test
+    public void testDeleteMarkedForDeletion() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/deleteMarkedForDeletion";
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                assertEquals(2, parameters.size());
+                assertEquals(State.markedForDeletion.toString(), parameters.get(Command.STATE));
+                assertNotNull(parameters.get("<" + Entity.MODIFICATION_DATE));
+                assertEquals(0, limit);
+                List<Demand> results = new ArrayList<Demand>();
+                results.add(new Demand());
+                return results;
+            }
+            @Override
+            public void deleteDemand(PersistenceManager pm, Demand demand) {
+                assertNull(demand.getKey());
+            }
+        });
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertEquals(200, mockResponse.getStatus());
+    }
+
+    @Test
+    @SuppressWarnings("static-access")
+    public void testFlushMemCache() throws IOException {
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/flushMemCache";
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        final Boolean[] cacheCleared = new Boolean[1];
+        cacheCleared[0] = Boolean.FALSE;
+        new CacheHandler<Consumer>(Consumer.class.getName(), "key").injectMockCache(new MockCache(null) {
+            @Override
+            public void clear() {
+                cacheCleared[0] = Boolean.TRUE;
+            }
+        });
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+        assertEquals(200, mockResponse.getStatus());
+        assertTrue(cacheCleared[0]);
+    }
+
+    @Test
+    public void testValidateOpenWish() throws IOException {
+        final Long wishKey= 12345L;
+        // Inject WishOperations mock
+        BaseSteps.setMockWishOperations(new WishOperations() {
+            @Override
+            public Wish getWish(PersistenceManager pm, Long key, Long cKey) {
+                assertEquals(wishKey, key);
+                Wish wish = new Wish();
+                wish.setKey(wishKey);
+                wish.setState(State.invalid);
+                return wish;
+            }
+        });
+
+        // Prepare mock servlet parameters
+        HttpServletRequest mockRequest = new MockHttpServletRequest() {
+            @Override
+            public String getPathInfo() {
+                return "/validateOpenWish";
+            }
+            @Override
+            public String getParameter(String name) {
+                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                    return "true";
+                }
+                assertEquals(Wish.KEY, name);
+                return wishKey.toString();
+            }
+            @Override
+            public Enumeration<String> getParameterNames() {
+                return new Enumeration<String>() {
+                    @Override public boolean hasMoreElements() { return false;}
+                    @Override public String nextElement() { return null; }
+                };
+            }
+        };
+        final MockServletOutputStream stream = new MockServletOutputStream();
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse() {
+            @Override
+            public ServletOutputStream getOutputStream() {
+                return stream;
+            }
+        };
+
+        servlet.doGet(mockRequest, mockResponse);
+        assertTrue(stream.contains("'success':true"));
+
+        // Clean-up
+    }
+
+    @Test
+    public void testTriggerCommandProcessorTask() {
+        Long rawCommandKey = 54765L;
+        final MockQueue mockQueue = new MockQueue();
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                return mockQueue;
+            }
+        });
+        MaelzelServlet.triggerCommandProcessorTask(rawCommandKey);
+        assertEquals(1, mockQueue.getHistory().size());
+    }
+
+    @Test
+    public void testTriggerDemandValidationTask() {
+        final MockQueue mockQueue = new MockQueue();
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                return mockQueue;
+            }
+        });
+        Demand resource = new Demand();
+        resource.setKey(54765L);
+
+        MaelzelServlet.triggerValidationTask(resource);
+        assertEquals(1, mockQueue.getHistory().size());
+    }
+
+    @Test
+    public void testTriggerWishValidationTask() {
+        final MockQueue mockQueue = new MockQueue();
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                return mockQueue;
+            }
+        });
+        Wish resource = new Wish();
+        resource.setKey(54765L);
+
+        MaelzelServlet.triggerValidationTask(resource);
+        assertEquals(1, mockQueue.getHistory().size());
+    }
+
+    @Test
+    public void testTriggerProposalValidationTask() {
+        final MockQueue mockQueue = new MockQueue();
+        BaseSteps.setMockBaseOperations(new MockBaseOperations() {
+            @Override
+            public Queue getQueue() {
+                return mockQueue;
+            }
+        });
+        Proposal resource = new Proposal();
+        resource.setKey(54765L);
+
+        MaelzelServlet.triggerValidationTask(resource);
+        assertEquals(1, mockQueue.getHistory().size());
+    }
+
+    @Test
+    public void testTriggerProposalCancellationTaskI() {
+        //
+        // Cancel one task
+        //
+        final Long proposalKey = 7654332L;
+        Long preservedProposalKey = 21111112L;
+        List<Long> proposalKeys = new ArrayList<Long>();
+        proposalKeys.add(proposalKey);
+        final Long cancellerKey = 657676L;
+
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long onwerKey, Long storeKey) {
+                assertEquals(proposalKey, key);
+                Proposal resource = new Proposal();
+                resource.setKey(key);
+                return resource;
+            }
+            public Proposal updateProposal(PersistenceManager pm, Proposal resource) {
+                assertEquals(proposalKey, resource.getKey());
+                assertEquals(State.cancelled, resource.getState());
+                assertEquals(cancellerKey, resource.getCancelerKey());
+                return resource;
+            }
+        });
+
+        MaelzelServlet.triggerProposalCancellationTask(proposalKeys, cancellerKey, preservedProposalKey);
+    }
+
+    @Test
+    public void testTriggerProposalCancellationTaskII() {
+        //
+        // Try to cancel the preserved task
+        //
+        final Long proposalKey = 7654332L;
+        Long preservedProposalKey = proposalKey;
+        List<Long> proposalKeys = new ArrayList<Long>();
+        proposalKeys.add(proposalKey);
+        final Long cancellerKey = 657676L;
+
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long onwerKey, Long storeKey) {
+                fail("Call not expected");
+                return null;
+            }
+            public Proposal updateProposal(PersistenceManager pm, Proposal resource) {
+                fail("Call not expected");
+                return resource;
+            }
+        });
+
+        MaelzelServlet.triggerProposalCancellationTask(proposalKeys, cancellerKey, preservedProposalKey);
+    }
+
+    @Test
+    public void testTriggerProposalCancellationTaskIII() {
+        //
+        // Try to cancel the miss-identified task
+        //
+        final Long proposalKey = 7654332L;
+        Long preservedProposalKey = null;
+        List<Long> proposalKeys = new ArrayList<Long>();
+        proposalKeys.add(proposalKey);
+        final Long cancellerKey = 657676L;
+
+        BaseSteps.setMockProposalOperations(new ProposalOperations() {
+            @Override
+            public Proposal getProposal(PersistenceManager pm, Long key, Long onwerKey, Long storeKey) throws InvalidIdentifierException {
+                assertEquals(proposalKey, key);
+                throw new InvalidIdentifierException("Done in purpose!");
+            }
+            public Proposal updateProposal(PersistenceManager pm, Proposal resource) {
+                fail("Call not expected");
+                return resource;
+            }
+        });
+
+        MaelzelServlet.triggerProposalCancellationTask(proposalKeys, cancellerKey, preservedProposalKey);
     }
 }

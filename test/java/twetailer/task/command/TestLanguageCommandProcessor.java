@@ -134,7 +134,14 @@ public class TestLanguageCommandProcessor {
 
         // ConsumerOperations mock
         final Long consumerKey = 76325L;
+        // ConsumerOperations mock
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
             @Override
             public Consumer updateConsumer(PersistenceManager pm, Consumer consumer) {
                 assertEquals(consumerKey, consumer.getKey());

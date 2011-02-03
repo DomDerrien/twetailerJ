@@ -106,11 +106,11 @@ public class Influencer extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(CONSUMER_KEY, getConsumerKey());
-        out.put(EMAIL, getEmail());
-        out.put(NAME, getName());
-        out.put(REFERRAL_ID, referralId);
-        out.put(URL, getUrl());
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        if (getEmail() != null) { out.put(EMAIL, getEmail()); }
+        if (getName() != null) { out.put(NAME, getName()); }
+        if (getReferralId() != null) { out.put(REFERRAL_ID, getReferralId()); }
+        if (getUrl() != null) { out.put(URL, getUrl()); }
         return out;
     }
 
@@ -120,12 +120,11 @@ public class Influencer extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         if (!isUserAdmin) {
-            // No external update allowed
-            return this;
+            throw new IllegalArgumentException("Reserved operation");
         }
 
-        isUserAdmin = isUserAdmin || isCacheRelated;
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }

@@ -42,16 +42,25 @@ public class WishRestlet extends BaseRestlet {
     public JsonObject getResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long wishKey = Long.valueOf(resourceId);
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
-            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
-            Wish wish = WishSteps.getWish(pm, wishKey, ownerKey, pointOfView, saleAssociateKey);
+            Long ownerKey;
+            if (isUserAdmin) {
+                if (!QueryPointOfView.CONSUMER.equals(pointOfView) || !parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            }
 
-            JsonObject out = WishSteps.anonymizeWish(pm, pointOfView, wish.toJson(), saleAssociateKey);
+            Long wishKey = Long.valueOf(resourceId);
+            Wish wish = WishSteps.getWish(pm, wishKey, ownerKey, pointOfView);
 
-            if (parameters.containsKey(RELATED_RESOURCE_NAMES)) {
-                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+            JsonObject out = WishSteps.anonymizeWish(pointOfView, wish.toJson());
+
+            if (parameters.containsKey(RELATED_RESOURCES_ENTRY_POINT_KEY)) {
+                JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCES_ENTRY_POINT_KEY);
                 JsonObject relatedResources = new GenericJsonObject();
                 int idx = relatedResourceNames.size();
                 while (0 < idx) {
@@ -63,7 +72,7 @@ public class WishRestlet extends BaseRestlet {
                     }
                 }
                 if (0 < relatedResources.size()) {
-                    out.put(RELATED_RESOURCE_NAMES, relatedResources);
+                    out.put(RELATED_RESOURCES_ENTRY_POINT_KEY, relatedResources);
                 }
             }
 
@@ -79,24 +88,33 @@ public class WishRestlet extends BaseRestlet {
     protected JsonArray selectResources(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
-            Long ownerKey = LoginServlet.getConsumerKey(loggedUser);
             QueryPointOfView pointOfView = QueryPointOfView.fromJson(parameters, QueryPointOfView.CONSUMER);
-            Long saleAssociateKey = QueryPointOfView.SALE_ASSOCIATE.equals(pointOfView) ? LoginServlet.getSaleAssociateKey(loggedUser, pm) : null;
+            Long ownerKey;
+            if (isUserAdmin) {
+                if (!QueryPointOfView.CONSUMER.equals(pointOfView) || !parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            }
+
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
 
             JsonArray resources;
             if (onlyKeys) {
                 // Get the keys
-                resources = new GenericJsonArray((List) WishSteps.getWishKeys(pm, parameters, ownerKey, pointOfView, saleAssociateKey));
+                resources = new GenericJsonArray((List) WishSteps.getWishKeys(pm, parameters, ownerKey, pointOfView));
             }
             else { // full detail
                 // Get the wishes
-                List<Wish> wishes = WishSteps.getWishes(pm, parameters, ownerKey, pointOfView, saleAssociateKey);
+                List<Wish> wishes = WishSteps.getWishes(pm, parameters, ownerKey, pointOfView);
                 resources = JsonUtils.toJson(wishes);
-                resources = WishSteps.anonymizeWishes(pointOfView, resources, saleAssociateKey);
+                resources = WishSteps.anonymizeWishes(pointOfView, resources);
 
-                if (parameters.containsKey(RELATED_RESOURCE_NAMES) && 0 < wishes.size()) {
-                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCE_NAMES);
+                if (parameters.containsKey(RELATED_RESOURCES_ENTRY_POINT_KEY) && 0 < wishes.size()) {
+                    JsonArray relatedResourceNames = parameters.getJsonArray(RELATED_RESOURCES_ENTRY_POINT_KEY);
                     JsonObject relatedResources = new GenericJsonObject();
                     int idx = relatedResourceNames.size();
                     while (0 < idx) {
@@ -115,7 +133,7 @@ public class WishRestlet extends BaseRestlet {
                         }
                     }
                     if (0 < relatedResources.size()) {
-                        resources.getJsonObject(0).put(RELATED_RESOURCE_NAMES, relatedResources);
+                        resources.getJsonObject(0).put(RELATED_RESOURCES_ENTRY_POINT_KEY, relatedResources);
                     }
                 }
             }
@@ -146,9 +164,21 @@ public class WishRestlet extends BaseRestlet {
     protected JsonObject updateResource(JsonObject parameters, String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
+            // Get the demand owner key
+            Long ownerKey = null;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_CONSUMER_KEY)) {
+                    throw new IllegalArgumentException("Missing one of the identity identifiers!");
+                }
+                ownerKey = parameters.getLong(BaseRestlet.ON_BEHALF_CONSUMER_KEY);
+            }
+            else {
+                ownerKey = LoginServlet.getConsumerKey(loggedUser);
+            }
+
             // Update the Wish
             Long wishKey = Long.valueOf(resourceId);
-            Wish wish = WishSteps.updateWish(pm, null, wishKey, parameters, LoginServlet.getConsumer(loggedUser, pm));
+            Wish wish = WishSteps.updateWish(pm, null, wishKey, parameters, ownerKey);
 
             return wish.toJson();
         }

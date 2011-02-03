@@ -27,6 +27,7 @@ import twetailer.dao.ConsumerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Consumer;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.ApplicationSettings;
 import twitter4j.MockTwitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
@@ -37,11 +38,13 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 public class TestTwitterMailNotifHandlerServlet {
 
     private static LocalServiceTestHelper  helper;
+    private static String emailDomain;
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        TwitterMailNotificationHandlerServlet.setLogger(new MockLogger("test", null));
+        TwitterMailNotificationHandlerServlet.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+        emailDomain = ApplicationSettings.get().getProductEmailDomain();
     }
 
     @Before
@@ -68,7 +71,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -122,7 +125,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -179,7 +182,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -230,7 +233,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now following your tweets on Twitter. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -280,7 +283,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now following you on Twitter!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -303,7 +306,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = followerName + " is now a magic Twitter user!";
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -326,7 +329,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "Twitter";
         final String subject = null;
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {
@@ -349,7 +352,7 @@ public class TestTwitterMailNotifHandlerServlet {
         final String twitterName = "";
         final String subject = null;
         final String message = "Hi Twetailer. " + followerName + " (" + followerScreenName + ") is now a magic Twitter user. A little information on " + followerName + ": ...";
-        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message);
+        final MockServletInputStream stream = TestMailConnector.prepareTextStream(from, twitterName, subject, message, emailDomain);
         MockHttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public ServletInputStream getInputStream() {

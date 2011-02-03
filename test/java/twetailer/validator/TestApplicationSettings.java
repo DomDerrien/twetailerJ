@@ -21,7 +21,7 @@ public class TestApplicationSettings {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        ApplicationSettings.setLogger(new MockLogger("test", null));
+        ApplicationSettings.setMockLogger(new MockLogger("test", null));
     }
 
     @Before

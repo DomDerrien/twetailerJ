@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 import javamocks.io.MockInputStream;
@@ -14,12 +12,10 @@ import javamocks.io.MockInputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
-import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
@@ -31,7 +27,7 @@ public class TestLocaleValidator {
 
     @Before
     public void setUp() throws Exception {
-        LocaleValidator.setValidatorStream(null);
+        LocaleValidator.setMockValidatorStream(null);
     }
 
     @After
@@ -72,7 +68,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIIa() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':22.5,'lng':-120.5}}}]}"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':22.5,'lng':-120.5}}}]}"));
         // LocaleValidator.setValidatorStream(new MockInputStream("22.5, -120.5, Somewhere, US, 95432"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
@@ -82,7 +78,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIIb() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream(""));
+        LocaleValidator.setMockValidatorStream(new MockInputStream(""));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -91,7 +87,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIIc() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 throw new IOException("Done in purpose");
@@ -105,7 +101,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIVa() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':45.45,'lng':-75.5}}}]}"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':45.45,'lng':-75.5}}}]}"));
         // LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.45</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
@@ -115,7 +111,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIVb() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<error>\n\t\t<code>105</code>\n\t\t<message>Bad format</code>\n\t</code><latt></latt>\n\t<longt>-</longt>\n</geodata>"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<error>\n\t\t<code>105</code>\n\t\t<message>Bad format</code>\n\t</code><latt></latt>\n\t<longt>-</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -124,7 +120,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIVc() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream(""));
+        LocaleValidator.setMockValidatorStream(new MockInputStream(""));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -133,7 +129,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIVd() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 throw new IOException("Done in purpose");
@@ -147,7 +143,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesVII() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -156,7 +152,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesVIII() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>-100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>-100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -165,7 +161,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesIX() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>200.000000</longt>\n</geodata>"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>200.000000</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -174,7 +170,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesX() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>-200.000000</longt>\n</geodata>"));
+        LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>-200.000000</longt>\n</geodata>"));
 
         Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
@@ -190,8 +186,8 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetValidatorInputStreamI() throws IOException {
-        InputStream is = new MockInputStream("");
-        LocaleValidator.setValidatorStream(is);
+        MockInputStream is = new MockInputStream("");
+        LocaleValidator.setMockValidatorStream(is);
         assertEquals(is, LocaleValidator.getValidatorStream(null, null));
     }
 
@@ -284,7 +280,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetRegularExpressionFilterI() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 fail("Call not expected!");
@@ -299,7 +295,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetRegularExpressionFilterII() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 fail("Call not expected!");
@@ -314,7 +310,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetRegularExpressionFilterIII() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 fail("Call not expected!");
@@ -329,7 +325,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetRegularExpressionFilterV() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 fail("Call not expected!");
@@ -344,7 +340,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetRegularExpressionFilterVI() throws IOException {
-        LocaleValidator.setValidatorStream(new MockInputStream("") {
+        LocaleValidator.setMockValidatorStream(new MockInputStream("") {
             @Override
             public int read() throws IOException {
                 fail("Call not expected!");

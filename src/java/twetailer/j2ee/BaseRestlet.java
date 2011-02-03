@@ -54,7 +54,7 @@ public abstract class BaseRestlet extends HttpServlet {
     public static final String ONLY_KEYS_PARAMETER_KEY = "onlyKeys";
     public static final String CENTER_ONLY_KEY = "centerOnly";
     public static final String MAXIMUM_RESULTS_PARAMETER_KEY = "maximumResults";
-    public static final String RELATED_RESOURCE_NAMES = "related";
+    public static final String RELATED_RESOURCES_ENTRY_POINT_KEY = "related";
     public static final String ON_BEHALF_CONSUMER_KEY = "onBehalfConsumerKey";
     public static final String ON_BEHALF_ASSOCIATE_KEY = "onBehalfAssociateKey";
 
@@ -196,13 +196,13 @@ public abstract class BaseRestlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         boolean isUserAdmin = false;
+        response.setStatus(200); // OK
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
-        JsonObject in = null;
+        JsonObject in = new GenericJsonObject(request);
 
         try {
             // TODO: verify Content-type = "application/x-www-form-urlencoded"
-            in = new GenericJsonObject(request);
 
             OpenIdUser loggedUser = getLoggedUser(request);
             isUserAdmin = isUserAdministrator(loggedUser);
@@ -241,7 +241,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doGet", pathInfo, isUserAdmin || debugModeDetected(request)); // No need to check 'debugModeDetected(in)' as 'in' is made of the request parameters
+            out = processException(ex, "doGet", pathInfo, debugModeDetected(request)); // No need to check 'debugModeDetected(in)' as 'in' is made of the request parameters
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -254,6 +254,7 @@ public abstract class BaseRestlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         boolean isUserAdmin = false;
+        response.setStatus(200); // OK
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -286,7 +287,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doPost", pathInfo, isUserAdmin || debugModeDetected(request) || debugModeDetected(in));
+            out = processException(ex, "doPost", pathInfo, debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -299,6 +300,7 @@ public abstract class BaseRestlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         boolean isUserAdmin = false;
+        response.setStatus(200); // OK
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -343,7 +345,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doPut", pathInfo, isUserAdmin || debugModeDetected(request) || debugModeDetected(in));
+            out = processException(ex, "doPut", pathInfo, debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -355,6 +357,7 @@ public abstract class BaseRestlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         boolean isUserAdmin = false;
+        response.setStatus(200); // OK
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
 
@@ -392,7 +395,7 @@ public abstract class BaseRestlet extends HttpServlet {
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = processException(ex, "doDelete", pathInfo, isUserAdmin || debugModeDetected(request));
+            out = processException(ex, "doDelete", pathInfo, debugModeDetected(request));
         }
 
         out.toStream(response.getOutputStream(), false);

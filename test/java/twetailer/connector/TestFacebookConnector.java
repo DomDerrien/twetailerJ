@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -19,7 +18,6 @@ import javamocks.util.logging.MockLogger;
 import javax.servlet.ServletException;
 import javax.servlet.http.MockHttpServletRequest;
 
-import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +31,6 @@ import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
-import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonObject;
 
 public class TestFacebookConnector {
@@ -42,7 +39,8 @@ public class TestFacebookConnector {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        FacebookConnector.setLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
+        FacebookConnector.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 
@@ -54,7 +52,7 @@ public class TestFacebookConnector {
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        FacebookConnector.injectURLFetchService(null);
+        FacebookConnector.injectMockURLFetchService(null);
     }
 
     @Test
@@ -96,14 +94,14 @@ public class TestFacebookConnector {
 
     @Test
     public void testGetAccessTokenI() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
-            @Override public HTTPResponse fetch(URL arg0) throws IOException {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
+            @Override
+            public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "name=value&othername=othervalue");
@@ -154,14 +152,14 @@ public class TestFacebookConnector {
 
     @Test
     public void testGetAccessTokenII() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
-            @Override public HTTPResponse fetch(URL arg0) throws IOException {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
+            @Override
+            public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "{'name':'value','othername':'othervalue'}");
@@ -180,14 +178,13 @@ public class TestFacebookConnector {
 
     @Test(expected=IOException.class)
     public void testGetAccessTokenIII() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
             @Override public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "{'broken-json");
@@ -204,14 +201,13 @@ public class TestFacebookConnector {
 
     @Test
     public void testGetUserInfoI() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
             @Override public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "name=value&othername=othervalue");
@@ -230,14 +226,13 @@ public class TestFacebookConnector {
 
     @Test
     public void testGetUserInfoII() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
             @Override public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "{'name':'value','othername':'othervalue'}");
@@ -256,14 +251,13 @@ public class TestFacebookConnector {
 
     @Test(expected=IOException.class)
     public void testGetUserInfoIII() throws MalformedURLException, IOException {
-        FacebookConnector.injectURLFetchService(new URLFetchService() {
+        FacebookConnector.injectMockURLFetchService(new URLFetchService() {
             @Override public HTTPResponse fetch(URL arg0) throws IOException {
                 assertEquals("https", arg0.getProtocol());
                 assertEquals("graph.facebook.com", arg0.getHost());
                 assertEquals("/oauth/access_token", arg0.getPath());
                 return null;
             }
-
             @Override
             public HTTPResponse fetch(HTTPRequest arg0) throws IOException {
                 MockHTTPResponse response = new MockHTTPResponse(0, "{'broken-json");

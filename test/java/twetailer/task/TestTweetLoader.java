@@ -51,7 +51,7 @@ public class TestTweetLoader {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        TweetLoader.setLogger(new MockLogger("test", null));
+        TweetLoader.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
 

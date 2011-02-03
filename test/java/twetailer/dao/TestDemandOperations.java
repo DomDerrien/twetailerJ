@@ -50,14 +50,14 @@ public class TestDemandOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test(expected=RuntimeException.class)
@@ -97,13 +97,12 @@ public class TestDemandOperations {
         assertNotNull(object.getKey());
     }
 
-    @Test
+    @Test(expected=ClientException.class)
     public void testCreateIII() throws ClientException {
         JsonObject item = new GenericJsonObject();
         item.put(Command.OWNER_KEY, 222L);
 
-        Demand object = new DemandOperations().createDemand(item, 111L);
-        assertNotNull(object.getKey());
+        new DemandOperations().createDemand(item, 111L);
     }
 
     @Test

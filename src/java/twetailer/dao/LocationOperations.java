@@ -88,6 +88,15 @@ public class LocationOperations extends BaseOperations {
         try {
             List<Location> locations = null;
             // Check the location attributes
+            if (location.getKey() != null) {
+                try {
+                    return getLocation(pm, location.getKey());
+                }
+                catch (InvalidIdentifierException ex) {
+                    // Erase the reference to be able to create a new Location instance
+                    location.setKey(null, true);
+                }
+            }
             if (location.getPostalCode() != null) { // && location.getCountryCode() != null) { // A country code being automatically created, so no need to verify the null value
                 // Try to retrieve from its postal and country codes
                 locations = getLocations(pm, location.getPostalCode(), location.getCountryCode());
@@ -102,7 +111,7 @@ public class LocationOperations extends BaseOperations {
         catch (DataSourceException ex) {}
 
         // Create an entry for that new location
-        if (location.getLatitude() == Location.INVALID_COORDINATE || location.getLongitude() == Location.INVALID_COORDINATE) {
+        if (location.getLatitude() == Location.INVALID_COORDINATE) { // || location.getLongitude() == Location.INVALID_COORDINATE) {
             location = LocaleValidator.getGeoCoordinates(location);
         }
         return pm.makePersistent(location);

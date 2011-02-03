@@ -21,7 +21,6 @@ import twetailer.dto.Command.QueryPointOfView;
 import twetailer.task.CommandLineParser;
 import twetailer.task.step.ProposalSteps;
 import twetailer.validator.CommandSettings.Action;
-import domderrien.i18n.LabelExtractor;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonObject;
 
@@ -48,7 +47,7 @@ public class RateCommandProcessor {
             Proposal proposal = null;
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
-                proposal = ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshRatingParameters(command), consumer);
+                proposal = ProposalSteps.updateProposal(pm, rawCommand, entityKey, getFreshRatingParameters(command), consumer.getKey());
                 return;
             }
             catch(InvalidIdentifierException ex) {

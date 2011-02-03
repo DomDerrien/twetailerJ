@@ -16,6 +16,7 @@ import org.junit.Test;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dto.Consumer;
@@ -58,6 +59,15 @@ public class TestDemandCommandProcessor {
         final Long locationKey = 3333L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -112,6 +122,15 @@ public class TestDemandCommandProcessor {
         final Long locationKey = 3333L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -166,6 +185,15 @@ public class TestDemandCommandProcessor {
         final Long locationKey = 3333L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -219,6 +247,15 @@ public class TestDemandCommandProcessor {
         final Long demandKey = 2222L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -259,6 +296,15 @@ public class TestDemandCommandProcessor {
         final Long locationKey = 3333L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -314,6 +360,15 @@ public class TestDemandCommandProcessor {
         final Long demandKey = 2222L;
         final Long consumerKey = 34354L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override

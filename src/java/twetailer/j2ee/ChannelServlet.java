@@ -3,11 +3,12 @@ package twetailer.j2ee;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import twetailer.ReservedOperationException;
 import twetailer.connector.ChannelConnector;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -34,8 +35,8 @@ public class ChannelServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(ChannelServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -47,8 +48,7 @@ public class ChannelServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.configureHttpParameters(request, response);
 
-        String pathInfo = request.getPathInfo();
-
+        response.setStatus(200); // OK
         JsonObject out = new GenericJsonObject();
         out.put("success", true);
         JsonObject in = null;
@@ -77,17 +77,12 @@ public class ChannelServlet extends HttpServlet {
             else {
                 response.setStatus(400); // Unavailable
                 out.put("success", false);
-                out.put("reason", "Unauthorized");
+                out.put("reason", "Unknown path");
             }
-        }
-        catch (ReservedOperationException ex) {
-            response.setStatus(403); // Forbidden
-            out.put("success", false);
-            out.put("reason", ex.getMessage());
         }
         catch (Exception ex) {
             response.setStatus(500); // Internal Server Error
-            out = BaseRestlet.processException(ex, "doPost", pathInfo, BaseRestlet.debugModeDetected(request) || BaseRestlet.debugModeDetected(in));
+            out = BaseRestlet.processException(ex, "doPost", "/", BaseRestlet.debugModeDetected(in));
         }
 
         out.toStream(response.getOutputStream(), false);

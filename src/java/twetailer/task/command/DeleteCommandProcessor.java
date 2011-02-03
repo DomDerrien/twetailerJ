@@ -35,7 +35,7 @@ public class DeleteCommandProcessor {
             String message = null;
             Long entityKey = command.getLong(Demand.REFERENCE);
             try {
-                DemandSteps.deleteDemand(pm, entityKey, consumer);
+                DemandSteps.deleteDemand(pm, entityKey, consumer.getKey());
                 // Echo back the specified demand
                 String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { entityKey }, locale);
                 message = LabelExtractor.get("cp_command_delete_acknowledge_demand_markedForDeletion", new Object[] { demandRef }, locale);
@@ -64,7 +64,7 @@ public class DeleteCommandProcessor {
             Long entityKey = command.getLong(Proposal.PROPOSAL_KEY);
             try {
                 SaleAssociate saleAssociate = CommandProcessor.retrieveSaleAssociate(pm, consumer, Action.delete, Demand.class.getName());
-                ProposalSteps.deleteProposal(pm, entityKey, saleAssociate, consumer);
+                ProposalSteps.deleteProposal(pm, entityKey, saleAssociate.getKey(), consumer.getKey());
                 // Echo back the specified proposal
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { entityKey }, locale);
                 message = LabelExtractor.get("cp_command_delete_acknowledge_proposal_markedForDeletion", new Object[] { proposalRef }, locale);

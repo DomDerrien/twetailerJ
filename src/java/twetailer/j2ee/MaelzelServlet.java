@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
+import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
@@ -72,8 +73,8 @@ public class MaelzelServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(MaelzelServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -88,6 +89,7 @@ public class MaelzelServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         JsonObject out = new GenericJsonObject();
+        JsonObject in = new GenericJsonObject(request);
         TaskOptions retryOptions = null;
 
         boolean debugModeDetected = BaseRestlet.debugModeDetected(request);
@@ -339,10 +341,12 @@ public class MaelzelServlet extends HttpServlet {
             }
             */
             else {
+                response.setStatus(400); // Unknown
                 throw new ClientException("Unsupported query path: " + pathInfo);
             }
 
             out.put("success", true);
+            response.setStatus(200); // OK
         }
         catch(Exception ex) {
             // Prepare the exception report
@@ -361,13 +365,14 @@ public class MaelzelServlet extends HttpServlet {
                 try {
                     MailConnector.reportErrorToAdmins(
                             "Unexpected error caught in " + MaelzelServlet.class.getName(),
-                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + new GenericJsonObject(request).toString() + "\n\n--\n\n" + stackTrace.toString()
+                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + in + "\n\n--\n\n" + stackTrace.toString()
                     );
                 }
                 catch (MessagingException ex2) {
                     getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
                 }
             }
+            response.setStatus(500); // Server error
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -398,7 +403,7 @@ public class MaelzelServlet extends HttpServlet {
 
                 // TODO: verify Content-type == "application/json"
                 in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
-                debugModeDetected = debugModeDetected || BaseRestlet.debugModeDetected(in);
+                debugModeDetected = BaseRestlet.debugModeDetected(in);
 
                 OpenIdUser loggedUser = BaseRestlet.getLoggedUser(request);
                 String openId = loggedUser.getClaimedId();
@@ -475,6 +480,7 @@ public class MaelzelServlet extends HttpServlet {
             }
 
             out.put("success", true);
+            response.setStatus(200); // OK
         }
         catch(TwitterException ex) {
             if (ex.getStatusCode() == 403) { // 403: Forbidden
@@ -505,7 +511,7 @@ public class MaelzelServlet extends HttpServlet {
                 try {
                     MailConnector.reportErrorToAdmins(
                             "Unexpected error caught in " + MaelzelServlet.class.getName(),
-                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + (in == null ? "null" : in.toString()) + "\n\n--\n\n" + stackTrace.toString()
+                            "Path info: " + pathInfo + "\n\n--\n\nRequest parameters:\n" + in + "\n\n--\n\n" + stackTrace.toString()
                     );
                 }
                 catch (MessagingException ex2) {
@@ -515,6 +521,7 @@ public class MaelzelServlet extends HttpServlet {
         }
 
         out.toStream(response.getOutputStream(), false);
+        response.setStatus(500); // Server error
     }
 
     /**
@@ -554,10 +561,6 @@ public class MaelzelServlet extends HttpServlet {
         return code;
     }
 
-    public static String getCoBrandedServiceEndPointURL() {
-        return "http://anothersocialeconomy.appspot.com/_tasks/cbuiEndPoint";
-    }
-
     /**
      * Prepare a task for the workflow step "Command Process".
      *
@@ -586,7 +589,7 @@ public class MaelzelServlet extends HttpServlet {
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(
                 withUrl("/_tasks/validateOpenDemand").
-                    param(Proposal.KEY, demandKey.toString()).
+                    param(Demand.KEY, demandKey.toString()).
                     method(Method.GET)
         );
     }
@@ -604,7 +607,7 @@ public class MaelzelServlet extends HttpServlet {
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(
                 withUrl("/_tasks/validateOpenWish").
-                    param(Proposal.KEY, wishKey.toString()).
+                    param(Wish.KEY, wishKey.toString()).
                     method(Method.GET)
         );
     }
@@ -635,25 +638,6 @@ public class MaelzelServlet extends HttpServlet {
      * @param preservedProposalKey Identifier of the Proposal to keep referenced
      */
     public static void triggerProposalCancellationTask(List<Long> proposalKeys, Long cancellerKey, Long preservedProposalKey) {
-        /*
-        // Create a task per proposal
-        Queue queue = BaseSteps.getBaseOperations().getQueue();
-        for(Long proposalKey: proposalKeys) {
-            if(!proposalKey.equals(preservedProposalKey)) {
-                queue.add(
-                        withUrl("/_tasks/cancelPublishedProposal").
-                            param(Proposal.CANCELER_KEY, cancellerKey.toString()).
-                            param(Proposal.KEY, proposalKey.toString()).
-                            method(Method.GET)
-                );
-            }
-        }
-        */
-
-        //
-        // TODO: implement the corresponding cancel proposal command
-        //
-
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             for(Long proposalKey: proposalKeys) {
@@ -663,6 +647,8 @@ public class MaelzelServlet extends HttpServlet {
                         proposal.setState(State.cancelled);
                         proposal.setCancelerKey(cancellerKey);
                         proposal = BaseSteps.getProposalOperations().updateProposal(pm, proposal);
+
+                        // TODO: notify owners of the Proposals of the just canceled items...
                     }
                     catch (InvalidIdentifierException ex) {
                         // Not an issue, process the next one

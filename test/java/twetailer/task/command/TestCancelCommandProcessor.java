@@ -175,6 +175,15 @@ public class TestCancelCommandProcessor {
         final Long demandKey = 5555L;
         final Long consumerKey = 73824L;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -382,9 +391,19 @@ public class TestCancelCommandProcessor {
 
     @Test
     public void testProcessCommandCancelXI() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 54645L;
         final Long demandKey = 5555L;
         final State state = State.closed;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -410,7 +429,11 @@ public class TestCancelCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);
@@ -464,9 +487,19 @@ public class TestCancelCommandProcessor {
 
     @Test
     public void testProcessCommandCancelXIII() throws TwitterException, DataSourceException, ClientException {
+        final Long consumerKey = 54645L;
         final Long demandKey = 5555L;
         // final State state = State.markedForDeletion;
 
+        // ConsumerOperations mock
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
         // DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
@@ -484,7 +517,11 @@ public class TestCancelCommandProcessor {
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
 
-        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), rawCommand, command);
+        // Consumer mock
+        Consumer consumer = new Consumer();
+        consumer.setKey(consumerKey);
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, rawCommand, command);
 
         String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
         assertNotNull(sentText);

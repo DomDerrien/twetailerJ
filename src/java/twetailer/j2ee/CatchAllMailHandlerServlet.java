@@ -3,6 +3,8 @@ package twetailer.j2ee;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
@@ -28,12 +30,12 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(CatchAllMailHandlerServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
-    protected static Logger getLogger() {
+    protected static Logger getLogger(){
         return log;
     }
 
@@ -72,17 +74,13 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             // Extract the incoming message
             MimeMessage mailMessage = MailConnector.getMailMessage(request);
 
-            Address from = mailMessage.getSender();
-            if (mailMessage.getSender() == null) {
-                from = mailMessage.getFrom()[0];
-            }
-            fromName = from.toString();
+            fromName = mailMessage.getFrom()[0].toString();
             Address[] to = mailMessage.getRecipients(Message.RecipientType.TO);
             Address[] cc = mailMessage.getRecipients(Message.RecipientType.CC);
             String subject = mailMessage.getSubject();
             StringBuilder body = new StringBuilder();
 
-            body.append("From: ").append(from.toString()).append('\n');
+            body.append("From: ").append(fromName).append('\n');
             for (int idx = 0; idx < to.length; idx ++) {
                 body.append("To: ").append(to[idx].toString()).append('\n');
             }
@@ -92,7 +90,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
             body.append("Subject: ").append(subject).append('\n');
             body.append('\n').append(MailConnector.getText(mailMessage));
 
-            MailConnector.reportErrorToAdmins(from.toString(), "Unexpected e-mail!", body.toString());
+            MailConnector.reportErrorToAdmins(fromName, "Unexpected e-mail!", body.toString());
         }
         // catch (MessagingException ex) {
         // catch (IOException ex) {

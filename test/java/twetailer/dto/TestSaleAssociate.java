@@ -62,12 +62,14 @@ public class TestSaleAssociate {
         assertNotNull(object.getCreationDate());
     }
 
+    Long key = 756423765L;
+    Long closedProposalNb = 6453222L;
     Long consumerKey = 67890L;
     Long creatorKey = 12345L;
-    List<String> criteria = new ArrayList<String>(Arrays.asList(new String[] {"first", "second"}));
-    List<String> hashTags = new ArrayList<String>(Arrays.asList(new String[] {"top", "bottom"}));
+    List<String> criteria = Arrays.asList(new String[] {"first", "second"});
+    List<String> hashTags = Arrays.asList(new String[] {"top", "bottom"});
     Boolean isStoreAdmin = Boolean.TRUE;
-    Long locationKey = 12345L;
+    Long publishedProposalNb = 645645L;
     Long storeKey = 54321L;
     String score = "1:2.3";
 
@@ -75,21 +77,27 @@ public class TestSaleAssociate {
     public void testAccessors() {
         SaleAssociate object = new SaleAssociate();
 
+        object.setKey(key);
+
+        object.setClosedProposalNb(closedProposalNb);
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
         object.setCriteria(criteria, collator);
         object.setHashTags(hashTags);
         object.setIsStoreAdmin(isStoreAdmin);
-        object.setLocationKey(locationKey);
+        object.setPublishedProposalNb(publishedProposalNb);
         object.setStoreKey(storeKey);
         object.setScore(score);
 
+        assertEquals(key, object.getKey());
+
+        assertEquals(closedProposalNb, object.getClosedProposalNb());
         assertEquals(consumerKey, object.getConsumerKey());
         assertEquals(creatorKey, object.getCreatorKey());
         assertEquals(criteria, object.getCriteria());
         assertEquals(hashTags, object.getHashTags());
         assertEquals(isStoreAdmin, object.getIsStoreAdmin());
-        assertEquals(locationKey, object.getLocationKey());
+        assertEquals(publishedProposalNb, object.getPublishedProposalNb());
         assertEquals(storeKey, object.getStoreKey());
         assertEquals(score, object.getScore());
     }
@@ -157,29 +165,210 @@ public class TestSaleAssociate {
 
     @Test
     public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         SaleAssociate object = new SaleAssociate();
 
+        object.setKey(key);
+
+        object.setClosedProposalNb(closedProposalNb);
         object.setConsumerKey(consumerKey);
         object.setCreatorKey(creatorKey);
-        object.setCriteria(new ArrayList<String>(), collator); // Manual management only
-        object.setHashTags(hashTags); // Reference copied
+        object.setCriteria(criteria, collator);
+        object.setHashTags(hashTags);
         object.setIsStoreAdmin(isStoreAdmin);
-        object.setLocationKey(locationKey);
+        object.setPublishedProposalNb(publishedProposalNb);
         object.setStoreKey(storeKey);
         object.setScore(score);
 
-        SaleAssociate clone = new SaleAssociate(object.toJson());
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson(), true, true);
 
+        assertEquals(key, clone.getKey());
+
+        assertEquals(closedProposalNb, clone.getClosedProposalNb());
+        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(creatorKey, clone.getCreatorKey());
+        assertEquals(object.getCriteria().size(), clone.getCriteria().size());
+        for (int idx = 0; idx < object.getCriteria().size(); idx++) {
+            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        }
+        assertEquals(object.getHashTags().size(), clone.getHashTags().size());
+        for (int idx = 0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
+        assertEquals(publishedProposalNb, clone.getPublishedProposalNb());
+        assertEquals(storeKey, clone.getStoreKey());
+        assertEquals(score, clone.getScore());
+    }
+
+    @Test
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
+        SaleAssociate object = new SaleAssociate();
+
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertEquals(0L, clone.getClosedProposalNb().longValue());
+        assertNull(clone.getConsumerKey());
+        assertNull(clone.getCreatorKey());
+        assertEquals(0, clone.getCriteria().size());
+        assertEquals(0, clone.getHashTags().size());
+        assertFalse(clone.getIsStoreAdmin());
+        assertEquals(0L, clone.getPublishedProposalNb().longValue());
+        assertNull(clone.getStoreKey());
+        assertEquals(SaleAssociate.DEFAULT_SCORE, clone.getScore());
+    }
+
+    @Test
+    public void testJsonCommandsIIIa() {
+        //
+        // Admin update (middle)
+        //
+        SaleAssociate object = new SaleAssociate();
+
+        object.setKey(key);
+
+        object.setClosedProposalNb(closedProposalNb);
+        object.setConsumerKey(consumerKey);
+        object.setCreatorKey(creatorKey);
+        // object.setCriteria(criteria, collator);
+        object.setHashTags(hashTags);
+        object.setIsStoreAdmin(isStoreAdmin);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setStoreKey(storeKey);
+        object.setScore(score);
+
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson(), true, false);
+
+        assertEquals(key, clone.getKey());
+
+        assertEquals(closedProposalNb, clone.getClosedProposalNb());
         assertEquals(consumerKey, clone.getConsumerKey());
         assertEquals(creatorKey, clone.getCreatorKey());
         assertEquals(0, clone.getCriteria().size());
-        assertEquals(hashTags, clone.getHashTags());
-        assertFalse(clone.getIsStoreAdmin()); // Cannot be overridden
-        assertEquals(locationKey, clone.getLocationKey());
-        assertNull(clone.getStoreKey()); // Cannot be overridden
-        assertEquals(score, clone.getScore()); // Score cannot be set manually
+        // assertEquals(object.getCriteria().size(), clone.getCriteria().size());
+        // for (int idx = 0; idx < object.getCriteria().size(); idx++) {
+        //     assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        // }
+        assertEquals(object.getHashTags().size(), clone.getHashTags().size());
+        for (int idx = 0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertEquals(isStoreAdmin, clone.getIsStoreAdmin());
+        assertEquals(publishedProposalNb, clone.getPublishedProposalNb());
+        assertEquals(storeKey, clone.getStoreKey());
+        assertEquals(score, clone.getScore());
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testJsonCommandsIIIb() {
+        //
+        // Admin update (middle)
+        //
+        SaleAssociate object = new SaleAssociate();
+
+        object.setCriteria(criteria, collator);
+
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson(), true, false);
+    }
+
+    @Test
+    public void testJsonCommandsIV() {
+        //
+        // User update for a new object (lower)
+        //
+        SaleAssociate object = new SaleAssociate();
+
+        // object.setKey(key);
+
+        object.setClosedProposalNb(closedProposalNb);
+        object.setConsumerKey(consumerKey);
+        object.setCreatorKey(creatorKey);
+        // object.setCriteria(criteria, collator);
+        object.setHashTags(hashTags);
+        object.setIsStoreAdmin(isStoreAdmin);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setStoreKey(storeKey);
+        object.setScore(score);
+
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson());
+
+        assertNull(clone.getClosedProposalNb());
+        assertEquals(consumerKey, clone.getConsumerKey());
+        assertEquals(creatorKey, clone.getCreatorKey());
+        assertEquals(0, clone.getCriteria().size());
+        // assertEquals(object.getCriteria().size(), clone.getCriteria().size());
+        // for (int idx = 0; idx < object.getCriteria().size(); idx++) {
+        //     assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        // }
+        assertEquals(object.getHashTags().size(), clone.getHashTags().size());
+        for (int idx = 0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertFalse(clone.getIsStoreAdmin());
+        assertNull(clone.getPublishedProposalNb());
+        assertNull(clone.getStoreKey());
+        assertEquals(score, clone.getScore());
+    }
+
+    @Test
+    public void testJsonCommandsV() {
+        //
+        // User update for an existing object (lowest)
+        //
+        SaleAssociate object = new SaleAssociate();
+
+        object.setKey(key);
+
+        object.setClosedProposalNb(closedProposalNb);
+        object.setConsumerKey(consumerKey);
+        object.setCreatorKey(creatorKey);
+        // object.setCriteria(criteria, collator);
+        object.setHashTags(hashTags);
+        object.setIsStoreAdmin(isStoreAdmin);
+        object.setPublishedProposalNb(publishedProposalNb);
+        object.setStoreKey(storeKey);
+        object.setScore(score);
+
+        SaleAssociate clone = new SaleAssociate();
+        clone.fromJson(object.toJson());
+
+        assertNull(clone.getClosedProposalNb());
+        assertNull(clone.getConsumerKey());
+        assertNull(clone.getCreatorKey());
+        assertEquals(0, clone.getCriteria().size());
+        // assertEquals(object.getCriteria().size(), clone.getCriteria().size());
+        // for (int idx = 0; idx < object.getCriteria().size(); idx++) {
+        //     assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
+        // }
+        assertEquals(object.getHashTags().size(), clone.getHashTags().size());
+        for (int idx = 0; idx < object.getHashTags().size(); idx++) {
+            assertEquals(object.getHashTags().get(idx), clone.getHashTags().get(idx));
+        }
+        assertFalse(clone.getIsStoreAdmin());
+        assertNull(clone.getPublishedProposalNb());
+        assertNull(clone.getStoreKey());
+        assertEquals(score, clone.getScore());
+    }
+
+    @Test
+    public void testJsonCommandsVI() {
+        JsonObject json = new GenericJsonObject();
+
+        SaleAssociate object = new SaleAssociate();
+        object.fromJson(json, true, false);
+    }
+
+    /**** ddd
     @Test
     public void testJsonCommandsII() {
         SaleAssociate object = new SaleAssociate();
@@ -203,6 +392,7 @@ public class TestSaleAssociate {
 
         new SaleAssociate(object.toJson());
     }
+    **** ddd ****/
 
     @Test
     public void testShortcut() {

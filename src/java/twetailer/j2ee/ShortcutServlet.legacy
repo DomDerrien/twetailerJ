@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.servlet.MockServletInputStream;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -54,8 +56,8 @@ import domderrien.jsontools.JsonObject;
 public class ShortcutServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(ShortcutServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 

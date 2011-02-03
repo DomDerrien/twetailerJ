@@ -7,7 +7,6 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
 import twetailer.dto.SaleAssociate;
 import twetailer.j2ee.BaseRestlet;
@@ -66,9 +65,11 @@ public class SaleAssociateRestlet extends BaseRestlet {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
             if (!isUserAdmin) {
-                if (!LoginServlet.getSaleAssociate(loggedUser, pm).isStoreAdmin()) {
+                SaleAssociate associate = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (!associate.isStoreAdmin()) {
                     throw new ReservedOperationException("Restricted access!");
                 }
+                parameters.put(SaleAssociate.STORE_KEY, associate.getStoreKey()); // LoginServlet.getStoreKey(loggedUser, pm);
             }
 
             boolean onlyKeys = parameters.containsKey(BaseRestlet.ONLY_KEYS_PARAMETER_KEY);
@@ -93,11 +94,27 @@ public class SaleAssociateRestlet extends BaseRestlet {
     protected JsonObject createResource(JsonObject parameters, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
         PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
         try {
+            Long saleAssociateKey, storeKey = null;
+            if (isUserAdmin) {
+                if (!parameters.containsKey(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY)) {
+                    throw new ReservedOperationException("Restricted access!");
+                }
+                saleAssociateKey = parameters.getLong(BaseRestlet.ON_BEHALF_ASSOCIATE_KEY);
+            }
+            else {
+                SaleAssociate updater = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (!updater.isStoreAdmin()) {
+                    throw new ReservedOperationException("Restricted access!");
+                }
+                saleAssociateKey = updater.getKey();
+                storeKey = updater.getStoreKey();
+            }
+
             SaleAssociate saleAssociate = SaleAssociateSteps.createSaleAssociate(
                     pm,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser, pm),
-                    LoginServlet.getSaleAssociate(loggedUser, pm),
+                    saleAssociateKey,
+                    storeKey,
                     isUserAdmin
             );
             return saleAssociate.toJson();
@@ -119,16 +136,25 @@ public class SaleAssociateRestlet extends BaseRestlet {
                     throw new ReservedOperationException("Current user is not a Sale Associate!");
                 }
             }
-            else {
+            else if (isUserAdmin) {
                 saleAssociateKey = Long.valueOf(resourceId);
+            }
+            else {
+                SaleAssociate updater = LoginServlet.getSaleAssociate(loggedUser, pm);
+                if (!updater.isStoreAdmin()) {
+                    throw new ReservedOperationException("Restricted access!");
+                }
+                saleAssociateKey = Long.valueOf(resourceId);
+                SaleAssociate toUpdate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
+                if (!updater.getStoreKey().equals(toUpdate.getStoreKey())) {
+                    throw new ReservedOperationException("Restricted access!");
+                }
             }
 
             SaleAssociate saleAssociate = SaleAssociateSteps.updateSaleAssociate(
                     pm,
                     saleAssociateKey,
                     parameters,
-                    LoginServlet.getConsumer(loggedUser, pm),
-                    LoginServlet.getSaleAssociate(loggedUser, pm),
                     isUserAdmin
             );
             return saleAssociate.toJson();
@@ -138,279 +164,24 @@ public class SaleAssociateRestlet extends BaseRestlet {
         }
     }
 
-    /**** Dom: refactoring limit ***/
-
-    /**
-     * Create Consumer and SaleAssociate instances for the given parameters if
-     * it's sure there no such existing object with identical parameters.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param parameters Attribute coming from a client over HTTP
-     * @return Serialized SaleAssociate instance
-
-     * @throws DataSourceException If there is already some associate with one or many identical attributes
-     * or if the found sale associate instance is already attached to another store
-     */
-    protected JsonObject delegateResourceCreation(PersistenceManager pm, JsonObject parameters) throws DataSourceException {
-        return null;
-    }
-    /**********
-        Long storeKey = parameters.getLong(SaleAssociate.STORE_KEY);
-        if (storeKey == 0L) {
-            throw new IllegalArgumentException("StoreKey for the SaleAssociate is mandatory");
-        }
-
-        Long consumerKey = parameters.containsKey(SaleAssociate.CONSUMER_KEY) ? parameters.getLong(SaleAssociate.CONSUMER_KEY) : null;
-        String email = parameters.containsKey(SaleAssociate.EMAIL) ? parameters.getString(SaleAssociate.EMAIL) : null;
-        String jabberId = parameters.containsKey(SaleAssociate.JABBER_ID) ? parameters.getString(SaleAssociate.JABBER_ID) : null;
-        String twitterId = parameters.containsKey(SaleAssociate.TWITTER_ID) ? parameters.getString(SaleAssociate.TWITTER_ID) : null;
-
-        SaleAssociate candidateSaleAssociate = null;
-
-        if (consumerKey != null) {
-            Consumer consumer = consumerOperations.getConsumer(pm, consumerKey);
-            consumerKey = consumer.getKey();
-            List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-            if (0 < saleAssociates.size()) {
-                SaleAssociate saleAssociate = saleAssociates.get(0);
-                if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                    throw new DataSourceException("Sale Associate already attached to another store");
-                }
-                candidateSaleAssociate = saleAssociate;
-            }
-        }
-
-        if (email != null && 0 < email.length()) {
-            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.EMAIL, email, 1);
-            if (0 < consumers.size()) {
-                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
-                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
-                }
-                consumerKey = consumers.get(0).getKey();
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                }
-            }
-            else {
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.EMAIL, email, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
-                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                    consumerKey = candidateSaleAssociate.getConsumerKey();
-                }
-            }
-        }
-
-        if (jabberId != null && 0 < jabberId.length()) {
-            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.JABBER_ID, jabberId, 1);
-            if (0 < consumers.size()) {
-                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
-                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
-                }
-                consumerKey = consumers.get(0).getKey();
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                }
-            }
-            else {
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.JABBER_ID, jabberId, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
-                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                    consumerKey = candidateSaleAssociate.getConsumerKey();
-                }
-            }
-        }
-
-        if (twitterId != null && 0 < twitterId.length()) {
-            List<Consumer> consumers = consumerOperations.getConsumers(pm, Consumer.TWITTER_ID, twitterId, 1);
-            if (0 < consumers.size()) {
-                if (consumerKey != null && !consumerKey.equals(consumers.get(0).getKey())) {
-                    throw new DataSourceException("At least two different Consumer instances match the given criteria");
-                }
-                consumerKey = consumers.get(0).getKey();
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.CONSUMER_KEY, consumerKey, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                }
-            }
-            else {
-                List<SaleAssociate> saleAssociates = saleAssociateOperations.getSaleAssociates(pm, SaleAssociate.TWITTER_ID, twitterId, 1);
-                if (0 < saleAssociates.size()) {
-                    SaleAssociate saleAssociate = saleAssociates.get(0);
-                    if (!saleAssociate.getStoreKey().equals(storeKey)) {
-                        throw new DataSourceException("Sale Associate already attached to another store");
-                    }
-                    if (consumerKey != null && !consumerKey.equals(saleAssociate.getConsumerKey())) {
-                        throw new DataSourceException("Retreived Sale Associate instance attached to another Consumer than the one identified by the given criteria");
-                    }
-                    if (candidateSaleAssociate != null && !candidateSaleAssociate.getKey().equals(saleAssociate.getKey())) {
-                        throw new DataSourceException("At least two different Sale Associate instances match the given criteria");
-                    }
-                    candidateSaleAssociate = saleAssociate;
-                    consumerKey = candidateSaleAssociate.getConsumerKey();
-                }
-            }
-        }
-
-        if (consumerKey == null) {
-            Consumer consumer = new Consumer();
-            consumer.setName(parameters.getString(Consumer.NAME));
-            consumer.setEmail(email);
-            consumer.setJabberId(jabberId);
-            consumer.setTwitterId(twitterId);
-            consumer.setLanguage(parameters.getString(Consumer.LANGUAGE));
-            consumer = consumerOperations.createConsumer(pm, consumer);
-            consumerKey = consumer.getKey();
-        }
-
-        if (candidateSaleAssociate == null) {
-            parameters.put(SaleAssociate.CONSUMER_KEY, consumerKey);
-            candidateSaleAssociate = saleAssociateOperations.createSaleAssociate(pm, parameters);
-        }
-        else {
-            boolean updateRequired = false;
-            if (email != null) { candidateSaleAssociate.setEmail(email); updateRequired = true; }
-            if (jabberId != null) { candidateSaleAssociate.setJabberId(jabberId); updateRequired = true; }
-            if (twitterId != null) { candidateSaleAssociate.setTwitterId(twitterId); updateRequired = true; }
-            if (updateRequired) {
-                candidateSaleAssociate = saleAssociateOperations.updateSaleAssociate(pm, candidateSaleAssociate);
-            }
-        }
-
-        return candidateSaleAssociate.toJson();
-    }
-    *****/
-
     @Override
     protected void deleteResource(String resourceId, OpenIdUser loggedUser, boolean isUserAdmin) throws DataSourceException, ClientException {
-        if (isUserAdmin) {
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                Long saleAssociateKey = Long.valueOf(resourceId);
-                delegateResourceDeletion(pm, saleAssociateKey);
-                return;
-            }
-            finally {
-                pm.close();
-            }
+        if (!isUserAdmin) {
+            throw new ReservedOperationException("Restricted access!");
         }
-        throw new ClientException("Restricted access!");
-    }
 
-    /**
-     * Delete the SaleAssociate instances based on the specified criteria.
-     *
-     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param saleAssociateKey Identifier of the resource to delete
-     * @return Serialized list of the Consumer instances matching the given criteria
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            Long saleAssociateKey = Long.valueOf(resourceId);
 
-     * @throws InvalidIdentifierException If the query to the back-end fails
-     *
-     * @see ConsumerRestlet#delegateResourceDeletion(PersistenceManager, Long)
-     * @see StoreRestlet#delegateResourceDeletion(PersistenceManager, Long)
-     */
-    protected void delegateResourceDeletion(PersistenceManager pm, Long saleAssociateKey) throws InvalidIdentifierException{
-        // Delete the sale associate account
-        SaleAssociate saleAssociate = BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
-        BaseSteps.getSaleAssociateOperations().deleteSaleAssociate(pm, saleAssociate);
-        // Delete sale associate's proposals
-//        List<Long> proposalKeys = BaseSteps.getProposalOperations().getProposalKeys(pm, Proposal.OWNER_KEY, saleAssociateKey, 0);
-//        for (Long proposalKey: proposalKeys) {
-//            proposalRestlet.delegateResourceDeletion(pm, proposalKey, saleAssociate, false);
-//        }
-        // Delete the attached consumer
-//        Long consumerKey = saleAssociate.getConsumerKey();
-//        consumerRestlet.delegateResourceDeletion(pm, consumerKey);
-    }
-
-    /**
-     * Use the identifier of the account to migrate to the current one to select its entity,
-     * to neutralize its identifiers, and to schedule tasks that will updates its attached demands
-     * to be now attached to the current account
-     *
-     * @param topic An identifier among {SaleAssociate.EMAIL, SaleAssociate.JABBER_ID, SaleAssociate.TWITTER_ID}
-     * @param identifier The value of the identified attribute
-     * @param SaleAssociateKey The key of the current SaleAssociate account
-     *
-     * @throws DataSourceException If the SaleAssociate or Demand look-up fails
-     * /
-    protected static void scheduleConsolidationTasks(String topic, String identifier, Long saleAssociateKey) throws DataSourceException {
-        if (identifier != null && !"".equals(identifier)) {
-            if (!SaleAssociate.EMAIL.equals(topic) && !SaleAssociate.JABBER_ID.equals(topic) && !SaleAssociate.TWITTER_ID.equals(topic)) {
-                throw new IllegalArgumentException("Not supported field identifier: " + topic);
-            }
-            PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
-            try {
-                List<SaleAssociate> saleAssociates = BaseSteps.getSaleAssociateOperations().getSaleAssociates(pm, topic, identifier, 1);
-                if (0 < saleAssociates.size()) {
-                    // Reset other consumer field
-                    SaleAssociate otherSaleAssociate = saleAssociates.get(0);
-                    if (!saleAssociateKey.equals(otherSaleAssociate.getKey())) {
-                        if (SaleAssociate.EMAIL.equals(topic)) { otherSaleAssociate.setEmail("~" + otherSaleAssociate.getEmail()); }
-                        else if (SaleAssociate.JABBER_ID.equals(topic)) { otherSaleAssociate.setJabberId("~" + otherSaleAssociate.getJabberId()); }
-                        else /* if (SaleAssociate.TWITTER_ID.equals(topic)) * / { otherSaleAssociate.setTwitterId("~" + otherSaleAssociate.getTwitterId()); }
-                        otherSaleAssociate = BaseSteps.getSaleAssociateOperations().updateSaleAssociate(pm, otherSaleAssociate);
-
-                        // Schedule tasks to migrate demands to this new sale associate
-                        List<Long> demandKeys = demandOperations.getDemandKeys(pm, Demand.OWNER_KEY, otherSaleAssociate.getKey(), 1);
-                        Queue queue = BaseSteps.getBaseOperations().getQueue();
-                        for (Long demandKey: demandKeys) {
-                            queue.add(
-                                    url("/_tasks/consolidateSaleAssociateAccounts").
-                                    param(Demand.KEY, demandKey.toString()).
-                                    param(Demand.OWNER_KEY, saleAssociateKey.toString()).
-                                    method(Method.GET)
-                            );
-                        }
-                    }
-                }
-            }
-            finally {
-                pm.close();
-            }
+            SaleAssociateSteps.deleteSaleAssociate(
+                    pm,
+                    saleAssociateKey,
+                    isUserAdmin
+            );
+        }
+        finally {
+            pm.close();
         }
     }
-    */
 }

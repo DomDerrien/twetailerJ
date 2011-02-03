@@ -991,7 +991,7 @@
             map: map,
             position: location,
             title: _postalCode + ' ' + _countryCode,
-            zIndex: mapParams && mapParams.iconZIndex ? mapParams.iconZIndex : 99,
+            zIndex: mapParams && mapParams.iconZIndex ? mapParams.iconZIndex : 99
         });
 
         // Return the map handle to the caller if needed
@@ -1416,9 +1416,9 @@
             }).domNode
         );
 
-        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div),
-        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_consumer_accessPointsGroup') }, fieldSet),
-        table = dojo.create('table', { style: 'width: 100%'}, fieldSet),
+        fieldSet = dojo.create('fieldset', { 'class': 'entityInformation' }, div);
+        legend = dojo.create('legend', { innerHTML: _getLabel('console', 'profile_consumer_accessPointsGroup') }, fieldSet);
+        table = dojo.create('table', { style: 'width: 100%'}, fieldSet);
         tbody = dojo.create('tbody', null, table);
 
         // Row with the consumer's email address

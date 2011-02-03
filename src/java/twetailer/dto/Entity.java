@@ -78,26 +78,36 @@ public class Entity implements TransferObject {
         fromJson(in);
     }
 
+    /**
+     * Provided to reproduce the JDO behavior with Unit tests
+     *
+     * @return Object instance for chaining
+     */
+    protected Entity resetLists() {
+        key = null;
+        creationDate = null;
+        modificationDate = null;
+        return this;
+    }
+
     public Long getKey() {
         return key;
     }
 
     public void setKey(Long key) {
-        if (key == null) {
-            resetKey();
-        }
-        else if (this.key == null) {
-            if (key != 0L) {
-                this.key = key;
-            }
-        }
-        else if (!this.key.equals(key)) {
-            throw new IllegalArgumentException("Cannot override the key of an object with a new one");
-        }
+        setKey(key, false);
     }
 
-    public void resetKey() {
-        this.key = null;
+    public void setKey(Long key, boolean isCacheRelated) {
+        if (key == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'key'");
+        }
+        if (this.key != null && !this.key.equals(key) && !isCacheRelated) {
+            throw new IllegalArgumentException("Cannot override the key of an object with a new one");
+        }
+        if (key != 0L) {
+            this.key = key;
+        }
     }
 
     public Date getCreationDate() {
@@ -145,8 +155,7 @@ public class Entity implements TransferObject {
 
     public void updateModificationDate() {
         if (key != null) {
-            Date now = DateUtils.getNowDate();
-            setModificationDate(now);
+            setModificationDate(DateUtils.getNowDate());
         }
     }
 
@@ -160,15 +169,11 @@ public class Entity implements TransferObject {
     @Override
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
-        if (getKey() != null) {
-            out.put(KEY, getKey());
-        }
-        out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate()));
-        if (getLocationKey() != null) {
-            out.put(LOCATION_KEY, getLocationKey());
-        }
+        if (getKey() != null) { out.put(KEY, getKey()); }
+        if (getCreationDate() != null) { out.put(CREATION_DATE, DateUtils.dateToISO(getCreationDate())); }
+        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(MARKED_FOR_DELETION, getMarkedForDeletion());
-        out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate()));
+        if (getModificationDate() != null) { out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate())); }
         return out;
     }
 
@@ -178,11 +183,9 @@ public class Entity implements TransferObject {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
 
-        if (in.containsKey(KEY)) {
-            setKey(in.getLong(KEY));
-        }
+        if ((getKey() == null || isCacheRelated) && in.containsKey(KEY)) { setKey(in.getLong(KEY), isCacheRelated); }
         if (isCacheRelated && in.containsKey(CREATION_DATE)) {
             try {
                 Date creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
@@ -190,12 +193,11 @@ public class Entity implements TransferObject {
             }
             catch (ParseException ex) {
                 Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(CREATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
-                setCreationDate(null);
+                setCreationDate(DateUtils.getNowDate());
             }
         }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (isCacheRelated && in.containsKey(MARKED_FOR_DELETION)) { setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION)); }
-        updateModificationDate();
         if (isCacheRelated && in.containsKey(MODIFICATION_DATE)) {
             try {
                 Date modificationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));

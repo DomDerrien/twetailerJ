@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javamocks.util.logging.MockLogger;
+
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -45,8 +47,8 @@ public class LoginServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(LoginServlet.class.getName());
 
-    /** Just made available for test purposes */
-    protected static void setLogger(Logger mockLogger) {
+    /// Made available for test purposes
+    public static void setMockLogger(MockLogger mockLogger) {
         log = mockLogger;
     }
 
@@ -169,7 +171,9 @@ public class LoginServlet extends HttpServlet {
         String errorMsg = OpenIdServletFilter.DEFAULT_ERROR_MSG;
         try {
             String pageToGo = request.getParameter(FROM_PAGE_URL_KEY);
-            pageToGo = pageToGo == null ? ApplicationSettings.get().getMainPageURL() : pageToGo;
+            if (pageToGo == null) {
+                pageToGo = ApplicationSettings.get().getMainPageURL();
+            }
 
             OpenIdUser user = relyingParty.discover(request);
             if (user == null) {
@@ -302,8 +306,9 @@ public class LoginServlet extends HttpServlet {
         return user == null ? null : BaseSteps.getConsumerOperations().getConsumer(pm, getConsumerKey(user));
     }
 
-    protected static final String AUTHENTICATED_SALE_ASSOCIATE_ID = "authSA_tId";
     protected static final String SALE_ASSOCIATION_ALREADY_CHECKED = "authSA_alreadyChecked";
+    protected static final String AUTHENTICATED_SALE_ASSOCIATE_ID = "authSA_tId";
+    protected static final String AUTHENTICATED_STORE_ID = "authStore_tId";
 
     /**
      * Get the key of the SaleAssociate instance for the OpenID user
@@ -352,13 +357,63 @@ public class LoginServlet extends HttpServlet {
     }
 
     /**
+     * Get the Store key of the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a SaleAssociate instance for
+     * @return Corresponding store key
+     *
+     * @throws InvalidIdentifierException If the SaleAssociate instance retrieval fails
+     * @throws ReservedOperationException If the logged user is not an associate
+     *
+     * @see LoginServlet#getStoreKey(PersistenceManager, OpenIdUser)
+     */
+    public static Long getStoreKey(OpenIdUser user) throws InvalidIdentifierException, ReservedOperationException {
+        if (user == null) {
+            return null;
+        }
+        PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+        try {
+            return getStoreKey(user, pm);
+        }
+        finally {
+            pm.close();
+        }
+    }
+
+    /**
+     * Get the Store key of the SaleAssociate instance for the OpenID user
+     *
+     * @param user OpenID user to create a SaleAssociate instance for
+     * @param pm PersistenceManager instance used if the OpenID user has not been yet attached;
+     *           Should stay open for future usage of the connection
+     * @return Corresponding store key
+     *
+     * @throws InvalidIdentifierException If the Consumer instance retrieval fails
+     * @throws ReservedOperationException If the logged user is not an associate
+     */
+    public static Long getStoreKey(OpenIdUser user, PersistenceManager pm) throws InvalidIdentifierException, ReservedOperationException {
+        if (user == null) {
+            return null;
+        }
+        if (user.getAttribute(SALE_ASSOCIATION_ALREADY_CHECKED) != null) {
+            Long storeKey = (Long) user.getAttribute(AUTHENTICATED_STORE_ID);
+            if (storeKey != null) {
+                return storeKey;
+            }
+        }
+        Long storeKey = getSaleAssociate(user, pm).getStoreKey();
+        user.setAttribute(AUTHENTICATED_STORE_ID, storeKey);
+        return storeKey;
+    }
+
+    /**
      * Get the SaleAssociate instance for the OpenID user
      *
      * @param user OpenID user to create a SaleAssociate instance for
      * @return Corresponding SaleAssociate instance or <code>null</code> if none is attached to the OpenID user
      *
      * @throws InvalidIdentifierException If the SaleAssociate instance retrieval fails
-     * @throws ReservedOperationException
+     * @throws ReservedOperationException If the logged user is not an associate
      *
      * @see LoginServlet#getSaleAssociate(PersistenceManager, OpenIdUser)
      */
@@ -392,6 +447,9 @@ public class LoginServlet extends HttpServlet {
         }
         try {
             Long saleAssociateKey = getSaleAssociateKey(user, pm);
+            if (saleAssociateKey == null) {
+                return null;
+            }
             return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);
         }
         catch (Exception ex) {

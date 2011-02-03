@@ -167,6 +167,7 @@ public class RawCommand extends Entity {
         if (getCommandId() != null) { out.put(COMMAND_ID, getCommandId()); }
         if (getEmitterId() != null) { out.put(EMITTER_ID, getEmitterId()); }
         if (getErrorMessage() != null) { out.put(ERROR_MESSAGE, getErrorMessage()); }
+        if (getMessageId() != null) { out.put(MESSAGE_ID, getMessageId()); }
         if (getSource() != null) { out.put(SOURCE, getSource().toString()); }
         if (getSubject() != null) { out.put(SUBJECT, getSubject()); }
         if (getToId() != null) { out.put(TO_ID, getToId()); }
@@ -179,11 +180,10 @@ public class RawCommand extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
 
         if (!isUserAdmin) {
-            // No external update allowed
-            return this;
+            throw new IllegalArgumentException("Reserved operation");
         }
 
         super.fromJson(in, isUserAdmin, isCacheRelated);
@@ -192,6 +192,7 @@ public class RawCommand extends Entity {
         if (in.containsKey(COMMAND_ID)) { setCommandId(in.getString(COMMAND_ID)); }
         if (in.containsKey(EMITTER_ID)) { setEmitterId(in.getString(EMITTER_ID)); }
         if (in.containsKey(ERROR_MESSAGE)) { setErrorMessage(in.getString(ERROR_MESSAGE)); }
+        if (in.containsKey(MESSAGE_ID)) { setMessageId(in.getLong(MESSAGE_ID)); }
         if (in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (in.containsKey(SUBJECT)) { setSubject(in.getString(SUBJECT)); }
         if (in.containsKey(TO_ID)) { setToId(in.getString(TO_ID)); }

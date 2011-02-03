@@ -2,6 +2,7 @@ package twetailer.dao;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +23,7 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
+import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import twetailer.task.step.BaseSteps;
@@ -46,14 +48,14 @@ public class TestLocationOperations {
     public void setUp() throws Exception {
         helper.setUp();
         BaseSteps.resetOperationControllers(false); // Use helper!
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
         helper.tearDown();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
@@ -176,11 +178,13 @@ public class TestLocationOperations {
             }
         };
         Location input = new Location();
+        input.setKey(453654L); // Will be ignored as the record does not exist in the database!
         input.setCountryCode(RobotResponder.ROBOT_COUNTRY_CODE);
         input.setPostalCode(RobotResponder.ROBOT_POSTAL_CODE);
-        assertNull(input.getKey());
 
         input = ops.createLocation(input);
+        assertNotNull(input.getKey());
+        assertNotSame(453654L, input.getKey());
     }
 
     @Test

@@ -62,8 +62,8 @@ public class Reseller extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(CONSUMER_KEY, getConsumerKey());
-        out.put(TOKEN_NB, getTokenNb());
+        if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
+        if (getTokenNb() != null) { out.put(TOKEN_NB, getTokenNb()); }
         return out;
     }
 
@@ -73,12 +73,11 @@ public class Reseller extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         if (!isUserAdmin) {
-            // No external update allowed
-            return this;
+            throw new IllegalArgumentException("Reserved operation");
         }
 
-        isUserAdmin = isUserAdmin || isCacheRelated;
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }

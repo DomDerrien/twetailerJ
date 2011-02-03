@@ -36,15 +36,15 @@ public class TestChannelConnector {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        BaseConnector.setLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
+        ChannelConnector.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-        // ChannelConnector.setLogger(new MockLogger("MailConnector", null));
     }
 
     @Before
     public void setUp() throws Exception {
         helper.setUp();
-        CacheHandler.injectCacheFactory(new MockCacheFactory());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
@@ -52,8 +52,8 @@ public class TestChannelConnector {
         helper.tearDown();
         JabberConnector.injectMockXMPPService(null);
         MockTwitterConnector.restoreTwitterConnector();
-        CacheHandler.injectCacheFactory(null);
-        CacheHandler.injectCache(null);
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TestChannelConnector {
         Consumer consumer = new Consumer();
         consumer.setKey(12345L);
 
-        ChannelConnector.injectChannelService(new ChannelService() {
+        ChannelConnector.injectMockChannelService(new ChannelService() {
             @Override public void sendMessage(ChannelMessage msg) { }
             @Override public ChannelMessage parseMessage(HttpServletRequest arg0) { return null; }
             @Override public String createChannel(String arg0) { return "channel created!"; }
@@ -109,7 +109,7 @@ public class TestChannelConnector {
         data.put("1", "one");
         data.put("two", 2L);
 
-        ChannelConnector.injectChannelService(new ChannelService() {
+        ChannelConnector.injectMockChannelService(new ChannelService() {
             @Override
             public void sendMessage(ChannelMessage msg) {
                 assertEquals("{'two':2,'1':'one'}", msg.getMessage());
@@ -141,7 +141,7 @@ public class TestChannelConnector {
         data.put("1", "one");
         data.put("two", "2");
 
-        ChannelConnector.injectChannelService(new ChannelService() {
+        ChannelConnector.injectMockChannelService(new ChannelService() {
             @Override
             public void sendMessage(ChannelMessage msg) {
                 fail("Unexpected call as a thrown exception should stop the sending");
@@ -166,7 +166,7 @@ public class TestChannelConnector {
         data.put("1", "one");
         data.put("two", "2");
 
-        ChannelConnector.injectChannelService(new ChannelService() {
+        ChannelConnector.injectMockChannelService(new ChannelService() {
             @Override
             public void sendMessage(ChannelMessage msg) {
                 throw new ChannelFailureException("done in purpose");
@@ -192,7 +192,7 @@ public class TestChannelConnector {
         data.put("1", "one");
         data.put("two", 2L);
 
-        ChannelConnector.injectChannelService(new ChannelService() {
+        ChannelConnector.injectMockChannelService(new ChannelService() {
             @Override
             public void sendMessage(ChannelMessage msg) {
                 fail("Unexpected call as a thrown exception should stop the sending");

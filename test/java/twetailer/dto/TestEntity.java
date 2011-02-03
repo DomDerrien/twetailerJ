@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.After;
@@ -18,6 +19,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 import domderrien.i18n.DateUtils;
+import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
@@ -56,7 +58,7 @@ public class TestEntity {
     }
 
     Long key = 12345L;
-    Date date = new Date();
+    Calendar date = DateUtils.getNowCalendar();
     Long locationKey = 543654L;
     Boolean markForDeletion = Boolean.TRUE;
 
@@ -65,26 +67,25 @@ public class TestEntity {
         Entity object = new Entity();
 
         object.setKey(key);
-        object.setCreationDate(date);
+        object.setCreationDate(date.getTime());
         object.setLocationKey(locationKey);
-        object.setModificationDate(date);
+        object.setModificationDate(date.getTime());
         object.setMarkedForDeletion(markForDeletion);
 
         assertEquals(key, object.getKey());
-        assertEquals(date, object.getCreationDate());
+        assertEquals(date.getTimeInMillis(), object.getCreationDate().getTime());
         assertEquals(locationKey, object.getLocationKey());
-        assertEquals(date, object.getModificationDate());
+        assertEquals(date.getTimeInMillis(), object.getModificationDate().getTime());
         assertEquals(markForDeletion, object.getMarkedForDeletion());
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException.class)
     public void testSetNullKey() {
         Entity object = new Entity();
         assertNull(object.getKey());
 
         // Cannot set it to 0
         object.setKey(null);
-        assertNull(object.getKey());
     }
 
     @Test
@@ -145,30 +146,87 @@ public class TestEntity {
         Entity object = new Entity();
         assertNull(object.getKey());
 
-        object.setCreationDate(date);
+        object.setCreationDate(date.getTime());
 
         object.resetCoreDates();
-        assertNotSame(date.getTime(), object.getCreationDate().getTime());
+        assertNotSame(date.getTimeInMillis(), object.getCreationDate().getTime());
         assertEquals(object.getCreationDate(), object.getModificationDate());
     }
 
     @Test
-    public void testJsonCommands() {
+    public void testJsonCommandsI() {
+        //
+        // Cache related copy (highest)
+        //
         Entity object = new Entity();
 
         object.setKey(key);
-        object.setCreationDate(date);
+
+        object.setCreationDate(date.getTime());
         object.setLocationKey(locationKey);
-        object.setModificationDate(date);
+        object.setModificationDate(date.getTime());
         object.setMarkedForDeletion(markForDeletion);
 
-        Entity clone = new Entity(object.toJson());
+        Entity clone = new Entity();
+        clone.fromJson(object.toJson(), true, true);
+
+        // In the translation, the milliseconds are rounded!
+        date.set(Calendar.MILLISECOND, 0);
 
         assertEquals(key, clone.getKey());
-        assertEquals(DateUtils.dateToISO(date), DateUtils.dateToISO(clone.getCreationDate()));
+
+        assertEquals(date.getTimeInMillis(), clone.getCreationDate().getTime());
         assertEquals(locationKey, clone.getLocationKey());
-        assertTrue(date.getTime() <= clone.getModificationDate().getTime()); // Always adjusted to the time of the un-marshalling process
-        assertEquals(Boolean.FALSE, clone.getMarkedForDeletion()); // Because this flag can only be changed manually!
+        assertTrue(clone.getMarkedForDeletion());
+        assertEquals(date.getTimeInMillis(), clone.getModificationDate().getTime());
+    }
+
+    @Test
+    public void testJsonCommandsII() {
+        //
+        // Cache related copy (highest) but with no data transfered
+        //
+        Entity object = new Entity();
+        object.resetLists();
+
+        Entity clone = new Entity();
+        clone.resetLists();
+        clone.fromJson(object.toJson(), true, true);
+
+        assertNull(clone.getKey());
+
+        assertNull(clone.getCreationDate());
+        assertNull(clone.getLocationKey());
+        assertFalse(clone.getMarkedForDeletion());
+        assertNull(clone.getModificationDate());
+    }
+
+    @Test
+    public void testJsonCommandsIII() {
+        //
+        // Admin update (middle)
+        //
+        Entity object = new Entity();
+
+        object.setKey(key);
+
+        object.setCreationDate(date.getTime());
+        object.setLocationKey(locationKey);
+        object.setModificationDate(date.getTime());
+        object.setMarkedForDeletion(markForDeletion);
+
+        Entity clone = new Entity();
+        clone.fromJson(object.toJson(), true, false);
+
+        // In the translation, the milliseconds are rounded!
+        date.set(Calendar.MILLISECOND, 0);
+
+        assertEquals(key, clone.getKey());
+
+        assertTrue(date.getTimeInMillis() <= clone.getCreationDate().getTime());
+        assertEquals(locationKey, clone.getLocationKey());
+        assertFalse(clone.getMarkedForDeletion());
+        assertTrue(date.getTimeInMillis() <= clone.getModificationDate().getTime());
     }
 
     @Test
@@ -221,5 +279,54 @@ public class TestEntity {
         JsonObject out = object.toJson();
         assertTrue(out.containsKey(Entity.KEY));
         assertTrue(out.containsKey(Entity.LOCATION_KEY));
+    }
+
+    @Test
+    public void testGetModificationDate() {
+        Entity object = new Entity();
+        object.resetLists();
+        assertNull(object.getModificationDate());
+    }
+
+    @Test
+    public void testtoJsonCommandsIII() {
+        JsonObject json = new GenericJsonObject();
+        json.put(Entity.CREATION_DATE, "corrupted date");
+        json.put(Entity.MODIFICATION_DATE, "corrupted date");
+
+        Entity object = new Entity();
+        object.fromJson(json, true, true);
+    }
+
+    @Test
+    public void testtoJsonCommandsIV() {
+        JsonObject json = new GenericJsonObject();
+        Entity object = new Entity();
+
+        json.put(Entity.KEY, 12345L);
+        object.fromJson(json, true, false);
+        assertEquals(12345L, object.getKey().longValue());
+    }
+
+    @Test
+    public void testtoJsonCommandsV() {
+        JsonObject json = new GenericJsonObject();
+        Entity object = new Entity();
+
+        object.setKey(23456L);
+        json.put(Entity.KEY, 12345L);
+        object.fromJson(json, true, true);
+        assertEquals(12345L, object.getKey().longValue());
+    }
+
+    @Test
+    public void testtoJsonCommandsVI() {
+        JsonObject json = new GenericJsonObject();
+        Entity object = new Entity();
+
+        object.setKey(23456L);
+        json.put(Entity.KEY, 12345L);
+        object.fromJson(json, true, false);
+        assertEquals(23456L, object.getKey().longValue());
     }
 }

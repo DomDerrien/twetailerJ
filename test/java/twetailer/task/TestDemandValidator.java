@@ -58,10 +58,9 @@ public class TestDemandValidator {
 
     @BeforeClass
     public static void setUpBeforeClass() {
-        DemandValidator.setLogger(new MockLogger("test", null));
+        DemandValidator.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     }
-
 
     @Before
     public void setUp() throws Exception {

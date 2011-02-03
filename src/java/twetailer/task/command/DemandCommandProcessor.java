@@ -10,7 +10,6 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.RawCommand;
@@ -37,7 +36,7 @@ public class DemandCommandProcessor {
             Long demandKey = command.getLong(Demand.REFERENCE);
             try {
                 // Update specified demand
-                DemandSteps.updateDemand(pm, rawCommand, demandKey, command, consumer, false);
+                DemandSteps.updateDemand(pm, rawCommand, demandKey, command, consumer.getKey(), false);
 
                 // Update confirmation message will be sent by the DemandValidator being given it's a valid demand
             }

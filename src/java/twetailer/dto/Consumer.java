@@ -155,7 +155,7 @@ public class Consumer extends Entity {
     }
 
     public void setClosedDemandNb(Long closedDemandNb) {
-        this.closedDemandNb = closedDemandNb;
+        this.closedDemandNb = closedDemandNb == 0L ? null : closedDemandNb;
     }
 
     public String getEmail() {
@@ -242,7 +242,7 @@ public class Consumer extends Entity {
     }
 
     public void setPublishedDemandNb(Long publishedDemandNb) {
-        this.publishedDemandNb = publishedDemandNb;
+        this.publishedDemandNb = publishedDemandNb == 0L ? null : publishedDemandNb;
     }
 
     public Long getSaleAssociateKey() {
@@ -265,20 +265,20 @@ public class Consumer extends Entity {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        out.put(ADDRESS, getAddress());
+        if (getAddress() != null) { out.put(ADDRESS, getAddress()); }
         out.put(AUTOMATIC_LOCALE_UPDATE, getAutomaticLocaleUpdate());
         out.put(CLOSED_DEMAND_NB, getClosedDemandNb() == null ? 0L : getClosedDemandNb());
-        out.put(EMAIL, getEmail());
-        out.put(FACEBOOK_ID, getFacebookId());
-        out.put(JABBER_ID, getJabberId());
+        if (getEmail() != null) { out.put(EMAIL, getEmail()); }
+        if (getFacebookId() != null) { out.put(FACEBOOK_ID, getFacebookId()); }
+        if (getJabberId() != null) { out.put(JABBER_ID, getJabberId()); }
         out.put(LANGUAGE, getLanguage());
-        out.put(NAME, getName());
-        out.put(OPEN_ID, getOpenID());
-        out.put(PHONE_NUMBER, getPhoneNumber());
+        if (getName() != null) { out.put(NAME, getName()); }
+        if (getOpenID() != null) { out.put(OPEN_ID, getOpenID()); }
+        if (getPhoneNumber() != null) { out.put(PHONE_NUMBER, getPhoneNumber()); }
         out.put(PREFERRED_CONNECTION, getPreferredConnection().toString());
         out.put(PUBLISHED_DEMAND_NB, getPublishedDemandNb() == null ? 0L : getPublishedDemandNb());
         if (getSaleAssociateKey() != null) { out.put(SALE_ASSOCIATE_KEY, getSaleAssociateKey()); }
-        out.put(TWITTER_ID, getTwitterId());
+        if (getTwitterId() != null) { out.put(TWITTER_ID, getTwitterId()); }
         return out;
     }
 
@@ -288,26 +288,26 @@ public class Consumer extends Entity {
     }
 
     public TransferObject fromJson(JsonObject in, boolean isUserAdmin, boolean isCacheRelated) {
-        isUserAdmin = isUserAdmin || isCacheRelated;
+        if (isCacheRelated) { isUserAdmin = isCacheRelated; }
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
-        if (isUserAdmin && in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); } // Cannot be updated remotely
-        if (in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); } // Cannot be updated remotely
-        if (in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); } // Cannot be updated remotely
-        if (in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); }
+        if ((isUserAdmin || getKey() == null) && in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
+        if ((isUserAdmin || getKey() == null) && in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); }
+        if ((isUserAdmin || getKey() == null) && in.containsKey(JABBER_ID)) { setJabberId(in.getString(JABBER_ID)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(NAME)) { setName(in.getString(NAME)); }
-        if (isUserAdmin && in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); } // Cannot be updated remotely
+        if ((isUserAdmin || getKey() == null) && in.containsKey(OPEN_ID)) { setOpenID(in.getString(OPEN_ID)); }
         if (in.containsKey(PHONE_NUMBER)) { setPhoneNumber(in.getString(PHONE_NUMBER)); }
         if (in.containsKey(PREFERRED_CONNECTION)) { setPreferredConnection(in.getString(PREFERRED_CONNECTION)); }
-        if (isUserAdmin && in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); } // Cannot be updated remotely
+        if (isUserAdmin && in.containsKey(PUBLISHED_DEMAND_NB)) { setPublishedDemandNb(in.getLong(PUBLISHED_DEMAND_NB)); }
         if ((isUserAdmin || getKey() == null) && in.containsKey(SALE_ASSOCIATE_KEY)) {
             // Cannot change once set at creation time
             setSaleAssociateKey(in.getLong(SALE_ASSOCIATE_KEY));
         }
-        if (in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); } // Cannot be updated remotely
+        if ((isUserAdmin || getKey() == null) && in.containsKey(TWITTER_ID)) { setTwitterId(in.getString(TWITTER_ID)); }
 
         // Shortcut
         if (in.containsKey(CONSUMER_KEY)) { setKey(in.getLong(CONSUMER_KEY)); }

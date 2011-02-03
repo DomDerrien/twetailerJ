@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javamocks.util.logging.MockLogger;
+
+import javax.jdo.PersistenceManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -25,8 +28,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import twetailer.InvalidIdentifierException;
+import twetailer.ReservedOperationException;
+import twetailer.dao.BaseOperations;
 import twetailer.dao.ConsumerOperations;
+import twetailer.dao.SaleAssociateOperations;
 import twetailer.dto.Consumer;
+import twetailer.dto.SaleAssociate;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 
@@ -61,6 +69,11 @@ public class TestLoginServlet {
         // propertiesForInjection.setProperty("openid.identifier.parameter", RelyingParty.DEFAULT_IDENTIFIER_PARAMETER); // Same as default
         // propertiesForInjection.setProperty("openid.relyingparty.listeners", null); // Same as default
         // propertiesForInjection.setProperty("openid.identifier.resolvers", null); // Same as default
+    }
+
+    @Before
+    public void setUpBeforeClass() throws Exception {
+        LoginServlet.setMockLogger(new MockLogger("test", null));
     }
 
     @Before
@@ -682,6 +695,7 @@ public class TestLoginServlet {
         // The user is associated and the response is authenticated
         // At the end, the verification SUCCEED
         //
+        final String pageToGo = "http://anothersocialeconomy.com/console/associate.jsp";
         HttpServletRequest request = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
@@ -692,7 +706,8 @@ public class TestLoginServlet {
                     return null;
                 }
                 if (LoginServlet.FROM_PAGE_URL_KEY.equals(name)) {
-                    return null;
+                    // return null; => dispatcher would forward to ApplicationSettings.get().getMainPageURL(), aka "/console"
+                    return pageToGo;
                 }
                 fail("Parameter access not expected for: " + name);
                 return null;
@@ -724,14 +739,16 @@ public class TestLoginServlet {
             }
             @Override
             public RequestDispatcher getRequestDispatcher(String url) {
-                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+                // assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+                assertEquals(pageToGo, url);
                 return new MockRequestDispatcher();
             }
         };
         MockHttpServletResponse response = new MockHttpServletResponse() {
             @Override
             public void sendRedirect(String url) {
-                assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+                // assertEquals(ApplicationSettings.get().getMainPageURL(), url);
+                assertEquals(pageToGo, url);
             }
         };
 
@@ -1266,5 +1283,238 @@ public class TestLoginServlet {
         assertNull(user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID));
         LoginServlet.attachConsumerToSession(user);
         assertEquals(consumerKey, user.getAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID));
+    }
+
+    @Test
+    public void testGetConsumerKeyI() {
+        assertNull(LoginServlet.getConsumerKey(null));
+    }
+
+    @Test
+    public void testGetConsumerKeyII() {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        assertEquals(consumerKey, LoginServlet.getConsumerKey(user));
+    }
+
+    @Test
+    public void testGetConsumerI() throws InvalidIdentifierException {
+        assertNull(LoginServlet.getConsumer(null));
+    }
+
+    @Test
+    public void testGetConsumerII() throws InvalidIdentifierException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        assertNull(LoginServlet.getConsumer(null, null));
+    }
+
+    @Test
+    public void testGetConsumerIII() throws InvalidIdentifierException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                return consumer;
+            }
+        });
+        assertEquals(consumerKey, LoginServlet.getConsumer(user).getKey());
+    }
+
+    @Test
+    public void testGetSaleAssociateKeyI() throws InvalidIdentifierException {
+        assertNull(LoginServlet.getSaleAssociateKey(null));
+    }
+
+    @Test
+    public void testGetSaleAssociateKeyII() throws InvalidIdentifierException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        assertNull(LoginServlet.getSaleAssociateKey(null, null));
+    }
+
+    @Test
+    public void testGetSaleAssociateKeyIII() throws InvalidIdentifierException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        final Long saleAssociateKey = 54765765L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        BaseSteps.setMockBaseOperations(new BaseOperations());
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setSaleAssociateKey(saleAssociateKey);
+                return consumer;
+            }
+        });
+        assertEquals(saleAssociateKey, LoginServlet.getSaleAssociateKey(user));
+        assertEquals(saleAssociateKey, LoginServlet.getSaleAssociateKey(user)); // Twice to get it the second time from the session
+    }
+
+    @Test
+    public void testGetStoreKeyI() throws InvalidIdentifierException, ReservedOperationException {
+        assertNull(LoginServlet.getStoreKey(null));
+    }
+
+    @Test
+    public void testGetStoreKeyII() throws InvalidIdentifierException, ReservedOperationException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        assertNull(LoginServlet.getStoreKey(null, null));
+    }
+
+    @Test
+    public void testGetStoreKeyIII() throws InvalidIdentifierException, ReservedOperationException {
+        final Long consumerKey = 1453542547L;
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+
+        BaseSteps.setMockBaseOperations(new BaseOperations());
+        final Long saleAssociateKey = 654398092L;
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setSaleAssociateKey(saleAssociateKey);
+                return consumer;
+            }
+        });
+        final Long storeKey = 54765765L;
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setKey(saleAssociateKey);
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setStoreKey(storeKey);
+                return saleAssociate;
+            }
+        });
+        assertEquals(storeKey, LoginServlet.getStoreKey(user));
+        assertEquals(storeKey, LoginServlet.getStoreKey(user)); // Twice to get it the second time from the session
+    }
+
+    @Test
+    public void testGetSaleAssociateI() throws InvalidIdentifierException, ReservedOperationException {
+        assertNull(LoginServlet.getSaleAssociate(null));
+    }
+
+    @Test
+    public void testGetSaleAssociateII() throws InvalidIdentifierException, ReservedOperationException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        assertNull(LoginServlet.getSaleAssociate(null, null));
+    }
+
+    @Test
+    public void testGetSaleAssociateIII() throws InvalidIdentifierException, ReservedOperationException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        final Long saleAssociateKey = 54765765L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        BaseSteps.setMockBaseOperations(new BaseOperations());
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setSaleAssociateKey(saleAssociateKey);
+                return consumer;
+            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(saleAssociateKey, key);
+                SaleAssociate saleAssociate = new SaleAssociate();
+                saleAssociate.setConsumerKey(consumerKey);
+                saleAssociate.setKey(saleAssociateKey);
+                return saleAssociate;
+            }
+        });
+        assertEquals(saleAssociateKey, LoginServlet.getSaleAssociate(user).getKey());
+    }
+
+    @Test(expected=ReservedOperationException.class)
+    public void testGetSaleAssociateIV() throws InvalidIdentifierException, ReservedOperationException {
+        OpenIdUser user = OpenIdUser.populate(
+                "http://www.yahoo.com",
+                YadisDiscovery.IDENTIFIER_SELECT,
+                LoginServlet.YAHOO_OPENID_SERVER_URL
+        );
+        final Long consumerKey = 1453542547L;
+        final Long saleAssociateKey = 54765765L;
+        user.setAttribute(LoginServlet.AUTHENTICATED_CONSUMER_ID, consumerKey);
+        BaseSteps.setMockBaseOperations(new BaseOperations());
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(consumerKey, key);
+                Consumer consumer = new Consumer();
+                consumer.setKey(consumerKey);
+                consumer.setSaleAssociateKey(saleAssociateKey);
+                return consumer;
+            }
+        });
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                throw new InvalidIdentifierException("Done in purpose!");
+            }
+        });
+        LoginServlet.getSaleAssociate(user).getKey();
     }
 }
