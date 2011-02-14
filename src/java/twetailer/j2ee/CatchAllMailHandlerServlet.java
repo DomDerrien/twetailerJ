@@ -3,8 +3,6 @@ package twetailer.j2ee;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
@@ -31,7 +29,7 @@ public class CatchAllMailHandlerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(CatchAllMailHandlerServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

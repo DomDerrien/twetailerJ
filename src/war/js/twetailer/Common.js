@@ -105,11 +105,11 @@
      * Helper to generate an ISO formatted date without the timezone.
      *
      * @param {Date} date date part to be formatted.
-     * @param {Date} timee time part to be formatted.
+     * @param {Date} time time part to be formatted.
      * @return {String} ISO representation of the given date.
      */
     module.toISOString = function(date, time) {
-        // return dojo.date.stamp.toISOString(date, {}); // Contains the timezone gap
+        // return dojo.date.stamp.toISOString(date, {}); // Contains the time zone gap
         var month = date.getMonth() + 1;
         var day = date.getDate();
         var hours = time ? time.getHours() : 23;

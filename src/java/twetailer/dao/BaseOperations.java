@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -28,7 +26,7 @@ public class BaseOperations {
     private static Logger log = Logger.getLogger(BaseOperations.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

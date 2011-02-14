@@ -29,6 +29,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Store;
+import twetailer.dto.Command.QueryPointOfView;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.ApplicationSettings;
 import twetailer.validator.LocaleValidator;
@@ -1125,6 +1126,23 @@ public class TestCommandLineParser {
     }
 
     @Test
+    public void testParsePointOfViewI() throws ClientException, ParseException {
+        final QueryPointOfView pointOfView = QueryPointOfView.ANONYMOUS;
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "pointOfView: " + pointOfView.toString(), Locale.ENGLISH);
+        assertEquals(pointOfView.toString(), data.getString(Command.POINT_OF_VIEW));
+    }
+
+    @Test
+    public void testParsePointOfViewII() throws ClientException, ParseException {
+        final QueryPointOfView pointOfView = QueryPointOfView.ANONYMOUS;
+        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii pointOfView: " + pointOfView.toString() + " ref:12345 console", Locale.ENGLISH);
+        assertEquals(pointOfView.toString(), data.getString(Command.POINT_OF_VIEW));
+        assertEquals(12345, data.getLong(Demand.REFERENCE));
+        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+    }
+
+    @Test
     public void testParseStoreI() throws ClientException, ParseException {
         final long storeKey = 1234567890L;
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "store: " + storeKey, Locale.ENGLISH);
@@ -1155,8 +1173,44 @@ public class TestCommandLineParser {
                 Locale.ENGLISH
         );
 
+        assertEquals(2, data.getJsonArray(Command.HASH_TAGS).size());
+        assertFalse(data.containsKey(Command.HASH_TAGS_ADD));
+        assertFalse(data.containsKey(Command.HASH_TAGS_REMOVE));
+
         assertEquals("game", data.getJsonArray(Command.HASH_TAGS).getString(0));
         assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAGS).getString(1));
+    }
+
+    @Test
+    public void testManyHashTagsII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "ref:249 wii +hash:game locale:h0h0h0 mario range:25 km kart +hash:DeMo",
+                Locale.ENGLISH
+        );
+
+        assertFalse(data.containsKey(Command.HASH_TAGS));
+        assertEquals(2, data.getJsonArray(Command.HASH_TAGS_ADD).size());
+        assertFalse(data.containsKey(Command.HASH_TAGS_REMOVE));
+
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS_ADD).getString(0));
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAGS_ADD).getString(1));
+    }
+
+    @Test
+    public void testManyHashTagsIII() throws ClientException, ParseException {
+        JsonObject data = CommandLineParser.parseCommand(
+                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
+                "ref:249 wii -hash:game locale:h0h0h0 mario range:25 km kart -hash:DeMo",
+                Locale.ENGLISH
+        );
+
+        assertFalse(data.containsKey(Command.HASH_TAGS));
+        assertFalse(data.containsKey(Command.HASH_TAGS_ADD));
+        assertEquals(2, data.getJsonArray(Command.HASH_TAGS_REMOVE).size());
+
+        assertEquals("game", data.getJsonArray(Command.HASH_TAGS_REMOVE).getString(0));
+        assertEquals(RobotResponder.ROBOT_DEMO_HASH_TAG, data.getJsonArray(Command.HASH_TAGS_REMOVE).getString(1));
     }
 
     @Test
@@ -1669,5 +1723,190 @@ public class TestCommandLineParser {
         assertEquals("00000", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertTrue(data.containsKey(Command.CRITERIA_ADD));
+    }
+
+    private int[] todayNumbers;
+
+    @SuppressWarnings("deprecation")
+    private int[] getTodayNumbers() {
+        if (todayNumbers == null) {
+            Date today = new Date();
+            todayNumbers = new int[] { today.getYear() + 1900, today.getMonth() + 1, today.getDate() };
+        }
+        return todayNumbers;
+    }
+    @Test
+    public void testGetDateIa() throws ParseException {
+        String expected = getTodayNumbers()[0] + "-" + (getTodayNumbers()[1] < 10 ? "0" : "") + getTodayNumbers()[1] + "-" + (getTodayNumbers()[2] < 10 ? "0" : "") + getTodayNumbers()[2] + "T23:59:59";
+        String in = "due:";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIa() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:" + expected;
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIb() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:201105-07";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIc() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:2011-0507";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIId() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:20110507";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIe() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:" + expected;
+        String out = CommandLineParser.getDate(in.replace('-', 'a'));
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIf() throws ParseException {
+        String expected = "2011-05-07" + "T23:59:59";
+        String in = "due:2011-0507";
+        String out = CommandLineParser.getDate(in.replace('-', 'a'));
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIIa() throws ParseException {
+        String expected = "T08:00:00";
+        expected = getTodayNumbers()[0] + "-" + (getTodayNumbers()[1] < 10 ? "0" : "") + getTodayNumbers()[1] + "-" + (getTodayNumbers()[2] < 10 ? "0" : "") + getTodayNumbers()[2] + expected;
+        String in = "due:T08";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIIb() throws ParseException {
+        String expected = "T08:07:00";
+        expected = getTodayNumbers()[0] + "-" + (getTodayNumbers()[1] < 10 ? "0" : "") + getTodayNumbers()[1] + "-" + (getTodayNumbers()[2] < 10 ? "0" : "") + getTodayNumbers()[2] + expected;
+        String in = "due:T08:07";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIIc() throws ParseException {
+        String expected = "T08:07:06";
+        expected = getTodayNumbers()[0] + "-" + (getTodayNumbers()[1] < 10 ? "0" : "") + getTodayNumbers()[1] + "-" + (getTodayNumbers()[2] < 10 ? "0" : "") + getTodayNumbers()[2] + expected;
+        String in = "due:T08:07:06";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIIId() throws ParseException {
+        String expected = "T08:00:00";
+        expected = getTodayNumbers()[0] + "-" + (getTodayNumbers()[1] < 10 ? "0" : "") + getTodayNumbers()[1] + "-" + (getTodayNumbers()[2] < 10 ? "0" : "") + getTodayNumbers()[2] + expected;
+        String in = "due:T080706";
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIVa() throws ParseException {
+        String expected = "2011-01-01T01:01:01";
+        String in = "due:" + expected;
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetDateIVb() throws ParseException {
+        String expected = "2011-11-11T11:11:11";
+        String in = "due:" + expected;
+        String out = CommandLineParser.getDate(in);
+        assertEquals(expected, out);
+    }
+
+    @Test
+    public void testGetCountrycodeIa() {
+        String in = "locale:h CA";
+        assertEquals(Locale.CANADA.getCountry(), CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIb() {
+        String in = "locale:0 US";
+        assertEquals(Locale.US.getCountry(), CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIa() {
+        String in = "locale:h";
+        // Because it starts by a letter
+        assertEquals(Locale.CANADA.getCountry(), CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIb() {
+        String in = "locale:H";
+        // Because it starts by a letter
+        assertEquals(Locale.CANADA.getCountry(), CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIc() {
+        String in = "locale:0";
+        // Because it starts by a digit
+        assertEquals(Locale.US.getCountry(), CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIIa() {
+        String in = "locale:&"; // Before the digits
+        // Default country
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIIb() {
+        String in = "locale:="; // Between digits and capital letters
+        // Default country
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIIc() {
+        String in = "locale:_"; // Between the capital and the lower case letters
+        // Default country
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCountrycodeIIId() {
+        String in = "locale:|"; // After the lower case letters
+        // Default country
+        assertEquals(LocaleValidator.DEFAULT_COUNTRY_CODE, CommandLineParser.getCountryCode(in));
+    }
+
+    @Test
+    public void testGetCleanNumber() {
+        String in = "qty:-1,2.3a";
+        assertEquals("-1,2.3", CommandLineParser.getCleanNumber(in));
     }
 }

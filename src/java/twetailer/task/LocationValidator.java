@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -41,7 +39,7 @@ public class LocationValidator {
     private static Logger log = Logger.getLogger(LocationValidator.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

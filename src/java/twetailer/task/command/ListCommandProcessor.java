@@ -52,13 +52,14 @@ import domderrien.jsontools.JsonObject;
 
 public class ListCommandProcessor {
 
+    @SuppressWarnings("deprecation")
     public static void processListCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command, JsonObject prefixes, JsonObject actions) throws DataSourceException, ClientException {
 
         Locale locale = consumer.getLocale();
 
         // Get identified Demand
-        if (command.containsKey(Demand.REFERENCE)) {
-            Long entityKey = command.getLong(Demand.REFERENCE);
+        if (command.containsKey(Demand.REFERENCE) || command.containsKey(Demand.DEMAND_KEY)) {
+            Long entityKey = command.containsKey(Demand.REFERENCE) ? command.getLong(Demand.REFERENCE) : command.getLong(Demand.DEMAND_KEY);
             if (!Long.valueOf(-1L).equals(entityKey)) {
                 QueryPointOfView pointOfView = QueryPointOfView.fromJson(command, QueryPointOfView.CONSUMER);
                 String message = null;

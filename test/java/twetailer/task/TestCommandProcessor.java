@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,11 +35,13 @@ import twetailer.dao.MockBaseOperations;
 import twetailer.dao.MockSettingsOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
+import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.Action;
@@ -474,21 +478,19 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForStoreI() {
         Store store = new Store();
         store.setKey(12345L);
-        String name = "Grumb LLC inc.";
-        store.setName(name);
-        store.setAddress("432 Lane W, Montreal, Qc, Canada");
 
         String tweet = CommandProcessor.generateTweet(store, null, Locale.ENGLISH);
         assertNotSame(0, tweet.length());
-        assertTrue(tweet.contains(name));
         assertFalse(tweet.contains(Prefix.phoneNumber.toString()));
         assertFalse(tweet.contains(Prefix.locale.toString()));
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForStoreII() {
         Store store = new Store();
         String name = "Grumb LLC inc.";
@@ -507,6 +509,7 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForStoreIII() {
         Store store = new Store();
         store.setKey(12345L);
@@ -529,6 +532,7 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForStoreIV() {
         Store store = new Store();
         store.setKey(12345L);
@@ -549,6 +553,7 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForDemandWithHashtag() {
         Demand demand = new Demand();
         demand.addHashTag("one");
@@ -563,6 +568,7 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForAnonimizedDemand() {
         Demand demand = new Demand();
         demand.setKey(12345L);
@@ -577,38 +583,261 @@ public class TestCommandProcessor {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForAnonimizedProposal() {
-        Proposal demand = new Proposal();
-        demand.setKey(12345L);
-        demand.setDemandKey(23456L);
+        Proposal proposal = new Proposal();
+        proposal.setKey(12345L);
+        proposal.setDemandKey(23456L);
 
-        String tweet = CommandProcessor.generateTweet(demand, null, true, Locale.ENGLISH);
+        String tweet = CommandProcessor.generateTweet(proposal, null, true, Locale.ENGLISH);
         assertNotSame(0, tweet.length());
         assertFalse(tweet.contains("12345"));
         assertFalse(tweet.contains("23456"));
     }
 
     @Test
+    @SuppressWarnings("deprecation")
+    public void testGenerateTweetProposalI() {
+        Proposal proposal = new Proposal();
+        proposal.setKey(12345L);
+        proposal.setDemandKey(23456L);
+        proposal.setState(State.published);
+        proposal.setDueDate(new Date(2011 - 1900, 0, 1, 0, 0, 0));
+        proposal.addCriterion("just-one-tag");
+        proposal.addHashTag("just-one-hash-tag");
+        proposal.addCoordinate("unit@test.org");
+
+        String tweet = CommandProcessor.generateTweet(proposal, null, false, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("12345"));
+        assertTrue(tweet.contains("23456"));
+        assertTrue(tweet.contains("2011-01-01T00:00:00"));
+        assertTrue(tweet.contains("just-one-tag"));
+        assertTrue(tweet.contains("just-one-hash-tag"));
+        assertTrue(tweet.contains("unit@test.org"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testGenerateTweetProposalII() {
+        Proposal proposal = new Proposal();
+        proposal.setState(State.cancelled);
+
+        Store store = new Store();
+        store.setKey(23456L);
+        store.setName("store-name");
+
+        String tweet = CommandProcessor.generateTweet(proposal, store, false, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("cancelled"));
+        assertTrue(tweet.contains("23456"));
+        assertTrue(tweet.contains("store-name"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForDemandI() {
         Demand demand = new Demand();
         demand.setKey(12345L);
+        demand.setState(State.published);
 
-        String tweet = CommandProcessor.generateTweet(demand, null, false, Locale.ENGLISH);
+        String tweet = CommandProcessor.generateTweet(demand, new Location(), false, Locale.ENGLISH);
         assertNotSame(0, tweet.length());
         assertTrue(tweet.contains("12345"));
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void testGenerateTweetForDemandII() {
         Demand demand = new Demand();
         demand.setKey(12345L);
         demand.addProposalKey(23456L);
         demand.addProposalKey(34567L);
+        demand.setState(State.cancelled);
+        demand.setExpirationDate(new Date());
+        demand.setDueDate(new Date(demand.getExpirationDate().getTime() - 10000));
+        demand.addCriterion("just-one-tag");
 
-        String tweet = CommandProcessor.generateTweet(demand, null, false, Locale.ENGLISH);
+        Location location = new Location();
+        location.setPostalCode("H0H0H0");
+
+        String tweet = CommandProcessor.generateTweet(demand, location, false, Locale.ENGLISH);
         assertNotSame(0, tweet.length());
         assertTrue(tweet.contains("12345"));
         assertTrue(tweet.contains("23456"));
         assertTrue(tweet.contains("34567"));
+        assertTrue(tweet.contains("cancelled"));
+        assertTrue(tweet.contains("H0H0H0 CA"));
+        assertTrue(tweet.contains("just-one-tag"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testGenerateTweetForDemandIII() {
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+        demand.addCoordinate("unit@test.org");
+
+        String tweet = CommandProcessor.generateTweet(demand, new Location(), false, Locale.ENGLISH);
+        assertNotSame(0, tweet.length());
+        assertTrue(tweet.contains("unit@test.org"));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSerializedDateIa() {
+        Date date = new Date(2011 - 1900, 0, 1, 0, 0, 0);
+        assertEquals("2011-01-01T00:00:00", CommandProcessor.serializeDate(date));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSerializedDateIb() {
+        Date date = new Date(2011 - 1900, 0, 1, 23, 0, 0);
+        assertEquals("2011-01-01T23:00:00", CommandProcessor.serializeDate(date));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSerializedDateIc() {
+        Date date = new Date(2011 - 1900, 0, 1,23, 59, 0);
+        assertEquals("2011-01-01T23:59:00", CommandProcessor.serializeDate(date));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testSerializedDateII() {
+        Date date = new Date(2011 - 1900, 0, 1, 23, 59, 59);
+        assertEquals("2011-01-01", CommandProcessor.serializeDate(date));
+    }
+
+    @Test
+    public void testProcessCommandI() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.NEED_HELP, "");
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandII() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.help.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandIII() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.help.toString());
+        command.put(Command.CRITERIA_ADD, new GenericJsonArray());
+        command.getJsonArray(Command.CRITERIA_ADD).add("");
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandIV() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.cancel.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandV() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.close.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandVI() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.confirm.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandVII() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.decline.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandVIII() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.delete.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandIX() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.demand.toString());
+        command.put(Demand.DEMAND_KEY, 12345L);
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertNull(key);
+                throw new InvalidIdentifierException("Done in purpose!");
+            }
+        });
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandX() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.language.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandXI() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.rate.toString());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
+    }
+
+    @Test
+    public void testProcessCommandXII() throws DataSourceException, ClientException {
+        JsonObject command = new GenericJsonObject();
+        command.put(Command.ACTION, Action.supply.toString());
+
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public SaleAssociate getSaleAssociate(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertNull(key);
+                throw new InvalidIdentifierException("Done in purpose!");
+            }
+        });
+
+        Consumer consumer = new Consumer();
+        CommandLineParser.loadLocalizedSettings(consumer.getLocale());
+
+        CommandProcessor.processCommand(new MockPersistenceManager(), consumer, new RawCommand(Source.simulated), command);
+        assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());
     }
 }

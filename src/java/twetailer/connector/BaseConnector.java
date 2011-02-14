@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import twetailer.CommunicationException;
 import twetailer.dto.Consumer;
 import twetailer.dto.RawCommand;
@@ -24,7 +22,7 @@ public class BaseConnector {
     private static Logger log = Logger.getLogger(BaseConnector.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -118,7 +116,7 @@ public class BaseConnector {
                             Source.widget.equals(source) ? consumer.getEmail() :
                                 null;
         String userName = consumer.getName();
-        if (userId == null && !Source.simulated.equals(source)) {
+        if (userId == null && !Source.simulated.equals(source) && !Source.robot.equals(source) && !Source.mail.equals(source)) {
             // Fall back mechanism
             source = Source.mail;
             userId = consumer.getEmail();

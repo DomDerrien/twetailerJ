@@ -1,12 +1,10 @@
 package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -14,13 +12,13 @@ import java.util.Map;
 
 import javamocks.util.logging.MockLogger;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.MockPersistenceManager;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.DataSourceException;
@@ -29,33 +27,26 @@ import twetailer.connector.BaseConnector;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.dao.CacheHandler;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
 import twetailer.dao.InfluencerOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
-import twetailer.dao.ProposalOperations;
-import twetailer.dao.RawCommandOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
+import twetailer.dto.Influencer;
 import twetailer.dto.Location;
-import twetailer.dto.Proposal;
-import twetailer.dto.RawCommand;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Settings;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
-import twitter4j.DirectMessage;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import com.google.appengine.api.taskqueue.MockQueue;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
@@ -63,11 +54,25 @@ public class TestDemandProcessor {
 
     private static LocalServiceTestHelper  helper;
 
+    final Long locationKey = 54375232L;
+    final Long storeKey = 76532762L;
+    final String tag = "just-one-tag";
+    final Long robotKey = 6545987321L;
+    final Long demandKey = 7654325489798754L;
+    final Long consumerKey = 543543453L;
+    final Long saleAssociateKey = 98776453221L;
+    final Long influencerKey = 31415954L;
+
     @BeforeClass
     public static void setUpBeforeClass() {
         DemandProcessor.setMockLogger(new MockLogger("test", null));
+        BaseConnector.setMockLogger(new MockLogger("test", null));
+        MailConnector.setMockLogger(new MockLogger("test", null));
         helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
-    }
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
+
+        // Map<Long, Long> activeChannels = (Map<Long, Long>) CacheHandler.getFromCache(ChannelConnector.MEMCACHE_IDENTIFIER);
+        }
 
     @Before
     public void setUp() throws Exception {
@@ -75,6 +80,8 @@ public class TestDemandProcessor {
 
         BaseSteps.resetOperationControllers(true);
         BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @After
@@ -93,1604 +100,552 @@ public class TestDemandProcessor {
         new DemandProcessor();
     }
 
-    /***** ddd
-     * @throws InvalidIdentifierException
-    @Test(expected=DataSourceException.class)
-    public void testProcessNoDemand() throws DataSourceException {
-        final Long demandKey = 12345L;
-
-        // DemandOperations mock
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                throw new DataSourceException("Done in purpose");
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
+    @Test
+    public void testGetLogger() {
+        DemandProcessor.getLogger();
     }
 
     @Test
-    public void testIdentifySaleAssociatesNoLocationAround() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
+    public void testNotifyAvailabilityI() {
+        //
+        // No message sent
+        //
+        Consumer demandOwner = new Consumer();
+        Consumer proposalOwner = new Consumer();
+        proposalOwner.setPreferredConnection(Source.api);
+        Demand demand = new Demand();
 
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
+        DemandProcessor.notifyAvailability(demand, demandOwner, proposalOwner, new Influencer());
+    }
+
+    @Test
+    public void testNotifyAvailabilityII() {
+        //
+        // Message sent by mail
+        //
+        Consumer demandOwner = new Consumer();
+        Consumer proposalOwner = new Consumer();
+        proposalOwner.setPreferredConnection(Source.mail);
+        proposalOwner.setEmail("unit@test.org");
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+
+        DemandProcessor.notifyAvailability(demand, demandOwner, proposalOwner, new Influencer());
+    }
+
+    @Test
+    public void testNotifyAvailabilityIII() {
+        //
+        // Message sent by mail
+        //
+        Consumer demandOwner = new Consumer();
+        demandOwner.setPublishedDemandNb(256L);
+        demandOwner.setClosedDemandNb(255L);
+        Consumer proposalOwner = new Consumer();
+        proposalOwner.setPreferredConnection(Source.mail);
+        proposalOwner.setEmail("unit@test.org");
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+
+        DemandProcessor.notifyAvailability(demand, demandOwner, proposalOwner, new Influencer());
+    }
+
+    @Test
+    public void testNotifyAvailabilityIV() {
+        //
+        // Message sending failing
+        //
+        Consumer demandOwner = new Consumer();
+        Consumer proposalOwner = new Consumer();
+        proposalOwner.setPreferredConnection(Source.mail);
+        proposalOwner.setEmail("unit@test.org");
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+
+        MailConnector.foolNextMessagePost(); // For the initial message sending to the proposal owner
+
+        DemandProcessor.notifyAvailability(demand, demandOwner, proposalOwner, new Influencer());
+    }
+
+    @Test
+    public void testNotifyAvailabilityV() {
+        //
+        // Message sending failing
+        //
+        Consumer demandOwner = new Consumer();
+        Consumer proposalOwner = new Consumer();
+        proposalOwner.setPreferredConnection(Source.mail);
+        proposalOwner.setEmail("unit@test.org");
+        Demand demand = new Demand();
+        demand.setKey(12345L);
+
+        MailConnector.foolNextMessagePost(); // For the initial message sending to the proposal owner
+        MailConnector.foolNextMessagePost(); // For the message sending to the admins
+
+        DemandProcessor.notifyAvailability(demand, demandOwner, proposalOwner, new Influencer());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesI() {
+        //
+        // No sale associate in the area
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesII() {
+        //
+        // One sale associate already selected
+        //
+        Long saleAssociateKey = 12345L;
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addSaleAssociateKey(saleAssociateKey);
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setKey(saleAssociateKey);
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesIII() {
+        //
+        // One sale associate in the area accepting anything
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand() {
+            @Override
+            public Demand resetLists() {
+                return super.resetLists();
+            }
+        }.resetLists();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:0.0");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(1, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesIV() {
+        //
+        // One sale associate in the area, with an unsupported score version, so falling back on the default
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("0:0.0");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVa() {
+        //
+        // One sale associate in the area, with one common hash tag
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addHashTag("hash");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:1.0");
+        saleAssociate.addHashTag("hash");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(1, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVb() {
+        //
+        // One sale associate in the area, with one common hash tag, but requires 2 hash tags
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addHashTag("hash");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:2.0");
+        saleAssociate.addHashTag("hash");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVc() {
+        //
+        // One sale associate in the area, with no common hash tag
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addHashTag("hash-given");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:1.0");
+        saleAssociate.addHashTag("hash-asked");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVd() {
+        //
+        // One sale associate in the area and a demand without hash tag list
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand() {
+            @Override
+            public Demand resetLists() {
+                return super.resetLists();
+            }
+        }.resetLists();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:1.0");
+        saleAssociate.addHashTag("hash-asked");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVe() {
+        //
+        // One sale associate in the area without hash tag list
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate() {
+            @Override
+            public SaleAssociate resetLists() {
+                return super.resetLists();
+            }
+        }.resetLists();
+        saleAssociate.setScore("1:1.0");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVIa() {
+        //
+        // One sale associate in the area, with one common (normal) tag
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addCriterion("tag");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:0.1");
+        saleAssociate.addCriterion("tag", java.text.Collator.getInstance(Locale.ENGLISH));
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(1, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVIb() {
+        //
+        // One sale associate in the area, with one common (normal) tag, but requires 2 (normal) tags
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addCriterion("tag");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:0.2");
+        saleAssociate.addCriterion("tag", java.text.Collator.getInstance(Locale.ENGLISH));
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVIc() {
+        //
+        // One sale associate in the area, with no common (normal) tag
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        demand.addCriterion("tag-given");
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:0.1");
+        saleAssociate.addCriterion("tag-asked", java.text.Collator.getInstance(Locale.ENGLISH));
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVId() {
+        //
+        // One sale associate in the area and a demand without (normal) tag list
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand() {
+            @Override
+            public Demand resetLists() {
+                return super.resetLists();
+            }
+        }.resetLists();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate();
+        saleAssociate.setScore("1:0.1");
+        saleAssociate.addCriterion("tag-asked", java.text.Collator.getInstance(Locale.ENGLISH));
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testFilterSaleAssociatesVIe() {
+        //
+        // One sale associate in the area without (normal) tag list
+        //
+        Consumer demandOwner = new Consumer();
+        Demand demand = new Demand();
+        List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
+        SaleAssociate saleAssociate = new SaleAssociate() {
+            @Override
+            public SaleAssociate resetLists() {
+                return super.resetLists();
+            }
+        }.resetLists();
+        saleAssociate.setScore("1:0.1");
+        saleAssociates.add(saleAssociate);
+
+        assertEquals(0, DemandProcessor.filterSaleAssociates(saleAssociates, demand, demandOwner).size());
+    }
+
+    @Test
+    public void testIdentifySaleAssociatesI() throws InvalidIdentifierException, DataSourceException {
+        //
+        // No location registered around the demand's one
+        //
+        Consumer owner = new Consumer();
+        Demand demand = new Demand();
+        demand.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
-                return consumerLocation;
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                return resource;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
                 return new ArrayList<Location>();
             }
         });
 
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
+        assertEquals(0, DemandProcessor.identifySaleAssociates(new MockPersistenceManager(), demand, owner).size());
     }
 
     @Test
-    public void testIdentifySaleAssociatesNoStoreForLocationAround() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
+    public void testIdentifySaleAssociatesII() throws InvalidIdentifierException, DataSourceException {
+        //
+        // One location with a store registered around the demand's one, but store not available anymore
+        //
+        Consumer owner = new Consumer();
+        Demand demand = new Demand();
+        demand.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
-                return consumerLocation;
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                return resource;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                List<Location> resources = new ArrayList<Location>();
+                resources.add(resource);
+                return resources;
             }
         });
 
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
+            public List<Store> getStores(PersistenceManager pm, Map<String, Object> queryParameters, List<Location> locations, int limit) throws DataSourceException {
+                assertEquals(locationKey, locations.get(0).getKey());
                 return new ArrayList<Store>();
             }
         });
 
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
+        assertEquals(0, DemandProcessor.identifySaleAssociates(new MockPersistenceManager(), demand, owner).size());
     }
 
     @Test
-    public void testIdentifySaleAssociatesForAStoreWithoutEmployees() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
+    public void testIdentifySaleAssociatesIII() throws InvalidIdentifierException, DataSourceException {
+        //
+        // One location and one store registered around the demand's one, but sale associate not available anymore
+        //
+        Consumer owner = new Consumer();
+        Demand demand = new Demand();
+        demand.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
             public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
-                return consumerLocation;
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                return resource;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                List<Location> resources = new ArrayList<Location>();
+                resources.add(resource);
+                return resources;
             }
         });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
 
         BaseSteps.setMockStoreOperations(new StoreOperations() {
             @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
+            public List<Store> getStores(PersistenceManager pm, Map<String, Object> queryParameters, List<Location> locations, int limit) throws DataSourceException {
+                assertEquals(locationKey, locations.get(0).getKey());
+                Store resource = new Store();
+                resource.setKey(storeKey);
+                List<Store> resources = new ArrayList<Store>();
+                resources.add(resource);
+                return resources;
             }
         });
 
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
             @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.STORE_KEY, attribute);
                 assertEquals(storeKey, (Long) value);
                 return new ArrayList<SaleAssociate>();
             }
-        };
+        });
 
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
+        assertEquals(0, DemandProcessor.identifySaleAssociates(new MockPersistenceManager(), demand, owner).size());
     }
 
     @Test
-    public void testIdentifySaleAssociatesWithEmployeeWithoutExpectedTagsI() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate() {
-            @Override
-            public List<String> getCriteria() {
-                return null;
-            }
-        };
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
-    }
-
-    @Test
-    public void testIdentifySaleAssociatesWithEmployeeWithoutExpectedTagsII() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
-    }
-
-    @Test
-    public void testIdentifySaleAssociatesWithEmployeeWithExpectedTagsI() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(1, saleAssociates.size());
-        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
-    }
-
-    @Test
-    public void testIdentifySaleAssociatesWithEmployeeWithExpectedTagsII() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("one");
-        consumerDemand.addCriterion("two");
-        consumerDemand.addCriterion("three");
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.addCriterion("ich");
-        selectedSaleAssociate.addCriterion("ni");
-        selectedSaleAssociate.addCriterion("san");
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(1, saleAssociates.size());
-        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
-    }
-
-    @Test
-    public void testIdentifyUnkownSaleAssociatesWithEmployeeWithExpectedTagsI() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                return null;
-            }
-        };
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(1, saleAssociates.size());
-        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
-    }
-
-    @Test
-    public void testIdentifyUnkownSaleAssociatesWithEmployeeWithExpectedTagsII() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                return new ArrayList<Long>();
-            }
-        };
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(1, saleAssociates.size());
-        assertEquals(selectedSaleAssociate, saleAssociates.get(0));
-    }
-
-    @Test
-    public void testIdentifyKownSaleAssociatesWithEmployeeWithExpectedTags() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Long saleAssociateKey = 1111L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.addSaleAssociateKey(saleAssociateKey);
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(location, consumerLocation);
-                assertEquals(demandRange, range);
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertNotNull(locations);
-                assertEquals(1, locations.size());
-                assertEquals(consumerLocation, locations.get(0));
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setKey(saleAssociateKey);
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                assertEquals(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager(), pm);
-                assertEquals(SaleAssociate.STORE_KEY, key);
-                assertEquals(storeKey, (Long) value);
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        List<SaleAssociate> saleAssociates = DemandProcessor.identifySaleAssociates(BaseSteps.getBaseOperations().getPersistenceManager(), consumerDemand, new Consumer());
-        assertNotNull(saleAssociates);
-        assertEquals(0, saleAssociates.size());
-    }
-
-    @Test
-    public void testProcessOneDemandIa() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        // consumerDemand.setQuantity(1L); // Default quantity
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final String saleAssociateId = "Ryan";
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setTwitterId(saleAssociateId);
-        selectedSaleAssociate.addCriterion("test");
-        selectedSaleAssociate.setPreferredConnection(Source.simulated);
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
-        assertTrue(sentText.contains("test"));
-
-        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(demandKey.toString()));
-    }
-
-    @Test
-    public void testProcessOneDemandIb() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                return null;
-            }
-        };
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        // consumerDemand.setQuantity(1L); // Default quantity
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-            @Override
-            public Demand updateDemand(PersistenceManager pm, Demand demand) {
-                assertEquals(demandKey, demand.getKey());
-                return demand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final String saleAssociateId = "Ryan";
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setTwitterId(saleAssociateId);
-        selectedSaleAssociate.addCriterion("test");
-        selectedSaleAssociate.setPreferredConnection(Source.simulated);
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
-        assertTrue(sentText.contains("test"));
-
-        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertEquals(LabelExtractor.get("dp_inform_consumer_about_no_store", Locale.ENGLISH), sentText);
-    }
-
-
-    @Test
-    public void testProcessOneDemandIc() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                return null;
-            }
-        };
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        // consumerDemand.setQuantity(1L); // Default quantity
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-            @Override
-            public Demand updateDemand(PersistenceManager pm, Demand demand) {
-                assertEquals(demandKey, demand.getKey());
-                return demand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final String saleAssociateId = "Ryan";
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setTwitterId(saleAssociateId);
-        selectedSaleAssociate.addCriterion("test");
-        selectedSaleAssociate.setPreferredConnection(Source.simulated);
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, false);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
-        assertTrue(sentText.contains("test"));
-    }
-
-    @Test
-    public void testProcessOneDemandII() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setQuantity(123L);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final String saleAssociateId = "Ryan";
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setTwitterId(saleAssociateId);
-        selectedSaleAssociate.addCriterion("test");
-        selectedSaleAssociate.setPreferredConnection(Source.simulated);
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        String sentText = BaseConnector.getCommunicationForRetroIndexInSimulatedMode(1);
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(consumerDemand.getKey().toString()));
-        assertTrue(sentText.contains("test"));
-
-        sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(demandKey.toString()));
-    }
-
-    @Test
-    @SuppressWarnings("serial")
-    public void testProcessOneDemandAlreadyProposed() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Long saleAssociateKey = 56478L;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-        consumerDemand.addSaleAssociateKey(saleAssociateKey);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        final String saleAssociateId = "Ryan";
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setKey(saleAssociateKey);
-        selectedSaleAssociate.setTwitterId(saleAssociateId);
-        selectedSaleAssociate.addCriterion("test");
-
-        DemandProcessor.saleAssociateOperations = new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        };
-
-        final Twitter mockTwitterAccount = (new Twitter() {
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                assertEquals(saleAssociateId.toString(), id);
-                assertTrue(text.contains(consumerDemand.getKey().toString()));
-                assertTrue(text.contains("test"));
-                return null;
-            }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test(expected=DataSourceException.class)
-    public void testProcessOneDemandWithTroubleAccessingDatabase() throws DataSourceException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                throw new DataSourceException("done in purpose");
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        BaseSteps.setMockProposalOperations(new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-        TwitterConnector.getTwetailerAccount();
-    }
-    ddd ****/
-
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessOneDemandWithTwitterTrouble() throws DataSourceException, InvalidIdentifierException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        /*
-        final Long saConsumerRecordKey = 76325L;
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertTrue(consumerKey == key || saConsumerRecordKey == key);
-                final Consumer consumer = new Consumer();
-                consumer.setKey(consumerKey);
-                consumer.setPreferredConnection(Source.simulated);
-                return consumer;
-            }
-        });
-        final Long storeKey = 98236L;
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public Store getStore(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(storeKey, key);
-                final Store store = new Store();
-                store.setKey(storeKey);
-                return store;
-            }
-        });
-         */
-        final Long consumerKey = 43432L;
-        final Long saConsumerRecordKey = 76325L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        consumer.setPreferredConnection(Source.simulated);
-        consumer.setPublishedDemandNb(36L);
-        consumer.setClosedDemandNb(3L);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertTrue(consumerKey == key || saConsumerRecordKey == key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-        consumerDemand.setSource(Source.simulated);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
-                assertEquals(locationKey, key);
-                return null;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setConsumerKey(saConsumerRecordKey);
-        selectedSaleAssociate.addCriterion("test", collator);
-
-        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        });
-
-        BaseSteps.setMockProposalOperations(new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        });
-
-        final Twitter mockTwitterAccount = (new Twitter() {
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                throw new TwitterException("done in purpose");
-            }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        BaseSteps.setMockSettingsOperations(new SettingsOperations());
-
-        CommandLineParser.loadLocalizedSettings(Locale.ENGLISH);
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testProcessOneDemandWithTwitterAndCatchAllTrouble() throws DataSourceException, InvalidIdentifierException {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Long saConsumerRecordKey = 76325L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        consumer.setPreferredConnection(Source.simulated);
-        consumer.setPublishedDemandNb(36L);
-        consumer.setClosedDemandNb(3L);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertTrue(consumerKey == key || saConsumerRecordKey == key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-        consumerDemand.setSource(Source.simulated);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
-                assertEquals(locationKey, key);
-                return null;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                List<Location> locations = new ArrayList<Location>();
-                locations.add(consumerLocation);
-                return locations;
-            }
-        });
-
-        final Long storeKey = 12345L;
-        final Store targetedStore = new Store();
-        targetedStore.setKey(storeKey);
-
-        BaseSteps.setMockStoreOperations(new StoreOperations() {
-            @Override
-            public List<Store> getStores(PersistenceManager pm, Map<String, Object> parameters, List<Location> locations, int limit) {
-                List<Store> stores = new ArrayList<Store>();
-                stores.add(targetedStore);
-                return stores;
-            }
-        });
-
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        final SaleAssociate selectedSaleAssociate = new SaleAssociate();
-        selectedSaleAssociate.setConsumerKey(saConsumerRecordKey);
-        selectedSaleAssociate.addCriterion("test", collator);
-
-        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
-            @Override
-            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String key, Object value, int limit) {
-                List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
-                saleAssociates.add(selectedSaleAssociate);
-                return saleAssociates;
-            }
-        });
-
-        BaseSteps.setMockProposalOperations(new ProposalOperations() {
-            @Override
-            public List<Proposal> getProposals(PersistenceManager pm, String attribute, Object value, int limit) {
-                return new ArrayList<Proposal>();
-            }
-        });
-
-        final Twitter mockTwitterAccount = (new Twitter() {
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                throw new TwitterException("done in purpose");
-            }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-
-        MailConnector.foolNextMessagePost(); // To generate a MessagingException while trying to send an e-mail
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        BaseSteps.setMockSettingsOperations(new SettingsOperations());
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test
-    public void testProcessOneDemandInIncorrectState() throws DataSourceException, InvalidIdentifierException {
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Long locationKey = 12345L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.invalid); // Not published
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test(expected=RuntimeException.class)
-    public void testProcessBatchWithFailure() throws DataSourceException {
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
-                throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
-            }
-        });
-
-        DemandProcessor.batchProcess();
-    }
-
-    @Test
-    public void testProcessBatchI() throws DataSourceException {
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
-                return new ArrayList<Demand>();
-            }
-        });
-
-        DemandProcessor.batchProcess();
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test
-    public void testProcessBatchII() throws Exception {
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
-                Demand demand = new Demand();
-                demand.setKey(12345L);
-                List<Demand> demands = new ArrayList<Demand>();
-                demands.add(demand);
-                return demands;
-            }
-        });
-
-        DemandProcessor.batchProcess();
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test
-    public void testProcessOneDemandForTheRobotI() throws Exception {
-        final Long robotKey = 12321L;
-        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
-            @Override
-            @SuppressWarnings("serial")
-            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
-                return new Settings() {
-                    @Override
-                    public Long getRobotSaleAssociateKey() {
-                        return robotKey;
-                    }
-                };
-            }
-        });
-
+    public void testIdentifySaleAssociatesIV() throws InvalidIdentifierException, DataSourceException {
+        //
+        // One location, one store, and one sale associate registered around the demand's one -- sale associate can serve the demand
+        // *** function called to setup the environment in testProcessIII() ***
+        //
+        Consumer owner = new Consumer();
         Demand demand = new Demand();
-        demand.addSaleAssociateKey(robotKey);
+        demand.setKey(demandKey);
+        demand.setLocationKey(locationKey);
+        demand.addCriterion(tag);
 
-        assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
+        identifyTwoSaleAssociates(2);
+
+        assertEquals(2, DemandProcessor.identifySaleAssociates(new MockPersistenceManager(), demand, owner).size());
+    }
+
+    public void identifyTwoSaleAssociates(final int saleAssociateNb) {
+        //
+        // Helper called by
+        // - testIdentifySaleAssociatesIV()
+        // - testProcessIV()
+        // - testProcessV()
+        //
+        BaseSteps.setMockLocationOperations(new LocationOperations() {
+            @Override
+            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(locationKey, key);
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                return resource;
+            }
+            @Override
+            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) throws DataSourceException {
+                assertEquals(locationKey, location.getKey());
+                Location resource = new Location();
+                resource.setKey(locationKey);
+                List<Location> resources = new ArrayList<Location>();
+                resources.add(resource);
+                return resources;
+            }
+        });
+
+        BaseSteps.setMockStoreOperations(new StoreOperations() {
+            @Override
+            public List<Store> getStores(PersistenceManager pm, Map<String, Object> queryParameters, List<Location> locations, int limit) throws DataSourceException {
+                assertEquals(locationKey, locations.get(0).getKey());
+                Store resource = new Store();
+                resource.setKey(storeKey);
+                List<Store> resources = new ArrayList<Store>();
+                resources.add(resource);
+                return resources;
+            }
+        });
+
+        BaseSteps.setMockSaleAssociateOperations(new SaleAssociateOperations() {
+            @Override
+            public List<SaleAssociate> getSaleAssociates(PersistenceManager pm, String attribute, Object value, int limit) throws DataSourceException {
+                assertEquals(SaleAssociate.STORE_KEY, attribute);
+                assertEquals(storeKey, (Long) value);
+                List<SaleAssociate> resources = new ArrayList<SaleAssociate>();
+                // One associate
+                SaleAssociate resource = new SaleAssociate();
+                resource.setKey(2 * saleAssociateKey);
+                resource.setStoreKey(storeKey); // Same store
+                resource.setConsumerKey(2 * consumerKey);
+                resource.addCriterion(tag, java.text.Collator.getInstance(Locale.ENGLISH));
+                resources.add(resource);
+                // Second associate
+                if (1 < saleAssociateNb) {
+                    resource = new SaleAssociate();
+                    resource.setKey(saleAssociateKey);
+                    resource.setStoreKey(storeKey); // Same store
+                    resource.setConsumerKey(consumerKey);
+                    resource.addCriterion("another-something", java.text.Collator.getInstance(Locale.ENGLISH));
+                    resource.addCriterion(tag, java.text.Collator.getInstance(Locale.ENGLISH));
+                    resources.add(resource);
+                }
+                // Third associate
+                if (2 < saleAssociateNb) {
+                    resource = new SaleAssociate();
+                    resource.setKey(2 * saleAssociateKey);
+                    resource.setStoreKey(storeKey); // Same store
+                    resource.setConsumerKey(3 * consumerKey);
+                    resource.addCriterion("another-something", java.text.Collator.getInstance(Locale.ENGLISH));
+                    resource.addCriterion(tag, java.text.Collator.getInstance(Locale.ENGLISH));
+                    resources.add(resource);
+                }
+                return resources;
+            }
+        });
     }
 
     @Test
-    public void testProcessOneDemandForTheRobotII() throws Exception {
-        final Long robotKey = 12321L;
+    public void testHasRobotAlreadyContactedI() throws DataSourceException {
         BaseSteps.setMockSettingsOperations(new SettingsOperations() {
             @Override
             public Settings getSettings(PersistenceManager pm) throws DataSourceException {
@@ -1698,546 +653,401 @@ public class TestDemandProcessor {
             }
         });
 
+        assertFalse(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), new Demand()));
+    }
+
+    @Test
+    public void testHasRobotAlreadyContactedII() throws DataSourceException {
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                Settings resource = new Settings();
+                resource.setRobotSaleAssociateKey(robotKey);
+                return resource;
+            }
+        });
+
+        assertFalse(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), new Demand()));
+    }
+
+    @Test
+    public void testHasRobotAlreadyContactedIII() throws DataSourceException {
         Demand demand = new Demand();
         demand.addSaleAssociateKey(robotKey);
+
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                Settings resource = new Settings();
+                resource.setRobotSaleAssociateKey(robotKey);
+                return resource;
+            }
+        });
 
         assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
     }
 
     @Test
-    public void testProcessOneDemandForTheRobotIII() throws Exception {
-        final Long robotKey = 12321L;
-        RobotResponder.setRobotSaleAssociateKey(robotKey);
-
-        Demand demand = new Demand();
-        demand.addSaleAssociateKey(robotKey);
-
-        assertTrue(DemandProcessor.hasRobotAlreadyContacted(new MockPersistenceManager(), demand));
-    }
-
-    @Test
-    @Ignore
-    public void testHasRobotAlreadyContactedI() throws Exception {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-        consumerDemand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-
+    public void testProcessI() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Try to process an already canceled demand
+        //
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
                 assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                return new ArrayList<Location>();
-            }
-        });
-
-        final Long robotKey = 12321L;
-        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
-            @Override
-            @SuppressWarnings("serial")
-            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
-                return new Settings() {
+                Demand resource = new Demand() {
                     @Override
-                    public Long getRobotSaleAssociateKey() {
-                        return robotKey;
+                    public Demand resetLists() {
+                        return super.resetLists();
                     }
-                };
-            }
-        });
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.simulated);
-                return rawCommand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        String sentText = BaseConnector.getLastCommunicationInSimulatedMode();
-        assertNotNull(sentText);
-        assertTrue(sentText.contains(demandKey.toString()));
-
-        List<TaskOptions> tasks = ((MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue()).getHistory();
-        assertNotNull(tasks);
-        assertNotSame(0, tasks.size());
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-    }
-
-    @Test
-    public void testHasRobotAlreadyContactedII() throws Exception {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long robotKey = 12321L;
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setState(State.published);
-        consumerDemand.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
-        consumerDemand.addSaleAssociateKey(robotKey);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
+                }.resetLists();
+                resource.setKey(demandKey);
+                resource.setState(State.cancelled);
+                return resource;
             }
             @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                return new ArrayList<Location>();
-            }
-        });
-
-        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
-            @Override
-            @SuppressWarnings("serial")
-            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
-                return new Settings() {
-                    @Override
-                    public Long getRobotSaleAssociateKey() {
-                        return robotKey;
-                    }
-                };
-            }
-        });
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-
-        DemandProcessor.process(demandKey, true);
-
-        assertTrue(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousPersistenceManager().isClosed());
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-        List<TaskOptions> tasks = ((MockQueue) BaseSteps.getBaseOperations().getQueue()).getHistory();
-        assertNotNull(tasks);
-        assertEquals(0, tasks.size());
-    }
-
-    @Test
-    public void testProcessWithNullAssociateKeyReference () throws DataSourceException, InvalidIdentifierException {
-        final Long demandKey = 43543L;
-        final Demand demand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                return null;
-            }
-        };
-        demand.setState(State.closed);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
                 return demand;
             }
         });
 
-        DemandProcessor.process(demandKey, true);
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
     }
 
     @Test
-    public void testProcessWithEmptyAssociateKeyArray () throws DataSourceException, InvalidIdentifierException {
-        final Long demandKey = 43543L;
-        final Demand demand = new Demand() {
+    public void testProcessII() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process the demand with #demo hash tag, but robot has already been contacted
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public List<Long> getSaleAssociateKeys() {
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.published);
+                resource.setOwnerKey(consumerKey);
+                resource.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+                resource.addSaleAssociateKey(robotKey);
+                return resource;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                return demand;
+            }
+        });
+
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                Settings resource = new Settings();
+                resource.setRobotSaleAssociateKey(robotKey);
+                return resource;
+            }
+        });
+
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
+
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testProcessIII() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process the demand with #demo hash tag, and robot has not yet been contacted
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.published);
+                resource.setOwnerKey(consumerKey);
+                resource.addHashTag(RobotResponder.ROBOT_DEMO_HASH_TAG);
+                return resource;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(robotKey, demand.getSaleAssociateKeys().get(0));
+                return demand;
+            }
+        });
+
+        BaseSteps.setMockSettingsOperations(new SettingsOperations() {
+            @Override
+            public Settings getSettings(PersistenceManager pm) throws DataSourceException {
+                Settings resource = new Settings();
+                resource.setRobotSaleAssociateKey(robotKey);
+                return resource;
+            }
+        });
+
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertEquals(consumerKey, key);
+                Consumer resource = new Consumer();
+                resource.setKey(consumerKey);
+                return resource;
+            }
+        });
+
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        assertEquals(1, queue.getHistory().size());
+    }
+
+    @Test
+    public void testProcessIV() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process a normal demand with the associate already contacted on two concerned
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.published);
+                resource.setOwnerKey(consumerKey);
+                resource.setLocationKey(locationKey);
+                resource.setInfluencerKey(influencerKey);
+                resource.addSaleAssociateKey(saleAssociateKey);
+                resource.addCriterion("what-s-in-your-mind");
+                resource.addCriterion(tag);
+                return resource;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(2, demand.getSaleAssociateKeys().size());
+                assertEquals(saleAssociateKey, demand.getSaleAssociateKeys().get(0)); // Was initially in the array
+                assertEquals(2 * saleAssociateKey, demand.getSaleAssociateKeys().get(1).longValue()); // Has been added
+                return demand;
+            }
+        });
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertTrue(consumerKey == key || 2 * consumerKey == key);
+                Consumer resource = new Consumer();
+                resource.setKey(key);
+                resource.setPreferredConnection(Source.api);
+                resource.setSaleAssociateKey(consumerKey == key ? saleAssociateKey : 2 * saleAssociateKey);
+                return resource;
+            }
+        });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations() {
+            @Override
+            public Influencer getInfluencer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(influencerKey, key);
+                Influencer resource = new Influencer();
+                resource.setConsumerKey(consumerKey);
+                return resource;
+            }
+        });
+
+        identifyTwoSaleAssociates(2);
+
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testProcessV() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process a normal demand with the associate not yet contacted, plus the influencer
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.published);
+                resource.setOwnerKey(consumerKey);
+                resource.setLocationKey(locationKey);
+                resource.setInfluencerKey(influencerKey);
+                resource.addCriterion("what-s-in-your-mind");
+                resource.addCriterion(tag);
+                return resource;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(2, demand.getSaleAssociateKeys().size());
+                assertEquals(2 * saleAssociateKey, demand.getSaleAssociateKeys().get(0).longValue()); // Has been added
+                assertEquals(saleAssociateKey, demand.getSaleAssociateKeys().get(1)); // Has been added as the influencer
+                return demand;
+            }
+        });
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertTrue(consumerKey == key || 2 * consumerKey == key);
+                Consumer resource = new Consumer();
+                resource.setKey(key);
+                resource.setSaleAssociateKey(consumerKey == key ? saleAssociateKey : 2 * saleAssociateKey);
+                resource.setPreferredConnection(Source.api);
+                return resource;
+            }
+        });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations() {
+            @Override
+            public Influencer getInfluencer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(influencerKey, key);
+                Influencer resource = new Influencer();
+                resource.setConsumerKey(consumerKey);
+                return resource;
+            }
+        });
+
+        identifyTwoSaleAssociates(1);
+
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testProcessVI() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process a normal demand with three associate not yet contacted, influencer being included
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.published);
+                resource.setOwnerKey(consumerKey);
+                resource.setLocationKey(locationKey);
+                resource.setInfluencerKey(influencerKey);
+                resource.addCriterion("what-s-in-your-mind");
+                resource.addCriterion(tag);
+                return resource;
+            }
+            @Override
+            public Demand updateDemand(PersistenceManager pm, Demand demand) {
+                assertEquals(demandKey, demand.getKey());
+                assertEquals(2, demand.getSaleAssociateKeys().size());
+                assertEquals(2 * saleAssociateKey, demand.getSaleAssociateKeys().get(0).longValue()); // Has been added
+                assertEquals(saleAssociateKey, demand.getSaleAssociateKeys().get(1)); // Has been added as the influencer
+                return demand;
+            }
+        });
+
+        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
+            @Override
+            public Consumer getConsumer(PersistenceManager pm, Long key) {
+                assertTrue(consumerKey == key || 2 * consumerKey == key || 3 * consumerKey == key);
+                Consumer resource = new Consumer();
+                resource.setKey(key);
+                resource.setSaleAssociateKey(consumerKey == key ? saleAssociateKey : 2 * consumerKey == key ? 2 * saleAssociateKey : 3 * saleAssociateKey);
+                resource.setPreferredConnection(Source.api);
+                return resource;
+            }
+        });
+
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations() {
+            @Override
+            public Influencer getInfluencer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+                assertEquals(influencerKey, key);
+                Influencer resource = new Influencer();
+                resource.setConsumerKey(consumerKey);
+                return resource;
+            }
+        });
+
+        identifyTwoSaleAssociates(3);
+
+        DemandProcessor.process(new MockPersistenceManager(), demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testProcessVII() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Test entry point for MaelzelServlet with the key of a demand which has been canceled
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public Demand getDemand(PersistenceManager pm, Long key, Long ownerKey) {
+                assertEquals(demandKey, key);
+                Demand resource = new Demand();
+                resource.setKey(demandKey);
+                resource.setState(State.cancelled);
+                return resource;
+            }
+        });
+
+        DemandProcessor.process(demandKey, Boolean.FALSE);
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testBatchProcessI() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process a normal demand with three associate not yet contacted, influencer being included
+        //
+        BaseSteps.setMockDemandOperations(new DemandOperations() {
+            @Override
+            public List<Long> getDemandKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
                 return new ArrayList<Long>();
             }
-        };
-        demand.setState(State.closed);
+        });
 
+        DemandProcessor.batchProcess();
+
+        assertNull(((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue());
+    }
+
+    @Test
+    public void testBatchProcessII() throws DataSourceException, InvalidIdentifierException {
+        //
+        // Process a normal demand with three associate not yet contacted, influencer being included
+        //
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return demand;
+            public List<Long> getDemandKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) throws DataSourceException {
+                List<Long> resources = new ArrayList<Long>();
+                resources.add(12345L);
+                resources.add(23456L);
+                resources.add(34567L);
+                return resources;
             }
         });
 
-        DemandProcessor.process(demandKey, true);
-    }
+        DemandProcessor.batchProcess();
 
-    @Test
-    public void testProcessWithFullAssociateKeyArray () throws DataSourceException, InvalidIdentifierException {
-        final Long demandKey = 43543L;
-        final Demand demand = new Demand() {
-            @Override
-            public List<Long> getSaleAssociateKeys() {
-                List<Long> data = new ArrayList<Long>();
-                data.add(34567L);
-                data.add(65768L);
-                return data;
-            }
-        };
-        demand.setState(State.closed);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return demand;
-            }
-        });
-
-        DemandProcessor.process(demandKey, true);
-    }
-
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testFailingToContactConsumerI() throws Exception {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setSource(Source.twitter);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                return new ArrayList<Location>();
-            }
-        });
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.twitter);
-                consumer.setTwitterId("fake"); // To be sure the communication uses the MockTwitter defined below
-                return rawCommand;
-            }
-        });
-
-        final Twitter mockTwitterAccount = (new Twitter() {
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                throw new TwitterException("Done in purpose");
-            }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-
-        DemandProcessor.process(demandKey, true);
-    }
-
-    @Test
-    @SuppressWarnings({ "serial", "deprecation" })
-    public void testFailingToContactConsumerII() throws Exception {
-        final Long locationKey = 12345L;
-        final Location consumerLocation = new Location();
-        consumerLocation.setKey(locationKey);
-
-        final Long consumerKey = 43432L;
-        final Consumer consumer = new Consumer();
-        consumer.setKey(consumerKey);
-        BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
-            @Override
-            public Consumer getConsumer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(consumerKey, key);
-                return consumer;
-            }
-        });
-
-        final Long demandKey = 67890L;
-        final Double demandRange = 25.75D;
-        final Demand consumerDemand = new Demand();
-        consumerDemand.setOwnerKey(consumerKey);
-        consumerDemand.addCriterion("test");
-        consumerDemand.setKey(demandKey);
-        consumerDemand.setLocationKey(locationKey);
-        consumerDemand.setRange(demandRange);
-        consumerDemand.setSource(Source.twitter);
-        consumerDemand.setState(State.published);
-
-        BaseSteps.setMockDemandOperations(new DemandOperations() {
-            @Override
-            public Demand getDemand(PersistenceManager pm, Long key, Long consumerKey) throws InvalidIdentifierException {
-                assertEquals(demandKey, key);
-                assertNull(consumerKey);
-                return consumerDemand;
-            }
-        });
-
-        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
-
-        BaseSteps.setMockLocationOperations(new LocationOperations() {
-            @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
-                assertEquals(locationKey, key);
-                return consumerLocation;
-            }
-            @Override
-            public List<Location> getLocations(PersistenceManager pm, Location location, Double range, String rangeUnit, boolean withStore, int limit) {
-                return new ArrayList<Location>();
-            }
-        });
-
-        assertNull(BaseConnector.getLastCommunicationInSimulatedMode());
-
-        BaseSteps.setMockRawCommandOperations(new RawCommandOperations() {
-            @Override
-            public RawCommand getRawCommand(PersistenceManager pm, Long key) {
-                RawCommand rawCommand = new RawCommand();
-                rawCommand.setSource(Source.twitter);
-                consumer.setTwitterId("fake"); // To be sure the communication uses the MockTwitter defined below
-                return rawCommand;
-            }
-        });
-
-        final Twitter mockTwitterAccount = (new Twitter() {
-            @Override
-            public DirectMessage sendDirectMessage(String id, String text) throws TwitterException {
-                throw new TwitterException("Done in purpose");
-            }
-        });
-        MockTwitterConnector.injectMockTwitterAccount(mockTwitterAccount);
-
-        MailConnector.foolNextMessagePost();
-
-        DemandProcessor.process(demandKey, true);
-    }
-
-    @Test
-    public void testFilterSaleAssociatesI() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-
-        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
-    }
-
-    @Test
-    public void testFilterSaleAssociatesII() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-        demand.addCriterion("1111");
-
-        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
-    }
-
-    @Test
-    public void testFilterSaleAssociatesIII() {
-        SaleAssociate associate = new SaleAssociate();
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.0");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addHashTag("aaaa");
-
-        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
-    }
-
-    @Test
-    public void testFilterSaleAssociatesIV() {
-        SaleAssociate associate = new SaleAssociate();
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.0");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addHashTag("aaaa");
-        demand.addHashTag("bbbb");
-
-        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
-    }
-
-    @Test
-    public void testFilterSaleAssociatesV() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.1");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-        demand.addHashTag("aaaa");
-
-        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
-    }
-
-    @Test
-    public void testFilterSaleAssociatesVI() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.1");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-        demand.addCriterion("1111");
-        demand.addHashTag("aaaa");
-
-        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
-    }
-
-    @Test
-    public void testFilterSaleAssociatesVII() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.1");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-        demand.addHashTag("aaaa");
-        demand.addHashTag("bbbb");
-
-        assertEquals(0, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).size());
-    }
-
-    @Test
-    public void testFilterSaleAssociatesVIII() {
-        Collator collator = LocaleValidator.getCollator(Locale.ENGLISH);
-
-        SaleAssociate associate = new SaleAssociate();
-        associate.addCriterion("1111", collator);
-        associate.addHashTag("bbbb");
-        associate.setScore("1:1.1");
-        List<SaleAssociate> associates = new ArrayList<SaleAssociate>();
-        associates.add(associate);
-
-        Demand demand = new Demand();
-        demand.addCriterion("0000");
-        demand.addCriterion("1111");
-        demand.addHashTag("aaaa");
-        demand.addHashTag("bbbb");
-
-        assertEquals(associate, DemandProcessor.filterSaleAssociates(associates, demand, new Consumer()).get(0));
+        assertEquals(3, ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue().getHistory().size());
     }
 }

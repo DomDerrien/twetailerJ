@@ -21,7 +21,7 @@ public class MockBaseOperations extends BaseOperations {
         return lastPersistenceManager;
     }
 
-    Queue lastQueue;
+    MockQueue lastQueue;
 
     @Override
     public Queue getQueue() {
@@ -29,7 +29,7 @@ public class MockBaseOperations extends BaseOperations {
         return lastQueue;
     }
 
-    public Queue getPreviousQueue() {
+    public MockQueue getPreviousQueue() {
         return lastQueue;
     }
 };

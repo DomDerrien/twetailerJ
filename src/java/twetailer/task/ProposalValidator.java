@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -52,7 +50,7 @@ public class ProposalValidator {
     private static Logger log = Logger.getLogger(ProposalValidator.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

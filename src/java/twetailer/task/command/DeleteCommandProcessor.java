@@ -31,9 +31,9 @@ public class DeleteCommandProcessor {
         Locale locale = consumer.getLocale();
 
         // Delete identified Demand
-        if (command.containsKey(Demand.REFERENCE)) {
+        if (command.containsKey(Demand.REFERENCE) || command.containsKey(Demand.DEMAND_KEY)) {
             String message = null;
-            Long entityKey = command.getLong(Demand.REFERENCE);
+            Long entityKey = command.containsKey(Demand.REFERENCE) ? command.getLong(Demand.REFERENCE) : command.getLong(Demand.DEMAND_KEY);
             try {
                 DemandSteps.deleteDemand(pm, entityKey, consumer.getKey());
                 // Echo back the specified demand

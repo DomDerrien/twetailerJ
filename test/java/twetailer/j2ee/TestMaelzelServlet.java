@@ -534,8 +534,8 @@ public class TestMaelzelServlet {
         // Inject DemandOperations mock
         BaseSteps.setMockDemandOperations(new DemandOperations() {
             @Override
-            public List<Demand> getDemands(PersistenceManager pm, Map<String, Object> parameters, int limit) {
-                return new ArrayList<Demand>();
+            public List<Long> getDemandKeys(PersistenceManager pm, Map<String, Object> parameters, int limit) {
+                return new ArrayList<Long>();
             }
         });
 
@@ -2229,7 +2229,7 @@ public class TestMaelzelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(300 / 20, queue.getHistory().size());
     }
 
@@ -2273,7 +2273,7 @@ public class TestMaelzelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(0, queue.getHistory().size());
     }
 
@@ -2317,7 +2317,7 @@ public class TestMaelzelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1, queue.getHistory().size());
     }
 
@@ -2361,7 +2361,7 @@ public class TestMaelzelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(100 / 20, queue.getHistory().size());
     }
 
@@ -2405,7 +2405,7 @@ public class TestMaelzelServlet {
         servlet.doGet(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        MockQueue queue = (MockQueue) ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
+        MockQueue queue = ((MockBaseOperations) BaseSteps.getBaseOperations()).getPreviousQueue();
         assertEquals(1000 / 20, queue.getHistory().size());
     }
 

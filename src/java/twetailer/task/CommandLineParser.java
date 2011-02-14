@@ -108,7 +108,7 @@ public class CommandLineParser {
             preparePattern(prefixes, patterns, Prefix.metadata, "\\s*\\{[\\s\\'\\\"\\w\\:\\,\\-\\+\\.]*\\}\\s*", "");
             preparePattern(prefixes, patterns, Prefix.name, "[^\\:]+", separatorFromOtherPrefix);
             preparePattern(prefixes, patterns, Prefix.phoneNumber, "[^\\:]+", separatorFromOtherPrefix);
-            preparePattern(prefixes, patterns, Prefix.pointOfView, "\\s*\\w+", separatorFromNonAlpha);
+            preparePattern(prefixes, patterns, Prefix.pointOfView, "\\s*(\\w|\\_)+", separatorFromNonAlpha);
             preparePattern(prefixes, patterns, Prefix.price, "[ \\$€£¥\\d\\.,]+", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.proposal, "\\s*(?:\\d+|\\*)", separatorFromNonDigit);
             preparePattern(prefixes, patterns, Prefix.quantity, "[\\s\\d\\.,]+", separatorFromNonDigit);
@@ -480,7 +480,7 @@ public class CommandLineParser {
      * @param excerpt part to extract
      * @return cleaned-up stream
      */
-    private static StringBuilder extractPart(StringBuilder master, String excerpt) {
+    protected static StringBuilder extractPart(StringBuilder master, String excerpt) {
         int start = master.indexOf(excerpt);
         int end = start + excerpt.length();
         return master.replace(start, end, "");
@@ -491,7 +491,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return valid command
      */
-    private static String getAction(String pattern) {
+    protected static String getAction(String pattern) {
         String command;
         if (pattern.charAt(0) == '!') {
             command = pattern.substring(1);
@@ -511,7 +511,7 @@ public class CommandLineParser {
      * @throws ParseException if the date format is invalid
      */
     @SuppressWarnings("deprecation")
-    private static String getDate(String pattern) throws ParseException {
+    protected static String getDate(String pattern) throws ParseException {
         String value = getValue(pattern);
         int year, month, day, hour, minute, second;
         int timeSeparator = value.indexOf('T');
@@ -593,7 +593,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return valid command
      */
-    private static String getHashTag(String pattern) {
+    protected static String getHashTag(String pattern) {
         String command = pattern;
         if (pattern.charAt(0) == '+') {
             command = command.substring(1);
@@ -616,7 +616,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return valid distance unit
      */
-    private static String getRangeUnit(String pattern) {
+    protected static String getRangeUnit(String pattern) {
         int indexSpace = pattern.lastIndexOf(' ');
         if (indexSpace != -1 && !Character.isDigit(pattern.charAt(indexSpace + 1))) {
             return pattern.substring(indexSpace + 1);
@@ -637,7 +637,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return valid country cod
      */
-    private static String getCountryCode(String pattern) {
+    protected static String getCountryCode(String pattern) {
         // Extract the value
         int endOfPrefix = pattern.indexOf(PREFIX_SEPARATOR) + 1;
         pattern = pattern.substring(endOfPrefix).trim();
@@ -668,7 +668,7 @@ public class CommandLineParser {
      * @param pattern Country code, used to validate the postal code
      * @return valid postal code
      */
-    private static String getPostalCode(String pattern, String countryCode) {
+    protected static String getPostalCode(String pattern, String countryCode) {
         // Extract the value
         int endOfPrefix = pattern.indexOf(PREFIX_SEPARATOR) + 1;
         pattern = pattern.substring(endOfPrefix);
@@ -686,7 +686,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return valid number representation, ready to be transformed
      */
-    private static String getCleanNumber(String pattern) {
+    protected static String getCleanNumber(String pattern) {
         StringBuilder value = new StringBuilder(getValue(pattern));
         int idx = value.length();
         while (0 < idx) {
@@ -709,7 +709,7 @@ public class CommandLineParser {
      *
      * @throws ParseException if the parsing fails
      */
-    private static double getDoubleValue(String pattern, Locale locale) throws ParseException {
+    protected static double getDoubleValue(String pattern, Locale locale) throws ParseException {
         NumberFormat extractor = DecimalFormat.getInstance(locale);
         return extractor.parse(getCleanNumber(pattern)).doubleValue();
     }
@@ -723,7 +723,7 @@ public class CommandLineParser {
      *
      * @throws ParseException if the parsing fails
      */
-    private static long getLongValue(String pattern, Locale locale) throws ParseException {
+    protected static long getLongValue(String pattern, Locale locale) throws ParseException {
         if (pattern.contains("*")) {
             return -1L;
         }
@@ -740,7 +740,7 @@ public class CommandLineParser {
      *
      * @throws ParseException if the parsing fails
      */
-    private static long getScoreValue(String pattern, Locale locale) throws ParseException {
+    protected static long getScoreValue(String pattern, Locale locale) throws ParseException {
         String value = getValue(pattern);
         if (":(".equals(value) || ":-(".equals(value)) { return 1; }
         if (":|".equals(value) || ":-|".equals(value)) { return 3; }
@@ -759,7 +759,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return any value
      */
-    private static String getValue(String pattern) {
+    protected static String getValue(String pattern) {
         return pattern.substring(pattern.indexOf(PREFIX_SEPARATOR) + 1).trim();
     }
 
@@ -769,7 +769,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return tags
      */
-    private static String[] getTags(String pattern, Map<String, Pattern> patterns) {
+    protected static String[] getTags(String pattern, Map<String, Pattern> patterns) {
         String keywords = pattern;
         // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of tags: or -tags:)
         if (patterns == null) { // && pattern.indexOf(PREFIX_SEPARATOR) != -1) {

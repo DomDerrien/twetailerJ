@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -30,7 +28,7 @@ public class MailComposerServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MailComposerServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

@@ -11,8 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -57,7 +55,7 @@ public class DemandValidator {
     private static Logger log = Logger.getLogger(DemandValidator.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -102,7 +100,7 @@ public class DemandValidator {
                 RequestValidator.filterHashTags(pm, consumer, demand, "demand");
 
                 // Check each fields
-                String message = RequestValidator.checkWishFields(pm, consumer, demand, "demand");
+                String message = RequestValidator.checkRequestFields(pm, consumer, demand, "demand");
 
                 RawCommand rawCommand = demand.getRawCommandId() == null ? new RawCommand(demand.getSource()) : BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
                 if (message != null) {

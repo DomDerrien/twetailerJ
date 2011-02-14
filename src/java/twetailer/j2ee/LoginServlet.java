@@ -10,8 +10,6 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -48,7 +46,7 @@ public class LoginServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(LoginServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

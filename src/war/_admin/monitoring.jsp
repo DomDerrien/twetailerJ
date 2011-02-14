@@ -280,7 +280,7 @@
                             <td><input dojoType="dijit.form.TextBox" id="consumer.phoneNb" name="phoneNb" type="text" /></td>
                         </tr>
                         <tr>
-                            <td><label for="consumer.preferredConnection">Phone number:</label></td>
+                            <td><label for="consumer.preferredConnection">Preferred connection:</label></td>
                             <td>
                                 <select
                                     dojoType="dijit.form.Select"

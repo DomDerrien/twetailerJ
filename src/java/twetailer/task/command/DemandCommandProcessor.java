@@ -25,7 +25,7 @@ public class DemandCommandProcessor {
         Locale locale = consumer.getLocale();
         String message = null;
 
-        if (!command.containsKey(Demand.REFERENCE)) {
+        if (!command.containsKey(Demand.REFERENCE) && !command.containsKey(Demand.DEMAND_KEY)) {
             // Create new demand
 
             DemandSteps.createDemand(pm, command, consumer);
@@ -33,7 +33,7 @@ public class DemandCommandProcessor {
             // Creation confirmation message will be sent by the DemandValidator being given it's a valid demand
         }
         else {
-            Long demandKey = command.getLong(Demand.REFERENCE);
+            Long demandKey = command.containsKey(Demand.REFERENCE) ? command.getLong(Demand.REFERENCE) : command.getLong(Demand.DEMAND_KEY);
             try {
                 // Update specified demand
                 DemandSteps.updateDemand(pm, rawCommand, demandKey, command, consumer.getKey(), false);

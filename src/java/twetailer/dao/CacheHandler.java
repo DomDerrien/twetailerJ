@@ -3,8 +3,6 @@ package twetailer.dao;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.cache.Cache;
 import javax.cache.CacheException;
 import javax.cache.CacheFactory;
@@ -20,7 +18,7 @@ public class CacheHandler<T extends Entity> {
     private static Logger log = Logger.getLogger(CacheHandler.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

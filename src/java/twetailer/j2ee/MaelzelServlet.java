@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
-import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
@@ -74,7 +73,7 @@ public class MaelzelServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(MaelzelServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

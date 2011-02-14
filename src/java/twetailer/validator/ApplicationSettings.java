@@ -5,8 +5,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 /**
  * Read the application settings from a local properties file.
  *
@@ -17,7 +15,7 @@ public class ApplicationSettings {
     private static Logger log = Logger.getLogger(ApplicationSettings.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

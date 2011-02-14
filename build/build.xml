@@ -355,6 +355,12 @@
         <classpath refid="cobertura.classpath" />
     </taskdef>
 
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="deps/lib/cobertura/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
     <path id="jsunit.classpath">
         <fileset dir="bin/jsunit/java/bin">
             <include name="jsunit.jar" />
@@ -1051,8 +1057,13 @@
         <delete file="${temp.dir}/cobertura.ser" />
         <delete dir="${temp.dir}/instrumented" />
 
+        <antcall target="step-cobertura-instrument-all" />
+        <antcall target="step-cobertura-instrument-testcase" />
+    </target>
+
+    <target name="step-cobertura-instrument-all" unless="testcase">
         <!--Instrument the application classes  -->
-        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="${temp.dir}/instrumented">
+        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="${temp.dir}/instrumented" >
             <!-- Ignore log4j -->
             <ignore regex="org.apache.log4j.*" />
             <ignore regex="org.apache.commons.logging.*" />
@@ -1063,6 +1074,22 @@
                 <exclude name="**/openid/*.class" />
                 <exclude name="**/Test*.class" />
                 <exclude name="**/Mock*.class" />
+            </fileset>
+        </cobertura-instrument>
+    </target>
+
+    <target name="step-cobertura-instrument-testcase" if="testcase">
+        <!--Instrument one application class  -->
+        <propertyregex property="temp1" input="${testcase}" regexp="\." replace="/" global="true" />
+        <propertyregex property="temp2" input="${temp1}" regexp="Test" replace="" global="true" />
+        <cobertura-instrument datafile="${temp.dir}/cobertura.ser" todir="${temp.dir}/instrumented">
+            <!-- Ignore log4j -->
+            <ignore regex="org.apache.log4j.*" />
+            <ignore regex="org.apache.commons.logging.*" />
+
+            <fileset dir="src/war/WEB-INF/classes">
+                <!-- Instrument all the application classes -->
+                <include name="${temp2}.class" />
             </fileset>
         </cobertura-instrument>
     </target>
@@ -1097,12 +1124,30 @@
             </batchtest>
         </junit>
 
+        <antcall target="step-junit-report-all" />
+        <antcall target="step-junit-report-testcase" />
+    </target>
+
+    <target name="step-junit-report-all" unless="testcase">
         <junitreport todir="docs/test-reports/junit-xml">
             <fileset dir="docs/test-reports/junit-xml">
                 <include name="TEST-*.xml" />
             </fileset>
             <report format="frames" todir="docs/test-reports/junit-html" />
         </junitreport>
+    </target>
+
+    <target name="step-junit-report-testcase" if="testcase">
+        <!-- No report needed for only one test case!
+        <propertyregex property="temp1" input="${testcase}" regexp="\." replace="/" global="true" />
+        <propertyregex property="temp2" input="${temp1}" regexp="Test" replace="" global="true" />
+        <junitreport todir="docs/test-reports/junit-xml">
+            <fileset dir="docs/test-reports/junit-xml">
+                <include name="TEST-${temp2}.xml" />
+            </fileset>
+            <report format="frames" todir="docs/test-reports/junit-html" />
+        </junitreport>
+        -->
     </target>
 
     <target name="step-cobertura-xml-report" unless="no.cobertura.xml.reports">

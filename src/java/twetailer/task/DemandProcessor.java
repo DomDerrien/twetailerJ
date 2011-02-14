@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
-import javamocks.util.logging.MockLogger;
 
 import javax.jdo.PersistenceManager;
 import javax.mail.MessagingException;
@@ -36,7 +35,6 @@ import twetailer.dto.Location;
 import twetailer.dto.SaleAssociate;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
-import twetailer.task.step.LocationSteps;
 import twetailer.validator.CommandSettings;
 import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.State;
@@ -67,7 +65,7 @@ public class DemandProcessor {
     private static Logger log = Logger.getLogger(DemandProcessor.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -94,15 +92,15 @@ public class DemandProcessor {
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("=" + Command.STATE, State.published.toString());
             parameters.put("<" + Entity.MODIFICATION_DATE, past.getTime());
-            List<Demand> demands = BaseSteps.getDemandOperations().getDemands(pm, parameters, 0);
+            List<Long> demandKeys = BaseSteps.getDemandOperations().getDemandKeys(pm, parameters, 0);
             // Add the corresponding task in the queue
-            if (0 < demands.size()) {
+            if (0 < demandKeys.size()) {
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
-                for (Demand demand: demands) {
+                for (Long key: demandKeys) {
                     // Create a task for that demand
                     queue.add(
                             withUrl("/_tasks/processPublishedDemand").
-                                param(Demand.KEY, demand.getKey().toString()).
+                                param(Demand.KEY, key.toString()).
                                 method(Method.GET)
                     );
                 }
@@ -144,7 +142,6 @@ public class DemandProcessor {
      */
     public static void process(PersistenceManager pm, Long demandKey, boolean cronJob) throws InvalidIdentifierException, DataSourceException {
         Demand demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
-        int initialNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
         if (CommandSettings.State.published.equals(demand.getState())) {
             Consumer owner = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
 
@@ -163,12 +160,14 @@ public class DemandProcessor {
                 }
             }
             else {
-                boolean isInfluencerSelected = false;
+                boolean isInfluencerIdentifiedAsAMatchingSaleAssociate = false;
                 Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
                 // Try to contact regular sale associates
                 List<SaleAssociate> saleAssociates = identifySaleAssociates(pm, demand, owner);
                 for(SaleAssociate saleAssociate: saleAssociates) {
-                    isInfluencerSelected = isInfluencerSelected || saleAssociate.getConsumerKey().equals(influencer.getConsumerKey());
+                    if (!isInfluencerIdentifiedAsAMatchingSaleAssociate) {
+                        isInfluencerIdentifiedAsAMatchingSaleAssociate = saleAssociate.getConsumerKey().equals(influencer.getConsumerKey());
+                    }
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, saleAssociate.getConsumerKey());
                     // Communicate with the sale associate
                     notifyAvailability(demand, owner, saConsumerRecord, influencer);
@@ -176,7 +175,8 @@ public class DemandProcessor {
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(saleAssociate.getKey());
                 }
-                if (!isInfluencerSelected && influencer.getConsumerKey() != null) {
+                // Inform the influencer even if he was not already concerned by the demand
+                if (!isInfluencerIdentifiedAsAMatchingSaleAssociate) {
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, influencer.getConsumerKey());
                     if (!demand.getSaleAssociateKeys().contains(saConsumerRecord.getSaleAssociateKey())) {
                         // Communicate with the sale associate
@@ -190,77 +190,6 @@ public class DemandProcessor {
 
             // Push the updated demand into the data store
             demand = BaseSteps.getDemandOperations().updateDemand(pm, demand);
-
-            /***********
-             * TODO: re-enable this part when the corresponding message is updated
-             *
-            // Notify the consumer about how many sale associates have been successfully contacted this time
-            boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
-            if (!isNewDemand && !Source.api.equals(demand.getSource())) {
-                Locale locale = owner.getLocale();
-                String subject = null;
-                if (Source.mail.equals(demand.getSource())) {
-                    RawCommand rawCommand = BaseSteps.getRawCommandOperations().getRawCommand(pm, demand.getRawCommandId());
-                    subject = rawCommand.getSubject();
-                }
-                if (subject == null) {
-                    MessageGenerator msgGen = new MessageGenerator(demand.getSource(), demand.getHashTags(), locale);
-                    msgGen.put("demand>key", demand.getKey());
-                    subject = msgGen.getAlternateMessage(MessageId.messageSubject, msgGen.getParameters());
-                }
-                subject = MailConnector.prepareSubjectAsResponse(subject, locale);
-                try {
-                    int newNumberOfSaleAssociatesContacted = demand.getSaleAssociateKeys() == null ? 0 : demand.getSaleAssociateKeys().size();
-                    if (newNumberOfSaleAssociatesContacted != initialNumberOfSaleAssociatesContacted) {
-                        String demandRef = LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demand.getKey() }, locale);
-                        communicateToConsumer(
-                                demand.getSource(),
-                                subject,
-                                owner,
-                                new String[] {
-                                    LabelExtractor.get(
-                                        "dp_inform_consumer_about_new_sale_associates_contacted",
-                                        new Object[] {
-                                            demandRef,
-                                            newNumberOfSaleAssociatesContacted,
-                                            newNumberOfSaleAssociatesContacted - initialNumberOfSaleAssociatesContacted
-                                        },
-                                        locale
-                                    )
-                                }
-                        );
-                    }
-                    else if (cronJob && initialNumberOfSaleAssociatesContacted == 0) {
-                        communicateToConsumer(
-                                demand.getSource(),
-                                subject,
-                                owner,
-                                new String[] {
-                                    LabelExtractor.get(
-                                        "dp_inform_consumer_about_no_store",
-                                        locale
-                                    )
-                                }
-                        );
-                    }
-                }
-                catch (ClientException ex) {
-                    // Send an e-mail to out catch-all list
-                    MockOutputStream stackTrace = new MockOutputStream();
-                    ex.printStackTrace(new PrintStream(stackTrace));
-                    try {
-                        CatchAllMailHandlerServlet.composeAndPostMailMessage(
-                                "error-notifier",
-                                "Unexpected error caught in " + DemandProcessor.class.getName(),
-                                "Path info: /processPublishedDemand?key=" + demand.getKey().toString() + "\n\n--\n\nConsumer: " + owner.getName() + " (" + owner.getKey() + ")\n\n--\n\n" + stackTrace.toString()
-                        );
-                    }
-                    catch (MessagingException e) {
-                        getLogger().severe("Failure while trying to report an unexpected by e-mail!");
-                    }
-                }
-            }
-            ***/
         }
     }
 
@@ -269,8 +198,7 @@ public class DemandProcessor {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demand Consumer's demand to evaluate
-     * @return <code>true</code> if the robot key is among the list of contacted sale associate keys or
-     *         the robot key is not in the Settings; <code>false</code> otherwise.
+     * @return <code>true</code> if the robot key is among the list of contacted sale associate keys; <code>false</code> otherwise.
      *
      * @throws DataSourceException If the attempt to read the robot key from the data store fails
      */
@@ -279,7 +207,7 @@ public class DemandProcessor {
         if (robotSaleAssociateKey != null) {
             return demand.getSaleAssociateKeys().contains(robotSaleAssociateKey);
         }
-        return true;
+        return false;
     }
 
     /**
@@ -296,7 +224,7 @@ public class DemandProcessor {
     protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand, Consumer owner) throws InvalidIdentifierException, DataSourceException {
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
         // Get the stores around the demanded location
-        Location location = LocationSteps.getLocation(pm, demand);
+        Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
         List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), true, 0);
         if (locations.size() == 0) {
             return selectedSaleAssociates;

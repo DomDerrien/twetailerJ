@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +59,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(ThirdPartyEntryPointServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -247,7 +246,13 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
             throw new IllegalArgumentException("Invalid sender email address");
         }
-        InternetAddress senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
+        InternetAddress senderAddress;
+        try {
+            senderAddress = MailConnector.prepareInternetAddress(StringUtils.JAVA_UTF8_CHARSET, email, email);
+        }
+        catch (AddressException ex) {
+            throw new ClientException("Invalid email address", ex);
+        }
         Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
         if (consumer.getAutomaticLocaleUpdate()) {
             String language = in.getString(Consumer.LANGUAGE);

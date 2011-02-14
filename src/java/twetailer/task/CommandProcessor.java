@@ -69,7 +69,7 @@ public class CommandProcessor {
      * @return String with the date attributes as: YYYY-MM-DD or YYYY-MM-DD'T'HH:MM:SS
      */
     @SuppressWarnings("deprecation")
-    public static String serializeDate(Date date) {
+    protected static String serializeDate(Date date) {
         if (date.getHours() == 23 && date.getMinutes() == 59 && date.getSeconds() == 59) {
             return DateUtils.dateToYMD(date);
         }
@@ -84,10 +84,12 @@ public class CommandProcessor {
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
+     *
+     * @deprecated
      */
     public static String generateTweet(Demand demand, Location location, boolean anonymized, Locale locale) {
         String labelKeyPrefix = ""; // "golf";
-        ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
+        ResourceFileId resId = ResourceFileId.master; // labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
         final String space = Command.SPACE;
         // Get the labels for each demand attributes
@@ -143,10 +145,12 @@ public class CommandProcessor {
      * @param anonymized Should be <code>true</code> if specific identifiers should stay hidden
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
+     *
+     * @deprecated
      */
     public static String generateTweet(Proposal proposal, Store store, boolean anonymized, Locale locale) {
         String labelKeyPrefix = ""; // "golf";
-        ResourceFileId resId = labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
+        ResourceFileId resId = ResourceFileId.master; // labelKeyPrefix.length() == 0 ? ResourceFileId.master : ResourceFileId.fourth;
 
         final String space = Command.SPACE;
         // Get the labels for each proposal attributes
@@ -201,6 +205,8 @@ public class CommandProcessor {
      * @param location Place where the store is located
      * @param locale Indicator for the localized resource bundle to use
      * @return Serialized command
+     *
+     * @deprecated
      */
     public static String generateTweet(Store store, Location location, Locale locale) {
         final String space = Command.SPACE;
@@ -349,7 +355,6 @@ public class CommandProcessor {
      * @throws ReservedOperationException If no account is returned
      */
     public static SaleAssociate retrieveSaleAssociate(PersistenceManager pm, Consumer consumer, Action action, String entityClassName) throws DataSourceException, ReservedOperationException {
-        // TODO: Use MemCache to limit the number of {consumerKey, saleAssociateKey} association lookup
         try {
             Long saleAssociateKey = consumer.getSaleAssociateKey();
             return BaseSteps.getSaleAssociateOperations().getSaleAssociate(pm, saleAssociateKey);

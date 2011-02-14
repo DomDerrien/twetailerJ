@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -39,7 +37,7 @@ public class RequestValidator {
     private static Logger log = Logger.getLogger(RequestValidator.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -54,7 +52,106 @@ public class RequestValidator {
 
     private static final Long oneYear = 365 * 24 * 60 * 60 * 1000L;
 
-    protected static String checkWishFields(PersistenceManager pm, Consumer consumer, Request request, String messageBaseId) {
+    public enum ValidationStatus {
+        ok,
+        noTagNorHashTag,
+        noDueDate,
+        dueDateInPast,
+        dueDateTooFarInFuture,
+        noExpirationDate,
+        expirationDateInPast,
+        expirationDateTooFarInFuture,
+        dueDateBeforeExpiration,
+        rangeTooSmall,
+        rangeTooLarge,
+        noQuantity,
+        noLocationKey,
+        invalidLocation,
+        invalidLocationKey,
+        locationUpdateFailed
+    }
+
+    protected static ValidationStatus checkRequestFields(PersistenceManager pm, Consumer consumer, Request request) {
+        Date nowDate = DateUtils.getNowDate();
+        Long nowTime = nowDate.getTime() - 60 * 1000L; // Minus 1 minute
+
+        // getLogger().finest("========================\n now: " + nowTime + "\n exp: " + request.getExpirationDate() + "\n due: " + request.getDueDate() + "\n========================");
+
+        if ((request.getCriteria() == null || request.getCriteria().size() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
+            return ValidationStatus.noTagNorHashTag;
+        }
+        if (request.getDueDate() == null) {
+            return ValidationStatus.noDueDate;
+        }
+        if (request.getDueDate().getTime() < nowTime) {
+            return ValidationStatus.dueDateInPast;
+        }
+        if (nowTime + oneYear < request.getDueDate().getTime()) {
+            return ValidationStatus.dueDateTooFarInFuture;
+        }
+        if (request.getExpirationDate() == null) {
+            return ValidationStatus.noExpirationDate;
+        }
+        if (request.getExpirationDate().getTime() < nowTime) {
+            return ValidationStatus.expirationDateInPast;
+        }
+        if (nowTime + oneYear < request.getExpirationDate().getTime()) {
+            return ValidationStatus.expirationDateTooFarInFuture;
+        }
+        if (request.getDueDate().getTime() < request.getExpirationDate().getTime()) {
+            return ValidationStatus.dueDateBeforeExpiration;
+        }
+        if (LocaleValidator.KILOMETER_UNIT.equals(request.getRangeUnit()) && (request.getRange() == null || request.getRange().doubleValue() < RANGE_KM_MIN.doubleValue())) {
+            return ValidationStatus.rangeTooSmall;
+        }
+        if (/* LocaleValidator.MILE_UNIT.equals(wish.getRangeUnit()) && */ (request.getRange() == null || request.getRange().doubleValue() < RANGE_MI_MIN.doubleValue())) {
+            return ValidationStatus.rangeTooSmall;
+        }
+        if (LocaleValidator.MILE_UNIT.equals(request.getRangeUnit()) && request.getRange().doubleValue() > RANGE_MI_MAX.doubleValue()) {
+            return ValidationStatus.rangeTooLarge;
+        }
+        if (/* LocaleValidator.KILOMETER_UNIT.equals(wish.getRangeUnit()) && */ request.getRange().doubleValue() > RANGE_KM_MAX.doubleValue()) {
+            return ValidationStatus.rangeTooLarge;
+        }
+        if (request.getQuantity() == null || request.getQuantity() == 0L) {
+            return ValidationStatus.noQuantity;
+        }
+        Long locationKey = request.getLocationKey();
+        if (locationKey == null || locationKey == 0L) {
+            return ValidationStatus.noLocationKey;
+        }
+        try {
+            Location location = LocationSteps.getLocation(pm, locationKey);
+            if (LocaleValidator.DEFAULT_POSTAL_CODE_CA.equals(location.getPostalCode()) ||
+                LocaleValidator.DEFAULT_POSTAL_CODE_US.equals(location.getPostalCode()) ||
+                LocaleValidator.DEFAULT_POSTAL_CODE_ALT_US.equals(location.getPostalCode())
+            ) {
+                return ValidationStatus.invalidLocation;
+            }
+            if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+                location = LocaleValidator.getGeoCoordinates(location);
+                if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
+                    return ValidationStatus.invalidLocation;
+                }
+                location = BaseSteps.getLocationOperations().updateLocation(pm, location);
+            }
+            // Save the location key as the latest reference used by the consumer
+            if (consumer.getAutomaticLocaleUpdate() && !location.getKey().equals(consumer.getLocationKey())) {
+                consumer.setLocationKey(location.getKey());
+                BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
+            }
+        }
+        catch (InvalidIdentifierException ex) {
+            return ValidationStatus.invalidLocationKey;
+        }
+        catch (DataSourceException ex) {
+            return ValidationStatus.locationUpdateFailed;
+        }
+
+        return ValidationStatus.ok;
+    }
+
+    protected static String checkRequestFields(PersistenceManager pm, Consumer consumer, Request request, String messageBaseId) {
         Date nowDate = DateUtils.getNowDate();
         Long nowTime = nowDate.getTime() - 60 * 1000L; // Minus 1 minute
         Locale locale = consumer.getLocale();

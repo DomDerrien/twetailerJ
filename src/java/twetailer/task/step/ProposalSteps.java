@@ -11,8 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
@@ -54,7 +52,7 @@ public class ProposalSteps extends BaseSteps {
     private static Logger log = Logger.getLogger(ProposalSteps.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

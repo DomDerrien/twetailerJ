@@ -18,6 +18,7 @@ import javamocks.util.logging.MockLogger;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.MockServletInputStream;
@@ -638,7 +639,7 @@ public class TestMailConnector {
     }
 
     @Test
-    public void testPrepareInternetAddressI() {
+    public void testPrepareInternetAddressI() throws AddressException {
         String email = "unit@test.ca";
 
         InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", null, email);
@@ -648,7 +649,7 @@ public class TestMailConnector {
     }
 
     @Test
-    public void testPrepareInternetAddressII() {
+    public void testPrepareInternetAddressII() throws AddressException {
         String email = "unit@test.ca";
 
         InternetAddress test = MailConnector.prepareInternetAddress("UTF-8", "", email);
@@ -658,7 +659,7 @@ public class TestMailConnector {
     }
 
     @Test
-    public void testPrepareInternetAddressIII() {
+    public void testPrepareInternetAddressIII() throws AddressException {
         String name = "test";
         String email = "unit@test.ca";
 
@@ -670,7 +671,7 @@ public class TestMailConnector {
 
     @Test
     @Ignore
-    public void testPrepareInternetAddressIV() {
+    public void testPrepareInternetAddressIV() throws AddressException {
         String name = "Last with a UTF-8 sequence: ễ";
         byte[] nameBytes = name.getBytes();
         byte[] corruptedNameBytes = Arrays.copyOf(nameBytes, nameBytes.length + 1);
@@ -991,7 +992,9 @@ public class TestMailConnector {
     @Test(expected=CommunicationException.class)
     public void testSendCopyToAdminsI() throws CommunicationException {
         MailConnector.foolNextMessagePost();
-        MailConnector.sendCopyToAdmins(Source.mail, new Consumer(), "fooled message", null);
+        Consumer resource = new Consumer();
+        resource.setEmail("a@a.aa");
+        MailConnector.sendCopyToAdmins(Source.mail, resource, "fooled message", null);
     }
 
     @Test

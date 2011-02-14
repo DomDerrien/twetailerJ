@@ -42,9 +42,9 @@ public class CloseCommandProcessor {
         Locale locale = consumer.getLocale();
 
         // Close identified Demand
-        if (command.containsKey(Demand.REFERENCE)) {
+        if (command.containsKey(Demand.REFERENCE) || command.containsKey(Demand.DEMAND_KEY)) {
             String message = null;
-            Long entityKey = command.getLong(Demand.REFERENCE);
+            Long entityKey = command.containsKey(Demand.REFERENCE) ? command.getLong(Demand.REFERENCE) : command.getLong(Demand.DEMAND_KEY);
             try {
                 DemandSteps.updateDemand(pm, rawCommand, entityKey, getFreshCloseParameters(), consumer.getKey(), false);
                 return;

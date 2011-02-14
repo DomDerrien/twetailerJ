@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javamocks.io.MockOutputStream;
-import javamocks.util.logging.MockLogger;
 import twetailer.dao.CacheHandler;
 import twetailer.dto.Consumer;
 
@@ -23,7 +22,7 @@ public class ChannelConnector {
     private static Logger log = Logger.getLogger(ChannelConnector.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

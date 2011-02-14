@@ -92,7 +92,7 @@ public class RateCommandProcessor {
             return;
         }
 
-        String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
+        String actionLabel = CommandLineParser.localizedActions.get(locale).getJsonArray(Action.rate.toString()).getString(0);
         MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
         msgGen.
             put("user>name", consumer.getName()).

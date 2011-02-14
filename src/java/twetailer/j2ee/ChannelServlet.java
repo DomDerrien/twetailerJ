@@ -3,8 +3,6 @@ package twetailer.j2ee;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +34,7 @@ public class ChannelServlet extends HttpServlet {
     private static Logger log = Logger.getLogger(ChannelServlet.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 

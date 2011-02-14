@@ -8,14 +8,13 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javamocks.util.logging.MockLogger;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -42,7 +41,7 @@ public class MailConnector {
     private static Logger log = Logger.getLogger(MailConnector.class.getName());
 
     /// Made available for test purposes
-    public static void setMockLogger(MockLogger mockLogger) {
+    public static void setMockLogger(Logger mockLogger) {
         log = mockLogger;
     }
 
@@ -78,16 +77,19 @@ public class MailConnector {
     public static InternetAddress twetailer;
     public static InternetAddress twetailer_cc;
     static {
-        twetailer = prepareInternetAddress(
-                StringUtils.JAVA_UTF8_CHARSET,
-                ApplicationSettings.get().getProductName(),
-                MailResponderServlet.getResponderEndpoints().get(0)
-        );
-        twetailer_cc = prepareInternetAddress(
-                StringUtils.JAVA_UTF8_CHARSET,
-                ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
-                MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
-        );
+        try {
+            twetailer = prepareInternetAddress(
+                    StringUtils.JAVA_UTF8_CHARSET,
+                    ApplicationSettings.get().getProductName(),
+                    MailResponderServlet.getResponderEndpoints().get(0)
+            );
+            twetailer_cc = prepareInternetAddress(
+                    StringUtils.JAVA_UTF8_CHARSET,
+                    ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
+                    MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
+            );
+        }
+        catch (AddressException e) { } // Not expected as the default are valid addresses
     }
 
     /**
@@ -96,10 +98,11 @@ public class MailConnector {
      * @param name Display name of the e-mail address
      * @param email E-mail address
      * @return address Fetched InternetAddress instance
+     *
+     * @throws AddressException If the given email address is invalid
      */
-    public static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) {
-        InternetAddress address = new InternetAddress();
-        address.setAddress(email);
+    public static InternetAddress prepareInternetAddress(String charsetEncoding, String name, String email) throws AddressException {
+        InternetAddress address = new InternetAddress(email);
         if (name != null && 0 < name.length()) {
             try {
                 address.setPersonal(name, charsetEncoding);
@@ -311,13 +314,13 @@ public class MailConnector {
     }
     */
 
-    public static boolean foolMessagePost = false;
+    public static int foolMessagePost = 0;
 
     /**
      * Made available for unit tests
      */
     public static void foolNextMessagePost() {
-        foolMessagePost = true;
+        foolMessagePost ++;
     }
 
     /**
@@ -342,8 +345,8 @@ public class MailConnector {
      * @throws MessagingException If the message sending fails
      */
     public static void reportErrorToAdmins(String from, String subject, String body) throws MessagingException {
-        if (foolMessagePost) {
-            foolMessagePost = false;
+        if (0 < foolMessagePost) {
+            foolMessagePost --;
             throw new MessagingException("Done in purpose!");
         }
 
@@ -354,7 +357,7 @@ public class MailConnector {
             prepareInternetAddress(
                 StringUtils.JAVA_UTF8_CHARSET,
                 "ASE admin notifier",
-                "admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()
+                "twetailer@gmail.com" // One admin of the application
         ));
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
         messageToForward.setSubject(from == null ? subject : "Fwd: (" + from + ") " + subject);
@@ -384,8 +387,8 @@ public class MailConnector {
      */
     public static void sendCopyToAdmins(Source source, Consumer consumer, String subject, String[] messages) throws CommunicationException {
         try {
-            if (foolMessagePost) {
-                foolMessagePost = false;
+            if (0 < foolMessagePost) {
+                foolMessagePost --;
                 throw new MessagingException("Done in purpose!");
             }
 
@@ -396,7 +399,7 @@ public class MailConnector {
                 prepareInternetAddress(
                     StringUtils.JAVA_UTF8_CHARSET,
                     "ASE admin notifier",
-                    "admin-notifier@" + ApplicationSettings.get().getProductEmailDomain()
+                    "twetailer@gmail.com" // One admin of the application
             ));
             messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
             messageToForward.setSubject("Silent copy");

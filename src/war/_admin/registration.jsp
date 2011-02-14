@@ -448,6 +448,7 @@
         else {
             data.consumerKey = parseInt(data.consumerKey); // Otherwise it's passed as a String
         }
+        data.onBehalfAssociateKey = 0; // Because we assume the sale associate account creation
         dojo.xhrPost({
             headers: { 'content-type': 'application/json; charset=<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.toJson(data),
