@@ -176,7 +176,7 @@ public class DemandProcessor {
                     demand.addSaleAssociateKey(saleAssociate.getKey());
                 }
                 // Inform the influencer even if he was not already concerned by the demand
-                if (!isInfluencerIdentifiedAsAMatchingSaleAssociate) {
+                if (!isInfluencerIdentifiedAsAMatchingSaleAssociate && influencer.getKey() != null && influencer.getKey() != 0L) {
                     Consumer saConsumerRecord = BaseSteps.getConsumerOperations().getConsumer(pm, influencer.getConsumerKey());
                     if (!demand.getSaleAssociateKeys().contains(saConsumerRecord.getSaleAssociateKey())) {
                         // Communicate with the sale associate

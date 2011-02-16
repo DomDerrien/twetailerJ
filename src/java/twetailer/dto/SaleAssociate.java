@@ -371,7 +371,7 @@ public class SaleAssociate extends Entity {
         }
         if (isUserAdmin && in.containsKey(IS_STORE_ADMIN)) { setIsStoreAdmin(in.getBoolean(IS_STORE_ADMIN)); }
         if (isUserAdmin && in.containsKey(PUBLISHED_PROPOSAL_NB)) { setPublishedProposalNb(in.getLong(PUBLISHED_PROPOSAL_NB)); } // Cannot be updated remotely
-        if (isUserAdmin && in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
+        if ((getKey() == null || isUserAdmin) && in.containsKey(STORE_KEY)) { setStoreKey(in.getLong(STORE_KEY)); }
         if (in.containsKey(SCORE)) { setScore(in.getString(SCORE)); }
 
         // Shortcut

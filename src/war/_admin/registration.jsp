@@ -136,6 +136,7 @@
                     <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
                         <form dojoType="dijit.form.Form" id="locationInformation" onsubmit="localModule.createLocation();return false;">
+                            <div style="background-color:red;color:white;margin-bottom:10px;font-weight:bold;padding:5px;border-radius:4px;">Warning: To avoid conflicts regarding the ownership of the commands to process, you MUST logout from all non <i>admin</i> console!</div>
                             <div>
                                 <label for="<%= Location.POSTAL_CODE %>">Postal Code</label><br/>
                                 <input
@@ -263,9 +264,9 @@
                         <legend>Repeat Again ;)</legend>
                         <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
                         <p>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Another Location</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Another Store</button>
-                            <button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button"><< Another Sale Associate</button>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Another Location</button></div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Another Store</button></div>
+                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button"><< Another Sale Associate</button></div>
                         </p>
                     </fieldset>
                 </div>
@@ -359,6 +360,7 @@
         }
         var data = dojo.formToObject('storeInformation');
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
+        data.onBehalfAssociateKey = 0; // Because we assume the sale associate account creation
         dojo.xhrPost({
             headers: { 'content-type': 'application/json; charset-<%= StringUtils.HTML_UTF8_CHARSET %>' },
             putData: dojo.toJson(data),

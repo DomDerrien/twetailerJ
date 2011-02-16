@@ -114,6 +114,14 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 }
                 createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
+            else if ("/Report".equals(pathInfo)) {
+                if (!in.containsKey("callback")) {
+                    throw new IllegalArgumentException("Invalid JSONP call!");
+                }
+                String message = AuthVerifierFilter.dumpRequest(request);
+                getLogger().warning(message);
+                MailConnector.reportErrorToAdmins("Landing page visit report", message);
+            }
             else {
                 response.setStatus(404); // Not Found
                 out.put("success", false);

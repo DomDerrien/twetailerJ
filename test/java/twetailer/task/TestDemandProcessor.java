@@ -922,6 +922,7 @@ public class TestDemandProcessor {
             public Influencer getInfluencer(PersistenceManager pm, Long key) throws InvalidIdentifierException {
                 assertEquals(influencerKey, key);
                 Influencer resource = new Influencer();
+                resource.setKey(influencerKey);
                 resource.setConsumerKey(consumerKey);
                 return resource;
             }

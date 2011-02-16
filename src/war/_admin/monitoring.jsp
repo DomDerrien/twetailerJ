@@ -131,6 +131,8 @@
                 <br />
                 <div style="color:grey;font-size:smaller;">ASE / Twetailer / Dev</div>
             </fieldset>
+            <div style="background-color:red;color:white;font-weight:bold;padding:5px;float:left;border-radius:4px;">Warning: To avoid conflicts regarding the ownership of the commands to process, you MUST logout from all non <i>admin</i> console!</div>
+            <br clear="left"/>
             <fieldset class="entityInformation" id="queryFieldset" style="">
                 <legend>
                     Search

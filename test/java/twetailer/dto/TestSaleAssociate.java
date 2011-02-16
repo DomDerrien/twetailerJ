@@ -316,7 +316,7 @@ public class TestSaleAssociate {
         }
         assertFalse(clone.getIsStoreAdmin());
         assertNull(clone.getPublishedProposalNb());
-        assertNull(clone.getStoreKey());
+        assertEquals(storeKey, clone.getStoreKey());
         assertEquals(score, clone.getScore());
     }
 

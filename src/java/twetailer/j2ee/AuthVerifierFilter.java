@@ -125,34 +125,42 @@ public class AuthVerifierFilter implements Filter {
      */
     public static String dumpRequest(HttpServletRequest request) {
         StringBuilder out = new StringBuilder();
-        out.append("******\nremote coordinates:\n---\n");
+        out.append("******\nGeneral information:\n---\n");
+        out.append("authType: ").append(request.getAuthType()).append("\n");
+        out.append("encoding: ").append(request.getCharacterEncoding()).append("\n");
+        out.append("******\nRemote coordinates:\n---\n");
         out.append("address: ").append(request.getRemoteAddr()).append("\n");
         out.append("host: ").append(request.getRemoteHost()).append("\n");
         out.append("port: ").append(request.getRemotePort()).append("\n");
         out.append("user: ").append(request.getRemoteUser()).append("\n");
-        out.append("******\nserver coordinates:\n---\n");
+        out.append("******\nServer coordinates:\n---\n");
         out.append("protocol: ").append(request.getProtocol()).append("\n");
         out.append("name: ").append(request.getServerName()).append("\n");
         out.append("port: ").append(request.getServerPort()).append("\n");
         out.append("request url: ").append(request.getRequestURL()).append("\n");
         out.append("query string: ").append(request.getQueryString()).append("\n");
         Enumeration<?> names = request.getAttributeNames();
-        out.append("******\nattributes:\n---\n");
+        out.append("******\nAttributes:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             out.append(name).append(": ").append(request.getAttribute(name)).append("\n");
         }
         names = request.getHeaderNames();
-        out.append("******\nheaders:\n---\n");
+        out.append("******\nHeaders:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             out.append(name).append(": ").append(request.getHeader(name)).append("\n");
         }
         names = request.getParameterNames();
-        out.append("******\nparameters:\n---\n");
+        out.append("******\nParameters:\n---\n");
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-            out.append(name).append(": ").append(request.getParameter(name)).append("\n");
+            out.append(name).append(": ");
+            String[] values = request.getParameterValues(name);
+            for (int i = 0; i < values.length; i++) {
+                out.append(values[i]).append(" ");
+            }
+            out.append("\n");
         }
         out.append("******\n");
         return out.toString();
