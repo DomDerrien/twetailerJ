@@ -45,14 +45,14 @@
 			   		<div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
 					<div style="margin-left:50px;"><a class="action" title="Request Info" href="/cardealer/RequestInfo.html">Request Info</a></div>
 			   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/cardealer/CarDealerWelcome.html">Dealers Welcome!</a></div>
-			   		<div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_FR_PATH_/index.html">Français</a></div>
+			   		<div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage1">Français</a></div>
    				</div>
 			</div> <!-- end grid_4 -->
 	    </div> <!-- end grid_16 -->
 		<div class="clear"></div>
 		<div class="grid_16" style="margin-top: -5px;">
 			<h2 id="keywordAdTitle" class="blue">_CITY_ _QUALIFIER_ _MAKE_ _MODEL_</h2>
-			<h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">Receive Local Dealer Deals In Your Inbox. Reverse the Search for Free!</h3>
+			<h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">Reverse the Search! Get Used Car Proposals from Community Rated Dealers - For Free!</h3>
 			<h4 style="margin-top: -10px; margin-bottom: 10px;">Just fill in...</h4>
 		</div> <!-- grid_16 -->
 		<div class="clear"></div>
@@ -63,7 +63,8 @@
 			    	<label>Your email:</label><br>
                     <input id="email" class="formField" />
 			    </p>
-			    <p style="margin-top: -15px; color: black; font-weight: bold;">We will never <span class="blue">never</span> share your email.</p>
+			    <div style="margin-top: -15px; color: black; font-weight: bold;">We will never <span class="blue">never</span> share your email.</div>
+                <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Check this one to use the service in 'demo' mode.</label>
 		    </div> <!-- grid_3 Who -->
 		    <div class="grid_3">
 	    		<div class="col_header"><span class="blue col_name">What</span></div>
@@ -103,7 +104,7 @@
     	    </div> <!-- grid_4 Why -->
     	</div> <!--end grid_16 -->
     	<div class="clear"></div>
-    	<div class="grid_16" style="font-size:large; text-align: right; margin-top: 15px; margin-bottom:15px;">
+    	<div class="grid_16" style="font-size:large; text-align: right; margin-bottom:15px;">
     		<div class="grid_3 alpha prefix_9">
     		   	<div><span class="yellow">Click NOW...</span></div>
     		   	<div><span class="yellow">IT'S FREE!!!</span></div>
@@ -146,7 +147,7 @@
     	<div class="clear"></div>
         <div class="grid_16">
         	<div><span class="gray" style="font-size:large;">About</span></div>
-    		<p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy</a> believes that you're already going to spend enough money on that <span class="red">_KEYWORD_PHRASE_</span>. Adding more time &amp; energy trying to find the right dealer, with the right car, for the right price, can be <span style="font-weight: bold;">maddening!</span> So that's <span class="blue">why</span> we created a sales lead co-op for local car dealers.</p>
+    		<p><a href="http://anothersocialeconomy.com/">AnotherSocialEconomy</a> believes that you're already going to spend enough money on that <span class="red" id="keywordAdTitleForAbout">_CITY_ _QUALIFIER_ _MAKE_ _MODEL_</span>. Adding more time &amp; energy trying to find the right dealer, with the right car, for the right price, can be <span style="font-weight: bold;">maddening!</span> So that's <span class="blue">why</span> we created a sales lead co-op for local car dealers.</p>
     		<p>Our aim is to level the playing field by enabling <span style="font-weight: bold">car dealers</span> to <span style="font-weight: bold">compete on product, service and value</span> - not search engine marketing budgets.</p>
         </div> <!-- end grid_16 -->
     	<div class="clear"></div>
@@ -161,7 +162,7 @@
     		   		<div style="margin-left:50px; margin-right:30px; font-weight: bold;">Call 1-877-990-1697</div>
     				<div style="margin-left:50px; margin-right:30px;"><a class="action" title="Request Info" href="/cardealer/RequestInfo.html">Request Info</a></div>
     		   		<div style="margin-left:50px; margin-right:30px;"><a class="action" title="Car Dealers Welcome" href="/cardealer/CarDealerWelcome.html">Dealers Welcome!</a></div>
-                        <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="fr/index.html">Français</a></div>
+                        <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">Français</a></div>
       			</div>
     		</div> <!-- end grid_4 -->
         </div> <!-- end grid_16 -->
@@ -183,6 +184,7 @@
     dojo.require('dijit.Dialog'); // Use DialogSimple as soon as Dojo 1.6 is out
     dojo.require('dojo.data.ItemFileReadStore');
     dojo.require('dijit.form.Button');
+    dojo.require('dijit.form.CheckBox');
     dojo.require('dijit.form.DateTextBox');
     dojo.require('dijit.form.FilteringSelect');
     dojo.require('dijit.form.Form');
@@ -192,41 +194,44 @@
     dojo.require('dijit.form.ValidationTextBox');
     dojo.require('dojox.analytics.Urchin');
     // dojo.require('dojox.widget.DialogSimple');
+    var localModule = {};
     dojo.addOnLoad(function() {
         localModule.init();
     });
-    var localModule = {};
+    dojo.addOnUnload(function() {
+        localModule.reportUsage();
+    });
+    localModule.startDate = new Date();
     localModule.init = function() {
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
         var city = '_CITY_';
-        var maker = '_MAKE_';
+        var maker = '_MAKE_' == 'Cars' || '_MAKE_' == 'Automobile' ? 'BMW' : '_MAKE_';
         var model = '_MODEL_';
         var qualifier = '_QUALIFIER_';
+        var postalCode = '_CITY_' == 'Local' || '_CITY_' == 'Votre Localité' ? '' : '_POSTAL_CODE_';
         var info = '';
         if (window.location.search) {
+            // Step 1: get the keywords
             var skw = dojo.queryToObject(window.location.search.slice(1)).kw;
-            dojo.byId('keywordAdTitle').innerHTML = '';
-            dojo.byId('keywordAdTitle').appendChild(dojo.doc.createTextNode(skw));
             if (skw) {
-                var idx = skw.indexOf(city);
-                if (idx != -1) {
-                    skw = skw.substring(0, idx) + skw.substring(idx + city.length);
-                }
-                idx = skw.indexOf(qualifier);
-                if (idx != -1) {
-                    skw = skw.substring(0, idx) + skw.substring(idx + qualifier.length);
-                }
-                idx = skw.indexOf(maker);
-                if (idx != -1) {
-                    skw = skw.substring(0, idx) + skw.substring(idx + maker.length);
-                }
-                model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, ''));
-                // idx = skw.indexOf(model);
-                // if (idx != -1) {
-                //     skw = skw.substring(0, idx) + skw.substring(idx + model.length);
-                // }
-                // info = dojo.trim(skw);
+                // Step 2: remove extra characters
+                skw = skw.replace(/\"/g, '').replace(/\+/g, '');
+                // Step 3: remove the duplicates (keep the first occurrence)
+                skw = localModule.removeDups(skw, city, true);
+                skw = localModule.removeDups(skw, qualifier, true);
+                skw = localModule.removeDups(skw, maker, true);
+                // Step 4: insert the cleaned up keywords in the page
+                var field = dojo.byId('keywordAdTitle');     field.innerHTML = ''; field.appendChild(dojo.doc.createTextNode(skw));
+                field = dojo.byId('keywordAdTitleForAbout'); field.innerHTML = ''; field.appendChild(dojo.doc.createTextNode(skw));
+                // Step 5: update the language switchers
+                dojo.byId('switchLanguage1').href += '?kw=' + skw;
+                dojo.byId('switchLanguage2').href += '?kw=' + skw;
+                // Step 6: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
+                skw = localModule.removeDups(skw, city, false);
+                skw = localModule.removeDups(skw, qualifier, false);
+                skw = localModule.removeDups(skw, maker, false);
+                model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
             }
         }
         var options = {
@@ -270,19 +275,47 @@
         };
         var makers = new dojo.data.ItemFileReadStore({ data: options });
         new dijit.form.Form({ id: 'requestForm' }, 'requestForm');
-        new dijit.form.TextBox({ name: 'model', value: model, placeHolder: 'Model', style: 'width:160px;' }, 'model');
+        new dijit.form.TextBox({ name: 'model', value: model, placeHolder: 'The car model', style: 'width:160px;' }, 'model');
         new dijit.form.NumberSpinner({ name: 'range', value: 10, constraints: {min: 5, max: 100}, style: 'width:160px;' }, 'range');
-        new dijit.form.ValidationTextBox({ name: 'postalCode', value: '_POSTAL_CODE_', placeHolder: 'Your postal code', regExp: '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required: true, trim: true, style: 'width:160px;' }, 'postalCode');
+        new dijit.form.ValidationTextBox({ name: 'postalCode', value: postalCode, placeHolder: 'Your postal code', regExp: '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required: true, trim: true, style: 'width:160px;' }, 'postalCode');
         new dijit.form.DateTextBox({ name: 'due', value: dueDate, constraints: { datePattern: 'EEE d MMM yyyy' }, style: 'width:160px;', required: true }, 'due');
         new dijit.form.FilteringSelect({ name: 'mfc', value: maker, searchAttr: 'value', store: makers, style: 'width:160px;' }, 'mfc');
         new dijit.form.Textarea({ name: 'info', value: info, style: 'min-height:80px;', style: 'width:100%; min-height: 80px;' }, 'info');
         new dijit.form.ValidationTextBox({ name: 'email', placeHolder: 'your email address', regExp: '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required: true, trim: true },'email').focus();
+        new dijit.form.CheckBox({ name: 'demoMode' }, 'demoMode');
         new dojox.analytics.Urchin({ acct: 'UA-11910037-5' });
     };
-    localModule.sendRequest = function() {
-        // Validate the input fields content
-        if (!dijit.byId('requestForm').validate()) return;
-        // Collect data
+    localModule.reportUsage = function() {
+        var data = {};
+        try { data = localModule.getFormData(); }
+        catch (ex) { data.exception = ex.toString(); }
+        data.startDate = localModule.startDate;
+        data.endDate = new Date();
+        data.referrer = document.referrer;
+        dojo.io.script.get({
+            callbackParamName: 'callback',
+            content: data,
+            error: function(dataBack) { },
+            load: function(dataBack){ },
+            // url: 'http://localhost:9999/3rdParty/Report'
+            url: 'https://anothersocialeconomy.appspot.com/3rdParty/Report'
+        });
+    };
+    localModule.removeDups = function(source, pattern, keepFirst) {
+        var idx = source.indexOf(pattern), length = pattern.length;
+        while (idx != -1) {
+            if (keepFirst) {
+                keepFirst = false;
+                idx += length;
+            }
+            else {
+                source = source.substring(0, idx) + source.substring(idx + length);
+            }
+            idx = source.indexOf(pattern, idx);
+        }
+        return source;
+    };
+    localModule.getFormData = function() {
         var criteria =
             'Manufacturer: ' + dijit.byId('mfc').get('value') +
             ' Model: ' + dijit.byId('model').get('value') +
@@ -294,10 +327,18 @@
             postalCode: dijit.byId('postalCode').get('value'),
             countryCode: 'CA',
             range: dijit.byId('range').get('value'),
-            dueDate: dijit.byId('due').get('value'),
+            dueDate: localModule.toISOString(dijit.byId('due').get('value')),
             hashTags: ['cardealer'],
             criteria: criteria.split(/\s+/)
         };
+        if (dijit.byId('demoMode').get('value') == 'on') {
+            dataIn.hashTags.push('demo');
+        }
+        return dataIn;
+    };
+    localModule.sendRequest = function() {
+        // Validate the input fields content
+        if (!dijit.byId('requestForm').validate()) return;
         // Submit data
         var errorMsg =
 			'An error has occured while submitting your Demand:-(\n\n' +
@@ -311,15 +352,37 @@
         dialog.show();
         dojo.io.script.get({
             callbackParamName: 'callback',
-            content: dataIn,
-            error: function(dataBack){
+            content: localModule.getFormData(),
+            error: function(dataBack) {
                 alert(errorMsg);
                 dialog.hide();
             },
             load: function(dataBack){
                 if (dataBack && dataBack.success) {
+                    if (dijit.byId('closeDialog')) {
+                        dijit.byId('closeDialog').destroyRecursive();
+                    }
                     dialog.set('content', '<p>Your request has been submitted.</p><p>In a few minutes, please check your email for our acknowledgement shortly in the email account provided.</p><p>Thank you for trusting AnotherSocialEconomy with your request!</p><div style="text-align:right;"><div id="closeDialog">OK</div></div>');
                     new dijit.form.Button({ name: 'closeDialog', type: 'submit', onclick: function() { dialog.hide(); } }, 'closeDialog');
+                    new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=UgQfCMXjkQIQm9P35QM&amp;guid=ON&amp;script=0';
+                    /*
+                        <!-- Google Code for Demand Posted EN Conversion Page -->
+                        <script type="text/javascript">
+                        var google_conversion_id = 1019079067;
+                        var google_conversion_language = "en";
+                        var google_conversion_format = "1";
+                        var google_conversion_color = "ffffff";
+                        var google_conversion_label = "UgQfCMXjkQIQm9P35QM";
+                        var google_conversion_value = 0;
+                        < / script>
+                        <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+                        < / script>
+                        <noscript>
+                        <div style="display:inline;">
+                        <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1019079067/?label=UgQfCMXjkQIQm9P35QM&amp;guid=ON&amp;script=0"/>
+                        </div>
+                        < / noscript>
+                     */                    
                 }
                 else {
                     alert(errorMsg);
@@ -327,9 +390,21 @@
                 }
             },
             // url: 'http://localhost:9999/3rdParty/Demand'
-            url: 'https://twetailer.appspot.com/3rdParty/Demand'
-            // url: 'https://anothersocialeconomy.appspot.com/3rdParty/Demand'
+            url: 'https://anothersocialeconomy.appspot.com/3rdParty/Demand'
         });
+    };
+    localModule.toISOString = function(date, time) {
+        // return dojo.date.stamp.toISOString(date, {}); // Contains the time zone gap
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hours = time ? time.getHours() : 23;
+        var minutes = time ? time.getMinutes() : 59;
+        return date.getFullYear() +
+              (month < 10 ? '-0' : '-') + month +
+              (day < 10 ? '-0' : '-') + day +
+              (hours < 10 ? 'T0' : 'T') + hours +
+              (minutes < 10 ? ':0' : ':') + minutes +
+              ':00';
     };
 </script>
 </body>
