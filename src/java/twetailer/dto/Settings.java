@@ -38,8 +38,12 @@ public class Settings extends Entity implements Serializable, TransferObject {
     @Persistent
     private Long robotConsumerKey = null;
 
+    public static final String ROBOT_CONSUMER_KEY = "robotConsumerKey";
+
     @Persistent
     private Long robotSaleAssociateKey = null;
+
+    public static final String ROBOT_SALE_ASSOCIATE_KEY = "robotSaleAssociateKey";
 
     /** Default constructor */
     public Settings() {
@@ -106,6 +110,8 @@ public class Settings extends Entity implements Serializable, TransferObject {
 
         out.put(NAME, getName());
         out.put(LAST_PROCESSED_DIRECT_MESSAGE_ID, getLastProcessDirectMessageId());
+        out.put(ROBOT_CONSUMER_KEY, getRobotConsumerKey());
+        out.put(ROBOT_SALE_ASSOCIATE_KEY, getRobotSaleAssociateKey());
 
         return out;
     }
@@ -121,6 +127,11 @@ public class Settings extends Entity implements Serializable, TransferObject {
 
         setName(in.getString(NAME));
         setLastProcessDirectMessageId(in.getLong(LAST_PROCESSED_DIRECT_MESSAGE_ID));
+
+        if (isCacheRelated) {
+            setRobotConsumerKey(in.getLong(ROBOT_CONSUMER_KEY));
+            setRobotSaleAssociateKey(in.getLong(ROBOT_SALE_ASSOCIATE_KEY));
+        }
 
         return this;
     }
