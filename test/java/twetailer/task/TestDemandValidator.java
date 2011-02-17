@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -126,7 +125,7 @@ public class TestDemandValidator {
         final Long locationKey = 12345L;
         final Double demandRange = 25.75D;
         final Demand consumerDemand = new Demand();
-        consumerDemand.addCriterion("test");
+        consumerDemand.setContent("test");
         consumerDemand.setKey(demandKey);
         consumerDemand.setLocationKey(locationKey);
         consumerDemand.setRange(demandRange);
@@ -150,7 +149,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Invalid criteria
+        // Invalid content
         //
 
         // RawCommandOperations mock
@@ -173,12 +172,7 @@ public class TestDemandValidator {
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
-                Demand demand = new Demand() {
-                    @Override
-                    public List<String> getCriteria() {
-                        return null;
-                    }
-                };
+                Demand demand = new Demand(); // getCriteria() was returning null
                 demand.setKey(demandKey);
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
@@ -204,7 +198,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Invalid criteria
+        // Invalid content
         //
 
         // RawCommandOperations mock
@@ -227,12 +221,7 @@ public class TestDemandValidator {
             public Demand getDemand(PersistenceManager pm, Long key, Long cKey) throws InvalidIdentifierException {
                 assertEquals(demandKey, key);
                 assertNull(cKey);
-                Demand demand = new Demand() {
-                    @Override
-                    public List<String> getCriteria() {
-                        return new ArrayList<String>();
-                    }
-                };
+                Demand demand = new Demand();
                 demand.setKey(demandKey);
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
@@ -258,7 +247,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIIIa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Invalid due date
         //
 
@@ -292,7 +281,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 return demand;
             }
             @Override
@@ -314,7 +303,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIVa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Invalid due date
         //
 
@@ -348,7 +337,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 return demand;
             }
             @Override
@@ -370,7 +359,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIIIb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Invalid expiration date
         //
@@ -405,7 +394,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -430,7 +419,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIVb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Invalid expiration date
         //
@@ -465,7 +454,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -490,7 +479,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -526,7 +515,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -552,7 +541,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVIa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -588,7 +577,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -614,7 +603,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVIb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -650,7 +639,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -676,7 +665,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -712,7 +701,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -738,7 +727,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVIIIa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -774,7 +763,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -800,7 +789,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessVIIIb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid range
@@ -836,7 +825,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -862,7 +851,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIXa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -899,7 +888,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -925,7 +914,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessIXb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -962,7 +951,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -988,7 +977,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessX() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1025,7 +1014,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1051,7 +1040,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1093,7 +1082,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1119,7 +1108,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1157,7 +1146,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1184,7 +1173,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXIII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1249,7 +1238,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1276,7 +1265,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXIV() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1348,7 +1337,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1374,7 +1363,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXVa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1446,7 +1435,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1472,7 +1461,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXVb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1544,7 +1533,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1570,7 +1559,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXVc() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1640,7 +1629,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1666,7 +1655,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXVI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Valid range
@@ -1714,7 +1703,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -1938,7 +1927,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXIXa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid contente
         // Invalid due date
         //
 
@@ -1967,7 +1956,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.YEAR, dueDate.get(Calendar.YEAR) + 2);
                 demand.setDueDate(dueDate.getTime());
@@ -1992,7 +1981,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXIXb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Invalid expiration date
         //
@@ -2022,7 +2011,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());
@@ -2050,7 +2039,7 @@ public class TestDemandValidator {
     @Test
     public void testProcessXX() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date => but expiration date after due date!
         //
@@ -2080,7 +2069,7 @@ public class TestDemandValidator {
                 demand.setOwnerKey(ownerKey);
                 demand.setSource(source);
                 demand.setRawCommandId(rawCommandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 demand.setDueDate(dueDate.getTime());

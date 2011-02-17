@@ -2,7 +2,6 @@ package twetailer.dto;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -87,14 +86,6 @@ public class Command extends Entity {
     public static final String CONTENT = "content";
 
     @Persistent
-    @Deprecated
-    private List<String> criteria = new ArrayList<String>();
-
-    @Deprecated public static final String CRITERIA = "criteria";
-    @Deprecated public static final String CRITERIA_ADD = "\\+criteria";
-    @Deprecated public static final String CRITERIA_REMOVE = "\\-criteria";
-
-    @Persistent
     private Date dueDate;
 
     public static final String DUE_DATE = "dueDate";
@@ -165,7 +156,6 @@ public class Command extends Entity {
      */
     protected Command resetLists() {
         cc = null;
-        criteria = null;
         hashTags = null;
         return this;
     }
@@ -245,82 +235,25 @@ public class Command extends Entity {
         cc.remove(coordinates);
     }
 
-    public String getContent() {
+    public String getContent(String defaultLabel) {
         if (content == null) {
-            return EMPTY_STRING;
+            return defaultLabel;
         }
         return content;
     }
 
+    public String getContent() {
+        return getContent(EMPTY_STRING);
+    }
+
     public void setContent(String content) {
-        if (content != null && content.length() == 0) {
+        if (content == null || content.length() == 0) {
             content = null;
         }
+        else if (500 < content.length()) {
+            content = content.substring(0, 499);
+        }
         this.content = content;
-    }
-
-    @Deprecated
-    public String getSerializedCriteria(String defaultLabel) {
-        if (getContent().length() == 0) {
-            return defaultLabel;
-        }
-        return getSerializedCriteria();
-    }
-
-    @Deprecated
-    public String getSerializedCriteria() {
-        return getContent();
-    }
-
-    @Deprecated
-    public List<String> getCriteria() {
-        if (getContent().length() == 0) {
-            return new ArrayList<String>();
-        }
-        return Arrays.asList(getContent().split("\\s"));
-    }
-
-    public List<String> getOriginalCriteria() {
-        return criteria;
-    }
-
-    @Deprecated
-    public void setCriteria(List<String> criteria) {
-        if (criteria == null) {
-            throw new IllegalArgumentException("Cannot nullify the attribute 'criteria' of type List<String>");
-        }
-        content = EMPTY_STRING;
-        for (String tag: criteria) {
-            content += SPACE + tag;
-        }
-        content = content.trim(); // To skip the leading space
-    }
-
-    @Deprecated
-    public void addCriterion(String criterion) {
-        if (criterion == null || criterion.length() == 0) {
-            return;
-        }
-        content = (getContent() + SPACE + criterion).trim(); // To skip the possible leading space
-    }
-
-    @Deprecated
-    public Command resetCriteria() {
-        content = null;
-        return this;
-    }
-
-    @Deprecated
-    public void removeCriterion(String criterion) {
-        if (getContent().length() == 0 || criterion == null || criterion.length() == 0) {
-            return;
-        }
-        int idx = getContent().indexOf(criterion);
-        if (idx != -1) {
-            System.err.println("2: idx = " + idx + " / length: " + criterion.length());
-            content = (getContent().substring(0, idx).trim() + SPACE + getContent().substring(idx + criterion.length()).trim()).trim();
-            System.err.println("2: content = '" + content + "'");
-        }
     }
 
     public Date getDueDate() {
@@ -479,13 +412,6 @@ public class Command extends Entity {
             out.put(CC, jsonArray);
         }
         if (getContent().length() != 0) { out.put(CONTENT, getContent()); }
-        if (getCriteria() != null && 0 < getCriteria().size()) {
-            JsonArray jsonArray = new GenericJsonArray();
-            for(String criterion: getCriteria()) {
-                jsonArray.add(criterion);
-            }
-            out.put(CRITERIA, jsonArray);
-        }
         if (getDueDate() != null) { out.put(DUE_DATE, DateUtils.dateToISO(getDueDate())); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -536,26 +462,6 @@ public class Command extends Entity {
             }
         }
         if (in.containsKey(CONTENT)) { setContent(in.getString(CONTENT)); }
-        if (in.containsKey(CRITERIA)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA);
-            resetCriteria();
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
-        removeDuplicates(in, CRITERIA_ADD, CRITERIA_REMOVE);
-        if (in.containsKey(CRITERIA_REMOVE)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_REMOVE);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                removeCriterion(jsonArray.getString(i));
-            }
-        }
-        if (in.containsKey(CRITERIA_ADD)) {
-            JsonArray jsonArray = in.getJsonArray(CRITERIA_ADD);
-            for (int i=0; i<jsonArray.size(); ++i) {
-                addCriterion(jsonArray.getString(i));
-            }
-        }
         if (in.containsKey(DUE_DATE)) {
             try {
                 Date dueDate = DateUtils.isoToDate(in.getString(DUE_DATE));

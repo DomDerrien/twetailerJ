@@ -41,6 +41,12 @@ public class RateCommandProcessor {
     public static void processRateCommand(PersistenceManager pm, Consumer consumer, RawCommand rawCommand, JsonObject command) throws ClientException, DataSourceException {
 
         Locale locale = consumer.getLocale();
+        JsonObject actionLabels = CommandLineParser.localizedActions.get(locale);
+        if (actionLabels == null) {
+            CommandLineParser.loadLocalizedSettings(locale);
+            actionLabels = CommandLineParser.localizedActions.get(locale);
+        }
+        String actionLabel = actionLabels.getJsonArray(Action.rate.toString()).getString(0);
 
         if (command.containsKey(Proposal.PROPOSAL_KEY)) {
             String message = null;
@@ -51,7 +57,6 @@ public class RateCommandProcessor {
                 return;
             }
             catch(InvalidIdentifierException ex) {
-                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
                 MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
                 msgGen.
                     put("user>name", consumer.getName()).
@@ -61,7 +66,6 @@ public class RateCommandProcessor {
                 message = msgGen.getMessage(MessageId.PROPOSAL_INVALID_ID_ERROR);
             }
             catch(InvalidStateException ex) {
-                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
                 String stateLabel = CommandLineParser.localizedStates.get(locale).getString(ex.getEntityState().toString());
                 MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
                 msgGen.
@@ -74,7 +78,6 @@ public class RateCommandProcessor {
                 message = msgGen.getMessage(MessageId.PROPOSAL_INVALID_STATE_ERROR);
             }
             catch(ReservedOperationException ex) {
-                String actionLabel = CommandLineParser.localizedActions.get(locale).getString(Action.rate.toString());
                 MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
                 msgGen.
                     put("user>name", consumer.getName()).
@@ -92,7 +95,6 @@ public class RateCommandProcessor {
             return;
         }
 
-        String actionLabel = CommandLineParser.localizedActions.get(locale).getJsonArray(Action.rate.toString()).getString(0);
         MessageGenerator msgGen = new MessageGenerator(rawCommand.getSource(), null, locale);
         msgGen.
             put("user>name", consumer.getName()).

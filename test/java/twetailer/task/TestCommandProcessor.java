@@ -603,7 +603,7 @@ public class TestCommandProcessor {
         proposal.setDemandKey(23456L);
         proposal.setState(State.published);
         proposal.setDueDate(new Date(2011 - 1900, 0, 1, 0, 0, 0));
-        proposal.addCriterion("just-one-tag");
+        proposal.setContent("just-one-tag");
         proposal.addHashTag("just-one-hash-tag");
         proposal.addCoordinate("unit@test.org");
 
@@ -656,7 +656,7 @@ public class TestCommandProcessor {
         demand.setState(State.cancelled);
         demand.setExpirationDate(new Date());
         demand.setDueDate(new Date(demand.getExpirationDate().getTime() - 10000));
-        demand.addCriterion("just-one-tag");
+        demand.setContent("just-one-tag");
 
         Location location = new Location();
         location.setPostalCode("H0H0H0");
@@ -733,8 +733,7 @@ public class TestCommandProcessor {
     public void testProcessCommandIII() throws DataSourceException, ClientException {
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.help.toString());
-        command.put(Command.CRITERIA_ADD, new GenericJsonArray());
-        command.getJsonArray(Command.CRITERIA_ADD).add("");
+        command.put(Command.CONTENT, "");
 
         CommandProcessor.processCommand(new MockPersistenceManager(), new Consumer(), new RawCommand(Source.simulated), command);
         assertNotSame(0, BaseConnector.getLastCommunicationInSimulatedMode().length());

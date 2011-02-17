@@ -115,7 +115,7 @@ public class TestConfirmCommandProcessor {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.published);
                 demand.setLocationKey(locationKey);
@@ -373,7 +373,7 @@ public class TestConfirmCommandProcessor {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.invalid); // Blocks the confirmation
                 return demand;
@@ -432,7 +432,7 @@ public class TestConfirmCommandProcessor {
                 assertEquals(demandKey, key);
                 Demand demand = new Demand();
                 demand.setKey(demandKey);
-                demand.addCriterion("test");
+                demand.setContent("test");
                 demand.addProposalKey(proposalKey);
                 demand.setState(State.published);
                 return demand;

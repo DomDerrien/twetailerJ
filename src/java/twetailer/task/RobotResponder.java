@@ -120,7 +120,6 @@ public class RobotResponder {
         if (robotSaleAssociateKey == null) {
             Settings settings = BaseSteps.getSettingsOperations().getSettings(pm);
             robotSaleAssociateKey = settings.getRobotSaleAssociateKey();
-            // robotSaleAssociateKey = 4L;
         }
         return robotSaleAssociateKey;
     }

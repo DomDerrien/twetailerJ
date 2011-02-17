@@ -221,7 +221,9 @@ public class Proposal extends Command {
 
         if (isCacheRelated && in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
         if (isUserAdmin && in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
-        if (isUserAdmin && in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
+        if ((getKey() == null || isUserAdmin) && in.containsKey(CONSUMER_KEY)) {
+            setConsumerKey(in.getLong(CONSUMER_KEY)); // Can only be set at creation time
+        }
         if (in.containsKey(CURRENCY_CODE)) { setCurrencyCode(in.getString(CURRENCY_CODE)); }
         if ((getKey() == null || isUserAdmin) && in.containsKey(DEMAND_KEY)) {
             setDemandKey(in.getLong(DEMAND_KEY)); // Can only be set at creation time

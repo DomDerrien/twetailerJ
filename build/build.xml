@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="46"
+        value="47"
     />
 
     <property name="app.companyName"
@@ -429,19 +429,19 @@
         <resourcecount property="html.source.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="src/war" includes="**/*.html,**/*.jsp,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**" />
+                <fileset dir="src/war" includes="**/*.html,**/*.jsp,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
             </tokens>
         </resourcecount>
         <resourcecount property="html.test.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="test/war" includes="**/*.html,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**" />
+                <fileset dir="test/war" includes="**/*.html,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
             </tokens>
         </resourcecount>
         <resourcecount property="xml.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="src" includes="**/*.xml*,**/*.xsl,**/*.tmx" excludes="**/dojo/**,**/domderrien/**" />
+                <fileset dir="src" includes="**/*.xml*,**/*.xsl,**/*.tmx" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
             </tokens>
         </resourcecount>
         <echo>

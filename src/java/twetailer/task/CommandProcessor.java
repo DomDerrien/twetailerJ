@@ -398,7 +398,7 @@ public class CommandProcessor {
             if (CommandSettings.isEquivalentTo(prefixes, Prefix.help.toString(), action, collator)) {
                 HelpCommandProcessor.processHelpCommand(
                         rawCommand,
-                        command.containsKey(Demand.CRITERIA_ADD) ? command.getJsonArray(Demand.CRITERIA_ADD).getString(0) : "",
+                        command.containsKey(Command.CONTENT) ? command.getString(Command.CONTENT) : "",
                         locale,
                         collator
                 );

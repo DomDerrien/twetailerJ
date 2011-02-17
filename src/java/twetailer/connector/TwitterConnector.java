@@ -108,6 +108,7 @@ public class TwitterConnector {
      *
      * @see TwitterUtils#releaseTwetailerAccount(Twitter)
      */
+    @SuppressWarnings("deprecation")
     public static Twitter getTwetailerAccount() {
         int size = _twetailerAccounts.size();
         if (size == 0) {

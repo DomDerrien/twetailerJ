@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -137,7 +136,7 @@ public class TestProposalValidator {
         final Long storeKey = 65758L;
         final Double total = 29.99D;
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setPrice(price);
@@ -165,7 +164,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Invalid criteria
+        // Invalid content
         //
 
         // ProposalOperations mock
@@ -176,12 +175,7 @@ public class TestProposalValidator {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                Proposal proposal = new Proposal() {
-                    @Override
-                    public List<String> getCriteria() {
-                        return null;
-                    }
-                };
+                Proposal proposal = new Proposal(); // getcontent() returned null
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
@@ -211,7 +205,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Invalid criteria
+        // Invalid content
         //
 
         // ProposalOperations mock
@@ -252,7 +246,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIIIa_1() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Invalid due date
         //
 
@@ -274,7 +268,7 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 return proposal;
             }
             @Override
@@ -296,7 +290,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIIIa_2() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Invalid due date
         //
 
@@ -339,7 +333,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIIIa_3() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Invalid due date
         //
 
@@ -356,7 +350,7 @@ public class TestProposalValidator {
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.YEAR, dueDate.get(Calendar.YEAR) + 2);
                 proposal.setDueDate(dueDate.getTime());
@@ -381,7 +375,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIIIb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Invalid quantity
         //
@@ -403,7 +397,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -432,7 +426,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIV() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Invalid quantity
         //
@@ -454,7 +448,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -483,7 +477,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessV() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid expiration date
         // Invalid price or total
@@ -508,7 +502,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -537,7 +531,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessVI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Invalid price or total
@@ -562,7 +556,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -591,7 +585,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessVII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Invalid price or total
@@ -616,7 +610,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -645,7 +639,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessVIII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Invalid price or total
@@ -670,7 +664,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -699,7 +693,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIXa() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
@@ -721,7 +715,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -750,7 +744,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessIXb() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
@@ -772,7 +766,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -801,7 +795,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessX() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
@@ -827,7 +821,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -856,7 +850,7 @@ public class TestProposalValidator {
     @Test
     public void testProcessXI() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
@@ -883,7 +877,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());
@@ -920,7 +914,7 @@ public class TestProposalValidator {
     @Ignore
     public void testProcessXII() throws DataSourceException, InvalidIdentifierException {
         //
-        // Valid criteria
+        // Valid content
         // Valid due date
         // Valid quantity
         // Valid price (total stays null because just one required)
@@ -947,7 +941,7 @@ public class TestProposalValidator {
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
-                proposal.addCriterion("test");
+                proposal.setContent("test");
                 Calendar dueDate = DateUtils.getNowCalendar();
                 dueDate.set(Calendar.MONTH, dueDate.get(Calendar.MONTH) + 1);
                 proposal.setDueDate(dueDate.getTime());

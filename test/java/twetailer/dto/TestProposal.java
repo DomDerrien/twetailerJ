@@ -198,7 +198,7 @@ public class TestProposal {
         clone.fromJson(object.toJson());
 
         assertNull(clone.getAWSCBUIURL());
-        assertNull(clone.getConsumerKey());
+        assertEquals(consumerKey, clone.getConsumerKey());
         assertNull(clone.getComment());
         assertEquals(currencyCode, clone.getCurrencyCode());
         assertEquals(demandKey, clone.getDemandKey());

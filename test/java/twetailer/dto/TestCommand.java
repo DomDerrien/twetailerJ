@@ -70,7 +70,7 @@ public class TestCommand {
     Action action = Action.cancel;
     Long cancelerKey = 43322L;
     List<String> cc = Arrays.asList(new String[] {"first", "second"});
-    List<String> criteria = Arrays.asList(new String[] {"first", "second"});
+    String content = "first second";
     Calendar dueDate = DateUtils.getNowCalendar();
     List<String> hashTags = Arrays.asList(new String[] {"first", "second"});
     String metadata = "{'name':'value'}";
@@ -88,7 +88,7 @@ public class TestCommand {
         object.setAction(action.toString());
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
         object.setMetadata(metadata);
@@ -103,7 +103,7 @@ public class TestCommand {
         assertEquals(action, object.getAction());
         assertEquals(cancelerKey, object.getCancelerKey());
         assertEquals(cc, object.getCC());
-        assertEquals(criteria, object.getCriteria());
+        assertEquals(content, object.getContent());
         assertEquals(dueDate.getTime(), object.getDueDate());
         assertEquals(hashTags, object.getHashTags());
         assertEquals(metadata, object.getMetadata());
@@ -126,7 +126,7 @@ public class TestCommand {
         object.setAction(action);
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
         object.setMetadata(metadata);
@@ -150,10 +150,7 @@ public class TestCommand {
         for (int idx=0; idx < object.getCC().size(); idx++) {
             assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
         }
-        assertEquals(criteria.size(), clone.getCriteria().size());
-        for (int idx=0; idx < object.getCriteria().size(); idx++) {
-            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
-        }
+        assertEquals(content, clone.getContent());
         assertEquals(dueDate.getTime(), clone.getDueDate());
         assertEquals(hashTags.size(), clone.getHashTags().size());
         for (int idx=0; idx < object.getHashTags().size(); idx++) {
@@ -180,7 +177,7 @@ public class TestCommand {
         assertNull(clone.getAction());
         assertNull(clone.getCancelerKey());
         assertEquals(0, clone.getCC().size());
-        assertEquals(0, clone.getCriteria().size());
+        assertEquals(0, clone.getContent().length());
         assertNull(clone.getDueDate());
         assertEquals(0, clone.getHashTags().size());
         assertNull(clone.getMetadata());
@@ -203,7 +200,7 @@ public class TestCommand {
         object.setAction(action);
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
         object.setMetadata(metadata);
@@ -227,10 +224,7 @@ public class TestCommand {
         for (int idx=0; idx < object.getCC().size(); idx++) {
             assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
         }
-        assertEquals(criteria.size(), clone.getCriteria().size());
-        for (int idx=0; idx < object.getCriteria().size(); idx++) {
-            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
-        }
+        assertEquals(content, clone.getContent());
         assertEquals(dueDate.getTime(), clone.getDueDate());
         assertEquals(hashTags.size(), clone.getHashTags().size());
         for (int idx=0; idx < object.getHashTags().size(); idx++) {
@@ -256,7 +250,7 @@ public class TestCommand {
         object.setAction(action);
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
         object.setMetadata(metadata);
@@ -280,10 +274,7 @@ public class TestCommand {
         for (int idx=0; idx < object.getCC().size(); idx++) {
             assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
         }
-        assertEquals(criteria.size(), clone.getCriteria().size());
-        for (int idx=0; idx < object.getCriteria().size(); idx++) {
-            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
-        }
+        assertEquals(content, clone.getContent());
         assertEquals(dueDate.getTime(), clone.getDueDate());
         assertEquals(hashTags.size(), clone.getHashTags().size());
         for (int idx=0; idx < object.getHashTags().size(); idx++) {
@@ -309,7 +300,7 @@ public class TestCommand {
         object.setAction(action);
         object.setCancelerKey(cancelerKey);
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setDueDate(dueDate.getTime());
         object.setHashTags(hashTags);
         object.setMetadata(metadata);
@@ -333,10 +324,7 @@ public class TestCommand {
         for (int idx=0; idx < object.getCC().size(); idx++) {
             assertEquals(object.getCC().get(idx), clone.getCC().get(idx));
         }
-        assertEquals(criteria.size(), clone.getCriteria().size());
-        for (int idx=0; idx < object.getCriteria().size(); idx++) {
-            assertEquals(object.getCriteria().get(idx), clone.getCriteria().get(idx));
-        }
+        assertEquals(content, clone.getContent());
         assertEquals(dueDate.getTime(), clone.getDueDate());
         assertEquals(hashTags.size(), clone.getHashTags().size());
         for (int idx=0; idx < object.getHashTags().size(); idx++) {
@@ -384,7 +372,6 @@ public class TestCommand {
         //
         Command object = new Command();
         object.addCoordinate("1");
-        object.addCriterion("1");
         object.addHashTag("1");
 
         JsonObject json = new GenericJsonObject();
@@ -394,16 +381,12 @@ public class TestCommand {
         remove.add("1");
         json.put(Command.CC_ADD, add);
         json.put(Command.CC_REMOVE, remove);
-        json.put(Command.CRITERIA_ADD, add);
-        json.put(Command.CRITERIA_REMOVE, remove);
         json.put(Command.HASH_TAGS_ADD, add);
         json.put(Command.HASH_TAGS_REMOVE, remove);
 
         object.fromJson(json);
         assertEquals(1, object.getCC().size());
         assertEquals("2", object.getCC().get(0));
-        assertEquals(1, object.getCriteria().size());
-        assertEquals("2", object.getCriteria().get(0));
         assertEquals(1, object.getHashTags().size());
         assertEquals("2", object.getHashTags().get(0));
     }
@@ -421,11 +404,6 @@ public class TestCommand {
     @Test(expected=IllegalArgumentException.class)
     public void testSetCC() {
         new Command().setCC((List<String>) null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetCriteria() {
-        new Command().setCriteria((List<String>) null);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -618,42 +596,6 @@ public class TestCommand {
     }
 
     @Test
-    public void testCriteriaJsonI() {
-        Command command = new Command();
-        command.addCriterion("one");
-        command.addCriterion("two");
-        command.addCriterion("three");
-
-        JsonObject json = new GenericJsonObject();
-        json.put(Command.CRITERIA_ADD, new GenericJsonArray());
-        json.getJsonArray(Command.CRITERIA_ADD).add("four");
-
-        command.fromJson(json);
-
-        assertEquals(4, command.getCriteria().size());
-    }
-
-    @Test
-    public void testCriteriaJsonII() {
-        Command command = new Command();
-        command.addCriterion("one");
-        command.addCriterion("two");
-        command.addCriterion("three");
-
-        JsonObject json = new GenericJsonObject();
-        json.put(Command.CRITERIA_ADD, new GenericJsonArray());
-        json.getJsonArray(Command.CRITERIA_ADD).add("four");
-
-        json.put(Command.CRITERIA_REMOVE, new GenericJsonArray());
-        json.getJsonArray(Command.CRITERIA_REMOVE).add("two");
-        json.getJsonArray(Command.CRITERIA_REMOVE).add("four");
-
-        command.fromJson(json);
-
-        assertEquals(2, command.getCriteria().size());
-    }
-
-    @Test
     public void testHashTagJsonI() {
         Command command = new Command();
         command.addHashTag("one");
@@ -777,45 +719,6 @@ public class TestCommand {
         assertNull(command.getCC());
         command.resetCC(); // No issue reported
         assertNull(command.getCC());
-    }
-
-    @Test
-    public void testGetDefaultSerializedCriteriaI() {
-        String defaultValue = "default";
-        assertEquals(defaultValue, new Command().getSerializedCriteria(defaultValue));
-    }
-
-    @Test
-    public void testGetDefaultSerializedCriteriaII() {
-        String defaultValue = "default";
-        assertEquals(defaultValue, new Command().resetLists().getSerializedCriteria(defaultValue));
-    }
-
-    @Test
-    public void testManageCriteria() {
-        String defaultValue = "default";
-
-        Command command1 = new Command().resetLists();
-        command1.addCriterion("a");
-        command1.addCriterion(null);
-        command1.addCriterion("");
-        command1.addCriterion("b");
-        command1.addCriterion("a");
-        assertEquals("a b a", command1.getSerializedCriteria(defaultValue));
-
-        Command command2 = new Command();
-        command2.setCriteria(command1.getCriteria());
-        assertEquals(3, command2.getCriteria().size());
-
-        command1.removeCriterion("a");
-        command1.removeCriterion(null);
-        command1.removeCriterion("");
-        command1.removeCriterion("c");
-
-        assertEquals(3, command2.getCriteria().size());
-        assertEquals("a b a", command2.getSerializedCriteria(defaultValue));
-
-        new Command().resetLists().removeCriterion("z"); // No issue reported
     }
 
     @Test

@@ -8,10 +8,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -190,29 +188,25 @@ public class TestCommandLineParser {
     @Test
     public void testParseOneWordTag() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 product", Locale.ENGLISH);
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals("product", data.getString(Command.CONTENT));
     }
 
     @Test
     public void testParseOneWordTagPrefixed() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:product", Locale.ENGLISH);
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(0));
+        assertEquals("product", data.getString(Command.CONTENT));
     }
 
     @Test
     public void testParseMultipleWordsTag() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 brand product part", Locale.ENGLISH);
-        assertEquals("brand", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
-        assertEquals("part", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
+        assertEquals("brand product part", data.getString(Command.CONTENT));
     }
 
     @Test
     public void testParseMultipleWordsTagPrefixed() throws ClientException, ParseException {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 tags:brand product part", Locale.ENGLISH);
-        assertEquals("brand", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("part", data.getJsonArray(Demand.CRITERIA).getString(2));
+        assertEquals("brand product part", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -578,10 +572,7 @@ public class TestCommandLineParser {
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -594,10 +585,7 @@ public class TestCommandLineParser {
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -610,10 +598,7 @@ public class TestCommandLineParser {
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -626,10 +611,7 @@ public class TestCommandLineParser {
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -642,10 +624,7 @@ public class TestCommandLineParser {
         assertEquals(RobotResponder.ROBOT_POSTAL_CODE, data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertEquals(12, data.getLong(Demand.QUANTITY));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -654,10 +633,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "action:demand ref:1234 " + keywords, Locale.ENGLISH);
         assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -666,10 +642,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "!demand ref:1234 " + keywords, Locale.ENGLISH);
         assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -678,10 +651,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand ref:1234 " + keywords, Locale.ENGLISH);
         assertEquals(Action.demand.toString(), data.getString(Command.ACTION));
         assertEquals(1234, data.getLong(Demand.REFERENCE));
-        String[] parts = keywords.split("\\s+");
-        for (int i = 0; i < parts.length; i ++) {
-            assertEquals(parts[i], data.getJsonArray(Demand.CRITERIA_ADD).getString(i));
-        }
+        assertEquals(keywords.replaceAll("\\s+", " "), data.getString(Command.CONTENT));
     }
 
     @Test
@@ -701,8 +671,7 @@ public class TestCommandLineParser {
         String url = ApplicationSettings.get().getProductWebsite();
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " www " + url, Locale.ENGLISH);
         assertEquals(Action.www.toString(), data.getString(Command.ACTION));
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(url, data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertEquals(url, data.getString(Command.CONTENT));
         data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), " url " + url, Locale.ENGLISH);
         assertEquals("url", data.getString(Command.ACTION)); // as "url" is an equivalent to "www"
     }
@@ -781,13 +750,9 @@ public class TestCommandLineParser {
     @Ignore
     @SuppressWarnings("deprecation")
     public void testGenerateFullTweetI() {
-        List<String> criteria = new ArrayList<String>();
-        criteria.add("first");
-        criteria.add("second");
-
         Demand demand = new Demand();
         demand.setKey(1L);
-        demand.setCriteria(criteria);
+        demand.setContent("first second");
         demand.setExpirationDate(new Date(2025-1900, 0, 1, 0, 0, 0));
         demand.setQuantity(3L);
         demand.setRange(4.0D);
@@ -817,13 +782,9 @@ public class TestCommandLineParser {
     @Test
     @Ignore
     public void testGenerateFullTweetII() {
-        List<String> criteria = new ArrayList<String>();
-        criteria.add("first");
-        criteria.add("second");
-
         Proposal proposal = new Proposal();
         proposal.setKey(1L);
-        proposal.setCriteria(criteria);
+        proposal.setContent("first second");
         proposal.setDemandKey(12345L);
         proposal.setPrice(25.99D);
         proposal.setQuantity(3L);
@@ -930,151 +891,6 @@ public class TestCommandLineParser {
     }
 
     @Test
-    public void testParseAddTag() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "+tags:product", Locale.ENGLISH);
-        assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-    }
-
-    @Test
-    public void testParseRemoveTag() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "-tags:product", Locale.ENGLISH);
-        assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
-    }
-
-    @Test
-    public void testParseMixedTagsI() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "-tags:product +tags:service tags:excellence", Locale.ENGLISH);
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-        assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("service", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
-    }
-
-    @Test
-    public void testParseMixedTagsII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "tags:excellence -tags:product price:25.80£ +tags:service quantity:12", Locale.ENGLISH);
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-        assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("service", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
-    }
-
-    @Test
-    public void testParseMixedTagsIII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "tags:excellence excellency royal royalty +tags:product thing toy price:$25.80 -tags:service help quantity:12",
-                Locale.ENGLISH
-        );
-        assertEquals(4, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(3, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(2, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-        assertEquals("excellence", data.getJsonArray(Demand.CRITERIA).getString(0));
-        assertEquals("excellency", data.getJsonArray(Demand.CRITERIA).getString(1));
-        assertEquals("royal", data.getJsonArray(Demand.CRITERIA).getString(2));
-        assertEquals("royalty", data.getJsonArray(Demand.CRITERIA).getString(3));
-        assertEquals("product", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("thing", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
-        assertEquals("toy", data.getJsonArray(Demand.CRITERIA_ADD).getString(2));
-        assertEquals("service", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
-        assertEquals("help", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(1));
-    }
-
-    @Test
-    public void testParseMixedTagsIV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "tags: total:45.3222 +tags: price:$25.80 -tags: quantity:12",
-                Locale.ENGLISH
-        );
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-    }
-
-    @Test
-    public void testParseMixedTagsV() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:demand tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
-                Locale.ENGLISH
-        );
-        Demand demand = new Demand(data);
-        assertNotNull(demand.getCriteria());
-        assertEquals(4, demand.getCriteria().size());
-        assertTrue(demand.getCriteria().contains("one"));
-        assertTrue(demand.getCriteria().contains("two"));
-        assertTrue(demand.getCriteria().contains("four"));
-        assertTrue(demand.getCriteria().contains("five"));
-    }
-
-    @Test
-    public void testParseMixedTagsVI() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:propose proposal:21 tags:one two three four +tags:four five six price:$25.80 -tags:three four six quantity:12",
-                Locale.ENGLISH
-        );
-        Proposal proposal = new Proposal(data);
-        assertNotNull(proposal.getCriteria());
-        assertEquals(4, proposal.getCriteria().size());
-        assertTrue(proposal.getCriteria().contains("one"));
-        assertTrue(proposal.getCriteria().contains("two"));
-        assertTrue(proposal.getCriteria().contains("four"));
-        assertTrue(proposal.getCriteria().contains("five"));
-    }
-
-    @Test
-    public void testParseMixedTagsVIII() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:demand +tags:test price:$25.80 quantity:12",
-                Locale.ENGLISH
-        );
-        assertEquals(1, new Demand(data).getCriteria().size());
-        assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertNull(data.getJsonArray(Demand.CRITERIA_REMOVE));
-        assertEquals("test", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-    }
-
-    @Test
-    public void testParseMixedTagsIX() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:demand -tags:test price:$25.80 quantity:12",
-                Locale.ENGLISH
-        );
-        assertEquals(0, new Demand(data).getCriteria().size());
-        assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertNull(data.getJsonArray(Demand.CRITERIA_ADD));
-        assertEquals(1, data.getJsonArray(Demand.CRITERIA_REMOVE).size());
-        assertEquals("test", data.getJsonArray(Demand.CRITERIA_REMOVE).getString(0));
-    }
-
-    @Test
-    public void testParseMixedTagsX() throws ClientException, ParseException {
-        JsonObject data = CommandLineParser.parseCommand(
-                CommandLineParser.localizedPatterns.get(Locale.ENGLISH),
-                "action:demand price:$25.80 quantity:12",
-                Locale.ENGLISH
-        );
-        new Demand(data);
-        assertEquals(0, new Demand(data).getCriteria().size());
-        assertNull(data.getJsonArray(Demand.CRITERIA));
-        assertNull(data.getJsonArray(Demand.CRITERIA_ADD));
-        assertNull(data.getJsonArray(Demand.CRITERIA_REMOVE));
-    }
-
-    @Test
     public void testParseAddressI() throws ClientException, ParseException {
         final String address = "12345, Lamb Street, Montreal, Qc, Canada";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "address: " + address, Locale.ENGLISH);
@@ -1087,8 +903,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii address: " + address + " ref:12345 console", Locale.ENGLISH);
         assertEquals(address, data.getString(Store.ADDRESS));
         assertEquals(12345, data.getLong(Demand.REFERENCE));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("wii console", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1104,8 +919,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii name: " + name + " ref:12345 console", Locale.ENGLISH);
         assertEquals(name, data.getString(Store.NAME));
         assertEquals(12345, data.getLong(Demand.REFERENCE));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("wii console", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1121,8 +935,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii phoneNumber: " + phoneNumber + " ref:12345 console", Locale.ENGLISH);
         assertEquals(phoneNumber, data.getString(Store.PHONE_NUMBER));
         assertEquals(12345, data.getLong(Demand.REFERENCE));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("wii console", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1138,8 +951,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii pointOfView: " + pointOfView.toString() + " ref:12345 console", Locale.ENGLISH);
         assertEquals(pointOfView.toString(), data.getString(Command.POINT_OF_VIEW));
         assertEquals(12345, data.getLong(Demand.REFERENCE));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("wii console", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1155,8 +967,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "wii store: " + storeKey + " ref:12345 console", Locale.ENGLISH);
         assertEquals(storeKey, data.getLong(Store.STORE_KEY));
         assertEquals(12345, data.getLong(Demand.REFERENCE));
-        assertEquals("wii", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("console", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertEquals("wii console", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1398,7 +1209,7 @@ public class TestCommandLineParser {
         String comment = "";
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "ref:21 comment:" + comment, Locale.ENGLISH);
         assertNull(data.getString(Proposal.COMMENT));
-        assertEquals(Proposal.COMMENT + CommandLineParser.PREFIX_SEPARATOR, data.getJsonArray(Command.CRITERIA_ADD).getString(0));
+        assertEquals(Proposal.COMMENT + CommandLineParser.PREFIX_SEPARATOR, data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1478,7 +1289,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 Ca any tag", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Command.CONTENT));
     }
 
     @Test
@@ -1517,7 +1328,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:h3c2n6 any tag", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Command.CONTENT));
     }
 
     @Test
@@ -1549,7 +1360,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3c \t 2n6 \t ca any tag", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Command.CONTENT));
     }
 
     @Test
@@ -1565,7 +1376,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: h3c-2n6 ca any tag", Locale.ENGLISH);
         assertEquals("H3C2N6", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Command.CONTENT));
     }
 
     @Test
@@ -1574,10 +1385,8 @@ public class TestCommandLineParser {
         assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertTrue(data.containsKey(Demand.RANGE));
-        assertTrue(data.containsKey(Demand.CRITERIA_ADD));
-        assertEquals(2L, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals("c2", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
-        assertEquals("n6", data.getJsonArray(Demand.CRITERIA_ADD).getString(1));
+        assertTrue(data.containsKey(Demand.CONTENT));
+        assertEquals("c2 n6", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1585,7 +1394,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: ca any tag", Locale.ENGLISH);
         assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1593,7 +1402,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:ca any tag", Locale.ENGLISH);
         assertEquals("H0H0H0", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.CANADA.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1608,7 +1417,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 Us any tag", Locale.ENGLISH);
         assertEquals("12345", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1647,7 +1456,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:12345 any tag", Locale.ENGLISH);
         assertEquals("12345", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1679,7 +1488,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 123 \t 45 \t us any tag", Locale.ENGLISH);
         assertEquals("12345", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1695,7 +1504,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: 12345 6789 us any tag", Locale.ENGLISH);
         assertEquals("00000-0000", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1704,9 +1513,8 @@ public class TestCommandLineParser {
         assertEquals("12345", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
         assertTrue(data.containsKey(Demand.RANGE));
-        assertTrue(data.containsKey(Demand.CRITERIA_ADD));
-        assertEquals(1L, data.getJsonArray(Demand.CRITERIA_ADD).size());
-        assertEquals("6789", data.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        assertTrue(data.containsKey(Demand.CONTENT));
+        assertEquals("6789", data.getString(Command.CONTENT));
     }
 
     @Test
@@ -1714,7 +1522,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale: us any tag", Locale.ENGLISH);
         assertEquals("00000", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     @Test
@@ -1722,7 +1530,7 @@ public class TestCommandLineParser {
         JsonObject data = CommandLineParser.parseCommand(CommandLineParser.localizedPatterns.get(Locale.ENGLISH), "demand:21 locale:us any tag", Locale.ENGLISH);
         assertEquals("00000", data.getString(Location.POSTAL_CODE));
         assertEquals(Locale.US.getCountry(), data.getString(Location.COUNTRY_CODE));
-        assertTrue(data.containsKey(Command.CRITERIA_ADD));
+        assertTrue(data.containsKey(Demand.CONTENT));
     }
 
     private int[] todayNumbers;

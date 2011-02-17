@@ -231,7 +231,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    wish wish:{wish>key} qty:{wish>quantity} due-date:{wish>dueDate} locale:{wish>location>postalCode} {wish>location>countryCode} tags:{wish>criteria} hashtags:{wish>hashTags} metadata:{wish>metadata} {command>footer}
+                    wish wish:{wish>key} qty:{wish>quantity} due-date:{wish>dueDate} locale:{wish>location>postalCode} {wish>location>countryCode} tags:{wish>content} hashtags:{wish>hashTags} metadata:{wish>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -267,7 +267,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    demander demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>criteria} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata} {command>footer}
+                    demander demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>content} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -303,7 +303,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata} {command>footer}
+                    proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>content} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -312,7 +312,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>criteria} metaDonnées:{demand>metadata} {command>footer}
+                    proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>content} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -464,7 +464,7 @@
                     :-) Hi {wish>owner>name}, listing newly created wish:{wish>key}...|
                     wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
                     locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
-                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    quantity:{wish>quantity} tags:{wish>content} hashtags:{wish>hashTags}
                     cc:{wish>cc}
                 </seg>
             </tuv>
@@ -477,7 +477,7 @@
                     <p>Hi <strong>{wish>owner>name}</strong></p>
                     <p>Your wish has just been created with:</p>
                     <ul>
-                        <li>Details: {wish>criteria} HashTags:{wish>hashTags}</li>
+                        <li>Details: {wish>content} HashTags:{wish>hashTags}</li>
                         <li>Quantity: {wish>quantity};</li>
                         <li>Due date: {wish>dueDate};</li>
                         <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a>;</li>
@@ -507,7 +507,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     FYI: You have been CC'ed by {wish>owner>name} regarding the following wish creation...|
-                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} due-date:{wish>dueDate}.
+                    wish:{wish>key} tags:{wish>content} hashtags:{wish>hashTags} quantity:{wish>quantity} due-date:{wish>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -520,7 +520,7 @@
                         <strong>{wish>owner>name}</strong> has chosen to notify you of their new wish for:
                     </p>
                     <ul>
-                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>Details: <strong>{wish>content}</strong></li>
                         <li>Due date: <strong>{wish>dueDate}</strong></li>
                         <li>Expiration date: {wish>expirationDate}</li>
                         <li>Quantity: <strong>{wish>quantity}</strong></li>
@@ -552,7 +552,7 @@
                     :-) Hi {wish>owner>name}, listing your updated wish:{wish>key}...|
                     wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
                     locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
-                    quantity:{wish>quantity} tags:{wish>criteria} hashtags:{wish>hashTags}
+                    quantity:{wish>quantity} tags:{wish>content} hashtags:{wish>hashTags}
                     cc:{wish>cc}
                 </seg>
             </tuv>
@@ -570,7 +570,7 @@
                     </p>
                     <ul>
                         <li>Quantity: <strong>{wish>quantity}</strong></li>
-                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>Details: <strong>{wish>content}</strong></li>
                         <li>More options: <strong>{wish>metadata}</strong></li>
                     </ul>
                     <p>
@@ -597,7 +597,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     FYI: You have been CC'ed by {wish>owner>name} regarding the following wish update...|
-                    wish:{wish>key} tags:{wish>criteria} hashtags:{wish>hashTags} quantity:{wish>quantity} dueDate:{wish>dueDate}.
+                    wish:{wish>key} tags:{wish>content} hashtags:{wish>hashTags} quantity:{wish>quantity} dueDate:{wish>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -613,7 +613,7 @@
                     </p>
                     <ul>
                         <li>Quantity: <strong>{wish>quantity}</strong></li>
-                        <li>Details: <strong>{wish>criteria}</strong></li>
+                        <li>Details: <strong>{wish>content}</strong></li>
                         <li>More options: <strong>{wish>metadata}</strong></li>
                     </ul>
                     <p>
@@ -739,7 +739,7 @@
                     :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
-                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags}
+                    quantité:{demand>quantity} motsClés:{demand>content} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
             </tuv>
@@ -753,7 +753,7 @@
                     demande:{demand>key} heureDeJeu:{demand>dueDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode}
                     joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
-                    informations:{demand>criteria} copieCarbone:{demand>cc}
+                    informations:{demand>content} copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -765,7 +765,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong></p>
                     <p>Votre demande a été créée avec les éléments suivants:</p>
                     <ul>
-                        <li>Détails: {demand>criteria} -- Étiquettes: {demand>hashTags}</li>
+                        <li>Détails: {demand>content} -- Étiquettes: {demand>hashTags}</li>
                         <li>Quantité: {demand>quantity};</li>
                         <li>Date limite: {demand>dueDate};</li>
                         <li>Localité: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
@@ -801,7 +801,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
@@ -824,7 +824,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -834,7 +834,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande pour un départ de golf...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -847,7 +847,7 @@
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle demande:
                     </p>
                     <ul>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                         <li>Date limite: <strong>{demand>dueDate}</strong></li>
                         <li>Date d'expiration: {demand>expirationDate}</li>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
@@ -880,7 +880,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                     </ul>
                     <p>La nouvelle demande {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -899,7 +899,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>criteria} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}?|
+                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>content} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}?|
                     Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate}'.
                 </seg>
             </tuv>
@@ -909,7 +909,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>criteria} étiquettes:{demand>hashTags} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?|
+                    PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>content} étiquettes:{demand>hashTags} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?|
                     Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?'.
                 </seg>
             </tuv>
@@ -922,7 +922,7 @@
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Une nouvelle demande pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
-                        <li>Détails: <strong>{demand>criteria} Étiquettes:{demand>hashTags}</strong></li>
+                        <li>Détails: <strong>{demand>content} Étiquettes:{demand>hashTags}</strong></li>
                         <li>Date limite: <strong>{demand>dueDate}</strong></li>
                         <li>Date d'expiration: {demand>expirationDate}</li>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
@@ -957,7 +957,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                         <li>Taux de transactions complétées par le joueur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
                     </ul>
                     <p>
@@ -985,7 +985,7 @@
                     :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
-                    quantité:{demand>quantity} motsClés:{demand>criteria} étiquettes:{demand>hashTags}
+                    quantité:{demand>quantity} motsClés:{demand>content} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
             </tuv>
@@ -999,7 +999,7 @@
                     demande:{demand>key} heureDeJeu:{demand>dueDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode}
                     joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
-                    informations:{demand>criteria} copieCarbone:{demand>cc}
+                    informations:{demand>content} copieCarbone:{demand>cc}
                 </seg>
             </tuv>
         </tu>
@@ -1016,7 +1016,7 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                         <li>Autres options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>
@@ -1050,7 +1050,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux clubs de golf environnants
@@ -1073,7 +1073,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la demande...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -1083,7 +1083,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la emande pour un départ de golf...|
-                    demande:{demand>key} motsClés:{demand>criteria} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
+                    demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
             </tuv>
         </tu>
@@ -1100,7 +1100,7 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                         <li>Autres options: <strong>{demand>metadata}</strong></li>
                     </ul>
                     <p>La demande mise-à-jour {demand>key} va être diffusée aux commerces environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
@@ -1130,7 +1130,7 @@
                         <li>Joueurs: <strong>{demand>quantity}</strong></li>
                         <li>Chariots: <strong>{demand>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{demand>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{demand>criteria}</strong></li>
+                        <li>Détails: <strong>{demand>content}</strong></li>
                     </ul>
                     <p>La demande mise-à-jour {demand>key} va être diffusée aux clubs de golf environnants. Nous vous communiquerons leurs propositions aussitôt que possible.</p>
                     <p>
@@ -1151,7 +1151,7 @@
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1162,7 +1162,7 @@
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1174,7 +1174,7 @@
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la création de la proposition:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1203,7 +1203,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1225,7 +1225,7 @@
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1236,7 +1236,7 @@
                 <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1249,7 +1249,7 @@
                     <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition:</p>
                     <ul>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
@@ -1277,7 +1277,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1299,7 +1299,7 @@
                 <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimit:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1310,7 +1310,7 @@
                 <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} pour un départ de golf a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1322,7 +1322,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1361,7 +1361,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1410,7 +1410,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1444,7 +1444,7 @@
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la réception de la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1455,7 +1455,7 @@
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la demande:{demand>key} de départ de golf qui a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1470,7 +1470,7 @@
                         <strong><a href="{store>url}">{store>name}</a></strong>:
                     </p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1510,7 +1510,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1539,7 +1539,7 @@
                 <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour votre demande:{demand>key} a été modifiée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1550,7 +1550,7 @@
                 <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour la demande:{demand>key} de départ de golf a été modifiée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1562,7 +1562,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1601,7 +1601,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1653,7 +1653,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1687,7 +1687,7 @@
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
             </tuv>
         </tu>
@@ -1698,7 +1698,7 @@
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key} faite pour la demande:{demand>key} de départ de golf...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    joueurs:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
+                    joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
             </tuv>
         </tu>
@@ -1712,7 +1712,7 @@
                         d'une mise-à-jour de la  proposition:{proposal>key} en rapport avec la demande:{demand>key}
                     </p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -1752,7 +1752,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -1865,7 +1865,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} a été confirmée...|
-                    motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata} quantité:{proposal>quantity} dateLimite:{proposal>dueDate}|
+                    motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata} quantité:{proposal>quantity} dateLimite:{proposal>dueDate}|
                     store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
@@ -1876,7 +1876,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} de départ de golf a été confirmée...|
-                    heureDeJeu:{proposal>dueDate} joueurs:{proposal>quantity} chariots:{proposal>metadata>pullCart} voiturettes:{proposal>metadata>golfCart} info:{proposal>criteria}|
+                    heureDeJeu:{proposal>dueDate} joueurs:{proposal>quantity} chariots:{proposal>metadata>pullCart} voiturettes:{proposal>metadata>golfCart} info:{proposal>content}|
                     store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
             </tuv>
@@ -1966,7 +1966,7 @@
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Veuillez réserver la <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> pour:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -2000,7 +2000,7 @@
                         <li>Joueurs: <strong>{proposal>quantity}</strong></li>
                         <li>Chariots: <strong>{proposal>metadata>pullCart}</strong></li>
                         <li>Voiturettes: <strong>{proposal>metadata>golfCart}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong> par joueur</li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                     </ul>
@@ -2225,7 +2225,7 @@
                     </p>
                     <ul>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
                         <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
@@ -2295,7 +2295,7 @@
                 <seg>
                     :) Bonjour {demand>owner>name}, l'évaluation de la proposition{proposal>key} a été prise en compte...
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
             </tuv>
@@ -2308,7 +2308,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -2348,7 +2348,7 @@
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -2390,7 +2390,7 @@
                 <seg>
                     :-) Bonjour {proposal>owner>name}, voici la proposition:{proposal>key} qui vient juste d'être évaluée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
-                    quantité:{proposal>quantity} motsClés:{proposal>criteria} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
+                    quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
             </tuv>
@@ -2403,7 +2403,7 @@
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Votre proposition {proposal>key} vient d'être évaluée par le demandeur:</p>
                     <ul>
-                        <li>Détails: <strong>{proposal>criteria}</strong></li>
+                        <li>Détails: <strong>{proposal>content}</strong></li>
                         <li>Autres options: <strong>{proposal>metadata}</strong></li>
                         <li>Quantité: <strong>{proposal>quantity}</strong></li>
                         <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
@@ -2435,7 +2435,7 @@
                     :-) Hi {demand>owner>name}, here are the details about your demand:{demand>key}.|
                     demand:{demand>key} due:{demand>dueDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
-                    quantity:{demand>quantity} tags:{demand>criteria} hashtags:{demand>hashTags}
+                    quantity:{demand>quantity} tags:{demand>content} hashtags:{demand>hashTags}
                     cc:{demand>cc}|
                     So far, you have received {demand>proposalNb} proposal(s).{demand>proposalList}
                 </seg>
@@ -2449,7 +2449,7 @@
                     <p>Hi <strong>{demand>owner>name}</strong></p>
                     <p>Here is the demand you asked information about:</p>
                     <ul>
-                        <li>Details: {demand>criteria} HashTags:{demand>hashTags}</li>
+                        <li>Details: {demand>content} HashTags:{demand>hashTags}</li>
                         <li>Quantity: {demand>quantity};</li>
                         <li>Due date: {demand>dueDate};</li>
                         <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
@@ -2476,7 +2476,7 @@
                     |
                     {proposal>orderInList}.
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
-                    quantity:{proposal>quantity} tags:{proposal>criteria} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
+                    quantity:{proposal>quantity} tags:{proposal>content} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
                     total:{proposal>currencyCode}{proposal>total}
                 </seg>
             </tuv>
@@ -2487,7 +2487,7 @@
             <tuv xml:lang="fr">
                 <seg>
                     <li>
-                        Details: <strong>{proposal>criteria}</strong>;
+                        Details: <strong>{proposal>content}</strong>;
                         More options: <strong>{proposal>metadata}</strong>;
                         Quantity: <strong>{proposal>quantity}</strong>;
                         Unit price: <strong>{proposal>currencyCode}{proposal>price}</strong>;

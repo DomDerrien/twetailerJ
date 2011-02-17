@@ -121,17 +121,14 @@ public class CommandLineParser {
 
             String tagKey = Prefix.tags.toString();
             String tagPattern = assembleModularPrefixes(prefixes.getJsonArray(tagKey), tagKey).toString();
-            patterns.put(tagKey, Pattern.compile("((?:(?:^|[^\\+\\-])(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
-            patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" + tagPattern + "))[^\\:]+)(?: +[\\w\\+\\-]+:|$)", Pattern.CASE_INSENSITIVE));
-            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))?.+)", Pattern.CASE_INSENSITIVE));
-
-            patterns.put("\\+" + tagKey + "Start", Pattern.compile("^(\\+" + tagPattern + ")", Pattern.CASE_INSENSITIVE));
+            patterns.put(tagKey,           Pattern.compile("((?:(?:" + tagPattern + "))?.+)", Pattern.CASE_INSENSITIVE));
+            patterns.put(tagKey + "Start", Pattern.compile("^(" + tagPattern + ")",           Pattern.CASE_INSENSITIVE));
 
             tagKey = Prefix.hash.toString();
             tagPattern = assembleModularPrefixes(prefixes.getJsonArray(tagKey), tagKey).toString();
-            patterns.put(tagKey, Pattern.compile("((?:(?:^|[^\\+\\-])(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
-            patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
-            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
+            patterns.put(        tagKey, Pattern.compile("((?:(?:^|[^\\+\\-])(?:" + tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\-" + tagKey, Pattern.compile("((?:\\-(?:" +             tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
+            patterns.put("\\+" + tagKey, Pattern.compile("((?:\\+(?:" +             tagPattern + "))[^\\s]+)", Pattern.CASE_INSENSITIVE));
 
             localizedPatterns.put(locale, patterns);
         }
@@ -435,31 +432,13 @@ public class CommandLineParser {
             // Scan the remaining sequence
             matcher = patterns.get("\\+" + Prefix.hash.toString()).matcher(messageCopy);
         }
-        // Tags
+        // \+Tags
         matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Demand.CRITERIA, new GenericJsonArray(getTags(currentGroup, null)));
+            command.put(Command.CONTENT, getTags(currentGroup, patterns));
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
-        }
-        // \-Tags
-        matcher = patterns.get("\\-" + Prefix.tags.toString()).matcher(messageCopy);
-        if (matcher.find()) { // Runs the matcher once
-            String currentGroup = matcher.group(1).trim();
-            command.put(Demand.CRITERIA_REMOVE, new GenericJsonArray(getTags(currentGroup, null)));
-            messageCopy = extractPart(messageCopy, currentGroup);
-            oneFieldOverriden = true;
-        }
-        // \+Tags
-        matcher = patterns.get("\\+" + Prefix.tags.toString()).matcher(messageCopy);
-        if (matcher.find()) { // Runs the matcher once
-            String currentGroup = matcher.group(1).trim();
-            if (0 < currentGroup.length()) {
-                command.put(Demand.CRITERIA_ADD, new GenericJsonArray(getTags(currentGroup, patterns)));
-                messageCopy = extractPart(messageCopy, currentGroup);
-                oneFieldOverriden = true;
-            }
         }
 
         if (!command.containsKey(Command.ACTION)) {
@@ -769,7 +748,7 @@ public class CommandLineParser {
      * @param pattern Parameters extracted by a regular expression
      * @return tags
      */
-    protected static String[] getTags(String pattern, Map<String, Pattern> patterns) {
+    protected static String getTags(String pattern, Map<String, Pattern> patterns) {
         String keywords = pattern;
         // If the map of patterns is <code>null</code>, the keyword list starts by a prefix to be ignored (case of tags: or -tags:)
         if (patterns == null) { // && pattern.indexOf(PREFIX_SEPARATOR) != -1) {
@@ -778,12 +757,12 @@ public class CommandLineParser {
         else {
             // Because it's possible the keywords are not prefixed, it's not possible to ignore everything before the colon
             // So we use the pattern with the equivalents of +tags: and this group will be replaced
-            Matcher matcher = patterns.get("\\+" + Prefix.tags.toString() + "Start").matcher(keywords);
+            Matcher matcher = patterns.get(Prefix.tags.toString() + "Start").matcher(keywords);
             if (matcher.find()) { // Runs the matcher once
                 keywords = matcher.replaceFirst("");
             }
         }
-        return keywords.trim().split("(?:\\s|\\n|,|;)+");
+        return keywords.trim().replaceAll("\\s+", " ");
     }
 
     /**

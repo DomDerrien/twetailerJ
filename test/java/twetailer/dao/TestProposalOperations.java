@@ -551,11 +551,11 @@ public class TestProposalOperations {
     public void testDeleteII() throws InvalidIdentifierException {
         final String tag = "tag";
         Proposal toBeCreated = new Proposal();
-        toBeCreated.addCriterion(tag);
+        toBeCreated.setContent(tag);
         ProposalOperations ops = new ProposalOperations();
         Proposal justCreated = ops.createProposal(toBeCreated);
         assertNotNull(justCreated.getKey());
-        assertEquals(tag, justCreated.getCriteria().get(0));
+        assertEquals(tag, justCreated.getContent());
         ops.deleteProposal(justCreated.getKey(), null);
     }
 

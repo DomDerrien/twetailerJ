@@ -1,7 +1,7 @@
 package twetailer.task.command;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
@@ -21,7 +21,6 @@ import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dto.Command;
 import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
 import twetailer.dto.RawCommand;
 import twetailer.task.CommandProcessor;
 import twetailer.task.TestCommandProcessor;
@@ -30,9 +29,7 @@ import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
 import twitter4j.TwitterException;
 import domderrien.i18n.LabelExtractor;
-import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
-import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 
 public class TestLanguageCommandProcessor {
@@ -82,9 +79,7 @@ public class TestLanguageCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.language.toString());
-        JsonArray criteria = new GenericJsonArray();
-        criteria.add("en");
-        command.put(Demand.CRITERIA_ADD, criteria);
+        command.put(Command.CONTENT, "en");
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -105,9 +100,7 @@ public class TestLanguageCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.language.toString());
-        JsonArray criteria = new GenericJsonArray();
-        criteria.add("zzzzzz");
-        command.put(Demand.CRITERIA_ADD, criteria);
+        command.put(Command.CONTENT, "zzzz");
 
         // RawCommand mock
         RawCommand rawCommand = new RawCommand(Source.simulated);
@@ -128,9 +121,7 @@ public class TestLanguageCommandProcessor {
         // Command mock
         JsonObject command = new GenericJsonObject();
         command.put(Command.ACTION, Action.language.toString());
-        JsonArray criteria = new GenericJsonArray();
-        criteria.add(Locale.FRENCH.getLanguage());
-        command.put(Demand.CRITERIA_ADD, criteria);
+        command.put(Command.CONTENT, "zzzz");
 
         // ConsumerOperations mock
         final Long consumerKey = 76325L;

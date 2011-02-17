@@ -348,7 +348,7 @@ public class TestDemandProcessor {
         //
         Consumer demandOwner = new Consumer();
         Demand demand = new Demand();
-        demand.addCriterion("tag");
+        demand.setContent("tag");
         List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setScore("1:0.1");
@@ -365,7 +365,7 @@ public class TestDemandProcessor {
         //
         Consumer demandOwner = new Consumer();
         Demand demand = new Demand();
-        demand.addCriterion("tag");
+        demand.setContent("tag");
         List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setScore("1:0.2");
@@ -382,7 +382,7 @@ public class TestDemandProcessor {
         //
         Consumer demandOwner = new Consumer();
         Demand demand = new Demand();
-        demand.addCriterion("tag-given");
+        demand.setContent("tag-given");
         List<SaleAssociate> saleAssociates = new ArrayList<SaleAssociate>();
         SaleAssociate saleAssociate = new SaleAssociate();
         saleAssociate.setScore("1:0.1");
@@ -561,7 +561,7 @@ public class TestDemandProcessor {
         Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setLocationKey(locationKey);
-        demand.addCriterion(tag);
+        demand.setContent(tag);
 
         identifyTwoSaleAssociates(2);
 
@@ -833,8 +833,7 @@ public class TestDemandProcessor {
                 resource.setLocationKey(locationKey);
                 resource.setInfluencerKey(influencerKey);
                 resource.addSaleAssociateKey(saleAssociateKey);
-                resource.addCriterion("what-s-in-your-mind");
-                resource.addCriterion(tag);
+                resource.setContent("what-s-in-your-mind " + tag);
                 return resource;
             }
             @Override
@@ -891,8 +890,7 @@ public class TestDemandProcessor {
                 resource.setOwnerKey(consumerKey);
                 resource.setLocationKey(locationKey);
                 resource.setInfluencerKey(influencerKey);
-                resource.addCriterion("what-s-in-your-mind");
-                resource.addCriterion(tag);
+                resource.setContent("what-s-in-your-mind " + tag);
                 return resource;
             }
             @Override
@@ -950,8 +948,7 @@ public class TestDemandProcessor {
                 resource.setOwnerKey(consumerKey);
                 resource.setLocationKey(locationKey);
                 resource.setInfluencerKey(influencerKey);
-                resource.addCriterion("what-s-in-your-mind");
-                resource.addCriterion(tag);
+                resource.setContent("what-s-in-your-mind " + tag);
                 return resource;
             }
             @Override

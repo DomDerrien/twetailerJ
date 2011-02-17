@@ -102,7 +102,7 @@ public class TestProposalProcessor {
         final Double total = 29.99D;
         final String currency = "$";
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -118,8 +118,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                assertNotNull(proposal.getCriteria());
-                assertNotSame(0, proposal.getCriteria().size());
+                assertNotNull(proposal.getContent());
+                assertNotSame(0, proposal.getContent().length());
                 return proposal;
             }
         });
@@ -187,7 +187,7 @@ public class TestProposalProcessor {
                 "pp_inform_consumer_about_proposal",
                 new Object[] {
                         LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
-                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale),
                         LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
                         "", // No tags attached to this demand
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
@@ -215,7 +215,7 @@ public class TestProposalProcessor {
         final Double total = 29.99D;
         final String currency = "$";
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -231,8 +231,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                assertNotNull(proposal.getCriteria());
-                assertNotSame(0, proposal.getCriteria().size());
+                assertNotNull(proposal.getContent());
+                assertNotSame(0, proposal.getContent().length());
                 return proposal;
             }
         });
@@ -300,7 +300,7 @@ public class TestProposalProcessor {
                 "pp_inform_consumer_about_proposal",
                 new Object[] {
                         LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
-                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale),
                         LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
                         "", // No tags attached to this demand
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
@@ -328,7 +328,7 @@ public class TestProposalProcessor {
         final Double total = null;
         final String currency = "$";
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -344,8 +344,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                assertNotNull(proposal.getCriteria());
-                assertNotSame(0, proposal.getCriteria().size());
+                assertNotNull(proposal.getContent());
+                assertNotSame(0, proposal.getContent().length());
                 return proposal;
             }
         });
@@ -413,7 +413,7 @@ public class TestProposalProcessor {
                 "pp_inform_consumer_about_proposal",
                 new Object[] {
                         LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
-                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale),
                         LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
                         "", // No tags attached to this demand
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
@@ -441,7 +441,7 @@ public class TestProposalProcessor {
         final Double total = 0.0D;
         final String currency = "$";
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -457,8 +457,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                assertNotNull(proposal.getCriteria());
-                assertNotSame(0, proposal.getCriteria().size());
+                assertNotNull(proposal.getContent());
+                assertNotSame(0, proposal.getContent().length());
                 return proposal;
             }
         });
@@ -526,7 +526,7 @@ public class TestProposalProcessor {
                 "pp_inform_consumer_about_proposal",
                 new Object[] {
                         LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
-                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale),
                         LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
                         "", // No tags attached to this demand
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
@@ -554,7 +554,7 @@ public class TestProposalProcessor {
         final Double total = 37.95D;
         final String currency = "$";
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -570,8 +570,8 @@ public class TestProposalProcessor {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                assertNotNull(proposal.getCriteria());
-                assertNotSame(0, proposal.getCriteria().size());
+                assertNotNull(proposal.getContent());
+                assertNotSame(0, proposal.getContent().length());
                 return proposal;
             }
         });
@@ -639,7 +639,7 @@ public class TestProposalProcessor {
                 "pp_inform_consumer_about_proposal",
                 new Object[] {
                         LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposalKey }, locale),
-                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale),
+                        LabelExtractor.get("cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale),
                         LabelExtractor.get("cp_tweet_demand_reference_part", new Object[] { demandKey }, locale),
                         "", // No tags attached to this demand
                         LabelExtractor.get("cp_tweet_dueDate_part", new Object[] { CommandProcessor.serializeDate(demand.getDueDate()) }, locale),
@@ -665,7 +665,7 @@ public class TestProposalProcessor {
         final Long storeKey = 65758L;
         final Double total = 29.99D;
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -700,7 +700,7 @@ public class TestProposalProcessor {
         final Long storeKey = 65758L;
         final Double total = 29.99D;
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -746,7 +746,7 @@ public class TestProposalProcessor {
         final Double total = 29.99D;
 
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));
@@ -783,7 +783,7 @@ public class TestProposalProcessor {
         final Demand demand = new Demand();
         demand.setKey(demandKey);
         demand.setOwnerKey(consumerKey);
-        demand.addCriterion("test");
+        demand.setContent("test");
         demand.setExpirationDate(demandExpirationDate);
         demand.setState(State.published);
         demand.setSource(source);
@@ -858,7 +858,7 @@ public class TestProposalProcessor {
         final Long storeKey = 65758L;
         final Double total = 29.99D;
         final Proposal proposal = new Proposal();
-        proposal.addCriterion("test");
+        proposal.setContent("test");
         proposal.setKey(proposalKey);
         proposal.setDemandKey(demandKey);
         proposal.setDueDate(DateUtils.isoToDate("2010-01-01T07:15:00"));

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,7 +64,7 @@ public class TestRequest {
     Long key = 76554L;
 
     List<String> cc = Arrays.asList(new String[] {"cc1", "cc2"});
-    List<String> criteria = Arrays.asList(new String[] {"first", "second"});
+    String content = "first second";
     Date expirationDate = new Date(new Date().getTime() + 65536L);
     Long influencerKey = 654645232L;
     Long locationKey = 67890L;
@@ -78,7 +77,7 @@ public class TestRequest {
         Request object = new Request();
 
         // Request
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setExpirationDate(expirationDate);
         object.setInfluencerKey(influencerKey);
         object.setLocationKey(locationKey);
@@ -87,50 +86,13 @@ public class TestRequest {
         object.setRangeUnit(rangeUnit);
 
         // Request
-        assertEquals(criteria, object.getCriteria());
+        assertEquals(content, object.getContent());
         assertEquals(expirationDate, object.getExpirationDate());
         assertEquals(influencerKey, object.getInfluencerKey());
         assertEquals(locationKey, object.getLocationKey());
         assertEquals(quantity, object.getQuantity());
         assertEquals(range, object.getRange());
         assertEquals(rangeUnit, object.getRangeUnit());
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testResetCriteriaI() {
-        Request object = new Request();
-
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("first"); // Add it twice
-        assertEquals(2, object.getCriteria().size());
-
-        object.addCriterion("second");
-        assertEquals(3, object.getCriteria().size());
-
-        object.removeCriterion("first"); // Remove first
-        assertEquals(2, object.getCriteria().size());
-
-        object.resetCriteria(); // Reset all
-        assertEquals(0, object.getCriteria().size());
-
-        object.setCriteria(null); // Failure!
-    }
-
-    @Test
-    public void testResetCriteriaII() {
-        Request object = new Request();
-
-        object.resetLists(); // To force the criteria list creation
-        object.addCriterion("first");
-        assertEquals(1, object.getCriteria().size());
-
-        object.resetLists(); // To be sure there's no error
-        object.removeCriterion("first"); // Remove first
-
-        object.resetLists(); // To be sure there's no error
-        object.resetCriteria(); // Reset all
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -193,7 +155,7 @@ public class TestRequest {
         object.setKey(key);
 
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setExpirationDate(expirationDate);
         object.setInfluencerKey(influencerKey);
         object.setLocationKey(locationKey);
@@ -238,7 +200,7 @@ public class TestRequest {
         object.setKey(key);
 
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setExpirationDate(expirationDate);
         object.setInfluencerKey(influencerKey);
         object.setLocationKey(locationKey);
@@ -267,7 +229,7 @@ public class TestRequest {
         // object.setKey(key);
 
         object.setCC(cc);
-        object.setCriteria(criteria);
+        object.setContent(content);
         object.setExpirationDate(expirationDate);
         object.setInfluencerKey(influencerKey);
         object.setLocationKey(locationKey);

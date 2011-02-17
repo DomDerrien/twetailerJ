@@ -10,7 +10,6 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Proposal;
 import twetailer.dto.RawCommand;
@@ -28,12 +27,12 @@ public class SupplyCommandProcessor {
 
     private static JsonObject getFreshSupplyParameters(JsonObject command) {
         supplyParameters.removeAll();
-        if (command.containsKey(Command.CRITERIA)) { supplyParameters.put(SaleAssociate.CRITERIA, command.getJsonArray(Command.CRITERIA)); }
-        if (command.containsKey(Command.CRITERIA_ADD)) { supplyParameters.put(SaleAssociate.CRITERIA_ADD, command.getJsonArray(Command.CRITERIA_ADD)); }
-        if (command.containsKey(Command.CRITERIA_REMOVE)) { supplyParameters.put(SaleAssociate.CRITERIA_REMOVE, command.getJsonArray(Command.CRITERIA_REMOVE)); }
-        if (command.containsKey(Command.HASH_TAGS)) { supplyParameters.put(SaleAssociate.HASH_TAGS, command.getJsonArray(Command.HASH_TAGS)); }
-        if (command.containsKey(Command.HASH_TAGS_ADD)) { supplyParameters.put(SaleAssociate.HASH_TAGS_ADD, command.getJsonArray(Command.HASH_TAGS_ADD)); }
-        if (command.containsKey(Command.HASH_TAGS_REMOVE)) { supplyParameters.put(SaleAssociate.HASH_TAGS_REMOVE, command.getJsonArray(Command.HASH_TAGS_REMOVE)); }
+        if (command.containsKey(SaleAssociate.CRITERIA)) { supplyParameters.put(SaleAssociate.CRITERIA, command.getJsonArray(SaleAssociate.CRITERIA)); }
+        if (command.containsKey(SaleAssociate.CRITERIA_ADD)) { supplyParameters.put(SaleAssociate.CRITERIA_ADD, command.getJsonArray(SaleAssociate.CRITERIA_ADD)); }
+        if (command.containsKey(SaleAssociate.CRITERIA_REMOVE)) { supplyParameters.put(SaleAssociate.CRITERIA_REMOVE, command.getJsonArray(SaleAssociate.CRITERIA_REMOVE)); }
+        if (command.containsKey(SaleAssociate.HASH_TAGS)) { supplyParameters.put(SaleAssociate.HASH_TAGS, command.getJsonArray(SaleAssociate.HASH_TAGS)); }
+        if (command.containsKey(SaleAssociate.HASH_TAGS_ADD)) { supplyParameters.put(SaleAssociate.HASH_TAGS_ADD, command.getJsonArray(SaleAssociate.HASH_TAGS_ADD)); }
+        if (command.containsKey(SaleAssociate.HASH_TAGS_REMOVE)) { supplyParameters.put(SaleAssociate.HASH_TAGS_REMOVE, command.getJsonArray(SaleAssociate.HASH_TAGS_REMOVE)); }
         return supplyParameters;
     }
 

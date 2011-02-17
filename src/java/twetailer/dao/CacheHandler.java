@@ -122,8 +122,9 @@ public class CacheHandler<T extends Entity> {
      */
     public static void clearCache() {
         try {
-            Cache cache = getCache();
-            cache.clear();
+            getLogger().finest("Clearing entire cache");
+            getCache().clear();
+            getLogger().finest("Is cache empty? " + getCache().isEmpty());
         }
         catch (CacheException ex) {
             getLogger().warning("Cache flushing failed -- message: " + ex.getMessage());

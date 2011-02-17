@@ -454,7 +454,7 @@ public class MessageGenerator {
         // Command
         // Command.ACTION
         parameters.put(prefix + Command.CC, command.getSerializedCC(noCCIndicator)); // Default setting
-        parameters.put(prefix + Command.CRITERIA, command.getSerializedCriteria(emptyListIndicator));
+        parameters.put(prefix + Command.CONTENT, command.getContent(emptyListIndicator));
         if (command.getDueDate() != null) { parameters.put(prefix + Command.DUE_DATE, serializeDate(command.getDueDate(), userLocale)); }
         parameters.put(prefix + Command.HASH_TAGS, command.getSerializedHashTags(emptyListIndicator));
         String metadata = command.getMetadata();

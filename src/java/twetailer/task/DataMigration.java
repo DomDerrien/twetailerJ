@@ -80,7 +80,7 @@ public class DataMigration {
             List<Demand> results = (List<Demand>) query.execute();
             for (Demand demand : results) {
                 if (demand.getContent().length() == 0) {
-                    List<String> criteria = demand.getOriginalCriteria();
+                    List<String> criteria = null; // demand.getOriginalCriteria();
                     if (criteria != null && 0 < criteria.size()) {
                         String content = "";
                         for (String tag: criteria) {
@@ -101,7 +101,7 @@ public class DataMigration {
             List<Proposal> results = (List<Proposal>) query.execute();
             for (Proposal proposal : results) {
                 if (proposal.getContent().length() == 0) {
-                    List<String> criteria = proposal.getOriginalCriteria();
+                    List<String> criteria = null; // proposal.getOriginalCriteria();
                     if (criteria != null && 0 < criteria.size()) {
                         String content = "";
                         for (String tag: criteria) {

@@ -1,8 +1,6 @@
 package twetailer.task;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 import java.util.List;
@@ -19,12 +17,8 @@ import org.junit.Test;
 
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.MockTwitterConnector;
-import twetailer.connector.BaseConnector.Source;
-import twetailer.dao.BaseOperations;
-import twetailer.dao.DemandOperations;
 import twetailer.dao.LocationOperations;
 import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
 import twetailer.dto.Location;
 import twetailer.dto.Request;
 import twetailer.task.RequestValidator.ValidationStatus;
@@ -70,12 +64,7 @@ public class TestRequestValidator {
 
     @Test
     public void testCheckRequestFieldsIa() {
-        Request request = new Request() {
-            @Override
-            public List<String> getCriteria() {
-                return null;
-            }
-        };
+        Request request = new Request(); // getCriteria() returned null
         assertEquals(ValidationStatus.noTagNorHashTag, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
 
@@ -104,7 +93,7 @@ public class TestRequestValidator {
                 return null;
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         assertEquals(ValidationStatus.noDueDate, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
 
@@ -116,7 +105,7 @@ public class TestRequestValidator {
                 return new Date(nowTime - (2 * 60 * 60) * 1000L); // 2 hours in the past
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         assertEquals(ValidationStatus.dueDateInPast, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
 
@@ -128,7 +117,7 @@ public class TestRequestValidator {
                 return new Date(nowTime + (2 * 365 * 24 * 60 * 60) * 1000L); // 2 years in the future
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         assertEquals(ValidationStatus.dueDateTooFarInFuture, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
 
@@ -188,7 +177,7 @@ public class TestRequestValidator {
                 return null;
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(0.001);
         request.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         assertEquals(ValidationStatus.rangeTooSmall, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -197,7 +186,7 @@ public class TestRequestValidator {
     @Test
     public void testCheckRequestFieldsIIIb() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(0.001);
         request.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         assertEquals(ValidationStatus.rangeTooSmall, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -206,7 +195,7 @@ public class TestRequestValidator {
     @Test
     public void testCheckRequestFieldsIIIc() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(999999999999999999999.99D);
         request.setRangeUnit(LocaleValidator.KILOMETER_UNIT);
         assertEquals(ValidationStatus.rangeTooLarge, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -220,7 +209,7 @@ public class TestRequestValidator {
                 return null;
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(0.001);
         request.setRangeUnit(LocaleValidator.MILE_UNIT);
         assertEquals(ValidationStatus.rangeTooSmall, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -229,7 +218,7 @@ public class TestRequestValidator {
     @Test
     public void testCheckRequestFieldsIIIe() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(0.001);
         request.setRangeUnit(LocaleValidator.MILE_UNIT);
         assertEquals(ValidationStatus.rangeTooSmall, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -238,7 +227,7 @@ public class TestRequestValidator {
     @Test
     public void testCheckRequestFieldsIIIf() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRange(999999999999999999999.99D);
         request.setRangeUnit(LocaleValidator.MILE_UNIT);
         assertEquals(ValidationStatus.rangeTooLarge, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
@@ -252,7 +241,7 @@ public class TestRequestValidator {
                 return null;
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setRangeUnit(LocaleValidator.MILE_UNIT);
         assertEquals(ValidationStatus.noQuantity, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
@@ -260,7 +249,7 @@ public class TestRequestValidator {
     @Test
     public void testCheckRequestFieldsIVb() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setQuantity(0L);
         assertEquals(ValidationStatus.noQuantity, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
@@ -273,14 +262,14 @@ public class TestRequestValidator {
                 return null;
             }
         };
-        request.addCriterion("tag");
+        request.setContent("tag");
         assertEquals(ValidationStatus.noLocationKey, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
 
     @Test
     public void testCheckRequestFieldsVb() {
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setLocationKey(0L);
         assertEquals(ValidationStatus.noLocationKey, RequestValidator.checkRequestFields(new MockPersistenceManager(), new Consumer(), request));
     }
@@ -290,7 +279,7 @@ public class TestRequestValidator {
         final Long locationKey = 5654645232L;
 
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
@@ -308,7 +297,7 @@ public class TestRequestValidator {
         final Long locationKey = 5654645232L;
 
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
@@ -329,7 +318,7 @@ public class TestRequestValidator {
         final Long locationKey = 5654645232L;
 
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {
@@ -350,7 +339,7 @@ public class TestRequestValidator {
         final Long locationKey = 5654645232L;
 
         Request request = new Request();
-        request.addCriterion("tag");
+        request.setContent("tag");
         request.setLocationKey(locationKey);
 
         BaseSteps.setMockLocationOperations(new LocationOperations() {

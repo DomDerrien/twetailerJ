@@ -25,7 +25,6 @@ import twetailer.dao.ProposalOperations;
 import twetailer.dao.SaleAssociateOperations;
 import twetailer.dao.SettingsOperations;
 import twetailer.dao.StoreOperations;
-import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Proposal;
@@ -226,7 +225,7 @@ public class TestRobotResponder {
                 // "core_" because Demand has no default hash tag
                 String jsonBag = LabelExtractor.get(ResourceFileId.fourth, "long_" + "core_" + "robot_automatedResponse", Locale.ENGLISH);
                 try {
-                    assertEquals(new Proposal(new JsonParser(jsonBag).getJsonObject()).getSerializedCriteria(), proposal.getSerializedCriteria());
+                    assertEquals(new Proposal(new JsonParser(jsonBag).getJsonObject()).getContent(), proposal.getContent());
                     proposal.setKey(proposalKey);
                     return proposal;
                 }

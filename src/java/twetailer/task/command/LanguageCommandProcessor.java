@@ -8,8 +8,8 @@ import javax.jdo.PersistenceManager;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
-import twetailer.dto.Demand;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.ConsumerSteps;
 import twetailer.validator.LocaleValidator;
@@ -34,8 +34,8 @@ public class LanguageCommandProcessor {
         String messageId;
         Object[] messageParams;
 
-        if (command.containsKey(Demand.CRITERIA_ADD)) {
-            String newLanguage = LocaleValidator.checkLanguage(command.getJsonArray(Demand.CRITERIA_ADD).getString(0));
+        if (command.containsKey(Command.CONTENT)) {
+            String newLanguage = LocaleValidator.checkLanguage(command.getString(Command.CONTENT));
             if (consumer.getLanguage().equals(newLanguage)) {
                 messageId = "cp_command_language_given_value_as_current";
                 messageParams = new Object[] {
