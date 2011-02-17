@@ -280,6 +280,10 @@ public class Command extends Entity {
         return Arrays.asList(getContent().split("\\s"));
     }
 
+    public List<String> getOriginalCriteria() {
+        return criteria;
+    }
+
     @Deprecated
     public void setCriteria(List<String> criteria) {
         if (criteria == null) {

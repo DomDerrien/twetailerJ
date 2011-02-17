@@ -12,6 +12,7 @@ import org.datanucleus.store.appengine.query.JDOCursorHelper;
 
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Demand;
+import twetailer.dto.Proposal;
 
 import com.google.appengine.api.datastore.Cursor;
 
@@ -69,5 +70,52 @@ public class DataMigration {
             query.closeAll();
         }
         return cursorString;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void migrateCriteriaToContent(PersistenceManager pm) {
+        Query query = null;
+        try {
+            query = pm.newQuery(Demand.class);
+            List<Demand> results = (List<Demand>) query.execute();
+            for (Demand demand : results) {
+                if (demand.getContent().length() == 0) {
+                    List<String> criteria = demand.getOriginalCriteria();
+                    if (criteria != null && 0 < criteria.size()) {
+                        String content = "";
+                        for (String tag: criteria) {
+                            content += tag + " ";
+                        }
+                        demand.setContent(content.trim());
+                        pm.makePersistent(demand);
+                        getLogger().warning("Demand " + demand.getKey() + " -- transfer of: " + content);
+                    }
+                }
+            }
+        }
+        finally {
+            query.closeAll();
+        }
+        try {
+            query = pm.newQuery(Proposal.class);
+            List<Proposal> results = (List<Proposal>) query.execute();
+            for (Proposal proposal : results) {
+                if (proposal.getContent().length() == 0) {
+                    List<String> criteria = proposal.getOriginalCriteria();
+                    if (criteria != null && 0 < criteria.size()) {
+                        String content = "";
+                        for (String tag: criteria) {
+                            content += tag + " ";
+                        }
+                        proposal.setContent(content.trim());
+                        pm.makePersistent(proposal);
+                        getLogger().warning("Proposal " + proposal.getKey() + " -- transfer of: " + content);
+                    }
+                }
+            }
+        }
+        finally {
+            query.closeAll();
+        }
     }
 }

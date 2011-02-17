@@ -34,6 +34,7 @@ import twetailer.dto.Proposal;
 import twetailer.dto.Settings;
 import twetailer.dto.Wish;
 import twetailer.task.CommandProcessor;
+import twetailer.task.DataMigration;
 import twetailer.task.DemandProcessor;
 import twetailer.task.DemandValidator;
 import twetailer.task.LocationValidator;
@@ -124,6 +125,15 @@ public class MaelzelServlet extends HttpServlet {
                     for (Demand demand: demands) {
                         demandOperations.deleteDemand(pm, demand);
                     }
+                }
+                finally {
+                    pm.close();
+                }
+            }
+            else if ("/migrateCriteria".equals(pathInfo)) {
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+                try {
+                    DataMigration.migrateCriteriaToContent(pm);
                 }
                 finally {
                     pm.close();
