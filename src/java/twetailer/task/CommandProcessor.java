@@ -109,7 +109,7 @@ public class CommandProcessor {
         String coordinates = location == null || location.getPostalCode() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_locale_part", new Object[] { location.getPostalCode(), location.getCountryCode() }, locale) + space);
         String range = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_range_part", new Object[] { demand.getRange(), demand.getRangeUnit() }, locale) + space;
         String quantity = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_quantity_part", new Object[] { demand.getQuantity() }, locale) + space;
-        String tags = demand.getCriteria().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { demand.getSerializedCriteria() }, locale) + space);
+        String tags = demand.getContent().length() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { demand.getContent() }, locale) + space);
         String hashtags = demand.getHashTags().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_hashtags_part", new Object[] { demand.getSerializedHashTags() }, locale) + space);
         String proposals = anonymized || demand.getProposalKeys().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_proposals_part", new Object[] { Command.getSerializedTags(null, Command.SEMICOLON + Command.SPACE, demand.getProposalKeys()) }, locale) + space);
         String CC = "";
@@ -168,7 +168,7 @@ public class CommandProcessor {
             space;
         String quantity = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_quantity_part", new Object[] { proposal.getQuantity() }, locale) + space;
         String dueDate = proposal.getDueDate() == null ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_dueDate_part", new Object[] { serializeDate(proposal.getDueDate()) }, locale) + space);
-        String tags = proposal.getCriteria().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { proposal.getSerializedCriteria() }, locale) + space);
+        String tags = proposal.getContent().length() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_tags_part", new Object[] { proposal.getContent() }, locale) + space);
         String hashtags = proposal.getHashTags().size() == 0 ? "" : (LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_hashtags_part", new Object[] { proposal.getSerializedHashTags() }, locale) + space);
         String price = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_price_part", new Object[] { proposal.getPrice(), "$" }, locale) + space;
         String total = LabelExtractor.get(resId, labelKeyPrefix + "cp_tweet_total_part", new Object[] { proposal.getTotal(), "$" }, locale) + space;

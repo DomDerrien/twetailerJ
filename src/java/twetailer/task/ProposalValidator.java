@@ -102,7 +102,7 @@ public class ProposalValidator {
                 RequestValidator.filterHashTags(pm, saConsumerRecord, proposal, "proposal");
 
                 String proposalRef = LabelExtractor.get("cp_tweet_proposal_reference_part", new Object[] { proposal.getKey() }, locale);
-                if ((proposal.getCriteria() == null || proposal.getCriteria().size() == 0) && (proposal.getHashTags() == null || proposal.getHashTags().size() == 0)) {
+                if ((proposal.getContent().length() == 0) && (proposal.getHashTags() == null || proposal.getHashTags().size() == 0)) {
                     message = LabelExtractor.get("pv_report_proposal_without_tag", new Object[] { proposalRef }, locale);
                 }
                 else if (proposal.getDueDate() == null || proposal.getDueDate().getTime() < nowTime) {

@@ -44,9 +44,9 @@ public class SaleAssociate extends Entity {
     @Persistent
     private List<String> criteria = new ArrayList<String>();
 
-    public final static String  CRITERIA = Command.CRITERIA;
-    public static final String CRITERIA_ADD = Command.CRITERIA_ADD;
-    public static final String CRITERIA_REMOVE = Command.CRITERIA_REMOVE;
+    public static final String CRITERIA = "criteria";
+    public static final String CRITERIA_ADD = "\\+criteria";
+    public static final String CRITERIA_REMOVE = "\\-criteria";
 
     @Persistent
     private List<String> hashTags = new ArrayList<String>();

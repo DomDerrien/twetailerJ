@@ -668,8 +668,8 @@
                             <td><textarea dojoType="dijit.form.Textarea" id="demand.cc" name="cc" style="width:10em;"></textarea></td>
                         </tr>
                         <tr>
-                            <td><label for="demand.criteria">Criteria:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.criteria" name="criteria" style="width:10em;"></textarea></td>
+                            <td><label for="demand.content">Content:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand.content" name="content" style="width:10em;"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="demand.dueDate">Due date:</label></td>
@@ -762,7 +762,6 @@
                                     dojoType="dijit.form.ComboBox"
                                     hasDownArrow="true"
                                     id="demand.proposalKeys"
-                                    name="proposalKeys"
                                     onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER'); }"
                                     style="width:8em;"
                                 >
@@ -801,7 +800,6 @@
                                     dojoType="dijit.form.ComboBox"
                                     hasDownArrow="true"
                                     id="demand.saleAssociateKeys"
-                                    name="saleAssociateKeys"
                                     onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate'); }"
                                     style="width:8em;"
                                 >
@@ -871,8 +869,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><label for="proposal.criteria">Criteria:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.criteria" name="criteria" style="width:10em;"></textarea></td>
+                            <td><label for="proposal.content">Content:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.content" name="content" style="width:10em;"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.dueDate">Due date:</label></td>
@@ -1599,7 +1597,13 @@
                                 dijit.byId(prefix + '.' + attr).set('value', value[0]);
                             }
                             else {
-                                dijit.byId(prefix + '.' + attr).set('value', value);
+                                var field = dijit.byId(prefix + '.' + attr)
+                                if (field) {
+                                    field.set('value', value);
+                                }
+                                else if (attr != 'criteria') {
+                                    alert('Field "' + prefix + '.' + attr + '" is missing!');
+                                }
                             }
                             if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
                                 var isNonModifiable = value == 'closed' || value == 'cancelled' || value == 'markedForDeletion';
@@ -1634,6 +1638,12 @@
             node: prefix + 'InformationFieldset',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
+        var pointOfView = (entityName == 'Proposal' || entityName == 'Store') ? 'SALE_ASSOCIATE' : 'CONSUMER';
+        var prefix = entityName.toLowerCase();
+        var pointOfViewField = dojo.byId(prefix + '.pointOfView');
+        if (pointOfViewField) {
+            pointOfViewField.innerHTML = pointOfView;
+        }
         var data = localModule.formToObject(prefix + 'Information');
         if (data.cc != null) { data.cc = data.cc.split('\n'); }
         if (data.criteria != null) { data.criteria = data.criteria.split('\n'); }
@@ -1641,6 +1651,9 @@
         if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralized server-side, just removed for the bandwidth
         if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
         data['<%= CommandProcessor.DEBUG_INFO_SWITCH %>'] = 'yes';
+        data['pointOfView'] = pointOfView;
+        data['<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>'] = parseInt(dijit.byId('consumer.key').get('value'));
+        data['<%= BaseRestlet.ON_BEHALF_ASSOCIATE_KEY %>'] = parseInt(dijit.byId('saleassociate.key').get('value') || 0);
         dojo.xhrPut({
             headers: { 'content-type': 'application/json; charset=UTF-8' },
             putData: dojo.toJson(data),

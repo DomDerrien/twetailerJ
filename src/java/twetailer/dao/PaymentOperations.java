@@ -45,7 +45,7 @@ public class PaymentOperations extends BaseOperations {
      * Use the given key to get the corresponding Payment instance
      *
      * @param key Identifier of the payment
-     * @return First payment matching the given criteria or <code>null</code>
+     * @return First payment matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Payment record
      *
@@ -67,7 +67,7 @@ public class PaymentOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the payment
-     * @return First payment matching the given criteria or <code>null</code>
+     * @return First payment matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Payment record
      */

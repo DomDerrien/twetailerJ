@@ -287,9 +287,10 @@ public class DemandProcessor {
                 if (0 < normalTagScore) {
                     List<String> suppliedTags = saleAssociate.getCriteria();
                     if (suppliedTags != null) {
-                        if (demand.getCriteria() != null) {
-                            for (String tag: demand.getCriteria()) {
-                                if (suppliedTags.contains(tag.toLowerCase(locale))) {
+                        if (demand.getContent().length() != 0) {
+                            String[] tags = demand.getContent().split("\\s");
+                            for (int idx = 0; idx < tags.length; idx ++) {
+                                if (suppliedTags.contains(tags[idx].toLowerCase(locale))) {
                                     ++ floatingScore;
                                     if (hashTagScore + normalTagScore == floatingScore) {
                                         break; // Number of normal tags reached

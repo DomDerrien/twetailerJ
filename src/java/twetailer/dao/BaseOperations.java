@@ -117,7 +117,7 @@ public class BaseOperations {
             declaration = "Boolean " + name;
         }
         else {
-            throw new DataSourceException("Unsupported criteria value type: " + value.getClass());
+            throw new DataSourceException("Unsupported filter value type: " + value.getClass());
         }
         return new Object[] { declaration, value };
     }
@@ -126,7 +126,7 @@ public class BaseOperations {
      * Prepare the query for one attribute matching one value
      *
      * @param query Object to prepare
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
      * @return Value for the query submission

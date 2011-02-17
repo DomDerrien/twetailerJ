@@ -398,26 +398,26 @@ public class ListCommandProcessor {
      * If a tag ends with a star (*), each criterion is only compared to the corresponding version.
      *
      * @param collator Java object used for the locale dependent comparisons
-     * @param tags List of filters (can end with a star) to compare to the criteria
-     * @param criteria List of criteria to compare to the tags
+     * @param tags List of filters (can end with a star) to compare to the filter
+     * @param words List of filter to compare to the tags
      * @return <code>true</code> if one criterion matches one tag, <code>false</code> otherwise
      */
-    protected static boolean checkIfIncluded(Collator collator, List<Object> tags, List<String> criteria) {
+    protected static boolean checkIfIncluded(Collator collator, List<Object> tags, List<String> words) {
         for(Object tag: tags) {
             if (((String) tag).endsWith("*")) {
-                // Compare the filter to the beginning of each demand criteria
+                // Compare the filter to the beginning of each demand word
                 String truncatedTag = StringUtils.toUnicode(((String) tag).getBytes()); // TODO: I don't think it does make a difference to convert the tags here!
                 int usefulLength = truncatedTag.length() - 1;
                 truncatedTag = truncatedTag.substring(0, usefulLength);
-                for (String criterion: criteria) {
+                for (String criterion: words) {
                     if (truncatedTag.length() <= criterion.length() && collator.compare(criterion.substring(0, usefulLength), truncatedTag) == 0) {
                         return true;
                     }
                 }
             }
             else {
-                // Compare the filter to each demand criteria
-                for (String criterion: criteria) {
+                // Compare the filter to each demand word
+                for (String criterion: words) {
                     if (collator.compare(criterion, (String) tag) == 0) {
                         return true;
                     }

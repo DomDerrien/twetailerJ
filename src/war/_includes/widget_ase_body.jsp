@@ -11,6 +11,7 @@
     import="domderrien.i18n.LabelExtractor"
     import="domderrien.i18n.LabelExtractor.ResourceFileId"
     import="domderrien.i18n.StringUtils"
+    import="twetailer.dto.Command"
     import="twetailer.dto.Consumer"
     import="twetailer.dto.Demand"
     import="twetailer.dto.HashTag.RegisteredHashTag"
@@ -124,6 +125,10 @@
                             String criteria = request.getParameter("criteria");
                             if (criteria != null) {
                                 out.write(criteria);
+                            }
+                            String content = request.getParameter("content");
+                            if (content != null) {
+                                out.write(content);
                             }
                             %></textarea><br/>
                             <div
@@ -631,7 +636,7 @@
             <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             // <%= Demand.HASH_TAGS %>: [], // No hash tag to communicate
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
-            <%= Demand.CRITERIA %>: dojo.trim(dijit.byId('tags').get('value')).split(/\s+/)
+            <%= Command.CONTENT %>: dojo.trim(dijit.byId('tags').get('value'))
         };
         if (dijit.byId('demoMode').get('value') !== false) {
             parameters.<%= Demand.HASH_TAGS %> = ['<%= RegisteredHashTag.demo %>'];

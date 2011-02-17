@@ -801,35 +801,21 @@ public class TestCommand {
         command1.addCriterion("");
         command1.addCriterion("b");
         command1.addCriterion("a");
-        assertEquals("a b", command1.getSerializedCriteria(defaultValue));
+        assertEquals("a b a", command1.getSerializedCriteria(defaultValue));
 
         Command command2 = new Command();
         command2.setCriteria(command1.getCriteria());
-        assertEquals(2, command2.getCriteria().size());
+        assertEquals(3, command2.getCriteria().size());
 
         command1.removeCriterion("a");
         command1.removeCriterion(null);
         command1.removeCriterion("");
         command1.removeCriterion("c");
 
-        assertEquals(1, command2.getCriteria().size());
-        assertEquals("b", command2.getSerializedCriteria(defaultValue));
+        assertEquals(3, command2.getCriteria().size());
+        assertEquals("a b a", command2.getSerializedCriteria(defaultValue));
 
         new Command().resetLists().removeCriterion("z"); // No issue reported
-    }
-
-    @Test
-    public void testResetCriteria() {
-        Command object = new Command();
-        assertEquals(0, object.getCriteria().size());
-        object.addCriterion("a");
-        assertEquals(1, object.getCriteria().size());
-        object.resetCriteria();
-        assertEquals(0, object.getCriteria().size());
-        object.resetLists();
-        assertNull(object.getCriteria());
-        object.resetCriteria(); // No issue reported
-        assertNull(object.getCriteria());
     }
 
     @Test

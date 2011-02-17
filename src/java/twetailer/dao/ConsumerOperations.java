@@ -460,7 +460,7 @@ public class ConsumerOperations extends BaseOperations {
      * Use the given key to get the corresponding Consumer instance
      *
      * @param key Identifier of the consumer
-     * @return First consumer matching the given criteria or <code>null</code>
+     * @return First consumer matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      *
@@ -481,7 +481,7 @@ public class ConsumerOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the consumer
-     * @return First consumer matching the given criteria or <code>null</code>
+     * @return First consumer matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      */
@@ -495,7 +495,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the consumer
      * @param useCache If <code>true</code> the Consumer record might come from the cache, otherwise it's loaded from the data store
-     * @return First consumer matching the given criteria or <code>null</code>
+     * @return First consumer matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Consumer record
      */
@@ -525,10 +525,10 @@ public class ConsumerOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Consumer instances
      *
-     * @param attribute Name of the consumer attribute used a the search criteria
+     * @param attribute Name of the consumer attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of consumers matching the given criteria
+     * @return Collection of consumers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -548,10 +548,10 @@ public class ConsumerOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Consumer instances
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the consumer attribute used a the search criteria
+     * @param attribute Name of the consumer attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of consumers matching the given criteria
+     * @return Collection of consumers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -587,7 +587,7 @@ public class ConsumerOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param consumerKeys list of Consumer instance identifiers
-     * @return Collection of consumers matching the given criteria
+     * @return Collection of consumers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -615,7 +615,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of consumers matching the given criteria
+     * @return Collection of consumers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -644,7 +644,7 @@ public class ConsumerOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of consumer keys matching the given criteria
+     * @return Collection of consumer keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

@@ -147,7 +147,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * Use the given key to get the corresponding SaleAssociate instance
      *
      * @param key Identifier of the sale associate
-     * @return First sale associate matching the given criteria or <code>null</code>
+     * @return First sale associate matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      *
@@ -168,7 +168,7 @@ public class SaleAssociateOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the sale associate
-     * @return First sale associate matching the given criteria or <code>null</code>
+     * @return First sale associate matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      */
@@ -182,7 +182,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the sale associate
      * @param useCache If <code>true</code> the SaleAssociate record might come from the cache, otherwise it's loaded from the data store
-     * @return First sale associate matching the given criteria or <code>null</code>
+     * @return First sale associate matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid SaleAssociate record
      */
@@ -213,10 +213,10 @@ public class SaleAssociateOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding SaleAssociate instances
      *
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of sale associates matching the given criteria
+     * @return Collection of sale associates matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      *
@@ -236,10 +236,10 @@ public class SaleAssociateOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding SaleAssociate instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of sale associates matching the given criteria
+     * @return Collection of sale associates matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      */
@@ -266,10 +266,10 @@ public class SaleAssociateOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding SaleAssociate identifiers while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the SaleAssociate attribute used a the search criteria
+     * @param attribute Name of the SaleAssociate attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of SaleAssociate identifiers matching the given criteria
+     * @return Collection of SaleAssociate identifiers matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      */
@@ -294,7 +294,7 @@ public class SaleAssociateOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param saleAssociateKeys list of SaleAssociate instance identifiers
-     * @return Collection of sale associates matching the given criteria
+     * @return Collection of sale associates matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      */
@@ -318,7 +318,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of sale associates matching the given criteria
+     * @return Collection of sale associates matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      */
@@ -347,7 +347,7 @@ public class SaleAssociateOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of sale associate keys matching the given criteria
+     * @return Collection of sale associate keys matching the given filter
      *
      * @throws DataSourceException If the data exchange with the data store fails
      */

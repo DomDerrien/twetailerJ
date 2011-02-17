@@ -77,7 +77,7 @@ public class RequestValidator {
 
         // getLogger().finest("========================\n now: " + nowTime + "\n exp: " + request.getExpirationDate() + "\n due: " + request.getDueDate() + "\n========================");
 
-        if ((request.getCriteria() == null || request.getCriteria().size() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
+        if ((request.getContent().length() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
             return ValidationStatus.noTagNorHashTag;
         }
         if (request.getDueDate() == null) {
@@ -160,7 +160,7 @@ public class RequestValidator {
         // getLogger().finest("========================\n now: " + nowTime + "\n exp: " + wish.getExpirationDate() + "\n due: " + wish.getDueDate() + "\n========================");
 
         String wishRef = LabelExtractor.get("cp_tweet_" + messageBaseId + "_reference_part", new Object[] { request.getKey() }, locale);
-        if ((request.getCriteria() == null || request.getCriteria().size() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
+        if ((request.getContent().length() == 0) && (request.getHashTags() == null || request.getHashTags().size() == 0)) {
             message = LabelExtractor.get("dv_report_" + messageBaseId + "_without_tag", new Object[] { wishRef }, locale);
         }
         else if (request.getDueDate() == null || request.getDueDate().getTime() < nowTime) {

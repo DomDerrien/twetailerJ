@@ -157,7 +157,8 @@ public class AuthVerifierFilter implements Filter {
             String name = (String) names.nextElement();
             out.append(name).append(": ");
             String[] values = request.getParameterValues(name);
-            for (int i = 0; i < values.length; i++) {
+            int limit = values == null ? 0 : values.length;
+            for (int i = 0; i < limit; i++) {
                 out.append(values[i]).append(" ");
             }
             out.append("\n");

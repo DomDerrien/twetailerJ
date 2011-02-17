@@ -182,11 +182,14 @@
         dojo.byId('proposalForm.demand.hashTags').style.display = showDemandField ? '' : 'none';
         dojo.byId('proposalForm.proposal.metadata').style.display = showDemandField ? '' : 'none'; // No hash tag means no metadata support out of the box
         showDemandField = false;
-        if (dojo.isArray(item.criteria)) {
-            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
-            showDemandField = 0 < item.criteria.length;
-        }
-        dojo.byId('proposalForm.demand.criteria').style.display = showDemandField ? '' : 'none';
+        dijit.byId('demand.content').set('value', item.content[0]);
+        showDemandField = 0 < item.content[0].length;
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(item.criteria)) {
+//            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
+//            showDemandField = 0 < item.criteria.length;
+//        }
+        dojo.byId('proposalForm.demand.content').style.display = showDemandField ? '' : 'none';
         showDemandField = false;
         if (item.metadata && item.metadata[0]) {
             dijit.byId('demand.metadata').set('value', _globalCommon.displayMetadata(item.metadata[0]));
@@ -239,9 +242,11 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);
         dijit.byId('proposal.time').set('value', dateObject);
-        if (dojo.isArray(proposal.criteria)) {
-            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
-        }
+        dijit.byId('proposal.content').set('value', proposal.content)
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(proposal.criteria)) {
+//            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
+//        }
         dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
         var scoreValue = _getLabel('console', 'core_proposalForm_proposalNoScoreYet');
         switch(proposal.score) {
@@ -294,7 +299,8 @@
             delete data.total;
         }
         data.demandKey = parseInt(data.demandKey);
-        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+//        TODO: remove when the transition from criteria to content is completed
+//        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
         data.metadata = dojo.trim(data.metadata);

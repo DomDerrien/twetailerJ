@@ -104,13 +104,13 @@ public class TestRequest {
         assertEquals(1, object.getCriteria().size());
 
         object.addCriterion("first"); // Add it twice
-        assertEquals(1, object.getCriteria().size());
-
-        object.addCriterion("second");
         assertEquals(2, object.getCriteria().size());
 
+        object.addCriterion("second");
+        assertEquals(3, object.getCriteria().size());
+
         object.removeCriterion("first"); // Remove first
-        assertEquals(1, object.getCriteria().size());
+        assertEquals(2, object.getCriteria().size());
 
         object.resetCriteria(); // Reset all
         assertEquals(0, object.getCriteria().size());

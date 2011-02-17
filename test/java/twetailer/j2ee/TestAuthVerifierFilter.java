@@ -304,6 +304,10 @@ public class TestAuthVerifierFilter {
                 return null;
             }
             @Override
+            public String[] getParameterValues(String key) {
+                return new String[] { getParameter(key) };
+            }
+            @Override
             public StringBuffer getRequestURL() {
                 return new StringBuffer("http://unit-test.org/");
             }

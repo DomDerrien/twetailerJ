@@ -198,14 +198,14 @@
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>{'criteria':['[***','réponse','automatisée','pour','fins','de','démonstration','***]'],'price':0.01,'total':1}</seg>
+                <seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':0.01,'total':1}</seg>
             </tuv>
         </tu>
         <tu tuid="long_golf_robot_automatedResponse" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>{'criteria':['[***','réponse','automatisée','pour','fins','de','démonstration','***]'],'price':30,'total':123.43}</seg>
+                <seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':30,'total':123.43}</seg>
             </tuv>
         </tu>
         <tu tuid="command_message_footer" dataType="text">
@@ -289,9 +289,9 @@
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="command_message_body_demand_list" datatype="Text">
-            <prop type="x-version">1</prop>
+        <tu tuid="command_message_body_demand_list" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
                     lister demande:{demand>key} {command>footer}

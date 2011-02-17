@@ -121,7 +121,7 @@ public class LocationOperations extends BaseOperations {
      * Use the given key to get the corresponding Location instance
      *
      * @param key Identifier of the location
-     * @return First location matching the given criteria or <code>null</code>
+     * @return First location matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      *
@@ -142,7 +142,7 @@ public class LocationOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the location
-     * @return First location matching the given criteria or <code>null</code>
+     * @return First location matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      */
@@ -161,10 +161,10 @@ public class LocationOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Location instances
      *
-     * @param attribute Name of the location attribute used a the search criteria
+     * @param attribute Name of the location attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -184,10 +184,10 @@ public class LocationOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Location instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the location attribute used a the search criteria
+     * @param attribute Name of the location attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -213,7 +213,7 @@ public class LocationOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -239,7 +239,7 @@ public class LocationOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of location identifiers matching the given criteria
+     * @return Collection of location identifiers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -265,7 +265,7 @@ public class LocationOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param postalCode postal code of the searched location
      * @param countryCode country code of the searched location
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -293,7 +293,7 @@ public class LocationOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param latitude latitude of the searched location
      * @param longitude longitude of the searched location
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      * /
@@ -361,7 +361,7 @@ public class LocationOperations extends BaseOperations {
      * @param rangeUnit unit of the distance around the search
      * @param withStore if <code>true</code>, only locations with at least a store will be returned, otherwise there's no limitation
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -429,7 +429,7 @@ public class LocationOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param locationKeys list of Location instance identifiers
-     * @return Collection of locations matching the given criteria
+     * @return Collection of locations matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

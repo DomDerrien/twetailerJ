@@ -330,7 +330,7 @@
     };
     localModule.getFormData = function() {
         // Collect data
-        var criteria =
+        var content =
             'Constructeur: ' + document.getElementById('mfc').value +
             ' Modèle: ' + document.getElementById('model').value +
             ' Informations: ' + document.getElementById('info').value;
@@ -343,7 +343,7 @@
             range: document.getElementById('range').value,
             dueDate: localModule.toISOString(dijit.byId('due').get('value')),
             hashtags: ['cardealer'],
-            criteria: criteria.split(/\s+/)
+            content: content
         };
         if (dijit.byId('demoMode').get('value') == 'on') {
             dataIn.hashTags.push('demo');

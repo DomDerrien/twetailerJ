@@ -316,7 +316,7 @@
         return source;
     };
     localModule.getFormData = function() {
-        var criteria =
+        var content =
             'Manufacturer: ' + dijit.byId('mfc').get('value') +
             ' Model: ' + dijit.byId('model').get('value') +
             ' Info: ' + dijit.byId('info').get('value');
@@ -329,7 +329,7 @@
             range: dijit.byId('range').get('value'),
             dueDate: localModule.toISOString(dijit.byId('due').get('value')),
             hashTags: ['cardealer'],
-            criteria: criteria.split(/\s+/)
+            content: content
         };
         if (dijit.byId('demoMode').get('value') == 'on') {
             dataIn.hashTags.push('demo');

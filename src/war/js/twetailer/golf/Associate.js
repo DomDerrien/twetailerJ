@@ -128,9 +128,11 @@
         dijit.byId('proposal.date').set('value', dueDate);
         dijit.byId('proposal.date').constraints.min = new Date();
         dijit.byId('proposal.time').set('value', dueDate);
-        if (dojo.isArray(item.criteria)) {
-            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
-        }
+        dijit.byId('demand.content').set('value', item.content[0])
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(item.criteria)) {
+//            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
+//        }
         dijit.byId('proposal.quantity').set('value', item.quantity[0]);
 
         if (!proposalKey) {
@@ -191,9 +193,11 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);
         dijit.byId('proposal.time').set('value', dateObject);
-        if (dojo.isArray(proposal.criteria)) {
-            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
-        }
+        dijit.byId('proposal.content').set('value', proposal.content)
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(proposal.criteria)) {
+//            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
+//        }
         dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
 
         var closeableState = proposal.state == _globalCommon.STATES.CONFIRMED;
@@ -233,7 +237,8 @@
             delete data.total;
         }
         data.demandKey = parseInt(data.demandKey);
-        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+//        TODO: remove when the transition from criteria to content is completed
+//        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
         data.hashTags = ['golf']; // TODO: offer a checkbox to allow the #demo mode

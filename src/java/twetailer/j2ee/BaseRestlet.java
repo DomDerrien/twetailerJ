@@ -101,7 +101,7 @@ public abstract class BaseRestlet extends HttpServlet {
             throws DataSourceException, ClientException;
 
     /**
-     * Select the resources with the given search criteria passed as request parameters
+     * Select the resources with the given search filter passed as request parameters
      *
      * @param parameters HTTP request parameters
      * @param loggedUser System identity of the logged user

@@ -193,6 +193,10 @@
                             if (criteria != null) {
                                 out.write(criteria);
                             }
+                            String content = request.getParameter("content");
+                            if (content != null) {
+                                out.write(content);
+                            }
                             %></textarea><br/>
                             <div
                                 iconClass="silkIcon silkIconHelp"
@@ -637,21 +641,21 @@
             return;
         }
         // Request preparation
-        var criteria = [];
+        var content = [];
         if (0 < dojo.trim(dijit.byId('metadata.make').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.make').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.make').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.model').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.model').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.model').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.transmission').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.transmission').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_transmission", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.transmission').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
-            criteria = criteria.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
+            content = content.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
         }
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
@@ -666,7 +670,7 @@
             <%= Demand.QUANTITY %>: 1, // Fixed to 1
             <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.cardealer.toString() %>'],
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
-            <%= Demand.CRITERIA %>: criteria
+            <%= Demand.CONTENT %>: content.join(' ')
         };
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {

@@ -50,7 +50,7 @@ public class InfluencerOperations extends BaseOperations {
      * Use the given key to get the corresponding Influencer instance
      *
      * @param key Identifier of the Influencer instance
-     * @return First Influencer instance matching the given criteria or <code>null</code>
+     * @return First Influencer instance matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Influencer record
      *
@@ -72,7 +72,7 @@ public class InfluencerOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the Influencer instance
-     * @return First Influencer instance matching the given criteria or <code>null</code>
+     * @return First Influencer instance matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Influencer record
      */

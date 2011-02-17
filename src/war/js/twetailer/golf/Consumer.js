@@ -127,9 +127,11 @@
 
             dijit.byId('demand.key').set('value', item.key[0]);
             dijit.byId('demand.state').set('value', _getLabel('master', 'cl_state_' + item.state[0]));
-            if (dojo.isArray(item.criteria)) {
-                dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
-            }
+        dijit.byId('demand.content').set('value', item.content[0])
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(item.criteria)) {
+//            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
+//        }
             if (dojo.isArray(item.cc)) {
                 var idx = 0, limit = item.cc.length, coordinate;
                 while (idx < limit) {
@@ -196,7 +198,8 @@
                 }
             }
         }
-        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
+//        TODO: remove when the transition from criteria to content is completed
+//        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {
             data.cc = cc;
@@ -331,9 +334,11 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);
         dijit.byId('proposal.time').set('value', dateObject);
-        if (dojo.isArray(proposal.criteria)) {
-            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
-        }
+        dijit.byId('proposal.content').set('value', proposal.content)
+//        TODO: remove when the transition from criteria to content is completed
+//        if (dojo.isArray(proposal.criteria)) {
+//            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));
+//        }
         dijit.byId('proposal.modificationDate').set('value', _globalCommon.displayDateTime(proposal.modificationDate));
 
         var modifiableState = proposal.state == _globalCommon.STATES.PUBLISHED;

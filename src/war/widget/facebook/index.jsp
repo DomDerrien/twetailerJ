@@ -386,7 +386,9 @@
             li.innerHTML = dojo.string.substitute(localModule._demandItem, [
                 demand.key,              // 0
                 demand.cc ? demand.cc.join(', ') : '',                    // 1
-                demand.criteria ? demand.criteria.join(' ') : '',         // 2
+                demand.content ,         // 2
+//                TODO: remove when the transition from criteria to content is completed
+//                demand.criteria ? demand.criteria.join(' ') : '',         // 2
                 demand.dueDate,          // 3
                 demand.expirationDate,   // 4
                 demand.hashTags ? '#' + demand.hashTags.join(', #') : '', // 5
@@ -485,7 +487,9 @@
             var store = twetailer.Common.getCachedStore(proposal.storeKey);
             li.innerHTML = dojo.string.substitute(localModule._proposalResponse, [
                 proposal.key,      // 0
-                proposal.criteria ? proposal.criteria.join(' ') : '',          // 1
+                proposal.content , // 1
+//                TODO: remove when the transition from criteria to content is completed
+//                proposal.criteria ? proposal.criteria.join(' ') : '',         // 2
                 currencySymbol,    // 2
                 proposal.dueDate,  // 3
                 proposal.hashTags ? '#' + proposal.hashTags.join(', #') : '',  // 3

@@ -116,9 +116,9 @@
                 <td>Text appearing as the brand banner</td>
             </tr>
             <tr>
-                <td>criteria</td>
-                <td><input id="criteria" type="text" value=""/></td>
-                <td>Default search criteria; note that the selected text is automatically transmitted by the bookmarklet via this parameter.</td>
+                <td>content</td>
+                <td><input id="content" type="text" value=""/></td>
+                <td>Default search content; note that the selected text is automatically transmitted by the bookmarklet via this parameter.</td>
             </tr>
             <tr>
                 <td>postalCode</td>
@@ -324,7 +324,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
         document.getElementById('referralId').value = '223001-68747561-00';
         document.getElementById('hideBrand').value = '';
         document.getElementById('brand').value = 'YellowPages.ca Buying Network';
-        document.getElementById('criteria').value = '';
+        document.getElementById('content').value = '';
         document.getElementById('postalCode').value = 'H3C2N6';
         document.getElementById('countryCode').value = 'CA';
         document.getElementById('font-family').value = 'arial,helvetica, sans-serif';
@@ -349,7 +349,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
         }
         return parameters;
     };
-    var addParameterSequences = function(parameters, conveyCriteria) {
+    var addParameterSequences = function(parameters, conveyContent) {
         addParameterSequence(parameters, 'lg');
         addParameterSequence(parameters, 'referralId');
         addParameterSequence(parameters, 'hideBrand');
@@ -371,8 +371,8 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
         addParameterSequence(parameters, 'background-color');
         addParameterSequence(parameters, 'background-color-odd-row');
 
-        if (conveyCriteria) {
-            addParameterSequence(parameters, 'criteria');
+        if (conveyContent) {
+            addParameterSequence(parameters, 'content');
         }
         else {
             // Expected to be setup dynamically by the bookmarklet code
@@ -397,7 +397,7 @@ javascript:(function(){window.ase_config={lg:'en',showWidget:true};var%20dc=docu
             dc = document,
             dv = dc.getElementById(id),
             txt = window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : '',
-            src = '<%= ApplicationSettings.get().getApplicationWebsite() %>widget/ase.jsp?[plchldr]&criteria=' + escape(txt),
+            src = '<%= ApplicationSettings.get().getApplicationWebsite() %>widget/ase.jsp?[plchldr]&content=' + escape(txt),
             ifr;
         if (dv) {
             dv.style.display = '';

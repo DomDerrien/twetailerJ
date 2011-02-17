@@ -222,17 +222,11 @@ public class TestProposalValidator {
                 assertEquals(proposalKey, key);
                 assertNull(cKey);
                 assertNull(sKey);
-                Proposal proposal = new Proposal() {
-                    @Override
-                    public List<String> getCriteria() {
-                        return new ArrayList<String>();
-                    }
-                };
+                Proposal proposal = new Proposal();
                 proposal.setKey(proposalKey);
                 proposal.setOwnerKey(saleAssociateKey);
                 proposal.setSource(source);
                 proposal.setState(state);
-                proposal.addCriterion("test");
                 return proposal;
             }
             @Override

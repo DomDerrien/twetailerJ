@@ -16,7 +16,7 @@
         installWidget = function(){
             var dv = dc.getElementById(id),
                 txt = escape(window.getSelection ? window.getSelection() : dc.getSelection ? dc.getSelection() : dc.selection ? dc.selection.createRange().text : ''),
-                src = dm + (aC.hashtag || 'ase') + '.jsp?criteria=' + txt,
+                src = dm + (aC.hashtag || 'ase') + '.jsp?content=' + txt,
                 bd = aC.brand || bdl[ht][lg],
                 ifr, p;
             for(p in aC) {
@@ -28,7 +28,7 @@
             src += '&brand=' + bd + '&lg=' + lg;
             if (dv) {
                 ifr = dc.getElementById(id + 'Ifr');
-                if (txt == '' || ifr.src.indexOf('criteria=' + txt + '&') != -1) {
+                if (txt == '' || ifr.src.indexOf('content=' + txt + '&') != -1) {
                     dv.style.display = '';
                 }
                 else {

@@ -184,8 +184,8 @@
                            <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayPullCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_metadata_pullCart", locale) %></th>
                            <th field="<%= Demand.META_DATA %>" formatter="twetailer.golf.Common.displayGolfCartNb" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_metadata_golfCart", locale) %></th>
                            <th
-                               fields="<%= Demand.CRITERIA %>"
-                               formatter="twetailer.Common.displayCriteria"
+                               fields="<%= Demand.CONTENT %>"
+                               x_formatter="twetailer.Common.displayCriteria"
                                styles="padding:2px 5px;"
                                width="30%"
                            ><%= LabelExtractor.get(ResourceFileId.third, "golf_theader_criteria", locale) %></th>
@@ -308,8 +308,8 @@
                     <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberSpinner" id="demand.metadata.golfCart" name="golfCart" style="width:3em;" type="text" value="0" /> </td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "golf_demandForm_demandCriteria", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.criteria" name="criteria" style="width:25em;" type="text" /></td>
+                    <td align="right"><label for="demand.content"><%= LabelExtractor.get(ResourceFileId.third, "golf_demandForm_demandCriteria", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="demand.content" name="content" style="width:25em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right" style="padding-top:7px;"><label for="demand.cc"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCC", locale) %></label></td>
@@ -406,8 +406,8 @@
                     <td>$<input dojoType="dijit.form.TextBox" id="proposal.total" readonly="true" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalCriteria", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.criteria" readonly="true" style="width:25em;" type="text" /></td>
+                    <td align="right"><label for="proposal.content"><%= LabelExtractor.get(ResourceFileId.third, "golf_proposalForm_proposalCriteria", locale) %></label></td>
+                    <td><input dojoType="dijit.form.TextBox" id="proposal.content" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
                 <tr>
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalModificationDate", locale) %></td>
@@ -442,7 +442,7 @@
                 <tr>
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_storeForm_storeAddress", locale) %></td>
                     <td>
-                        <textarea dojoType="dijit.form.Textarea" id="store.address" name="criteria" readonly="true" style="width:20em;"></textarea><br/>
+                        <textarea dojoType="dijit.form.Textarea" id="store.address" name="address" readonly="true" style="width:20em;"></textarea><br/>
                         <button
                             disabled="true"
                             dojoType="dijit.form.Button"

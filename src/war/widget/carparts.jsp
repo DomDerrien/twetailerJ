@@ -192,6 +192,10 @@
                             if (criteria != null) {
                                 out.write(criteria);
                             }
+                            String content = request.getParameter("content");
+                            if (content != null) {
+                                out.write(content);
+                            }
                             %></textarea><br/>
                             <div
                                 iconClass="silkIcon silkIconHelp"
@@ -636,25 +640,25 @@
             return;
         }
         // Request preparation
-        var criteria = [];
+        var content = [];
         if (0 < dojo.trim(dijit.byId('metadata.make').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.make').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_make", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.make').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.model').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.model').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cdw_label_model", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.model').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.year').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_year", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.year').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_year", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.year').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('metadata.partNb').get('value')).length) {
-            criteria.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_partNb", locale) %>');
-            criteria.push(dojo.trim(dijit.byId('metadata.partNb').get('value')));
+            content.push('<%= LabelExtractor.get(ResourceFileId.third, "cpw_label_partNb", locale) %>');
+            content.push(dojo.trim(dijit.byId('metadata.partNb').get('value')));
         }
         if (0 < dojo.trim(dijit.byId('tags').get('value')).length) {
-            criteria = criteria.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
+            content = content.concat(dojo.trim(dijit.byId('tags').get('value')).split(/\s+/));
         }
         <% String referralId = request.getParameter("referralId");
         %>var parameters = {
@@ -669,7 +673,7 @@
             <%= Demand.QUANTITY %>: dijit.byId('quantity').get('value'),
             <%= Demand.HASH_TAGS %>: ['<%= RegisteredHashTag.carparts.toString() %>'],
             // <%= Demand.META_DATA %>: '{}', // No metadata to communicate
-            <%= Demand.CRITERIA %>: criteria
+            <%= Demand.CONTENT %>: content.join(' ')
         };
         var cc = twetailer.Common.getFriendCoordinates();
         if (0 < cc.length) {

@@ -188,8 +188,8 @@
                            <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_quantity", locale) %></th>
                            <th fields="<%= Demand.HASH_TAGS %>" formatter="twetailer.Common.displayHashTags" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_hashTags", locale) %></th>
                            <th
-                               fields="<%= Demand.CRITERIA %>"
-                               formatter="twetailer.Common.displayCriteria"
+                               fields="<%= Demand.CONTENT %>"
+                               x_formatter="twetailer.Common.displayCriteria"
                                styles="padding:2px 5px;"
                                width="30%"
                            ><%= LabelExtractor.get(ResourceFileId.third, "core_theader_criteria", locale) %></th>
@@ -230,9 +230,9 @@
                     <td align="right"><label for="demand.hashTags"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandHashTags", locale) %></label></td>
                     <td><input dojoType="dijit.form.TextBox" id="demand.visibleHashTags" readonly="true" style="width:25em;" type="text" /></td>
                 </tr>
-                <tr id="proposalForm.demand.criteria">
-                    <td align="right"><label for="demand.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCriteria", locale) %></label></td>
-                    <td><textarea dojoType="dijit.form.Textarea" id="demand.criteria" readonly="true" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;" type="text"></textarea></td>
+                <tr id="proposalForm.demand.content">
+                    <td align="right"><label for="demand.content"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCriteria", locale) %></label></td>
+                    <td><textarea dojoType="dijit.form.Textarea" id="demand.content" readonly="true" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;" type="text"></textarea></td>
                 </tr>
                 <tr id="proposalForm.demand.metadata">
                     <td align="right"><label for="demand.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandMetadata", locale) %></label></td>
@@ -267,12 +267,12 @@
                     <td>$<input constraints="{min:5.00,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" placeholder="11.57" required="true" style="width:7em;" type="text" /></td>
                 </tr>
                 <tr>
-                    <td align="right"><label for="proposal.criteria"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalCriteria", locale) %></label></td>
+                    <td align="right"><label for="proposal.content"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalCriteria", locale) %></label></td>
                     <td>
                         <textarea
                             dojoType="dijit.form.Textarea"
-                            id="proposal.criteria"
-                            name="criteria"
+                            id="proposal.content"
+                            name="content"
                             rows="3"
                             style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;"
                         ></textarea><br/>

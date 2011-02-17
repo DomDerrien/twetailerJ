@@ -91,7 +91,7 @@ public class StoreOperations extends BaseOperations {
      * Use the given key to get the corresponding Store instance
      *
      * @param key Identifier of the store
-     * @return First store matching the given criteria or <code>null</code>
+     * @return First store matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Store record
      *
@@ -112,7 +112,7 @@ public class StoreOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the store
-     * @return First store matching the given criteria or <code>null</code>
+     * @return First store matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Store record
      */
@@ -131,10 +131,10 @@ public class StoreOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Store instances
      *
-     * @param attribute Name of the store attribute used a the search criteria
+     * @param attribute Name of the store attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -154,10 +154,10 @@ public class StoreOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Store instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the store attribute used a the search criteria
+     * @param attribute Name of the store attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -181,10 +181,10 @@ public class StoreOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Store identifiers while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the Store attribute used a the search criteria
+     * @param attribute Name of the Store attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of Store identifiers matching the given criteria
+     * @return Collection of Store identifiers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -210,7 +210,7 @@ public class StoreOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -236,7 +236,7 @@ public class StoreOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of store keys matching the given criteria
+     * @return Collection of store keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -261,7 +261,7 @@ public class StoreOperations extends BaseOperations {
      *
      * @param locations list of locations where expected stores should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -284,7 +284,7 @@ public class StoreOperations extends BaseOperations {
      * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected stores should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -313,7 +313,7 @@ public class StoreOperations extends BaseOperations {
      * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected stores should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of store identifiers matching the given criteria
+     * @return Collection of store identifiers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -345,7 +345,7 @@ public class StoreOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param storeKeys list of Store instance identifiers
-     * @return Collection of stores matching the given criteria
+     * @return Collection of stores matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

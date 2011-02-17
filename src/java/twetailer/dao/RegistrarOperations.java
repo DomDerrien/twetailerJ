@@ -50,7 +50,7 @@ public class RegistrarOperations extends BaseOperations {
      * Use the given key to get the corresponding Registrar instance
      *
      * @param key Identifier of the Registrar instance
-     * @return First Registrar instance matching the given criteria or <code>null</code>
+     * @return First Registrar instance matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Registrar record
      *
@@ -72,7 +72,7 @@ public class RegistrarOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the Registrar instance
-     * @return First Registrar instance matching the given criteria or <code>null</code>
+     * @return First Registrar instance matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Registrar record
      */
@@ -97,7 +97,7 @@ public class RegistrarOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param registrarKeys list of Registrar instance identifiers
-     * @return Collection of registrars matching the given criteria
+     * @return Collection of registrars matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

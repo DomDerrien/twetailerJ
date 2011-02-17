@@ -103,7 +103,7 @@ public class DemandOperations extends BaseOperations {
      *
      * @param key Identifier of the demand
      * @param ownerKey Identifier of the demand owner
-     * @return First demand matching the given criteria or <code>null</code>
+     * @return First demand matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      *
@@ -125,7 +125,7 @@ public class DemandOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the demand
      * @param ownerKey Identifier of the demand owner
-     * @return First demand matching the given criteria or <code>null</code>
+     * @return First demand matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Demand record
      */
@@ -141,7 +141,6 @@ public class DemandOperations extends BaseOperations {
             if (State.markedForDeletion.equals(demand.getState())) {
                 throw new InvalidIdentifierException("Invalid key; entity marked for deletion.");
             }
-            demand.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return demand;
         }
         catch(Exception ex) {
@@ -152,10 +151,10 @@ public class DemandOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Demand instances
      *
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -175,10 +174,10 @@ public class DemandOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Demand instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -202,10 +201,10 @@ public class DemandOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Demand identifiers while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the demand attribute used a the search criteria
+     * @param attribute Name of the demand attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demand identifiers matching the given criteria
+     * @return Collection of demand identifiers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -231,7 +230,7 @@ public class DemandOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -257,7 +256,7 @@ public class DemandOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demand keys matching the given criteria
+     * @return Collection of demand keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -282,7 +281,7 @@ public class DemandOperations extends BaseOperations {
      *
      * @param locations list of locations where expected demands should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -307,7 +306,7 @@ public class DemandOperations extends BaseOperations {
      * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected demands should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -334,7 +333,7 @@ public class DemandOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param demandKeys list of Demand instance identifiers
-     * @return Collection of demands matching the given criteria
+     * @return Collection of demands matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */

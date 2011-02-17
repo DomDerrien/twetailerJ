@@ -50,7 +50,7 @@ public class RawCommandOperations extends BaseOperations {
      * Use the given key to get the corresponding RawCommand instance
      *
      * @param key Identifier of the rawCommand
-     * @return First rawCommand matching the given criteria or <code>null</code>
+     * @return First rawCommand matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      *
@@ -71,7 +71,7 @@ public class RawCommandOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param key Identifier of the rawCommand
-     * @return First rawCommand matching the given criteria or <code>null</code>
+     * @return First rawCommand matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid RawCommand record
      */
@@ -92,7 +92,7 @@ public class RawCommandOperations extends BaseOperations {
      *
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of rawCommand keys matching the given criteria
+     * @return Collection of rawCommand keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data rawCommand type
      *
@@ -114,7 +114,7 @@ public class RawCommandOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of rawCommand keys matching the given criteria
+     * @return Collection of rawCommand keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data rawCommand type
      */

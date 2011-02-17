@@ -108,7 +108,7 @@ public class ProposalOperations extends BaseOperations {
      * @param key Identifier of the proposal
      * @param ownerKey Identifier of the proposal owner
      * @param storeKey Identifier of the proposal owner's store
-     * @return First proposal matching the given criteria or <code>null</code>
+     * @return First proposal matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      *
@@ -131,7 +131,7 @@ public class ProposalOperations extends BaseOperations {
      * @param key Identifier of the proposal
      * @param ownerKey Identifier of the proposal owner
      * @param storeKey Identifier of the proposal owner's store
-     * @return First proposal matching the given criteria or <code>null</code>
+     * @return First proposal matching the given filter or <code>null</code>
      *
      * @throws InvalidIdentifierException If the given identifier does not match a valid Location record
      */
@@ -150,7 +150,6 @@ public class ProposalOperations extends BaseOperations {
             if (State.markedForDeletion.equals(proposal.getState())) {
                 throw new InvalidIdentifierException("Invalid key; entity marked for deletion.");
             }
-            proposal.getCriteria().size(); // FIXME: remove workaround for a bug in DataNucleus
             return proposal;
         }
         catch(Exception ex) {
@@ -161,10 +160,10 @@ public class ProposalOperations extends BaseOperations {
     /**
      * Use the given pair {attribute; value} to get the corresponding Proposal instances
      *
-     * @param attribute Name of the proposal attribute used a the search criteria
+     * @param attribute Name of the proposal attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -184,10 +183,10 @@ public class ProposalOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Proposal instances while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the proposal attribute used a the search criteria
+     * @param attribute Name of the proposal attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -211,10 +210,10 @@ public class ProposalOperations extends BaseOperations {
      * Use the given pair {attribute; value} to get the corresponding Proposal identifiers while leaving the given persistence manager open for future updates
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
-     * @param attribute Name of the proposal attribute used a the search criteria
+     * @param attribute Name of the proposal attribute used a the search filter
      * @param value Pattern for the search attribute
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposal identifiers matching the given criteria
+     * @return Collection of proposal identifiers matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -240,7 +239,7 @@ public class ProposalOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -266,7 +265,7 @@ public class ProposalOperations extends BaseOperations {
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param parameters Map of attributes and values to match
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposal keys matching the given criteria
+     * @return Collection of proposal keys matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -291,7 +290,7 @@ public class ProposalOperations extends BaseOperations {
      *
      * @param locations list of locations where expected proposals should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      *
@@ -316,7 +315,7 @@ public class ProposalOperations extends BaseOperations {
      * @param queryParameters Map of attributes and values to match
      * @param locations list of locations where expected proposals should be retrieved
      * @param limit Maximum number of expected results, with 0 means the system will use its default limit
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
@@ -343,7 +342,7 @@ public class ProposalOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param proposalKeys list of proposal instance identifiers
-     * @return Collection of proposals matching the given criteria
+     * @return Collection of proposals matching the given filter
      *
      * @throws DataSourceException If given value cannot matched a data store type
      */
