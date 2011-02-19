@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <!--base href="http://anothersocialeconomy.com/"-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" />    
+    <link rel="icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" type="image/x-icon"/>
+    <title>AnotherSocialEconomy for Local Car Dealers - Request Informations</title>
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/default.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/reset.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/text.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/960.css" media="screen" />
+    <!--[if IE 6]><link rel="stylesheet" type="text/css" href="../css/960gs/css/ie6.css" media="screen" /><![endif]-->
+    <!--[if gte IE 7]><link rel="stylesheet" type="text/css" href="../css/960gs/css/ie.css" media="screen" /><![endif]-->
+</head>
+<body class="claro">
+	<div id="container" class="container_16">
+        <div class="grid_16" style="margin-top: 25px;">
+            <a href="index.html"><img alt="AnotherSocialEconomy Network image" src="/cardealer/images/AnotherSocialEconomy-Network_960x164_fade.png" style="z-index: -1; width: 940px;" /></a>
+        </div>
+        <div class="clear"></div>
+        <div class="grid_16" style="position:absolute; top: 5px;">
+            <div class="grid_12 alpha">
+				<h1>AnotherSocialEconomy<span style="font-size: x-small; font-weight: bolder;"> beta</span> for <span class="red" style="font-size: larger;">Local</span> Car Dealers</h1>
+			</div> <!--end header -->
+            <div class="grid_4 omega">
+                <div class="orange" style="border-radius:8px;">
+                    <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/index.html">Buyers Welcome!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Demander de plus d'informations" href="/Automobiles/Informations.html">Français</a></div>
+                </div>
+            </div> <!-- end grid_4 -->
+	    </div> <!-- end grid_16 -->
+		<div class="clear"></div>
+        <div class="gray col_header" style="width:100%;"><span class="white col_name">Request More Info</span></div>
+		<div class="grid_16" style="margin-top: 10px; margin-bottom: 25px;">
+			<div class="grid_8 prefix_4 suffix_4">		
+				<form id="requestForm" action="/cardealer/webformmailer.php" method="post"> 
+					<input type="hidden" name="redirect" value="/CarDealers/RequestInfoThankYou.html" />
+                    <input type="hidden" name="form_order" value="alpha"/> 
+                    <input type="hidden" name="form_delivery" value="hourly_digest"/> 
+                    <input type="hidden" name="form_format" value="html"/>
+    			    <p>
+    					<label for="f1">Subject:</label><br>
+    					<input id="f1" type="text" name="Subject" style="width:100%;"/>
+    			    </p>
+                    <div style="width:48%;float:right;">
+                        <label for="f3">Last Name:</label><br>
+                        <input id="f3" type="text" name="LastName" style="width:100%;" />
+                    </div>
+    			    <div style="width:48%;float:left;">
+    					<label for="f2">First Name:</label><br>
+    					<input id="f2" type="text" name="FirstName" style="width:100%;" />
+    			    </div>
+                    <div class="clear"></div>
+    			    <p style="margin-top: -15px;margin-bottom:20px;">
+    					<label for="f4">Email*:</label><br>
+    					<input id="f4" type="text" name="Email" style="width:100%;" />
+    			    </p>
+    			    <p>
+    					<label for="f6">Comments*:</label><br>
+    					<textarea id="f6" name="comments" rows="2" style="width:100%;"></textarea>
+    				</p>
+                    <p style="margin-top: -15px">
+                        <label for="f5">Company web site (if applicable):</label><br>
+                        <input id="f5" type="text" name="url" style="width:100%;" />
+                    </p>
+    				<a class="butt_bgorange" onclick="submitRequest();">Submit</a>
+				</form>
+			</div> <!-- grid_8 Submit -->
+		</div> <!-- grid_16 -->
+		<div class="clear"></div>
+        <div class="grid_16">
+    	    <div class="grid_12 alpha">
+    	       	<div class="col_header"><span class="gray col_header">AnotherSocialEconomy: Where Supply comes to Meet Demand.</span></div>
+    	    	<div>Copyright © 2011 <a href="milstein-assoc.com">Milstein and associates inc.</a></div>
+    	    </div> <!-- end grid_12 -->
+            <div class="grid_4 omega" style="margin-bottom: 5px;">
+                <div class="orange" style="border-radius:8px;">
+                    <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/index.html">Buyers Welcome!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Demander de plus d'informations" href="/Automobiles/Informations.html">Français</a></div>
+                </div>
+            </div> <!-- end grid_4 -->
+        </div> <!-- end grid_16 -->
+	</div>  <!-- end .container_16 -->
+    <script type="text/javascript">
+        function submitRequest() {
+            if (document.getElementById('f4').value.length == 0) {
+                alert('Please, you must specifiy a valid address.');
+            }
+            else if (document.getElementById('f6').value.length == 0) {
+                alert('Hum. You have forgotten to write your message...');
+            }
+            else {
+                document.getElementById('requestForm').submit();
+            }
+        }
+    </script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '11910037-5']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</body>
+</html>

@@ -12,7 +12,8 @@ frRoot = "Automobiles"
 enTopQualifier = "Pre-Owned"
 enSubQualifier = "Used"
 frTopQualifier = "d'Occasion"
-frSubQualifier = "Usagée"
+frSubQualifier = "Usagee"
+frNiceQualifier = "Usagée"
 
 enDefaultCity = "Local"
 frDefaultCity = "votre Localité"
@@ -115,8 +116,9 @@ def createFolderTree(destination, city, make, model):
 # Copy the file content after having replaced the specified text
 #    
 def replaceText(sourceFilename, targetFilename, searchedText, replacementText):
-    source = open(sourceFilename)
-    target = open(targetFilename, "w")
+    # Source: http://docs.python.org/py3k/howto/unicode.html#reading-and-writing-unicode-data
+    source = open(sourceFilename, mode='rt', encoding='utf-8', newline='\n')
+    target = open(targetFilename, mode='wt', encoding='utf-8', newline='\n')
     for s in source:
         target.write(s.replace(searchedText, replacementText))
     source.close()
@@ -127,12 +129,12 @@ def replaceText(sourceFilename, targetFilename, searchedText, replacementText):
 #
 def replaceMetaTags(source, city, postalCode, qualifier, make, model, otherLanguagePath):
     homedir = os.path.expanduser("~") + os.sep
-    replaceText(source, homedir + "_1.tmp", "_CITY_", city)
+    replaceText(source, homedir + "_1.tmp", "_CITY_", city)                             # .replace("é", "&eacute;")
     replaceText(homedir + "_1.tmp", homedir + "_2.tmp", "_POSTAL_CODE_", postalCode)
-    replaceText(homedir + "_2.tmp", homedir + "_3.tmp", "_QUALIFIER_", qualifier)
+    replaceText(homedir + "_2.tmp", homedir + "_3.tmp", "_QUALIFIER_", qualifier)       # .replace("é", "&eacute;")
     replaceText(homedir + "_3.tmp", homedir + "_4.tmp", "_MAKE_", make)
     replaceText(homedir + "_4.tmp", homedir + "_5.tmp", "_MODEL_", model)
-    replaceText(homedir + "_5.tmp", source, "_OTHER_LANGUAGE_PATH_", otherLanguagePath)
+    replaceText(homedir + "_5.tmp", source, "_OTHER_LANGUAGE_PATH_", otherLanguagePath) # .replace("é", "&eacute;")
 
 def enCopyAndUpdate(baseFilename, path, city, postalCode, qualifier, make, model, otherPath):
     shutil.copyfile (baseFilename + "_en.html", path + os.sep + "index.html")
@@ -149,8 +151,8 @@ def processCityMakeModel(baseFilename, destination, city, postalCode, make, mode
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city + os.sep + make + os.sep + model,                           city, postalCode, enTopQualifier, make, model, "/" + frRoot + "/" + city + "/" + make + "/" + model);
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city + os.sep + make + os.sep + model + os.sep + enSubQualifier, city, postalCode, enSubQualifier, make, model, "/" + frRoot + "/" + city + "/" + make + "/" + model + "/" + frSubQualifier);
 
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + model,                           city, postalCode, frTopQualifier, make, model, "/" + enRoot + "/" + city + "/" + make + "/" + model);
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + model + os.sep + frSubQualifier, city, postalCode, frSubQualifier, make, model, "/" + enRoot + "/" + city + "/" + make + "/" + model + "/" + enSubQualifier);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + model,                           city, postalCode, frTopQualifier,  make, model, "/" + enRoot + "/" + city + "/" + make + "/" + model);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + model + os.sep + frSubQualifier, city, postalCode, frNiceQualifier, make, model, "/" + enRoot + "/" + city + "/" + make + "/" + model + "/" + enSubQualifier);
 
 #
 # Function creating the folder city/make/defaultModel and copying and customizing the templates in sub-folders
@@ -159,8 +161,8 @@ def processCityMake(baseFilename, destination, city, postalCode, make, defaultMo
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city + os.sep + make,                           city, postalCode, enTopQualifier, make, defaultModel, "/" + frRoot + "/" + city + "/" + make);
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city + os.sep + make + os.sep + enSubQualifier, city, postalCode, enSubQualifier, make, defaultModel, "/" + frRoot + "/" + city + "/" + make + "/" + frSubQualifier);
 
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make,                           city, postalCode, frTopQualifier, make, defaultModel, "/" + enRoot + "/" + city + "/" + make);
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + frSubQualifier, city, postalCode, frSubQualifier, make, defaultModel, "/" + enRoot + "/" + city + "/" + make + "/" + enSubQualifier);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make,                           city, postalCode, frTopQualifier,  make, defaultModel, "/" + enRoot + "/" + city + "/" + make);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + make + os.sep + frSubQualifier, city, postalCode, frNiceQualifier, make, defaultModel, "/" + enRoot + "/" + city + "/" + make + "/" + enSubQualifier);
 
 #
 # Function creating the folder city/defaultMake and copying and customizing the templates in sub-folders
@@ -169,8 +171,8 @@ def processCity(baseFilename, destination, city, postalCode):
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city,                           city, postalCode, enTopQualifier, enDefaultMake, "", "/" + frRoot + "/" + city);
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + city + os.sep + enSubQualifier, city, postalCode, enSubQualifier, enDefaultMake, "", "/" + frRoot + "/" + city + "/" + frSubQualifier);
 
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city,                           city, postalCode, frTopQualifier, frDefaultMake, "", "/" + enRoot + "/" + city);
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + frSubQualifier, city, postalCode, frSubQualifier, frDefaultMake, "", "/" + enRoot + "/" + city + "/" + enSubQualifier);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city,                           city, postalCode, frTopQualifier,  frDefaultMake, "", "/" + enRoot + "/" + city);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + city + os.sep + frSubQualifier, city, postalCode, frNiceQualifier, frDefaultMake, "", "/" + enRoot + "/" + city + "/" + enSubQualifier);
 
 #
 # Function creating the folder defaultCity and copying and customizing the templates in sub-folders
@@ -179,8 +181,8 @@ def processRoot(baseFilename, destination):
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot,                           enDefaultCity, "", enTopQualifier, enDefaultMake, "", "/" + frRoot);
     enCopyAndUpdate(baseFilename, destination + os.sep + enRoot + os.sep + enSubQualifier, enDefaultCity, "", enSubQualifier, enDefaultMake, "", "/" + frRoot + os.sep + frSubQualifier);
 
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot,                           frDefaultCity, "", frTopQualifier, frDefaultMake, "", "/" + enRoot);
-    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + frSubQualifier, frDefaultCity, "", frSubQualifier, frDefaultMake, "", "/" + enRoot + "/" + enSubQualifier);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot,                           frDefaultCity, "", frTopQualifier,  frDefaultMake, "", "/" + enRoot);
+    frCopyAndUpdate(baseFilename, destination + os.sep + frRoot + os.sep + frSubQualifier, frDefaultCity, "", frNiceQualifier, frDefaultMake, "", "/" + enRoot + "/" + enSubQualifier);
 
 #
 # Function propagating the templates for the specified vehicles

@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="en">
 <head>
     <!--base href="http://anothersocialeconomy.com/"-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" />
+    <link rel="icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" type="image/x-icon"/>
+    <title>AnotherSocialEconomy for _CITY_ Car Dealers with Available _QUALIFIER_ _MAKE_ _MODEL_s</title>
     <meta name="description" content="Tired of searching search results for that _QUALIFIER_ _MAKE_ _MODEL_? Let us confidentially forward _CITY_ Car Dealers' proposals right into your Inbox - for Free!" />
     <meta name="keywords" content="_CITY_, _QUALIFIER_, _MAKE_, _MODEL_, Proposals" />
-    <title>AnotherSocialEconomy for _CITY_ Car Dealers with Available _QUALIFIER_ _MAKE_ _MODEL_s</title>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/cardealer/css/default.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/cardealer/css/reset.css" media="screen" />
@@ -41,10 +44,10 @@
                 </h1>
 			</div> <!--end header -->
 			<div class="grid_4 omega">
-		   		<div class="orange">
+		   		<div class="orange" style="border-radius:8px;">
 			   		<div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
-					<div style="margin-left:50px;"><a class="action" title="Request Info" href="/cardealer/RequestInfo.html">Request Info</a></div>
-			   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/cardealer/CarDealerWelcome.html">Dealers Welcome!</a></div>
+					<div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
+			   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
 			   		<div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage1">Français</a></div>
    				</div>
 			</div> <!-- end grid_4 -->
@@ -85,7 +88,7 @@
     		    </p>
     		    <p style="margin-top: -15px">
     		    	<label>Within how many KMs:</label><br>
-                    <input id="range" value="10" class="formField" />
+                    <input id="range" value="25" class="formField" />
     		    </p>
     	    </div> <!-- end grid_3 Where -->
     	    <div class="grid_3">
@@ -158,11 +161,11 @@
     		    	<div>Copyright &copy; 2011 <a href="http://milstein-assoc.com" target="_blank">Milstein and associates inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Privacy Policy</a></div>
     	    </div> <!-- end grid_12 -->
     		<div class="grid_4 omega" style="margin-bottom: 5px;">
-    	   		<div class="orange">
-    		   		<div style="margin-left:50px; margin-right:30px; font-weight: bold;">Call 1-877-990-1697</div>
-    				<div style="margin-left:50px; margin-right:30px;"><a class="action" title="Request Info" href="/cardealer/RequestInfo.html">Request Info</a></div>
-    		   		<div style="margin-left:50px; margin-right:30px;"><a class="action" title="Car Dealers Welcome" href="/cardealer/CarDealerWelcome.html">Dealers Welcome!</a></div>
-                        <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">Français</a></div>
+    	   		<div class="orange" style="border-radius:8px;">
+    		   		<div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
+    				<div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
+    		   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">Français</a></div>
       			</div>
     		</div> <!-- end grid_4 -->
         </div> <!-- end grid_16 -->
@@ -202,6 +205,7 @@
         localModule.reportUsage();
     });
     localModule.startDate = new Date();
+    localModule.reportDelay = 5000;
     localModule.init = function() {
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
@@ -231,6 +235,10 @@
                 skw = localModule.removeDups(skw, city, false);
                 skw = localModule.removeDups(skw, qualifier, false);
                 skw = localModule.removeDups(skw, maker, false);
+                // Step 7: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
+                skw = localModule.removeDups(skw, city.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, qualifier.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, maker.replace(/é/g, 'e'), false);
                 model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
             }
         }
@@ -284,22 +292,38 @@
         new dijit.form.ValidationTextBox({ name: 'email', placeHolder: 'your email address', regExp: '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required: true, trim: true },'email').focus();
         new dijit.form.CheckBox({ name: 'demoMode' }, 'demoMode');
         new dojox.analytics.Urchin({ acct: 'UA-11910037-5' });
+        setTimeout(localModule.reportUsage, localModule.reportDelay);
     };
+    localModule.reportId = "-";
     localModule.reportUsage = function() {
         var data = {};
-        try { data = localModule.getFormData(); }
-        catch (ex) { data.exception = ex.toString(); }
+        if (localModule.reportId.length == 1) {
+            try { data = localModule.getFormData(); }
+            catch (ex) { data.exception = ex.toString(); }
+        }
+        data.reportId = localModule.reportId;
+        data.reportDelay = localModule.reportDelay;
         data.startDate = localModule.startDate;
-        data.endDate = new Date();
+        data.reportDate = new Date();
         data.referrer = document.referrer;
-        dojo.io.script.get({
-            callbackParamName: 'callback',
-            content: data,
-            error: function(dataBack) { },
-            load: function(dataBack){ },
-            // url: 'http://localhost:9999/3rdParty/Report'
-            url: 'https://anothersocialeconomy.appspot.com/3rdParty/Report'
-        });
+        data.location = "" + document.location;
+        data.cookie = document.cookie;
+        var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Report';
+        if (document.location.protocol != 'file:') {
+            dojo.io.script.get({
+                callbackParamName: 'callback',
+                content: data,
+                error: function(dataBack) { },
+                load: function(dataBack){ 
+                    if (dataBack && dataBack.success) {
+                        localModule.reportId = dataBack.reportId;
+                        localModule.reportDelay = 2 * localModule.reportDelay;
+                        setTimeout(localModule.reportUsage, localModule.reportDelay);
+                    }
+                },
+                url: url
+            });
+        }
     };
     localModule.removeDups = function(source, pattern, keepFirst) {
         var idx = source.indexOf(pattern), length = pattern.length;
@@ -316,7 +340,7 @@
         return source;
     };
     localModule.getFormData = function() {
-        var content =
+        var criteria =
             'Manufacturer: ' + dijit.byId('mfc').get('value') +
             ' Model: ' + dijit.byId('model').get('value') +
             ' Info: ' + dijit.byId('info').get('value');
@@ -329,7 +353,7 @@
             range: dijit.byId('range').get('value'),
             dueDate: localModule.toISOString(dijit.byId('due').get('value')),
             hashTags: ['cardealer'],
-            content: content
+            criteria: criteria.split(/\s+/)
         };
         if (dijit.byId('demoMode').get('value') == 'on') {
             dataIn.hashTags.push('demo');

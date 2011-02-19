@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="fr">
 <head>
     <!--base href="http://anothersocialeconomy.com/"-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" />    
+    <link rel="icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" type="image/x-icon"/>
+    <title>AnotherSocialEconomy pour rechercher _QUALIFIER_ _MAKE_ _MODEL_s auprès des concessionnaires de _CITY_</title>
     <meta name="description" content="Épuisé(e) de chercher sur Internet pour _MAKE_ _MODEL_ _QUALIFIER_? Nous pouvons relayer votre demande aux concessionnaires de _CITY_ et vous communiquer leurs propositions directement dans votre boîte de courriel - et gratuitement!" />
     <meta name="keywords" content="_CITY_, _MAKE_, _MODEL_, _QUALIFIER_, Proposals" />
-    <title>AnotherSocialEconomy pour rechercher _QUALIFIER_ _MAKE_ _MODEL_s auprès des concessionnaires de _CITY_</title>
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/cardealer/css/default.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="/cardealer/css/reset.css" media="screen" />
@@ -41,10 +44,10 @@
                 </h1>
             </div> <!--end header -->
             <div class="grid_4 omega">
-                <div class="orange">
+                <div class="orange" style="border-radius:8px;">
                     <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/cardealer/RequestInfo_fr.html">Contactez-nous</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/cardealer/CarDealerWelcome_fr.html">Concessionnaires!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">Concessionnaires!</a></div>
                     <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage1">English</a></div>
                 </div>
             </div> <!-- end grid_4 -->
@@ -85,7 +88,7 @@
                 </p>
                 <p style="margin-top: -15px">
                     <label>Distance en km:</label><br>
-                    <input id="range" value="10" class="formField" />
+                    <input id="range" value="25" class="formField" />
                 </p>
             </div> <!-- end grid_3 Where -->
             <div class="grid_3">
@@ -171,10 +174,10 @@
                 <div>Tous droits réservés &copy; 2011 <a href="milstein-assoc.com">Milstein et associés inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Politique de confidentialité</a></div>
             </div> <!-- end grid_16 -->
             <div class="grid_4 omega" style="margin-bottom: 5px;">
-                <div class="orange">
+                <div class="orange" style="border-radius:8px;">
                     <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/cardealer/RequestInfo_fr.html">Contactez-nous</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/cardealer/CarDealerWelcome_fr.html">concessionnaires!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">concessionnaires!</a></div>
                     <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">English</a></div>
                 </div>
             </div>
@@ -215,6 +218,7 @@
         localModule.reportUsage();
     });
     localModule.startDate = new Date();
+    localModule.reportDelay = 5000;
     localModule.init = function() {
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
@@ -244,6 +248,10 @@
                 skw = localModule.removeDups(skw, city, false);
                 skw = localModule.removeDups(skw, qualifier, false);
                 skw = localModule.removeDups(skw, maker, false);
+                // Step 7: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
+                skw = localModule.removeDups(skw, city.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, qualifier.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, maker.replace(/é/g, 'e'), false);
                 model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
             }
         }
@@ -297,22 +305,38 @@
         new dijit.form.ValidationTextBox({ name: 'email', placeHolder: 'votre courriel', regExp: '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required: true, trim: true },'email').focus();
         new dijit.form.CheckBox({ name: 'demoMode' }, 'demoMode');
         new dojox.analytics.Urchin({ acct: 'UA-11910037-5' });
+        setTimeout(localModule.reportUsage, localModule.reportDelay);
     };
+    localModule.reportId = "-";
     localModule.reportUsage = function() {
         var data = {};
-        try { data = localModule.getFormData(); }
-        catch (ex) { data.exception = ex.toString(); }
+        if (localModule.reportId.length == 1) {
+            try { data = localModule.getFormData(); }
+            catch (ex) { data.exception = ex.toString(); }
+        }
+        data.reportId = localModule.reportId;
+        data.reportDelay = localModule.reportDelay;
         data.startDate = localModule.startDate;
-        data.endDate = new Date();
+        data.reportDate = new Date();
         data.referrer = document.referrer;
-        dojo.io.script.get({
-            callbackParamName: 'callback',
-            content: data,
-            error: function(dataBack) { },
-            load: function(dataBack){ },
-            // url: 'http://localhost:9999/3rdParty/Report'
-            url: 'https://anothersocialeconomy.appspot.com/3rdParty/Report'
-        });
+        data.location = "" + document.location;
+        data.cookie = document.cookie;
+        var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Report';
+        if (document.location.protocol != 'file:') {
+            dojo.io.script.get({
+                callbackParamName: 'callback',
+                content: data,
+                error: function(dataBack) { },
+                load: function(dataBack){ 
+                    if (dataBack && dataBack.success) {
+                        localModule.reportId = dataBack.reportId;
+                        localModule.reportDelay = 2 * localModule.reportDelay;
+                        setTimeout(localModule.reportUsage, localModule.reportDelay);
+                    }
+                },
+                url: url
+            });
+        }
     };
     localModule.removeDups = function(source, pattern, keepFirst) {
         var idx = source.indexOf(pattern), length = pattern.length;
@@ -330,7 +354,7 @@
     };
     localModule.getFormData = function() {
         // Collect data
-        var content =
+        var criteria =
             'Constructeur: ' + document.getElementById('mfc').value +
             ' Modèle: ' + document.getElementById('model').value +
             ' Informations: ' + document.getElementById('info').value;
@@ -343,7 +367,7 @@
             range: document.getElementById('range').value,
             dueDate: localModule.toISOString(dijit.byId('due').get('value')),
             hashtags: ['cardealer'],
-            content: content
+            criteria: criteria.split(/\s+/)
         };
         if (dijit.byId('demoMode').get('value') == 'on') {
             dataIn.hashTags.push('demo');
