@@ -389,6 +389,7 @@
             </tuv>
         </tu>
 
+
         <tu tuid="command_message_body_proposal_rate3" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>
@@ -3483,7 +3484,7 @@
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    :-) Hi {demand>owner>name}, the rate for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
+                    :-) Hi {demand>owner>name}, the rating for proposal:{proposal>key} for your demand:{demand>key} has been updated...|
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>content} hashtags:{proposal>hashTags} metadata:{demand>metadata}
                     score:{proposal>score} comment:{proposal>comment}
@@ -3510,7 +3511,7 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <p>The rating for <strong>proposal {proposal>key}</strong> has been recorded.</p>
                     <ul>
                         <li>Details: <strong>{proposal>content}</strong></li>
                         <li>More options: <strong>{proposal>metadata}</strong></li>
@@ -3565,7 +3566,7 @@
             <tuv xml:lang="en">
                 <seg>
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
-                    <p>The rate for the <strong>proposal {proposal>key}</strong> has been recorded.</p>
+                    <p>The rating for <strong>proposal {proposal>key}</strong> has been recorded.</p>
                     <ul>
                         <li>Details: <strong>{proposal>content}</strong></li>
                         <li>More options: <strong>{proposal>metadata}</strong></li>
@@ -3577,7 +3578,7 @@
                     </ul>
                     <p>
                         Please <strong><a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>confirmProposal}&amp;subject={command>threadSubject}">confirm this proposal {proposal>key}</a></strong>
-                        if you decide to have a deal with the Store for this demand.
+                        if you plan on purchasing this car from this dealer so we can stop sending you other proposals.
                     </p>
                     <p>More store information:</p>
                     <ul>
