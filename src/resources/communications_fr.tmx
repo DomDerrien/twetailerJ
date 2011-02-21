@@ -1,161 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE tmx PUBLIC "-//LISA OSCAR:1998//DTD for Translation Memory eXchange//EN" "http://www.lisa.org/tmx/tmx14.dtd">
 <tmx version="1.4">
-	<header creationtool="domderrien.i18n" creationtoolversion="1.0"
-		datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
-		o-tmf="domderrien"
-	></header>
-	<body>
-		<tu tuid="bundle_language" dataType="text">
-			<prop type="x-tier">dojotk</prop>
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>Français</seg>
-			</tuv>
-		</tu>
-		<tu tuid="common_message_subject_default" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>AnotherSocialEconomy.com notification </seg>
-			</tuv>
-		</tu>
-		<tu tuid="common_message_subject_response_prefix" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>Re: {0}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="common_message_subject_forward_prefix" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>Tr: {0}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_dateFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>yyyy-MM-dd</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_dateFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>EEE, MMMM d yyyy</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_dateTimeFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>yyyy-MM-dd'T'HH:mm:ss</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_dateTimeFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>yyyy-MM-dd'T'HH:mm</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_dateTimeFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>EEE, MMMM d yyyy 'à' HH:mm:ss</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_dateTimeFormat" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>EEE, MMMM d yyyy 'à' HH:mm</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_emptyListIndicator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>[]</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_emptyListIndicator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>aucun(e)</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_noCCIndicator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>[]</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_noCCIndicator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>personne d'autre</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_noComment" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>[]</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_noComment" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>aucun</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_noScore" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>[]</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_noScore" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>pas encore évalué</seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_message_footer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+    <header creationtool="domderrien.i18n" creationtoolversion="1.0"
+        datatype="PlainText" segtype="paragraph" adminlang="en" srclang="English"
+        o-tmf="domderrien"
+    ></header>
+    <body>
+        <tu tuid="bundle_language" dataType="text">
+            <prop type="x-tier">dojotk</prop>
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Français</seg>
+            </tuv>
+        </tu>
+        <tu tuid="common_message_subject_default" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>AnotherSocialEconomy.com notification </seg>
+            </tuv>
+        </tu>
+        <tu tuid="common_message_subject_response_prefix" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Re: {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="common_message_subject_forward_prefix" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Tr: {0}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>yyyy-MM-dd</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_dateFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE, MMMM d yyyy</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_dateTimeFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>yyyy-MM-dd'T'HH:mm:ss</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_dateTimeFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>yyyy-MM-dd'T'HH:mm</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_dateTimeFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE, MMMM d yyyy 'à' HH:mm:ss</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_dateTimeFormat" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>EEE, MMMM d yyyy 'à' HH:mm</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_emptyListIndicator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_emptyListIndicator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>aucun(e)</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_noCCIndicator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_noCCIndicator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>personne d'autre</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_noComment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_noComment" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>aucun</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_noScore" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>[]</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_noScore" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>pas encore évalué</seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_message_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     |Informations complémentaires: AnotherSocialEconomy.com. Rapportez les problèmes à: support@anothersocialeconomy.com.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_message_footer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_message_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     |Informations complémentaires: ezToff.com. Rapportez les problèmes à: support@ezToff.com. ezToff.com is est un membre de AnotherSocialEconomy.com.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_message_footer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_message_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>--<br />
                     Vous pouvez librement voir nos <a href="http://anothersocialeconomy.com/terms/">conditions</a>,
                     et notre <a href="http://anothersocialeconomy.com/privacy-policy/">politique de respect de la vie privée</a>.
@@ -163,13 +163,13 @@
                     En tout cas, <strong>merci de magasiner locallement</strong> avec <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_message_footer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_message_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>--<br />
                     Vous pouvez librement voir nos <a href="http://eztoff.com/terms/">conditions</a>,
                     et notre <a href="http://eztoff.com/privacy-policy/">politique de respect de la vie privée</a>.
@@ -178,302 +178,302 @@
                     un membre du réseau <a href="http://anothersocialeconomy.com/">AnotherSocialEconomy.com</a>.
                     </p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_message_subject" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>Notification de AnotherSocialEconomy pour la  Demande: {demand>key}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_message_subject" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>Notification de ezToff pour la Demande: {demand>key}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_robot_automatedResponse" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':0.01,'total':1}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_robot_automatedResponse" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':30,'total':123.43}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_footer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_message_subject" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Notification de AnotherSocialEconomy pour la  Demande: {demand>key}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_message_subject" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>Notification de ezToff pour la Demande: {demand>key}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_robot_automatedResponse" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':0.01,'total':1}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_robot_automatedResponse" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>{'content':'[*** réponse automatisée pour fins de démonstration ***]','price':30,'total':123.43}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_footer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     |--|Cette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_wish_create" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_create" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     wish qty:X due-date:X tags:X {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_wish_update" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_update" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     wish wish:{wish>key} qty:{wish>quantity} due-date:{wish>dueDate} locale:{wish>location>postalCode} {wish>location>countryCode} tags:{wish>content} hashtags:{wish>hashTags} metadata:{wish>metadata} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_wish_cancel" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_cancel" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     cancel wish:{wish>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_wish_transform" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_wish_transform" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     transform wish:{wish>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_demand_create" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_create" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     demander qté:X dateLimite:X tags:X {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_demand_update" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_update" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     demander demande:{demand>key} qté:{demand>quantity} dateLimite:{demand>dueDate} localité:{demand>location>postalCode} {demand>location>countryCode} motsClés:{demand>content} étiquettes:{demand>hashTags} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_demand_cancel" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_cancel" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     annuler demande:{demand>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_demand_close" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_close" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     compléter demande:{demand>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_demand_list" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_demand_list" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     lister demande:{demand>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_create" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_create" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     proposer demande:{demand>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>content} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_update" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_update" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     proposer proposition:{proposal>key} qté:{demand>quantity} prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate} motsClés:{demand>content} metaDonnées:{demand>metadata} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_cancel" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_cancel" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     annuler proposition:{proposal>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_confirm" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_confirm" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     confirmer proposition:{proposal>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_decline" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_decline" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     décliner proposition:{proposal>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_rate1" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_rate1" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     évaluer proposition:{proposal>key} score: :-( commentaire: {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_rate3" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_rate3" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     évaluer proposition:{proposal>key} score: :-\\| commentaire: {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_rate5" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_rate5" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     évaluer proposition:{proposal>key} score: :-) commentaire: {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="command_message_body_proposal_close" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="command_message_body_proposal_close" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     compléter proposition:{proposal>key} {command>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_reserved_action" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">2</prop>
-			<tuv xml:lang="fr">
-				<seg>:-( L'action {user>action} n'est pas permise par votre statut. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_reserved_action" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">2</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_reserved_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( L'action {user>action} n'est pas permise par votre statut. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_reserved_action" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{user>name}</strong></p>
                     <p>L'action <strong>{user>action}</strong> n'est pas permise par votre statut.</p>
                     <p>Envoyez la commande '?{user>action}' pour recevoir une aide contextuelle.</p>
                     {message>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_missing_id" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>:-( L'identifiant de la Proposition est requis. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_missing_id" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_missing_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( L'identifiant de la Proposition est requis. Envoyez '?{user>action}' pour avoir de l'aide. {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_missing_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{user>name}</strong></p>
                     <p>La commande <strong>{user>action}</strong> requiert un numéro de Proposition valide.</p>
                     <p>Veuillez donner un autre numéro de Proposition et renvoyer la commande.</p>
                     {message>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_invalid_id" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>:-( Veuillez vérifier le numéro de la Proposition et renvoyez la commande. {command>footer}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_invalid_id" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_invalid_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Veuillez vérifier le numéro de la Proposition et renvoyez la commande. {command>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_invalid_id" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{user>name}</strong></p>
                     <p>La commande suivante <strong>{user>action}</strong> contient un numéro de Proposition invalide.</p>
                     <ul><li>{user>command}</li></ul>
                     <p>Veuillez donner un autre numéro de Proposition et renvoyer la commande.</p>
                     {message>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_invalid_state" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>:-( Vous ne pouvez modifier la Proposition:{proposal>key} quand elle est dans l'état:{proposal>state). {message>footer}</seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_invalid_state" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_invalid_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>:-( Vous ne pouvez modifier la Proposition:{proposal>key} quand elle est dans l'état:{proposal>state). {message>footer}</seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_invalid_state" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{user>name}</strong></p>
                     <p>La Proposition {proposal>key} n'est pas dans un état favorable pour la commande <strong>{user>action}</strong> action.</p>
                     <p>Envoyez la commande '?{user>action}' pour recevoir une aide contextuelle.</p>
                     {message>footer}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {wish>owner>name}, listing newly created wish:{wish>key}...|
                     wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
                     locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
                     quantity:{wish>quantity} tags:{wish>content} hashtags:{wish>hashTags}
                     cc:{wish>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi <strong>{wish>owner>name}</strong></p>
                     <p>Your wish has just been created with:</p>
                     <ul>
@@ -499,23 +499,23 @@
                     {message>footer}
                     <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     FYI: You have been CC'ed by {wish>owner>name} regarding the following wish creation...|
                     wish:{wish>key} tags:{wish>content} hashtags:{wish>hashTags} quantity:{wish>quantity} due-date:{wish>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{wish>owner>name}</strong> has chosen to notify you of their new wish for:
                     </p>
@@ -542,26 +542,26 @@
                     {message>footer}
                     <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {wish>owner>name}, listing your updated wish:{wish>key}...|
                     wish:{wish>key} state:{wish>state} due:{wish>dueDate} expires:{wish>expirationDate}
                     locale:{wish>location>postalCode} {wish>location>countryCode} range:{wish>range}{wish>rangeUnit}
                     quantity:{wish>quantity} tags:{wish>content} hashtags:{wish>hashTags}
                     cc:{wish>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi <strong>{wish>owner>name}</strong>,</p>
                     <p>
                         We're confirming your <strong>update</strong> of the wish within <strong>{wish>range} {wish>rangeUnit}</strong> of
@@ -589,23 +589,23 @@
                     {message>footer}
                     <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     FYI: You have been CC'ed by {wish>owner>name} regarding the following wish update...|
                     wish:{wish>key} tags:{wish>content} hashtags:{wish>hashTags} quantity:{wish>quantity} dueDate:{wish>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{wish>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> wish
                         within <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
@@ -632,45 +632,45 @@
                     {message>footer}
                     <p>Wish: {wish>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_cancellation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully canceled.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_cancellation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi {wish>owner>name},</p>
                     <p>Your <strong>wish {wish>key}</strong> has been <strong>canceled</strong>.</p>
                     <p>If you enjoyed using AnotherSocialEconomy.com, please recommend us to your friends, or, simply CC them next time.</p>
                     {message>footer}
                     <p>Wish: {wish>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_transformation_ackToInitiator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToInitiator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {user>name}, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed.
                     The new demand is going to be validated and you'll receive an update shortly.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_transformation_ackToInitiator" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToInitiator" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi {user>name},</p>
                     <p>
                         The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong> into a demand.
@@ -679,23 +679,23 @@
                     {message>footer}
                     <p>Wish: {wish>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_transformation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {wish>owner>name}, your wish:{wish>key} has been successfully transformed.
                     The new demand is going to be validated and you'll receive an update shortly.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_transformation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi {wish>owner>name},</p>
                     <p>
                         Your <strong>wish {wish>key}</strong> has been <strong>transformed</strong> into a demand.
@@ -704,23 +704,23 @@
                     {message>footer}
                     <p>Wish: {wish>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_wish_transformation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_wish_transformation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi, the wish:{wish>key} created by {wish>owner>name} has been successfully transformed
                     by {user>name} into a demand that will be broadcasted to relevant stores.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_wish_transformation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_wish_transformation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi,</p>
                     <p>
                         The <strong>wish {wish>key}</strong> created by {wish>owner>name} has been <strong>transformed</strong>.
@@ -729,39 +729,39 @@
                     {message>footer}
                     <p>Wish: {wish>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
                     quantité:{demand>quantity} motsClés:{demand>content} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_demand_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, description de la nouvelle demande:{demand>key}...|
                     demande:{demand>key} heureDeJeu:{demand>dueDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode}
                     joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                     informations:{demand>content} copieCarbone:{demand>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong></p>
                     <p>Votre demande a été créée avec les éléments suivants:</p>
                     <ul>
@@ -784,13 +784,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_creation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                        Nous confirmons votre de demande por un départ de golf <strong>{demand>range} {demand>rangeUnit}</strong> autour de
@@ -816,33 +816,33 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande...|
                     demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_demand_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la demande pour un départ de golf...|
                     demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle demande:
                     </p>
@@ -863,13 +863,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_creation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de leur nouvelle recherche pour un départ de golf
                         à <strong>{demand>range} {demand>rangeUnit}</strong> autour de <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
@@ -892,33 +892,33 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_creation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>content} étiquettes:{demand>hashTags} métaDonnées:{demand>metadata} quantité:{demand>quantity} dateLimite:{demand>dueDate}?|
                     Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X dateLimite:{demand>dueDate}'.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_demand_creation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI. Pouvez vous fournir demande:{demand>key} motClés:{demand>content} étiquettes:{demand>hashTags} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?|
                     Dans l'affirmative, remplacez les 'X' et envoyez le message: 'proposer demande:{demand>key} motsClés:X prixUnitaire:X coûtTotal:X joueurs:{demand>quantity} heureDeJeu:{demand>dueDate} métaDonnées:{demand>metadata}?'.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_creation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Une nouvelle demande pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
@@ -944,13 +944,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_creation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Une nouvelle demande de départ de jeu pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
                     <ul>
@@ -975,39 +975,39 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
                     demande:{demand>key} état:{demand>state} dateLimite:{demand>dueDate} expiration:{demand>expirationDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode} distance:{demand>range}{demand>rangeUnit}
                     quantité:{demand>quantity} motsClés:{demand>content} étiquettes:{demand>hashTags}
                     copieCarbone:{demand>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_demand_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, description de la demande mise-à-jour:{demand>key}...|
                     demande:{demand>key} heureDeJeu:{demand>dueDate}
                     localité:{demand>location>postalCode} {demand>location>countryCode}
                     joueurs:{demand>quantity} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                     informations:{demand>content} copieCarbone:{demand>cc}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         Nous confirmons la <strong>mise-à-jour</strong> de la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
@@ -1032,13 +1032,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_update_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         Nous confirmons la <strong>mise-à-jour</strong> de la demande de départ de golf
@@ -1065,33 +1065,33 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la demande...|
                     demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} quantité:{demand>quantity} dateLimite:{demand>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_demand_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_demand_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} à propos de la mise-à-jour de la emande pour un départ de golf...|
                     demande:{demand>key} motsClés:{demand>content} étiquettes:{demand>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart} joueurs:{demand>quantity} heureDeJeu:{demand>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
                         la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
@@ -1113,13 +1113,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_update_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_update_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>mise-à-jour</strong> de
                         la demande de départ de golf à <strong>{demand>range} {demand>rangeUnit}</strong>
@@ -1142,35 +1142,35 @@
                     {message>footer}
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_creation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_creation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_creation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_creation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, description de la nouvelle proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_creation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_creation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la création de la proposition:</p>
                     <ul>
@@ -1190,13 +1190,13 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_creation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_creation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la création de la proposition pour un départ de golf le <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
@@ -1216,35 +1216,35 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_update_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_update_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_update_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_update_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, description de la proposition mise-à-jour:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_update_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_update_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition:</p>
                     <ul>
@@ -1264,13 +1264,13 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_update_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_update_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
                     <p>Nous confirmons la <strong>mise-à-jour</strong> de la proposition pour un départ de golf le <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
@@ -1290,35 +1290,35 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_creation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimit:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_creation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} pour un départ de golf a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_creation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
@@ -1351,13 +1351,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_cardealer_proposal_creation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_cardealer_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
@@ -1397,13 +1397,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_creation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_creation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé un départ de jeu pour le <strong>{proposal>dueDate}</strong> avec:</p>
                     <ul>
@@ -1435,35 +1435,35 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_creation_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_creation_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la réception de la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_creation_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_creation_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour la demande:{demand>key} de départ de golf qui a reçu la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_creation_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_creation_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
                         d'une proposition:{proposal>key} pour la demande:{demand>key}, émise par le commerce
@@ -1494,13 +1494,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_creation_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_creation_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
                         d'une proposition:{proposal>key} pour le l<strong>{proposal>dueDate}</strong>, en rapport avec
@@ -1530,35 +1530,35 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_update_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_update_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour votre demande:{demand>key} a été modifiée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_update_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_update_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} pour la demande:{demand>key} de départ de golf a été modifiée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_update_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_update_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
@@ -1591,13 +1591,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_cardealer_proposal_update_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_cardealer_proposal_update_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
@@ -1637,13 +1637,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_update_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_update_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         <strong><a href="{store>url}">{store>name}</a></strong> a modifiée la <strong>proposition {proposal>key}</strong>
@@ -1678,35 +1678,35 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_update_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_update_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key}...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{demand>metadata}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_update_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_update_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} de la mise-à-jour de la proposition:{proposal>key} faite pour la demande:{demand>key} de départ de golf...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     joueurs:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} chariots:{demand>metadata>pullCart} voiturettes:{demand>metadata>golfCart}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_update_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_update_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
                         d'une mise-à-jour de la  proposition:{proposal>key} en rapport avec la demande:{demand>key}
@@ -1736,13 +1736,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_update_ccedNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_update_ccedNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>réception</strong>
                         d'une mise-à-jour de la  proposition:{proposal>key} pour le l<strong>{proposal>dueDate}</strong>, en rapport avec
@@ -1772,33 +1772,33 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_confirmation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}. Merci d'avoir confirmer la proposition:{proposal>key} associée à la demande:{demand>key} |
                     Le commerce:{store>key} {store>name} va en être informé et va réserver l'object de la demande:{demand>key}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_confirmation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}. Merci d'avoir confirmer la proposition:{proposal>key} associée à la demande:{demand>key} de départ de golf |
                     Le club de golf {store>name} va en être informé et va réserver le départ de golf pour {demand>dueDate}.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_confirmation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> va réserver l'objet de la <strong>proposition {proposal>key}</strong>,  prévue pour le <strong>{proposal>dueDate}</strong>.</p>
                     <p>Merci pour la confirmation. En espérant que l'achat vous convienne !</p>
@@ -1825,13 +1825,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_confirmation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p><strong><a href="{store>url}">{store>name}</a></strong> va réserver votre de départ de golf de la <strong>proposition {proposal>key}</strong> prévu le <strong>{proposal>dueDate}</strong>.</p>
                     <p>Merci pour la confirmation. En vous souhaitant une bonne partie !</p>
@@ -1857,35 +1857,35 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_confirmation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} a été confirmée...|
                     motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata} quantité:{proposal>quantity} dateLimite:{proposal>dueDate}|
                     store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_confirmation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     PVI: Vous êtes mis en copie par {demand>owner>name} pour apprendre que la proposition:{proposal>key} de départ de golf a été confirmée...|
                     heureDeJeu:{proposal>dueDate} joueurs:{proposal>quantity} chariots:{proposal>metadata>pullCart} voiturettes:{proposal>metadata>golfCart} info:{proposal>content}|
                     store:{store>key} {store>name} {store>phoneNb} {store>address}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_confirmation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>confirmation de la proposition {proposal>key}</strong>
                         au commerce <strong><a href="{store>url}">{store>name}</a></strong>.
@@ -1907,13 +1907,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_confirmation_ackToCCed" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_ackToCCed" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> a choisi de vous notifier de la <strong>confirmation</strong>
                         de la <strong>proposition {proposal>key}</strong> de départ de golf
@@ -1936,33 +1936,33 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_confirmation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, la proposition:{proposal>key} for la demande:{demand>key} a été confirmée.|
                     Veuillez réserver l'objet de la demande:{demand>key}pour le consommateur. Une fois livré, alors 'compléter proposition:{proposal>key}', ou 'noter proposition:{proposal>key} note:your-note-here'.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_golf_proposal_confirmation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_golf_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, la proposition:{proposal>key} for la demande:{demand>key} a été confirmée.|
                     Veuillez réserver le départ de golf pour la demande:{demand>key}. Une fois la partie jouée, alors 'compléter proposition:{proposal>key}', ou 'noter proposition:{proposal>key} note:your-note-here'.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_confirmation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Veuillez réserver la <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> pour:</p>
                     <ul>
@@ -1987,13 +1987,13 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_confirmation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_confirmation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Please reserve tee-off under <strong>ezToff proposal {proposal>key}</strong> scheduled on <strong>{proposal>dueDate}</strong> for:</p>
                     <ul>
@@ -2018,22 +2018,22 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_closing_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_closing_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, merci d'avoir complété la demande:{demand>key} - votre taux de participation va être mis-à-jour sous peu.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_closing_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_closing_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         Merci d'avoir complété la <strong>demand {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
@@ -2044,13 +2044,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_closing_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_closing_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         Merci d'avoir complété la <strong>demande {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
@@ -2060,23 +2060,23 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_closing_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_closing_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     FYI. La demande:{demand>key} associée à la proposition:{proposal>key} a été complétée par le consommateur. |
                     Conseil: envoyez "compléter proposition:{proposal>key}", ou "noter proposition:{proposal>key} note:X" pour améliorer votre taux de participation.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_closing_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_closing_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
                         La demande {demand>key} associée à la  <strong>proposition {proposal>key}</strong>, prévue le <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
@@ -2086,13 +2086,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_demand_closing_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_demand_closing_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
                         La demande {demand>key} pour la réservation <strong>proposition {proposal>key}</strong> du <strong>{proposal>dueDate}</strong> a été <strong>complétée</strong>.
@@ -2102,58 +2102,58 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_closing_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_closing_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, merci d'avoir compléter la proposition:{proposal>key} - votre taux de participation va être mis-à-jour sous peu.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_closing_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_closing_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>La <strong>proposition {proposal>key}</strong> a été complétée.</p>
                     <p>Votre taux de transactions complétées va être mis-à-jour sous peu.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_closing_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_closing_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>La réservation de la <strong>proposition {proposal>key}</strong> a été complétée.</p>
                     <p>Votre taux de transactions complétées va être mis-à-jour sous peu.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_closing_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_closing_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     FYI. La proposition:{proposal>key} associée à la demande:{demand>key} a été complétée par le commerce:{store>key} {store>name}. |
                     Conseil: envoyez "compléter demande:{demand>key}", ou "noter demande:{demand>key} note:X" pour améliorer votre taux de participation.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_closing_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_closing_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complété la proposition {proposal>key}</strong>.
@@ -2163,13 +2163,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_golf_proposal_closing_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_golf_proposal_closing_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         <strong><a href="{store>url}">{store>name}</a></strong> a <strong>complété la proposition {proposal>key}</strong> de départ de golf.
@@ -2179,45 +2179,45 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_cancellation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, votre demande:{demand>key} a bien été annulée.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_cancellation_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_cancellation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>Votre <strong>demande {demand>key}</strong> a bien été <strong>annulée</strong>.</p>
                     <p>Si vous avez aimé votre expérience avec AnotherSocialEconomy.com, n'hésitez pas à la partager avec vos amis, voire à les copier à de votre prochaine demande.</p>
                     {message>footer}
                     <p>Demande: {demand>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_confirmed_cancellation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_confirmed_cancellation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, le propriétaire de la demande:{demand>key} l'a annulée.|
                     Votre proposition:{proposal>key} confirmée a par conséquent été annulée, sans impact sur votre taux de participation.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_confirmed_cancellation_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_confirmed_cancellation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>
                         Le propriétaire de la <strong>demande {demand>key}</strong> l'a annulée même si votre <strong>proposition {proposal>key}</strong>
@@ -2234,44 +2234,44 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_cancellation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_cancellation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, votre proposition:{proposal>key} a bien été annulée.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_cancellation_ackToAssociate" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_cancellation_ackToAssociate" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Votre <strong>proposition {proposal>key}</strong> associée à la <strong>demande {demand>key}</strong> a bien été <strong>annulée</strong>.</p>
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_confirmed_cancellation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_confirmed_cancellation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {demand>owner>name}, la proposition:{proposal>key} que vous aviez confirmée a été annulée.|
                     Votre demande:{demand>key} a été transmise de nouveau aux commerces environnants. Envoyez "annuler demande:{demand>key}" si vous souhaitez arrêter le processus.
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_confirmed_cancellation_consumerNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_confirmed_cancellation_consumerNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         <strong><a href="{store>url}">{store>name}</a></strong> a <strong>annulé la proposition {proposal>key}</strong>.
@@ -2286,25 +2286,25 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_rating_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :) Bonjour {demand>owner>name}, l'évaluation de la proposition{proposal>key} a été prise en compte...
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_rating_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
@@ -2338,13 +2338,13 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_cardealer_proposal_rating_ackToConsumer" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_cardealer_proposal_rating_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
                     <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
@@ -2381,25 +2381,25 @@
                     {message>footer}
                     <p>Demande: {demand>key}, Proposition: {proposal>key}.</p>
                </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_proposal_rating_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_proposal_rating_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Bonjour {proposal>owner>name}, voici la proposition:{proposal>key} qui vient juste d'être évaluée...|
                     proposition:{proposal>key} état:{proposal>state} dateLimite:{proposal>dueDate}
                     quantité:{proposal>quantity} motsClés:{proposal>content} étiquettes:{proposal>hashTags} métaDonnées:{proposal>metadata}
                     score:{proposal>score} commentaire:{proposal>comment}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_proposal_rating_associateNotif" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_proposal_rating_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Bonjour {proposal>owner>name},</p>
                     <p>Votre proposition {proposal>key} vient d'être évaluée par le demandeur:</p>
                     <ul>
@@ -2425,13 +2425,13 @@
                     {message>footer}
                     <p>Demande: {proposal>demandKey}, Proposition: {proposal>key}.</p>
                </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_listing_details_to_owner" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_listing_details_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     :-) Hi {demand>owner>name}, here are the details about your demand:{demand>key}.|
                     demand:{demand>key} due:{demand>dueDate}
                     locale:{demand>location>postalCode} {demand>location>countryCode} range:{demand>range}{demand>rangeUnit}
@@ -2439,13 +2439,13 @@
                     cc:{demand>cc}|
                     So far, you have received {demand>proposalNb} proposal(s).{demand>proposalList}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_listing_details_to_owner" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_listing_details_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <p>Hi <strong>{demand>owner>name}</strong></p>
                     <p>Here is the demand you asked information about:</p>
                     <ul>
@@ -2466,26 +2466,26 @@
                     {message>footer}
                     <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="short_core_demand_listing_proposals_to_owner" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="short_core_demand_listing_proposals_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     |
                     {proposal>orderInList}.
                     proposal:{proposal>key} state:{proposal>state} due:{proposal>dueDate}
                     quantity:{proposal>quantity} tags:{proposal>content} hashtags:{proposal>hashTags} metadata:{proposal>metadata}
                     total:{proposal>currencyCode}{proposal>total}
                 </seg>
-			</tuv>
-		</tu>
-		<tu tuid="long_core_demand_listing_proposals_to_owner" dataType="text">
-			<prop type="x-tier">javarb</prop>
-			<prop type="x-version">1</prop>
-			<tuv xml:lang="fr">
-				<seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_demand_listing_proposals_to_owner" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
                     <li>
                         Details: <strong>{proposal>content}</strong>;
                         More options: <strong>{proposal>metadata}</strong>;
@@ -2511,7 +2511,7 @@
                         <br />
                     </li>
                 </seg>
-			</tuv>
-		</tu>
-	</body>
+            </tuv>
+        </tu>
+    </body>
 </tmx>

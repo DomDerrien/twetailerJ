@@ -122,8 +122,13 @@ public class BaseConnector {
             userId = consumer.getEmail();
         }
         if (userId != null || Source.simulated.equals(source)) {
-            communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
-            MailConnector.sendCopyToAdmins(source, consumer, subject, messages);
+            try {
+                communicateToUser(source, false, userId, userName, subject, messages, consumer.getLocale());
+            }
+            finally {
+                // It's possible the message sent to  userId failed... anyway, send the copy to admins
+                MailConnector.sendCopyToAdmins(source, consumer, subject, messages);
+            }
         }
     }
 

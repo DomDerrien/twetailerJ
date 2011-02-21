@@ -121,8 +121,15 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 String reportId = in.getString("reportId");
                 String message = reportId.length() == 1 ? AuthVerifierFilter.dumpRequest(request) : in.toString();
                 getLogger().warning(message);
-                out.put("reportId", reportId.length() == 1 ? new java.util.Date().toString() : reportId);
-                MailConnector.reportErrorToAdmins("Landing page visit - Report " + reportId, message);
+                String subject = "Landing page visit - Report ";
+                if (reportId.length() == 1) {
+                    reportId = new java.util.Date().toString();
+                }
+                else {
+                    subject = "Re: " + subject;
+                }
+                out.put("reportId", reportId);
+                MailConnector.reportErrorToAdmins(subject + reportId, message);
             }
             else {
                 response.setStatus(404); // Not Found

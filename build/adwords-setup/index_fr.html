@@ -218,7 +218,7 @@
         localModule.reportUsage();
     });
     localModule.startDate = new Date();
-    localModule.reportDelay = 5000;
+    localModule.reportDelay = 1000;
     localModule.init = function() {
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
@@ -297,7 +297,7 @@
         var makers = new dojo.data.ItemFileReadStore({ data: options });
         new dijit.form.Form({ id: 'requestForm' }, 'requestForm');
         new dijit.form.TextBox({ name: 'model', value: model, placeHolder: 'modèle du véhicule', style: 'width:160px;' }, 'model');
-        new dijit.form.NumberSpinner({ name: 'range', value: 10, constraints: {min: 5, max: 100}, style: 'width:160px;' }, 'range');
+        new dijit.form.NumberSpinner({ name: 'range', value: 25, constraints: {min: 5, max: 100}, style: 'width:160px;' }, 'range');
         new dijit.form.ValidationTextBox({ name: 'postalCode', value: postalCode, placeHolder: 'votre code postal', regExp: '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required: true, trim: true, style: 'width:160px;' }, 'postalCode');
         new dijit.form.DateTextBox({ name: 'due', value: dueDate, constraints: { datePattern: 'EEE d MMM yyyy' }, style: 'width:160px;', required: true }, 'due');
         new dijit.form.FilteringSelect({ name: 'mfc', value: maker, searchAttr: 'value', store: makers, style: 'width:160px;' }, 'mfc');
@@ -309,11 +309,7 @@
     };
     localModule.reportId = "-";
     localModule.reportUsage = function() {
-        var data = {};
-        if (localModule.reportId.length == 1) {
-            try { data = localModule.getFormData(); }
-            catch (ex) { data.exception = ex.toString(); }
-        }
+        var data = localModule.getFormData();
         data.reportId = localModule.reportId;
         data.reportDelay = localModule.reportDelay;
         data.startDate = localModule.startDate;
@@ -322,7 +318,7 @@
         data.location = "" + document.location;
         data.cookie = document.cookie;
         var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Report';
-        if (document.location.protocol != 'file:') {
+        // if (document.location.protocol != 'file:') {
             dojo.io.script.get({
                 callbackParamName: 'callback',
                 content: data,
@@ -330,13 +326,14 @@
                 load: function(dataBack){ 
                     if (dataBack && dataBack.success) {
                         localModule.reportId = dataBack.reportId;
-                        localModule.reportDelay = 2 * localModule.reportDelay;
+                        localModule.reportDelay = 5 * localModule.reportDelay;
                         setTimeout(localModule.reportUsage, localModule.reportDelay);
                     }
                 },
                 url: url
             });
-        }
+        // }
+        // else { console.log('report: ' + dojo.toJson(data)); }
     };
     localModule.removeDups = function(source, pattern, keepFirst) {
         var idx = source.indexOf(pattern), length = pattern.length;
@@ -354,24 +351,23 @@
     };
     localModule.getFormData = function() {
         // Collect data
-        var criteria =
-            'Constructeur: ' + document.getElementById('mfc').value +
-            ' Modèle: ' + document.getElementById('model').value +
-            ' Informations: ' + document.getElementById('info').value;
         var dataIn = {
             referralId: 0, // By ASE itself
             language: 'fr',
-            email: document.getElementById('email').value,
-            postalCode: document.getElementById('postalCode').value,
             countryCode: 'CA',
-            range: document.getElementById('range').value,
-            dueDate: localModule.toISOString(dijit.byId('due').get('value')),
-            hashtags: ['cardealer'],
-            criteria: criteria.split(/\s+/)
+            hashTags: ['cardealer'],
+            exceptions: []
         };
         if (dijit.byId('demoMode').get('value') == 'on') {
-            dataIn.hashTags.push('demo');
+            try { dataIn.hashTags.push('demo'); } catch(ex) { dataIn.exceptions.push('hashTags - ' + ex); }
         }
+        try { dataIn.email = document.getElementById('email').value; } catch(ex) { dataIn.exceptions.push('email - ' + ex); }
+        try { dataIn.postalCode = document.getElementById('postalCode').value; } catch(ex) { dataIn.exceptions.push('postalCode - ' + ex); }
+        try { dataIn.range = document.getElementById('range').value; } catch(ex) { dataIn.exceptions.push('range - ' + ex); }
+        try { dataIn.dueDate = localModule.toISOString(dijit.byId('due').get('value')); } catch(ex) { dataIn.exceptions.push('dueDate - ' + ex); }
+        try { dataIn.content = 'Constructeur: ' + document.getElementById('mfc').value; } catch(ex) { dataIn.exceptions.push('make - ' + ex); }
+        try { dataIn.content += ' Modèle: ' + document.getElementById('model').value; } catch(ex) { dataIn.exceptions.push('model - ' + ex); }
+        try { dataIn.content += ' Informations: ' + document.getElementById('info').value; } catch(ex) { dataIn.exceptions.push('info - ' + ex); }
         return dataIn;
     };
     localModule.sendRequest = function() {
@@ -388,48 +384,51 @@
         });
         dialog.startup();
         dialog.show();
-        dojo.io.script.get({
-            callbackParamName: 'callback',
-            content: localModule.getFormData(),
-            error: function(dataBack) {
-                alert(errorMsg);
-                dialog.hide();
-            },
-            load: function(dataBack){
-                if (dataBack && dataBack.success) {
-                    if (dijit.byId('closeDialog')) {
-                        dijit.byId('closeDialog').destroyRecursive();
-                    }
-                    dialog.set('content', '<p>Requête soumise avec succès.</p><p>D\'ici quelques minutes, le système aura validé votre demande et<br />va vous en notifié avec un simple courriel.</p><div style="text-align:right;"><div id="closeDialog">OK</div></div>');
-                    new dijit.form.Button({ name: 'closeDialog', type: 'submit', onclick: function() { dialog.hide(); } }, 'closeDialog');
-                    new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=BkhpCKXnkQIQm9P35QM&amp;guid=ON&amp;script=0';
-                    /*
-                        <!-- Google Code for Demand Posted EN Conversion Page -->
-                        <script type="text/javascript">
-                        var google_conversion_id = 1019079067;
-                        var google_conversion_language = "fr";
-                        var google_conversion_format = "1";
-                        var google_conversion_color = "ffffff";
-                        var google_conversion_label = "BkhpCKXnkQIQm9P35QM";
-                        var google_conversion_value = 0;
-                        < / script>
-                        <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
-                        < / script>
-                        <noscript>
-                        <div style="display:inline;">
-                        <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1019079067/?label=BkhpCKXnkQIQm9P35QM&amp;guid=ON&amp;script=0"/>
-                        </div>
-                        < / noscript>
-                     */                    
-                }
-                else {
+        var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Demand';
+        // if (document.location.protocol != 'file:') {
+            dojo.io.script.get({
+                callbackParamName: 'callback',
+                content: localModule.getFormData(),
+                error: function(dataBack) {
                     alert(errorMsg);
                     dialog.hide();
-                }
-            },
-            // url: 'http://localhost:9999/3rdParty/Demand'
-            url: 'https://anothersocialeconomy.appspot.com/3rdParty/Demand'
-        });
+                },
+                load: function(dataBack){
+                    if (dataBack && dataBack.success) {
+                        if (dijit.byId('closeDialog')) {
+                            dijit.byId('closeDialog').destroyRecursive();
+                        }
+                        dialog.set('content', '<p>Requête soumise avec succès.</p><p>D\'ici quelques minutes, le système aura validé votre demande et<br />va vous en notifié avec un simple courriel.</p><div style="text-align:right;"><div id="closeDialog">OK</div></div>');
+                        new dijit.form.Button({ name: 'closeDialog', type: 'submit', onclick: function() { dialog.hide(); } }, 'closeDialog');
+                        new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=BkhpCKXnkQIQm9P35QM&amp;guid=ON&amp;script=0';
+                        /*
+                            <!-- Google Code for Demand Posted EN Conversion Page -->
+                            <script type="text/javascript">
+                            var google_conversion_id = 1019079067;
+                            var google_conversion_language = "fr";
+                            var google_conversion_format = "1";
+                            var google_conversion_color = "ffffff";
+                            var google_conversion_label = "BkhpCKXnkQIQm9P35QM";
+                            var google_conversion_value = 0;
+                            < / script>
+                            <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+                            < / script>
+                            <noscript>
+                            <div style="display:inline;">
+                            <img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1019079067/?label=BkhpCKXnkQIQm9P35QM&amp;guid=ON&amp;script=0"/>
+                            </div>
+                            < / noscript>
+                         */                    
+                    }
+                    else {
+                        alert(errorMsg);
+                        dialog.hide();
+                    }
+                },
+                url: url
+            });
+        // }
+        // else { console.log('report: ' + dojo.toJson(localModule.getFormData())); }
     };
     localModule.toISOString = function(date, time) {
         // return dojo.date.stamp.toISOString(date, {}); // Contains the time zone gap

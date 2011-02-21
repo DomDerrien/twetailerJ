@@ -96,13 +96,16 @@ public class DemandProcessor {
             // Add the corresponding task in the queue
             if (0 < demandKeys.size()) {
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
+                int countDown = 1;
                 for (Long key: demandKeys) {
                     // Create a task for that demand
                     queue.add(
                             withUrl("/_tasks/processPublishedDemand").
                                 param(Demand.KEY, key.toString()).
-                                method(Method.GET)
+                                method(Method.GET).
+                                countdownMillis(countDown * 2000)
                     );
+                    countDown ++;
                 }
             }
         }
