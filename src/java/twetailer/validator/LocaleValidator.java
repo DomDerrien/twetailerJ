@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javamocks.io.MockInputStream;
+import twetailer.connector.MailConnector;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.dto.Consumer;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
@@ -50,7 +53,7 @@ public class LocaleValidator {
     public static void getGeoCoordinates(JsonObject command) {
         String postalCode = command.getString(Location.POSTAL_CODE);
         String countryCode = command.getString(Location.COUNTRY_CODE);
-        Double[] coordinates = getGeoCoordinates(postalCode, countryCode);
+        Double[] coordinates = getGeoCoordinates(postalCode, countryCode, null);
         command.put(Location.LATITUDE, coordinates[0]);
         command.put(Location.LONGITUDE, coordinates[1]);
     }
@@ -62,7 +65,7 @@ public class LocaleValidator {
      * @return Given parameter for operation chaining
      */
     public static Location getGeoCoordinates(Location location) {
-        Double[] coordinates = getGeoCoordinates(location.getPostalCode(), location.getCountryCode());
+        Double[] coordinates = getGeoCoordinates(location.getPostalCode(), location.getCountryCode(), location.getKey());
         location.setLatitude(coordinates[0]);
         location.setLongitude(coordinates[1]);
         return location;
@@ -73,13 +76,9 @@ public class LocaleValidator {
      *
      * @param store Entity to localized
      * @return Given parameter for operation chaining
-     *
-     * @throws IOException If getting information from the 3rd party service fails
-     * @throws JsonException If parsing the JSON response and extracting data fails
-     * @throws URISyntaxException If the syntax of the URL is invalid
      */
-    public static Store getGeoCoordinates(Store store) throws IOException, JsonException, URISyntaxException {
-        Double[] coordinates = getGeoCoordinates(store.getAddress());
+    public static Store getGeoCoordinates(Store store) {
+        Double[] coordinates = getGeoCoordinates(store.getAddress(), store.getKey());
         store.setLatitude(coordinates[0]);
         store.setLongitude(coordinates[1]);
         return store;
@@ -93,10 +92,13 @@ public class LocaleValidator {
      *
      * @param postalCode Postal code
      * @param countryCode Code of the country to consider
+     * @param locationKey TODO
      * @return Pair of coordinates {latitude, longitude}
      */
-    protected static Double[] getGeoCoordinates(String postalCode, String countryCode) {
+    protected static Double[] getGeoCoordinates(String postalCode, String countryCode, Long locationKey) {
         Double[] coordinates = new Double[] {Location.INVALID_COORDINATE, Location.INVALID_COORDINATE};
+        StringBuilder buffer = new StringBuilder();
+        Exception ex = null;
         // Test case
         if (RobotResponder.ROBOT_POSTAL_CODE.equals(postalCode)) {
             coordinates[0] = 90.0D;
@@ -107,7 +109,6 @@ public class LocaleValidator {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 String line = reader.readLine();
-                StringBuilder buffer = new StringBuilder();
                 while (line != null) {
                     buffer.append(line);
                     line = reader.readLine();
@@ -119,14 +120,13 @@ public class LocaleValidator {
                 coordinates[0] = info.getDouble("lat");
                 coordinates[1] = info.getDouble("lng");
             }
-            catch (Exception e) { }
+            catch (Exception e) { ex = e; }
         }
         // Postal code in Canada
         else if (Locale.CANADA.getCountry().equals(countryCode) && CANADIAN_POSTAL_CODE_PATTERN.matcher(postalCode).find()) {
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(postalCode, countryCode)));
                 String line = reader.readLine();
-                StringBuilder buffer = new StringBuilder();
                 while (line != null) {
                     buffer.append(line);
                     line = reader.readLine();
@@ -139,12 +139,29 @@ public class LocaleValidator {
                 coordinates[1] = info.getDouble("lng");
 
             }
-            catch (Exception e) { }
+            catch (Exception e) { ex = e; }
         }
         if (coordinates[0] < -90.0d || 90.0d < coordinates[0] || coordinates[1] < -180.0d || 180.0d < coordinates[1]) {
             // Reset
+            ex = new  IllegalArgumentException("Invalid coordinates: [" + coordinates[0] + "; " + coordinates[1] + "]") ;
             coordinates[0] = coordinates[1] = Location.INVALID_COORDINATE;
         }
+
+        // TODO: remove this information logging
+        try {
+            MailConnector.reportErrorToAdmins(
+                    null, // No From
+                    "Retrieved coordinates for: " + postalCode + " " + countryCode,
+                    "<p>*** Coordinates: {" + coordinates[0] + "; " + coordinates[1] + "} ***<br/>"
+                    + "*** Update: http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Location&key=" + locationKey + "<br/>"
+                    + (ex == null ? "*** No exception, retrieval was OK ***<p>" : "*** Exception: " + ex.getMessage() + " ***<br/>*** Google maps response:\n" + buffer + "</p>")
+            );
+            if (ex != null) {
+                ex.printStackTrace();
+            }
+        }
+        catch (Exception ez) { } // Too bad...
+
         return coordinates;
     }
 
@@ -159,29 +176,44 @@ public class LocaleValidator {
      * Use 3rd party service to resolve the geocoordinates of the given location
      *
      * @param address To be localized
+     * @param storeKey TODO
      * @return Pair of coordinates {latitude, longitude}
-     *
-     * @throws IOException If getting information from the 3rd party service fails
-     * @throws JsonException If parsing the JSON response and extracting data fails
-     * @throws URISyntaxException If the syntax of the URL is invalid
      */
-    protected static Double[] getGeoCoordinates(String address) throws IOException, JsonException, URISyntaxException {
+    protected static Double[] getGeoCoordinates(String address, Long storeKey) {
         Double[] coordinates = new Double[] { Location.INVALID_COORDINATE, Location.INVALID_COORDINATE };
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(address)));
-        String line = reader.readLine();
         StringBuilder buffer = new StringBuilder();
-        while (line != null) {
-            buffer.append(line);
-            line = reader.readLine();
+        Exception ex = null;
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getValidatorStream(address)));
+            String line = reader.readLine();
+            while (line != null) {
+                buffer.append(line);
+                line = reader.readLine();
+            }
+            reader.close();
+
+            JsonObject info = new JsonParser(buffer.toString()).getJsonObject();
+            info = info.getJsonArray("results").getJsonObject(0).getJsonObject("geometry").getJsonObject("location");
+            coordinates[0] = info.getDouble("lat");
+            coordinates[1] = info.getDouble("lng");
         }
-        reader.close();
+        catch (Exception e) { ex = e; }
 
-        JsonObject info = new JsonParser(buffer.toString()).getJsonObject();
-        info = info.getJsonArray("results").getJsonObject(0).getJsonObject("geometry").getJsonObject("location");
-        coordinates[0] = info.getDouble("lat");
-        coordinates[1] = info.getDouble("lng");
-
+        // TODO: remove this information logging
+        try {
+            MailConnector.reportErrorToAdmins(
+                    null, // No From
+                    "Retrieved coordinates for address: " + address,
+                    "<p>*** Coordinates: {" + coordinates[0] + "; " + coordinates[1] + "} ***<br/>"
+                    + "*** Update: http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Store&key=" + storeKey + "<br/>"
+                    + (ex == null ? "*** No exception, retrieval was OK ***<p>" : "*** Exception: " + ex.getMessage() + " ***<br/>*** Google maps response:\n" + buffer + "</p>")
+            );
+            if (ex != null) {
+                ex.printStackTrace();
+            }
+        }
+        catch (Exception ez) { } // Too bad...
         return coordinates;
     }
 

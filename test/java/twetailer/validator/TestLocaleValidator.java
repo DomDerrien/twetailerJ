@@ -61,7 +61,7 @@ public class TestLocaleValidator {
 
     @Test
     public void testGetGeoCoordinatesI() {
-        Double[] coords = LocaleValidator.getGeoCoordinates(RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates(RobotResponder.ROBOT_POSTAL_CODE, RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(90.0D, coords[0].doubleValue(), 0.0D); // Latitude
         assertEquals(0.0D, coords[1].doubleValue(), 0.0D); // Longitude
     }
@@ -71,7 +71,7 @@ public class TestLocaleValidator {
         LocaleValidator.setMockValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':22.5,'lng':-120.5}}}]}"));
         // LocaleValidator.setValidatorStream(new MockInputStream("22.5, -120.5, Somewhere, US, 95432"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry(), null);
         assertEquals(22.5D, coords[0].doubleValue(), 0.0D); // Latitude
         assertEquals(-120.5D, coords[1].doubleValue(), 0.0D); // Longitude
     }
@@ -80,7 +80,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesIIb() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream(""));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -94,7 +94,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("95432", Locale.US.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -104,7 +104,7 @@ public class TestLocaleValidator {
         LocaleValidator.setMockValidatorStream(new MockInputStream("{'status':'OK','results':[{'geometry':{'location':{'lat':45.45,'lng':-75.5}}}]}"));
         // LocaleValidator.setValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.45</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(45.45D, coords[0].doubleValue(), 0.0D); // Latitude
         assertEquals(-75.5D, coords[1].doubleValue(), 0.0D); // Longitude
     }
@@ -113,7 +113,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesIVb() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<error>\n\t\t<code>105</code>\n\t\t<message>Bad format</code>\n\t</code><latt></latt>\n\t<longt>-</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -122,7 +122,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesIVc() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream(""));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -136,7 +136,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -145,7 +145,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesVII() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -154,7 +154,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesVIII() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>-100.000000</latt>\n\t<longt>-75.5</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -163,7 +163,7 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesIX() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>200.000000</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -172,14 +172,14 @@ public class TestLocaleValidator {
     public void testGetGeoCoordinatesX() throws IOException {
         LocaleValidator.setMockValidatorStream(new MockInputStream("<geodata>\n\t<latt>45.5</latt>\n\t<longt>-200.000000</longt>\n</geodata>"));
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE);
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", RobotResponder.ROBOT_COUNTRY_CODE, null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
 
     @Test
     public void testGetGeoCoordinatesXI() throws IOException {
-        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "zzz");
+        Double[] coords = LocaleValidator.getGeoCoordinates("A1B2C3", "zzz", null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -288,7 +288,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("95", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("95", Locale.US.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -303,7 +303,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("954344343", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("954344343", Locale.US.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -318,7 +318,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("12345-67890", Locale.US.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("12345-67890", Locale.US.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -333,7 +333,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("hhhhhh", Locale.CANADA.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("hhhhhh", Locale.CANADA.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }
@@ -348,7 +348,7 @@ public class TestLocaleValidator {
             }
         });
 
-        Double[] coords = LocaleValidator.getGeoCoordinates("h1x9", Locale.CANADA.getCountry());
+        Double[] coords = LocaleValidator.getGeoCoordinates("h1x9", Locale.CANADA.getCountry(), null);
         assertEquals(Location.INVALID_COORDINATE, coords[0]); // Latitude
         assertEquals(Location.INVALID_COORDINATE, coords[1]); // Longitude
     }

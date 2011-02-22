@@ -23,6 +23,7 @@ import org.junit.Test;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
+import twetailer.connector.MailConnector;
 import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
@@ -925,6 +926,7 @@ public class TestProposalProcessor {
             }
         });
 
+        MailConnector.foolNextMessagePost(); // Otherwise the system will try to sent a message to admins anyway
         ProposalProcessor.process(proposalKey);
     }
 }

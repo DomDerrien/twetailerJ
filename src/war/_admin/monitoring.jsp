@@ -1545,10 +1545,29 @@
             } %>
             dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
             twetailer.Common.init('en', null, null);
+            localModule.init();
         });
     });
 
     var localModule = new Object();
+    localModule.init = function() {
+        if (window.location.search) {
+            var params = dojo.queryToObject(window.location.search.slice(1));
+            if (params.type && params.key) {
+                if (!dojo.isArray(params.type)) {
+                    params.type = [params.type];
+                    params.key = [params.key];
+                }
+                var types = params.type, idx = 0; limit = types.length, keys = params.key;
+                while (idx < limit) {
+                    var type = types[idx], key = keys[idx], id = type.toLowerCase() + '.key';
+                    dijit.byId(id).set('value', key);
+                    localModule.fetchEntity(id, type);
+                    ++ idx;
+                }
+            }
+        }
+    };
     localModule.fetchEntity = function(keyFieldId, entityName, pointOfView) {
         var key = dijit.byId(keyFieldId).get('value');
         if (isNaN(key)) {

@@ -84,19 +84,15 @@ public class StoreSteps extends BaseSteps {
         if (parameters.containsKey(Store.REGISTRAR_KEY)) {
             store.setRegistrarKey(parameters.getLong(Store.REGISTRAR_KEY));
         }
-        try {
-            store = LocaleValidator.getGeoCoordinates(store);
+        store = LocaleValidator.getGeoCoordinates(store);
+        if (store.getRegistrarKey() != null && store.getLatitude() != Location.INVALID_COORDINATE) {
             store = getStoreOperations().updateStore(pm, store);
         }
-        catch (Exception ex) {
-            throw new ClientException("The store has an address which cannot be resolved geographically: {key:" + store.getKey() + ",name:'" + store.getName() + ",address:'" + store.getAddress() + "'}", ex);
-        }
-        finally {
-            Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
-            if (Boolean.FALSE.equals(location.hasStore())) {
-                location.setHasStore(Boolean.TRUE);
-                getLocationOperations().updateLocation(pm, location);
-            }
+
+        Location location = getLocationOperations().getLocation(pm, store.getLocationKey());
+        if (Boolean.FALSE.equals(location.hasStore())) {
+            location.setHasStore(Boolean.TRUE);
+            getLocationOperations().updateLocation(pm, location);
         }
 
         return store;

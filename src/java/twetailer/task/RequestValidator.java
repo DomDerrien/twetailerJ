@@ -222,7 +222,8 @@ public class RequestValidator {
                     else if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
                         location = LocaleValidator.getGeoCoordinates(location);
                         if (Location.INVALID_COORDINATE.equals(location.getLongitude())) {
-                            message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { wishRef, location.getPostalCode(), location.getCountryCode() }, locale);
+                            // TODO: re-enable the message generation when we're sure the coordinates are really wrong, not just unavailable from Google Maps
+                            // message = LabelExtractor.get("dv_report_invalid_locale", new Object[] { wishRef, location.getPostalCode(), location.getCountryCode() }, locale);
                         }
                         else {
                             location = BaseSteps.getLocationOperations().updateLocation(pm, location);
