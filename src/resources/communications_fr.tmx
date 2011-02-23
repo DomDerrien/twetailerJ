@@ -213,7 +213,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    |--|Cette commande va être traitée automatiquement par le moteur de AnotherSocialEconomy.com.
+                    |--|Le moteur de AnotherSocialEconomy.com traitera votre commande automatiquement.
                 </seg>
             </tuv>
         </tu>
@@ -285,7 +285,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    compléter demande:{demand>key} {command>footer}
+                    completer demande:{demand>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -339,7 +339,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    décliner proposition:{proposal>key} {command>footer}
+                    decliner proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -348,7 +348,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    évaluer proposition:{proposal>key} score: :-( commentaire: {command>footer}
+                    evaluer proposition:{proposal>key} score: :-( commentaire: {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -357,7 +357,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    évaluer proposition:{proposal>key} score: :-\\| commentaire: {command>footer}
+                    evaluer proposition:{proposal>key} score: :-\\| commentaire: {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -366,7 +366,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    évaluer proposition:{proposal>key} score: :-) commentaire: {command>footer}
+                    evaluer proposition:{proposal>key} score: :-) commentaire: {command>footer}
                 </seg>
             </tuv>
         </tu>
@@ -375,7 +375,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    compléter proposition:{proposal>key} {command>footer}
+                    completer proposition:{proposal>key} {command>footer}
                 </seg>
             </tuv>
         </tu>

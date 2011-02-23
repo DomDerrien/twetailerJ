@@ -184,7 +184,7 @@ public class MailConnector {
         mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
         mailMessage.setSubject(subject, StringUtils.JAVA_UTF8_CHARSET);
-        setContentAsPlainTextAndHtml(mailMessage, message);
+        setContentAsPlainTextAndHtml(mailMessage, message, locale.getLanguage());
         Transport.send(mailMessage);
     }
 
@@ -196,17 +196,19 @@ public class MailConnector {
      *
      * @throws MessagingException If the submitted text is not accepted
      */
-    public static void setContentAsPlainTextAndHtml(MimeMessage message, String content) throws MessagingException {
+    public static void setContentAsPlainTextAndHtml(MimeMessage message, String content, String language) throws MessagingException {
         MimeBodyPart textPart = new MimeBodyPart();
         MimeBodyPart htmlPart = new MimeBodyPart();
 
         // TODO: send a default message in case "content" is null or empty
 
         textPart.setContent(content, "text/plain; charset=" + StringUtils.HTML_UTF8_CHARSET);
+        textPart.setContentLanguage(new String[] { language });
         if (content != null && 0 < content.length() && content.charAt(0) != '<') {
             content = content.replaceAll(BaseConnector.MESSAGE_SEPARATOR, "<br/>");
         }
         htmlPart.setContent(content, "text/html; charset=" + StringUtils.HTML_UTF8_CHARSET);
+        htmlPart.setContentLanguage(new String[] { language });
 
         MimeMultipart multipart = new MimeMultipart("alternative");
         multipart.addBodyPart(textPart);
@@ -361,7 +363,7 @@ public class MailConnector {
         ));
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
         messageToForward.setSubject(from == null ? subject : "Fwd: (" + from + ") " + subject);
-        setContentAsPlainTextAndHtml(messageToForward, body);
+        setContentAsPlainTextAndHtml(messageToForward, body, "en");
 
         // getLogger().warning("Reporting to 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body + "]");
 
@@ -416,7 +418,7 @@ public class MailConnector {
             body.append(tableParts[2]);
             body.append(tableParts[0]).append("Recipient info").append(tableParts[1]).append("<pre>").append(consumer.toJson().toString()).append("</pre>").append(tableParts[2]);
             body.append("</table>");
-            setContentAsPlainTextAndHtml(messageToForward, body.toString());
+            setContentAsPlainTextAndHtml(messageToForward, body.toString(), "en");
 
             // getLogger().warning("Copying 'admins' (medium: mail) -- subject: [" + messageToForward.getSubject() + "] -- message: [" + body.toString() + "]");
 

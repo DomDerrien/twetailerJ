@@ -91,7 +91,7 @@ public class DemandProcessor {
             // Prepare the query with: state == published && modificationDate > past
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("=" + Command.STATE, State.published.toString());
-            parameters.put("<" + Entity.MODIFICATION_DATE, past.getTime());
+            parameters.put(">" + Entity.MODIFICATION_DATE, past.getTime());
             List<Long> demandKeys = BaseSteps.getDemandOperations().getDemandKeys(pm, parameters, 0);
             // Add the corresponding task in the queue
             if (0 < demandKeys.size()) {
