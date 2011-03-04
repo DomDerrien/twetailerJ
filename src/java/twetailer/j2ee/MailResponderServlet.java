@@ -373,6 +373,6 @@ public class MailResponderServlet extends HttpServlet {
             cursor = in.charAt(end - 1);
         }
         // Return the short message
-        return in.substring(begin, end).replaceAll("\r\n", " ");
+        return in.substring(begin, end).replaceAll("\r", "").replaceAll("\n", " ");
     }
 }

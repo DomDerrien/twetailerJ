@@ -1375,7 +1375,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n" + out;
 
-        assertEquals(out + "\n" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " " + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1383,7 +1383,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n\r" + out;
 
-        assertEquals(out + "\n\r" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " " + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1391,7 +1391,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n-" + out;
 
-        assertEquals(out + "\n-" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " -" + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1399,7 +1399,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n-\r" + out;
 
-        assertEquals(out + "\n-\r" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " -" + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1407,7 +1407,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n--\r" + out;
 
-        assertEquals(out + "\n--\r" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " --" + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1415,7 +1415,7 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n-- \r" + out;
 
-        assertEquals(out + "\n-- \r" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " -- " + out, MailResponderServlet.extractFirstLine(in));
     }
 
     @Test
@@ -1423,6 +1423,6 @@ public class TestMailResponderServlet {
         String out = "blah-blah-blah";
         String in = out + "\n-- .\n" + out;
 
-        assertEquals(out + "\n-- .\n" + out, MailResponderServlet.extractFirstLine(in));
+        assertEquals(out + " -- . " + out, MailResponderServlet.extractFirstLine(in));
     }
 }

@@ -94,6 +94,8 @@ public class DemandProcessor {
             parameters.put(">" + Entity.MODIFICATION_DATE, past.getTime());
             List<Long> demandKeys = BaseSteps.getDemandOperations().getDemandKeys(pm, parameters, 0);
             // Add the corresponding task in the queue
+            StringBuilder logging = new StringBuilder();
+            logging.append("Scheduling ").append(demandKeys.size()).append(" task(s) for the demands: ");
             if (0 < demandKeys.size()) {
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
                 int countDown = 1;
@@ -105,9 +107,11 @@ public class DemandProcessor {
                                 method(Method.GET).
                                 countdownMillis(countDown * 2000)
                     );
+                    logging.append(key).append(", ");
                     countDown ++;
                 }
             }
+            getLogger().warning(logging.toString());
         }
         finally {
             pm.close();
@@ -226,12 +230,13 @@ public class DemandProcessor {
      */
     protected static List<SaleAssociate> identifySaleAssociates(PersistenceManager pm, Demand demand, Consumer owner) throws InvalidIdentifierException, DataSourceException {
         List<SaleAssociate> selectedSaleAssociates = new ArrayList<SaleAssociate>();
-        // Get the stores around the demanded location
+        // Get the locations around the demanded location
         Location location = BaseSteps.getLocationOperations().getLocation(pm, demand.getLocationKey());
         List<Location> locations = BaseSteps.getLocationOperations().getLocations(pm, location, demand.getRange(), demand.getRangeUnit(), true, 0);
         if (locations.size() == 0) {
             return selectedSaleAssociates;
         }
+        // Extracts stores
         List<Store> stores = BaseSteps.getStoreOperations().getStores(pm, new HashMap<String, Object>(), locations, 0);
         if (stores.size() == 0) {
             return selectedSaleAssociates;
@@ -246,7 +251,8 @@ public class DemandProcessor {
             return selectedSaleAssociates;
         }
         // Filter out non matching Sale Associates
-        return filterSaleAssociates(saleAssociates, demand, owner);
+        saleAssociates = filterSaleAssociates(saleAssociates, demand, owner);
+        return saleAssociates;
     }
 
     /**

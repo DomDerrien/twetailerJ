@@ -301,8 +301,12 @@ public class ProposalSteps extends BaseSteps {
     public static Proposal createProposal(PersistenceManager pm, JsonObject parameters, SaleAssociate owner, Consumer saConsumerRecord) throws DataSourceException, ClientException {
 
         // Data validation & propagation
-        if (!parameters.containsKey(Proposal.DEMAND_KEY)) {
+        // FIXME: deprecate Demand.REFERENCE in favor of Proposal.DEMAND_KEY, be careful with the CommandLineParser with uses Demand.REFERENCE
+        if (!parameters.containsKey(Proposal.DEMAND_KEY) && !parameters.containsKey(Demand.REFERENCE)) {
             throw new InvalidIdentifierException("Missing " + Proposal.DEMAND_KEY + " attribute!");
+        }
+        if (!parameters.containsKey(Proposal.DEMAND_KEY)) {
+            parameters.put(Proposal.DEMAND_KEY, parameters.getLong(Demand.REFERENCE));
         }
         Long demandKey = parameters.getLong(Proposal.DEMAND_KEY);
         Demand demand = getDemandOperations().getDemand(pm, demandKey, null);

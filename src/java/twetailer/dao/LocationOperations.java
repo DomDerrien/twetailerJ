@@ -345,7 +345,7 @@ public class LocationOperations extends BaseOperations {
             rightLongitude = longitude + longitudeDelta;
         }
         // FIXME: take into account that the value can be greater than 360° and smaller than 0°
-        // FIXME: that means two request have to be done at the limit...
+        // FIXME: that means two requests have to be done at the limit...
 
         Logger.getLogger(LocationOperations.class.getName()).finest("Box limits [left; right] / [bottom; top] : [" + leftLongitude + "; " + rightLongitude + "] / [" + bottomLatitude + "; " + topLatitude + "]");
 

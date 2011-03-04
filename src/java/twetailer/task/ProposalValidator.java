@@ -197,6 +197,7 @@ public class ProposalValidator {
             msgGen.
                 put("proposal>owner>name", associate.getName()).
                 fetch(proposal).
+                put("demand>key", proposal.getDemandKey()).
                 put("message>footer", msgGen.getAlternateMessage(MessageId.messageFooter)).
                 put("command>footer", LabelExtractor.get(ResourceFileId.fourth, "command_message_footer", locale));
 
