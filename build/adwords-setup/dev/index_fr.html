@@ -1,0 +1,431 @@
+﻿<!DOCTYPE html>
+<html dir="ltr" lang="fr">
+<head>
+    <!--base href="http://anothersocialeconomy.com/"-->
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" />
+    <link rel="icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" type="image/x-icon"/>
+    <title>AnotherSocialEconomy pour rechercher la ${MAKE} ${MODEL} ${PRINTED_QUALIFIER} auprès des concessionnaires de ${CITY}</title>
+    <meta name="description" content="Épuisé(e) de chercher sur Internet une ${MAKE} ${MODEL} ${PRINTED_QUALIFIER}? Nous pouvons relayer votre demande aux concessionnaires de ${CITY} et vous communiquer leurs propositions directement dans votre boîte de courriel - et gratuitement!" />
+    <meta name="keywords" content="${CITY}, ${MAKE}, ${MODEL}, ${QUALIFIER}, Demande, Proposition, Voiture, Camionnette, Camion" />
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/default.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/reset.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/text.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/cardealer/css/960.css" media="screen" />
+    <!--[if IE 6]><link rel="stylesheet" type="text/css" href="/css/960gs/css/ie6.css" media="screen" /><![endif]-->
+    <!--[if gte IE 7]><link rel="stylesheet" type="text/css" href="/css/960gs/css/ie.css" media="screen" /><![endif]-->
+    <style type="text/css">
+        .formField {
+            visibility: visible;
+            height: 16px;
+            margin: 0px;
+            border: 1px solid #B5BCC7;
+            background-color: #F7FCFF;
+            font-size: 0pt;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="claro">
+<form id="requestForm" onsubmit="return false;">
+    <div id="container" class="container_16">
+        <div class="grid_16" style="margin-top: 25px;">
+            <a href="index.html"><img alt="Image du réseau d'AnotherSocialEconomy" src="/cardealer/images/AnotherSocialEconomy-Network_960x164_fade.png" style="z-index: -1; width: 940px;"></a>
+        </div>
+        <div class="clear"></div>
+        <div class="grid_16" style="position:absolute; top: 5px;">
+            <div class="grid_12 alpha">
+                <h1>
+                    <span title="NouvelleÉconomieResponsable">AnotherSocialEconomy</span>
+                    <span style="font-size: x-small; font-weight: bolder;"> beta</span><br />
+                    pour les concessionnaires de <span style="font-weight: bold;">${CITY}</span>
+                </h1>
+            </div> 
+            <div class="grid_4 omega">
+                <div class="orange" style="border-radius:8px;">
+                    <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
+                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">Concessionnaires!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage1">English</a></div>
+                </div>
+            </div> 
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16" style="margin-top: -26px;">
+            <h2 id="keywordAdTitle" class="blue">${AD_HEADLINE}</h2>
+            <h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">${AD_LINE}</h3>
+            <h4 style="margin-top: -10px; margin-bottom: 10px;">Vous n'avez qu'à soumettre le formulaire ci-dessous:</h4>
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16" style="margin-top: 0em;">
+            <div class="grid_3 alpha">
+                <div class="col_header"><span class="blue col_name">Qui</span></div>
+                <p>
+                    <label>Votre courriel:</label><br>
+                    <input id="email" class="formField" />
+                </p>
+                <div style="margin-top: -15px; color: black; font-weight: bold;">Nous ne partagerons jamais, <span class="blue">au grand jamais</span>, vos coordonnées.</div>
+                <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Essayez le service en mode 'démo'.</label>
+            </div> 
+            <div class="grid_3">
+                <div class="col_header"><span class="blue col_name">Quoi</span></div>
+                <p>
+                    <label>Constructeur:</label><br>
+                    <input id="mfc" class="formField" style="height:16px;" />
+                </p>
+                <p style="margin-top: -15px">
+                    <label>Modèle:</label><br>
+                    <input id="model" value="${MODEL}" class="formField" />
+                </p>
+            </div> 
+            <div class="grid_3">
+                <div class="col_header"><span class="blue col_name">Où</span></div>
+                <p>
+                    <label>Code postal:</label><br>
+                    <input id="postalCode" value="${POSTAL_CODE}" class="formField" />
+                </p>
+                <p style="margin-top: -15px">
+                    <label>Distance en km:</label><br>
+                    <input id="range" value="25" class="formField" />
+                </p>
+            </div> 
+            <div class="grid_3">
+                <div class="col_header"><span class="blue col_name">Quand</span></div>
+                <p>
+                    <label>Date d'expiration:</label><br>
+                    <input id="due" value="2011-01-30" class="formField" />
+                </p>
+            </div> 
+            <div class="grid_4 omega">
+                <div class="col_header"><span class="blue col_name">Pourquoi</span></div>
+                <p>
+                    <label>Autres informations:</label><br>
+                    <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
+                </p>
+            </div> 
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16" style="font-size:large; text-align: right; margin-bottom:15px;">
+            <div class="grid_3 alpha prefix_9">
+                <div><span class="yellow">Envoyez...</span></div>
+                <div><span class="yellow">C'est GRATUIT!</span></div>
+            </div> 
+            <div class="grid_4 omega">
+                <a class="butt_bgorange" onclick="localModule.sendRequest(); return false;" href="#">Soumettre votre demande</a>
+            </div> 
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16">
+            <div>
+                <span class="black" style="font-size:large;">Comment</span>
+                <span style="font-size:large;">fonctionne le système </span>
+                <span style="font-size: small;">(la mise en relation des demandes et des offres)</span>
+            </div>
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16">
+            <div class="grid_4 alpha">
+                <div class="col_header"><span class="gray col_name">1. Vous demandez</span></div>
+                <p>Vous initiez une <span class="command">Demande</span> en nous communiquant
+                <span class="blue">Qui</span> vous êtes,
+                <span class="blue">Quel véhicule</span> vous cherchez,
+                <span class="blue">Où</span> vous le cherchez,
+                pour <span class="blue">Quand</span> vous en avez besoin et
+                <span class="blue">Pourquoi</span> vous le cherchez.</p>
+            </div> 
+            <div class="grid_4">
+                <div class="col_header"><span class="gray col_name">2. Nous diffusons</span></div>
+                <p>Nous diffusons votre <span class="command">Demande</span> -
+                <span class="blue">et non vos coordonnées</span>,
+                aux <strong>concessionnaires automobiles</strong> participants.</p>
+            </div> 
+            <div class="grid_4">
+                <div class="col_header"><span class="gray col_name">3. Ils proposent</span></div>
+                <p>Les <strong>concessionnaires</strong> ayant le véhicule que vous cherchez nous
+                soummettent leurs <span class="command">Propositions.</span> Nous vous les
+                <span class="blue">transmettons</span> accompagnées des coordonnées de la concession.</p>
+            </div> 
+            <div class="grid_4 omega">
+                <div class="col_header"><span class="gray col_name">4. Vous évaluez</span></div>
+                <p>Libre à vous d'<span class="blue">évaluer</span> ces
+                <span class="command blue">Propositions</span> et de contacter les
+                <strong>concessionnaires</strong> qui vous intéressent. Le cas échéant, les
+                <span style="font-weight: bold">concessionnaires</span> peuvent vous
+                <span class="command blue">évaluer</span> aussi.</p>
+            </div> 
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16">
+            <div><span class="gray" style="font-size:large;">À propos</span></div>
+            <p><a href="http://anothersocialeconomy.com/" title="NouvelleÉconomieResponsable">AnotherSocialEconomy</a>
+            sait que vous allez déjà dépenser beaucoup d'argent pour la voiture du modèle <span class="red" id="keywordAdTitleForAbout">${MAKE} ${MODEL}</span>
+            ${PRINTED_QUALIFIER}. En vous aidant à trouver le bon concessionnaire, en vous évitant de nombreux appels téléphoniques et des
+            visites infructueuses, <b>AnotherSocialEconomy</b> compte vous faire économiser du temps et de l'énergie.</p>
+            <p>La puissance de <b>AnotherSocialEconomy</b> permet à <b>son réseau de marchands</b> de rentrer en concurrence
+            sur les produits, les services et les prix et non sur les budgets alloués aux moteurs de recherche, ce pour le plus grand bénéfice des clients!
+            </p>
+        </div> 
+        <div class="clear"></div>
+        <div class="grid_16">
+            <div class="grid_12 alpha">
+                <div class="col_header"><span class="gray col_name">AnotherSocialEconomy: Là où l'offre rencontre la demande.</span></div>
+                <div>Tous droits réservés &copy; 2011 <a href="milstein-assoc.com">Milstein et associés inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Politique de confidentialité</a></div>
+            </div> 
+            <div class="grid_4 omega" style="margin-bottom: 5px;">
+                <div class="orange" style="border-radius:8px;">
+                    <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
+                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">concessionnaires!</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage2">English</a></div>
+                </div>
+            </div>
+        </div> 
+    </div>  
+</form>
+<script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: './',
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: 'fr'
+    };
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" type="text/javascript"></script>
+<script type="text/javascript">
+    dojo.require('dojo.io.script');
+    dojo.require('dijit.Dialog'); // **  Use DialogSimple as soon as Dojo 1.6 is out
+    dojo.require('dojo.data.ItemFileReadStore');
+    dojo.require('dijit.form.Button');
+    dojo.require('dijit.form.CheckBox');
+    dojo.require('dijit.form.DateTextBox');
+    dojo.require('dijit.form.FilteringSelect');
+    dojo.require('dijit.form.Form');
+    dojo.require('dijit.form.NumberSpinner');
+    dojo.require('dijit.form.Textarea');
+    dojo.require('dijit.form.TextBox');
+    dojo.require('dijit.form.ValidationTextBox');
+    dojo.require('dojox.analytics.Urchin');
+    // **  dojo.require('dojox.widget.DialogSimple');
+    var localModule = {};
+    dojo.addOnLoad(function() {
+        localModule.init();
+    });
+    dojo.addOnUnload(function() {
+        localModule.reportUsage();
+    });
+    localModule.startDate = new Date();
+    localModule.reportDelay = 1000;
+    localModule.init = function() {
+        var dueDate = new Date();
+        dueDate.setMonth(dueDate.getMonth() + 1);
+        var city = '${CITY}';
+        var maker = '${MAKE}' == 'Car' || '${MAKE}' == 'Automobile' ? 'BMW' : '${MAKE}';
+        var model = '${MODEL}';
+        var qualifier = "${PRINTED_QUALIFIER}"; // **  Use the double-quotes as delimiters because of D'occasion, for example
+        var postalCode = '${CITY}' == 'Local' || '${CITY}' == 'Votre Localité' ? '' : '${POSTAL_CODE}';
+        var info = '';
+        if (window.location.search) {
+            // **  Step 1: get the keywords
+            var skw = dojo.queryToObject(window.location.search.slice(1)).kw;
+            if (skw) {
+                // **  Step 2: remove extra characters
+                skw = skw.replace(/\"/g, '').replace(/\+/g, '');
+                // **  Step 3: remove the duplicates (keep the first occurrence)
+                skw = localModule.removeDups(skw, city, true);
+                skw = localModule.removeDups(skw, qualifier, true);
+                skw = localModule.removeDups(skw, maker, true);
+                // **  Step 4: insert the cleaned up keywords in the page
+                var field = dojo.byId('keywordAdTitle');
+                field.innerHTML = '';
+                field.appendChild(dojo.doc.createTextNode(skw));
+                // **  Step 5: update the language switchers
+                dojo.byId('switchLanguage1').href += '?kw=' + skw;
+                dojo.byId('switchLanguage2').href += '?kw=' + skw;
+                // **  Step 6: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
+                skw = localModule.removeDups(skw, city, false);
+                skw = localModule.removeDups(skw, qualifier, false);
+                skw = localModule.removeDups(skw, maker, false);
+                // **  Step 7: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
+                skw = localModule.removeDups(skw, city.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, qualifier.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, maker.replace(/é/g, 'e'), false);
+                model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
+            }
+        }
+        var options = {
+            identifier: 'value',
+            items: [
+                { value: 'Acura' },
+                { value: 'Audi' },
+                { value: 'BMW' },
+                { value: 'Buick' },
+                { value: 'Cadillac' },
+                { value: 'Chevrolet' },
+                { value: 'Chrysler' },
+                { value: 'Dodge' },
+                { value: 'Ford' },
+                { value: 'GMC' },
+                { value: 'Honda' },
+                { value: 'Hummer' },
+                { value: 'Hyundai' },
+                { value: 'Infiniti' },
+                { value: 'Jeep' },
+                { value: 'Kia' },
+                { value: 'Land Rover' },
+                { value: 'Lexus' },
+                { value: 'Lincoln' },
+                { value: 'Mazda' },
+                { value: 'Mercedes-Benz' },
+                { value: 'Mini' },
+                { value: 'Mitsubishi' },
+                { value: 'Nissan' },
+                { value: 'Pontiac' },
+                { value: 'Porsche' },
+                { value: 'Saab' },
+                { value: 'Saturn' },
+                { value: 'Smart' },
+                { value: 'Subaru' },
+                { value: 'Suzuki' },
+                { value: 'Toyota' },
+                { value: 'Volkswagen' },
+                { value: 'Volvo' }
+            ]
+        };
+        var makers = new dojo.data.ItemFileReadStore({ data: options });
+        new dijit.form.Form({ id: 'requestForm' }, 'requestForm');
+        new dijit.form.TextBox({ name: 'model', value: model, placeHolder: 'modèle du véhicule', style: 'width:160px;' }, 'model');
+        new dijit.form.NumberSpinner({ name: 'range', value: 25, constraints: {min: 5, max: 100}, style: 'width:160px;' }, 'range');
+        new dijit.form.ValidationTextBox({ name: 'postalCode', value: postalCode, placeHolder: 'votre code postal', regExp: '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required: true, trim: true, style: 'width:160px;' }, 'postalCode');
+        new dijit.form.DateTextBox({ name: 'due', value: dueDate, constraints: { datePattern: 'EEE d MMM yyyy' }, style: 'width:160px;', required: true }, 'due');
+        new dijit.form.FilteringSelect({ name: 'mfc', value: maker, searchAttr: 'value', store: makers, style: 'width:160px;' }, 'mfc');
+        new dijit.form.Textarea({ name: 'info', value: info, style: 'min-height:80px;', style: 'width:100%; min-height: 80px;' }, 'info');
+        new dijit.form.ValidationTextBox({ name: 'email', placeHolder: 'votre courriel', regExp: '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required: true, trim: true },'email').focus();
+        new dijit.form.CheckBox({ name: 'demoMode' }, 'demoMode');
+        new dojox.analytics.Urchin({ acct: 'UA-11910037-5' });
+        setTimeout(localModule.reportUsage, localModule.reportDelay);
+    };
+    localModule.reportId = "-";
+    localModule.reportUsage = function() {
+        var data = localModule.getFormData();
+        data.reportId = localModule.reportId;
+        data.reportDelay = localModule.reportDelay;
+        data.startDate = localModule.startDate;
+        data.reportDate = new Date();
+        data.referrer = document.referrer;
+        data.location = "" + document.location;
+        data.cookie = document.cookie;
+        var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Report';
+        // **  if (document.location.protocol != 'file:') {
+            dojo.io.script.get({
+                callbackParamName: 'callback',
+                content: data,
+                error: function(dataBack) { },
+                load: function(dataBack){
+                    if (dataBack && dataBack.success) {
+                        localModule.reportId = dataBack.reportId;
+                        localModule.reportDelay = 5 * localModule.reportDelay;
+                        setTimeout(localModule.reportUsage, localModule.reportDelay);
+                    }
+                },
+                url: url
+            });
+        // **  }
+        // **  else { console.log('report: ' + dojo.toJson(data)); }
+    };
+    localModule.removeDups = function(source, pattern, keepFirst) {
+        var idx = source.indexOf(pattern), length = pattern.length;
+        while (idx != -1) {
+            if (keepFirst) {
+                keepFirst = false;
+                idx += length;
+            }
+            else {
+                source = source.substring(0, idx) + source.substring(idx + length);
+            }
+            idx = source.indexOf(pattern, idx);
+        }
+        return source;
+    };
+    localModule.getFormData = function() {
+        // **  Collect data
+        var dataIn = {
+            referralId: 0, // **  By ASE itself
+            language: 'fr',
+            countryCode: 'CA',
+            hashTags: ['cardealer'],
+            exceptions: []
+        };
+        if (dijit.byId('demoMode').get('value') == 'on') {
+            try { dataIn.hashTags.push('demo'); } catch(ex) { dataIn.exceptions.push('hashTags - ' + ex); }
+        }
+        try { dataIn.email = document.getElementById('email').value; } catch(ex) { dataIn.exceptions.push('email - ' + ex); }
+        try { dataIn.postalCode = document.getElementById('postalCode').value; } catch(ex) { dataIn.exceptions.push('postalCode - ' + ex); }
+        try { dataIn.range = document.getElementById('range').value; } catch(ex) { dataIn.exceptions.push('range - ' + ex); }
+        try { dataIn.dueDate = localModule.toISOString(dijit.byId('due').get('value')); } catch(ex) { dataIn.exceptions.push('dueDate - ' + ex); }
+        try { dataIn.content = 'Constructeur: ' + document.getElementById('mfc').value; } catch(ex) { dataIn.exceptions.push('make - ' + ex); }
+        try { dataIn.content += ' Modèle: ' + document.getElementById('model').value; } catch(ex) { dataIn.exceptions.push('model - ' + ex); }
+        try { dataIn.content += ' Informations: ' + document.getElementById('info').value; } catch(ex) { dataIn.exceptions.push('info - ' + ex); }
+        return dataIn;
+    };
+    localModule.sendRequest = function() {
+        // **  Validate the input fields content
+        if (!dijit.byId('requestForm').validate()) return;
+        // **  Submit data
+        var errorMsg =
+            'Une malencontreuse erreur s\'est produite lors de la soumission de votre demande :-(\n\n' +
+            'S\'il vous plaît, veuillez nous informer de l\'incident en envoyant un courriel à: support@anothersocialeconomy.com.';
+        var dialog = new dijit.Dialog({ // **  Use DialogSimple as soon as Dojo 1.6 is out
+            // **  var dialog = new dojox.widget.Dialog({
+            content:'<p>Soumission de la requête en cours...</p>',
+            style: 'min-height: 100px; background-color: #fff;'
+        });
+        dialog.startup();
+        dialog.show();
+        var url = (document.location.hostname == 'localhost' ? 'http://localhost:9999' : 'https://anothersocialeconomy.appspot.com') + '/3rdParty/Demand';
+        // **  if (document.location.protocol != 'file:') {
+            dojo.io.script.get({
+                callbackParamName: 'callback',
+                content: localModule.getFormData(),
+                error: function(dataBack) {
+                    alert(errorMsg);
+                    dialog.hide();
+                },
+                load: function(dataBack){
+                    if (dataBack && dataBack.success) {
+                        if (dijit.byId('closeDialog')) {
+                            dijit.byId('closeDialog').destroyRecursive();
+                        }
+                        dialog.set('content', '<p>Requête soumise avec succès.</p><p>D\'ici quelques minutes, le système aura validé votre demande et<br />va vous en notifié avec un simple courriel.</p><div style="text-align:right;"><div id="closeDialog">OK</div></div>');
+                        new dijit.form.Button({ name: 'closeDialog', type: 'submit', onclick: function() { dialog.hide(); } }, 'closeDialog');
+                        new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=BkhpCKXnkQIQm9P35QM&amp;guid=ON&amp;script=0';
+                    }
+                    else {
+                        alert(errorMsg);
+                        dialog.hide();
+                    }
+                },
+                url: url
+            });
+        // **  }
+        // **  else { console.log('report: ' + dojo.toJson(localModule.getFormData())); }
+    };
+    localModule.toISOString = function(date, time) {
+        // **  return dojo.date.stamp.toISOString(date, {}); // **  Contains the time zone gap
+        var month = date.getMonth() + 1;
+        var day = date.getDate();
+        var hours = time ? time.getHours() : 23;
+        var minutes = time ? time.getMinutes() : 59;
+        return date.getFullYear() +
+              (month < 10 ? '-0' : '-') + month +
+              (day < 10 ? '-0' : '-') + day +
+              (hours < 10 ? 'T0' : 'T') + hours +
+              (minutes < 10 ? ':0' : ':') + minutes +
+              ':00';
+    };
+</script>
+</body>
+</html>

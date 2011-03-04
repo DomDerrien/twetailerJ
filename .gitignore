@@ -10,4 +10,5 @@ cobertura.ser
 *.class
 *.log
 *.tmp
+*.pyc
 nop
