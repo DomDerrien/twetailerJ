@@ -113,7 +113,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -161,7 +161,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -229,7 +229,7 @@ public class TestMailResponderServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 fail("Call not expected");
                 return null;
             }
@@ -289,7 +289,7 @@ public class TestMailResponderServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 fail("Call not expected");
                 return null;
             }
@@ -437,7 +437,7 @@ public class TestMailResponderServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new DatastoreTimeoutException("Done in purpose");
@@ -481,7 +481,7 @@ public class TestMailResponderServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new DatastoreTimeoutException("Done in purpose");
@@ -529,7 +529,7 @@ public class TestMailResponderServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 throw new IllegalArgumentException("Done in purpose");
@@ -585,7 +585,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -646,7 +646,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -742,7 +742,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -808,7 +808,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -875,7 +875,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -949,7 +949,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -1024,7 +1024,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -1092,7 +1092,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -1161,7 +1161,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -1230,7 +1230,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();
@@ -1298,7 +1298,7 @@ public class TestMailResponderServlet {
         final Long consumerKey = 56645L;
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 assertEquals(from, address.getAddress());
                 assertEquals(name, address.getPersonal());
                 Consumer consumer = new Consumer();

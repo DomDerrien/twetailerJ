@@ -339,7 +339,7 @@ public class DemandSteps extends BaseSteps {
         }
 
         // Related workflow step
-        MaelzelServlet.triggerValidationTask(demand);
+        MaelzelServlet.triggerValidationTask(demand.getKey());
 
         return demand;
     }
@@ -585,7 +585,7 @@ public class DemandSteps extends BaseSteps {
             demand = getDemandOperations().updateDemand(pm, demand);
 
             // Related workflow step
-            MaelzelServlet.triggerValidationTask(demand);
+            MaelzelServlet.triggerValidationTask(demand.getKey());
         }
         else {
             throw new InvalidStateException("Entity not in modifiable state", currentState.toString(), null);

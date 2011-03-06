@@ -19,6 +19,7 @@ import twetailer.ReservedOperationException;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.Consumer.Autonomy;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaelzelServlet;
 import domderrien.jsontools.JsonObject;
@@ -83,6 +84,7 @@ public class ConsumerSteps extends BaseSteps {
         newTwitterId = filterOutInvalidValue(parameters, Consumer.TWITTER_ID, actualConsumer, isUserAdmin);
 
         // Merge updates and persist them
+        boolean hadUnconfirmedAccount = Autonomy.UNCONFIRMED.equals(actualConsumer.getAutonomy());
         actualConsumer.fromJson(parameters, isUserAdmin, false);
         actualConsumer = getConsumerOperations().updateConsumer(pm, actualConsumer);
 
@@ -92,6 +94,20 @@ public class ConsumerSteps extends BaseSteps {
             scheduleConsolidationTasks(Consumer.FACEBOOK_ID, newFacebookId, consumerKey);
             scheduleConsolidationTasks(Consumer.JABBER_ID, newJabberId, consumerKey);
             scheduleConsolidationTasks(Consumer.TWITTER_ID, newTwitterId, consumerKey);
+        }
+
+        // Trigger the validation of the Demands owned by the Consumer if his 'autonomy' status allows it
+        if (hadUnconfirmedAccount && (Autonomy.MODERATED.equals(actualConsumer.getAutonomy()) || Autonomy.AUTONOMOUS.equals(actualConsumer.getAutonomy()))) {
+            PersistenceManager secondPM = BaseSteps.getBaseOperations().getPersistenceManager();
+            try {
+                List<Long> demandKeys = getDemandOperations().getDemandKeys(secondPM, Demand.OWNER_KEY, consumerKey, 0);
+                for (Long demandKey: demandKeys) {
+                    MaelzelServlet.triggerValidationTask(demandKey);
+                }
+            }
+            finally {
+                secondPM.close();
+            }
         }
 
         return actualConsumer;

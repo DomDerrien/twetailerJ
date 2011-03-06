@@ -54,6 +54,18 @@ public class Consumer extends Entity {
 
     public final static String AUTOMATIC_LOCALE_UPDATE = "automaticLocaleUpdate";
 
+    public enum Autonomy {
+        SPAMMER,
+        UNCONFIRMED,
+        MODERATED,
+        AUTONOMOUS
+    }
+
+    @Persistent
+    private Autonomy autonomy; // null == Autonomy.MODERATED;
+
+    public final static String AUTONOMY = "autonomy";
+
     @Persistent
     private Long closedDemandNb;
 
@@ -148,6 +160,18 @@ public class Consumer extends Entity {
 
     public void setAutomaticLocaleUpdate(Boolean automaticLocaleUpdate) {
         this.automaticLocaleUpdate = automaticLocaleUpdate;
+    }
+
+    public Autonomy getAutonomy() {
+        return autonomy == null ? Autonomy.MODERATED : autonomy;
+    }
+
+    public void setAutonomy(Autonomy autonomy) {
+        this.autonomy = autonomy == Autonomy.MODERATED ? null : autonomy;
+    }
+
+    public void setAutonomy(String autonomy) {
+        setAutonomy(Autonomy.valueOf(autonomy));
     }
 
     public Long getClosedDemandNb() {
@@ -267,6 +291,7 @@ public class Consumer extends Entity {
         JsonObject out = super.toJson();
         if (getAddress() != null) { out.put(ADDRESS, getAddress()); }
         out.put(AUTOMATIC_LOCALE_UPDATE, getAutomaticLocaleUpdate());
+        out.put(AUTONOMY, getAutonomy().toString());
         out.put(CLOSED_DEMAND_NB, getClosedDemandNb() == null ? 0L : getClosedDemandNb());
         if (getEmail() != null) { out.put(EMAIL, getEmail()); }
         if (getFacebookId() != null) { out.put(FACEBOOK_ID, getFacebookId()); }
@@ -293,6 +318,7 @@ public class Consumer extends Entity {
 
         if (in.containsKey(ADDRESS)) { setAddress(in.getString(ADDRESS)); }
         if (in.containsKey(AUTOMATIC_LOCALE_UPDATE)) { setAutomaticLocaleUpdate(in.getBoolean(AUTOMATIC_LOCALE_UPDATE)); }
+        if (isUserAdmin && in.containsKey(AUTONOMY)) { setAutonomy(in.getString(AUTONOMY)); }
         if (isUserAdmin && in.containsKey(CLOSED_DEMAND_NB)) { setClosedDemandNb(in.getLong(CLOSED_DEMAND_NB)); }
         if ((isUserAdmin || getKey() == null) && in.containsKey(EMAIL)) { setEmail(in.getString(EMAIL)); }
         if ((isUserAdmin || getKey() == null) && in.containsKey(FACEBOOK_ID)) { setFacebookId(in.getString(FACEBOOK_ID)); }

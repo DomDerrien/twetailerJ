@@ -15,6 +15,7 @@ import twetailer.InvalidIdentifierException;
 import twetailer.connector.FacebookConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dto.Consumer;
+import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Entity;
 import twetailer.validator.LocaleValidator;
 import domderrien.i18n.LabelExtractor;
@@ -211,14 +212,15 @@ public class ConsumerOperations extends BaseOperations {
      * Create the Consumer instance if it does not yet exist, or get the existing one
      *
      * @param senderAddress Mail address of the sender
+     * @param isVerified Used to setup the new Consumer account with Autonomy.UNCONFIRMED
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
-     * @see ConsumerOperations#createConsumer(PersistenceManager, javax.mail.internet.InternetAddress)
+     * @see ConsumerOperations#createConsumer(PersistenceManager, javax.mail.internet.InternetAddress, boolean)
      */
-    public Consumer createConsumer(javax.mail.internet.InternetAddress senderAddress) {
+    public Consumer createConsumer(javax.mail.internet.InternetAddress senderAddress, boolean isVerified) {
         PersistenceManager pm = getPersistenceManager();
         try {
-            return createConsumer(pm, senderAddress);
+            return createConsumer(pm, senderAddress, isVerified);
         }
         finally {
             pm.close();
@@ -230,11 +232,12 @@ public class ConsumerOperations extends BaseOperations {
      *
      * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
      * @param senderAddress Mail address of the sender
+     * @param isVerified Used to setup the new Consumer account with Autonomy.UNCONFIRMED
      * @return The just created Consumer instance, or the corresponding one loaded from the data source
      *
      * @see ConsumerOperations#createConsumer(PersistenceManager, Consumer)
      */
-    public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+    public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress, boolean isVerified) {
         // Return consumer if it already exists
         String email = senderAddress.getAddress().toLowerCase();
         try {
@@ -248,6 +251,7 @@ public class ConsumerOperations extends BaseOperations {
 
         // Creates new consumer record and persist it
         Consumer newConsumer = new Consumer();
+        newConsumer.setAutonomy(isVerified ? Autonomy.MODERATED : Autonomy.UNCONFIRMED);
         newConsumer.setName(senderAddress.getPersonal());
         newConsumer.setEmail(email);
         if (newConsumer.getName() == null) {

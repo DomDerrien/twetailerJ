@@ -640,7 +640,7 @@ public class TestThirdPartyEntryPointServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 Consumer object = new Consumer();
                 object.setKey(453765232321L);
                 object.setAutomaticLocaleUpdate(false);
@@ -673,7 +673,7 @@ public class TestThirdPartyEntryPointServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 Consumer object = new Consumer();
                 object.setKey(453765232321L);
                 object.setAutomaticLocaleUpdate(true);
@@ -706,7 +706,7 @@ public class TestThirdPartyEntryPointServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 Consumer object = new Consumer();
                 object.setKey(453765232321L);
                 object.setAutomaticLocaleUpdate(true);
@@ -739,7 +739,7 @@ public class TestThirdPartyEntryPointServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 Consumer object = new Consumer();
                 object.setKey(453765232321L);
                 object.setAutomaticLocaleUpdate(true);
@@ -777,7 +777,7 @@ public class TestThirdPartyEntryPointServlet {
 
         BaseSteps.setMockConsumerOperations(new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, InternetAddress address) {
+            public Consumer createConsumer(PersistenceManager pm, InternetAddress address, boolean isVerified) {
                 Consumer object = new Consumer();
                 object.setKey(453765232321L);
                 object.setAutomaticLocaleUpdate(true);

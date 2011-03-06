@@ -200,7 +200,7 @@ public class BaseConnector {
                         mailMessage.append(part).append(MESSAGE_SEPARATOR);
                     }
                 }
-                MailConnector.sendMailMessage(useCcAccount, userId, userName, subject, mailMessage.toString(), locale);
+                MailConnector.sendMailMessage(useCcAccount, false, userId, userName, subject, mailMessage.toString(), locale);
             }
             catch(Exception ex) {
                 throw new CommunicationException("Cannot communicate by E-mail to the consumer: " + userId, Source.mail, ex);

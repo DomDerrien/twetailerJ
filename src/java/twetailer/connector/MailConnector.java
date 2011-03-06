@@ -76,6 +76,7 @@ public class MailConnector {
 
     public static InternetAddress twetailer;
     public static InternetAddress twetailer_cc;
+    public static InternetAddress[] support;
     static {
         try {
             twetailer = prepareInternetAddress(
@@ -85,9 +86,14 @@ public class MailConnector {
             );
             twetailer_cc = prepareInternetAddress(
                     StringUtils.JAVA_UTF8_CHARSET,
-                    ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply
+                    ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply"
                     MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
             );
+            support = new InternetAddress[] { prepareInternetAddress(
+                    StringUtils.JAVA_UTF8_CHARSET,
+                    "Support " + ApplicationSettings.get().getProductName(), // TODO: place this informations in the application settings
+                    "support@anothersocialeconomy.com"                       // TODO: place this informations in the application settings
+            )};
         }
         catch (AddressException e) { } // Not expected as the default are valid addresses
     }
@@ -166,6 +172,7 @@ public class MailConnector {
      * Use the Google App Engine API to send an mail message to the identified e-mail address
      *
      * @param useCcAccount Indicates that the message should be sent from a CC account, which is going to ignore unexpected replies
+     * @param replyToSupport Indicates that the reply-to field should be set with the support e-mail address
      * @param receiverId E-mail address of the recipient
      * @param recipientName recipient display name
      * @param subject Subject of the message that triggered this response
@@ -175,13 +182,16 @@ public class MailConnector {
      * @throws MessagingException If one of the message attribute is incorrect
      * @throws UnsupportedEncodingException if the e-mail address is invalid
      */
-    public static void sendMailMessage(boolean useCcAccount, String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
+    public static void sendMailMessage(boolean useCcAccount, boolean replyToSupport, String receiverId, String recipientName, String subject, String message, Locale locale) throws MessagingException, UnsupportedEncodingException {
         InternetAddress recipient = new InternetAddress(receiverId, recipientName, StringUtils.JAVA_UTF8_CHARSET);
 
         Session session = Session.getDefaultInstance(new Properties(), null);
 
         MimeMessage mailMessage = new MimeMessage(session);
         mailMessage.setFrom(useCcAccount ? twetailer_cc : twetailer);
+        if (replyToSupport) {
+            mailMessage.setReplyTo(support );
+        }
         mailMessage.setRecipient(Message.RecipientType.TO, recipient);
         mailMessage.setSubject(subject, StringUtils.JAVA_UTF8_CHARSET);
         setContentAsPlainTextAndHtml(mailMessage, message, locale.getLanguage());

@@ -76,7 +76,7 @@ public class MailComposerServlet extends HttpServlet {
             }
 
             getLogger().warning("Redirects email to: " + name);
-            MailConnector.sendMailMessage(true, email, name, subject, body, Locale.ENGLISH);
+            MailConnector.sendMailMessage(true, false, email, name, subject, body, Locale.ENGLISH);
             response.setStatus(200); // OK
         }
         catch (MessagingException ex) {

@@ -270,7 +270,8 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         catch (AddressException ex) {
             throw new ClientException("Invalid email address", ex);
         }
-        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress);
+        Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, senderAddress, false); // Not verified e-mail address yet
+
         if (consumer.getAutomaticLocaleUpdate()) {
             String language = in.getString(Consumer.LANGUAGE);
             if (language != null && 0 < language.length() && !consumer.getLanguage().equals(LocaleValidator.checkLanguage(language))) {

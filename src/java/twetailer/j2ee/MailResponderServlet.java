@@ -200,7 +200,7 @@ public class MailResponderServlet extends HttpServlet {
             PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
             try {
                 // Creation only occurs if the corresponding Consumer instance is not retrieved
-                Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, address);
+                Consumer consumer = BaseSteps.getConsumerOperations().createConsumer(pm, address, true);
                 if (language == null) {
                     language = consumer.getLanguage();
                 }
@@ -257,6 +257,7 @@ public class MailResponderServlet extends HttpServlet {
             if (email != null) {
                 try {
                     MailConnector.sendMailMessage(
+                            false,
                             false,
                             email,
                             name,

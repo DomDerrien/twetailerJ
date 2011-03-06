@@ -239,6 +239,23 @@
                             <td><label for="consumer.automaticLocaleUpdate">Automatic locale update</label></td>
                         </tr>
                         <tr>
+                            <td><label for="consumer.autonomy">Autonomy:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    hasDownArrow="true"
+                                    id="consumer.autonomy"
+                                    name="autonomy"
+                                    style="width:8em;"
+                                >
+                                    <option value="SPAMMER">Spammer</option>
+                                    <option value="UNCONFIRMED">Unconfirmed</option>
+                                    <option value="MODERATED" selected="true">Moderated</option>
+                                    <option value="AUTONOMOUS">Autonomous</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
                             <td><label for="consumer.closedDemandNb">Closed demand #:</label></td>
                             <td><input dojoType="dijit.form.TextBox" id="consumer.closedDemandNb" style="width:6em;" type="text" /></td>
                         </tr>

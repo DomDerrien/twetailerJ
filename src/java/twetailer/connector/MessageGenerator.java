@@ -76,6 +76,9 @@ public class MessageGenerator {
         PROPOSAL_INVALID_ID_ERROR("proposal_invalid_id"),
         PROPOSAL_INVALID_STATE_ERROR("proposal_invalid_state"),
 
+        // Message asking for a reply to confirm an email address
+        INVITATION_TO_CONFIRM_EMAIL_ADDRESS("invitation_to_confirm_email_address"),
+
         /// W1. Consumer creates a wish -- CC'ed and associates are notified
         /** For message sent to the wish owner to confirm the wish creation */
         WISH_CREATION_OK_TO_CONSUMER ("wish_creation_ackToConsumer"),

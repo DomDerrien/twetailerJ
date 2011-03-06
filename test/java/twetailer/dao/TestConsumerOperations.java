@@ -379,11 +379,11 @@ public class TestConsumerOperations {
     public void testCreateWithFailureIV() throws DataSourceException, UnsupportedEncodingException {
         ConsumerOperations ops = new ConsumerOperations() {
             @Override
-            public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress) {
+            public Consumer createConsumer(PersistenceManager pm, javax.mail.internet.InternetAddress senderAddress, boolean isVerified) {
                 throw new RuntimeException("To exercise the 'finally { pm.close(); }' sentence.");
             }
         };
-        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
+        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"), true);
     }
 
     @Test(expected = RuntimeException.class)
@@ -426,7 +426,7 @@ public class TestConsumerOperations {
         ops.createConsumer(new com.google.appengine.api.users.User("email", "domain"));
         ops.createConsumer(new com.google.appengine.api.xmpp.JID("jabberId"));
         ops.createConsumer(new twitter4j.MockUser());
-        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"));
+        ops.createConsumer(new javax.mail.internet.InternetAddress("unit@test.ca", "name"), true);
         ops.createConsumer(new com.dyuproject.openid.OpenIdUser());
         ops.createConsumer(new Consumer());
     }
@@ -645,7 +645,7 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        Consumer consumer = ops.createConsumer(address);
+        Consumer consumer = ops.createConsumer(address, true);
 
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
@@ -655,7 +655,7 @@ public class TestConsumerOperations {
         assertEquals(name, consumer.getName());
 
         // Tries to recreate it
-        ops.createConsumer(address);
+        ops.createConsumer(address, true);
 
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());
@@ -680,7 +680,7 @@ public class TestConsumerOperations {
         assertEquals(0, DatastoreServiceFactory.getDatastoreService().prepare(query).countEntities());
 
         // Create the user once
-        Consumer consumer = ops.createConsumer(address);
+        Consumer consumer = ops.createConsumer(address, true);
 
         // Verify there's one instance
         query = new Query(Consumer.class.getSimpleName());
@@ -690,7 +690,7 @@ public class TestConsumerOperations {
         assertEquals(email, consumer.getName());
 
         // Tries to recreate it
-        ops.createConsumer(address);
+        ops.createConsumer(address, true);
 
         // Verify there's still one instance
         query = new Query(Consumer.class.getSimpleName());

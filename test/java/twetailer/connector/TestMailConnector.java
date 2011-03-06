@@ -504,6 +504,7 @@ public class TestMailConnector {
         String subject = LabelExtractor.get("mc_mail_subject_response_prefix", Locale.ENGLISH) + "subject";
         MailConnector.sendMailMessage(
                 false,
+                false,
                 "testId",
                 "testName",
                 subject,
@@ -521,6 +522,7 @@ public class TestMailConnector {
     @Test
     public void testSendMailMessageII() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
+                false,
                 false,
                 "testId",
                 "testName",
@@ -540,6 +542,7 @@ public class TestMailConnector {
     public void testSendMailMessageIII() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
                 false,
+                false,
                 "testId",
                 "testName",
                 "",
@@ -558,6 +561,7 @@ public class TestMailConnector {
     public void testSendMailMessageIV() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
                 false,
+                false,
                 "testId",
                 "testName",
                 null,
@@ -570,6 +574,7 @@ public class TestMailConnector {
     public void testSendMailMessageV() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
                 true, // With the twetailer-cc address
+                false,
                 "testId",
                 "testName",
                 null,
@@ -587,6 +592,7 @@ public class TestMailConnector {
     @Test
     public void testSendMailMessageVI() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
+                false,
                 false,
                 "testId",
                 "testName",
@@ -606,6 +612,7 @@ public class TestMailConnector {
     public void testSendMailMessageVII() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
                 false,
+                false,
                 "testId",
                 "testName",
                 null,
@@ -623,6 +630,7 @@ public class TestMailConnector {
     @Test
     public void testSendMailMessageVIII() throws UnsupportedEncodingException, MessagingException {
         MailConnector.sendMailMessage(
+                false,
                 false,
                 "testId",
                 "testName",

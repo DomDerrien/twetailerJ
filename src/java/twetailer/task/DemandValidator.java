@@ -5,6 +5,7 @@ import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.mail.MessagingException;
 
 import twetailer.ClientException;
 import twetailer.CommunicationException;
@@ -23,6 +25,7 @@ import twetailer.connector.MessageGenerator;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
+import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Demand;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
@@ -93,8 +96,39 @@ public class DemandValidator {
     public static void process(PersistenceManager pm, Long demandKey) throws DataSourceException, InvalidIdentifierException {
         Demand demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
         if (CommandSettings.State.opened.equals(demand.getState())) {
+            Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
             try {
                 Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, demand.getOwnerKey());
+
+                // Check consumer autonomy
+                if (consumer.getAutonomy() == Autonomy.UNCONFIRMED) {
+                    if (Source.widget.equals(demand.getSource())) {
+                        Locale locale = consumer.getLocale();
+                        MessageGenerator msgGen = new MessageGenerator(Source.mail, demand.getHashTags(), locale);
+                        msgGen.
+                            put("demand>owner>name", consumer.getName()).
+                            fetch(demand).
+                            fetch(influencer);
+
+                        String subject = LabelExtractor.get(ResourceFileId.fourth, "common_welcome_message_subject_default", locale);
+                        try {
+                            MailConnector.sendMailMessage(
+                                    false,
+                                    true,
+                                    consumer.getEmail(),
+                                    consumer.getName(),
+                                    subject,
+                                    msgGen.getMessage(MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS),
+                                    locale
+                            );
+                        }
+                        catch (Exception ex) {
+                            throw new CommunicationException("Cannot send message asking to confirm the new Consumer email address");
+                        }
+                        return;
+                    }
+                    throw new IllegalArgumentException("Do not know how to confirm an account for source=" + demand.getSource());
+                }
 
                 // Temporary filter
                 RequestValidator.filterHashTags(pm, consumer, demand, "demand");
@@ -131,8 +165,6 @@ public class DemandValidator {
                                 countdownMillis(5000)
                     );
 
-                    Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, demand.getInfluencerKey());
-
                     confirmUpdate(rawCommand, demand, LocationSteps.getLocation(pm, demand), consumer, influencer);
                 }
             }
@@ -162,7 +194,6 @@ public class DemandValidator {
         if (!Source.api.equals(demand.getSource()) || cc != null && 0 < cc.size()) {
             boolean isNewDemand = demand.getCreationDate().getTime() == demand.getModificationDate().getTime();
             Locale locale = owner.getLocale();
-
 
             // Send a notification to the Owner
             if (!Source.api.equals(demand.getSource())) {

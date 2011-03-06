@@ -2570,7 +2570,7 @@ public class TestMaelzelServlet {
         Demand resource = new Demand();
         resource.setKey(54765L);
 
-        MaelzelServlet.triggerValidationTask(resource);
+        MaelzelServlet.triggerValidationTask(resource.getKey());
         assertEquals(1, mockQueue.getHistory().size());
     }
 

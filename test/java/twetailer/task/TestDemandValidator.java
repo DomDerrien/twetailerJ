@@ -28,6 +28,7 @@ import twetailer.connector.MockTwitterConnector;
 import twetailer.connector.BaseConnector.Source;
 import twetailer.dao.ConsumerOperations;
 import twetailer.dao.DemandOperations;
+import twetailer.dao.InfluencerOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dao.RawCommandOperations;
 import twetailer.dto.Consumer;
@@ -82,6 +83,7 @@ public class TestDemandValidator {
         BaseSteps.resetOperationControllers(true);
         BaseSteps.setMockBaseOperations(new MockBaseOperations());
         BaseSteps.setMockConsumerOperations(consumerOperations);
+        BaseSteps.setMockInfluencerOperations(new InfluencerOperations());
 
         // Be sure to start with a clean message stack
         BaseConnector.resetLastCommunicationInSimulatedMode();
