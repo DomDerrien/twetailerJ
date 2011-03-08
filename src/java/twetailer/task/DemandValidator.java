@@ -112,15 +112,23 @@ public class DemandValidator {
 
                         String subject = LabelExtractor.get(ResourceFileId.fourth, "common_welcome_message_subject_default", locale);
                         try {
-                            MailConnector.sendMailMessage(
-                                    false,
-                                    true,
-                                    consumer.getEmail(),
-                                    consumer.getName(),
-                                    subject,
-                                    msgGen.getMessage(MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS),
-                                    locale
-                            );
+                            String message = msgGen.getMessage(MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS);
+                            getLogger().warning("Asking for email address confirmation to: " + consumer.getEmail());
+                            try {
+                                MailConnector.sendMailMessage(
+                                        false,
+                                        true,
+                                        consumer.getEmail(),
+                                        consumer.getName(),
+                                        subject,
+                                        message,
+                                        locale
+                                );
+                            }
+                            finally {
+                                // It's possible the message sent to  userId failed... anyway, send the copy to admins
+                                MailConnector.sendCopyToAdmins(Source.mail, consumer, subject, new String[] { message });
+                            }
                         }
                         catch (Exception ex) {
                             throw new CommunicationException("Cannot send message asking to confirm the new Consumer email address");

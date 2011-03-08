@@ -67,9 +67,11 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         return log;
     }
 
+    protected final static String CONSUMER_PREFIX = "/Consumer";
     protected final static String DEMAND_PREFIX = "/Demand";
     protected final static String LOCATION_PREFIX = "/Location";
     protected final static String STORE_PREFIX = "/Store";
+    protected final static String REPORT_PREFIX = "/Report";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -107,6 +109,13 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 bounds.put("top", searchBounds[3]);
                 out.put("bounds", bounds);
             }
+            else if (CONSUMER_PREFIX.equals(pathInfo)) {
+                verifyReferralId(pm, in, Action.list, Consumer.class.getName());
+                if (!in.containsKey("callback")) {
+                    throw new IllegalArgumentException("Invalid JSONP call!");
+                }
+                lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
+            }
             else if (DEMAND_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.demand, Demand.class.getName());
                 if (!in.containsKey("callback")) {
@@ -114,7 +123,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 }
                 createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
-            else if ("/Report".equals(pathInfo)) {
+            else if (REPORT_PREFIX.equals(pathInfo)) {
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
@@ -181,7 +190,12 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             // TODO: verify Content-type == "application/json"
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
-            if (DEMAND_PREFIX.equals(pathInfo)) {
+            if (CONSUMER_PREFIX.equals(pathInfo)) {
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName());
+
+                lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
+            }
+            else if (DEMAND_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.demand, Demand.class.getName());
 
                 createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
@@ -282,6 +296,31 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         in.put(Demand.SOURCE, Source.widget.toString());
         Demand demand = DemandSteps.createDemand(pm, in, consumer);
+        // TODO: anonymize the demand so it's not possible to use the Consumer key
         out.put("resource", demand.toJson());
+    }
+
+    /**
+     * Helper verifying the presence of a Consumer record with the given identifier
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param in Request parameters
+     * @param out Bag to be sent back to the user, if everything is successful
+     *
+     * @throws DataSourceException If the Consumer record manipulation fails
+     */
+    protected void lookupConsumer(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException {
+        String email = in.getString(Consumer.EMAIL);
+        if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
+            throw new IllegalArgumentException("Invalid sender email address");
+        }
+        List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.EMAIL, email, 1);
+        if (0 < consumers.size()) {
+            out.put("status", true);
+            out.put("name", consumers.get(0).getName());
+        }
+        else {
+            out.put("status", false);
+        }
     }
 }

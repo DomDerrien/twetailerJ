@@ -112,6 +112,8 @@ def copyAndUpdate(baseFilename, language, destinationFolder, patterns):
         source = open(sourceFilename, mode='rt', encoding='utf-8', newline='\n')
         content = source.read(crazyAmount)
         source.close()
+        # Inject the localModule.js file content
+        content = content.replace('${LOCAL_MODULE}', getLocalModuleCode())
         # Remove the comments in JavaScript code, especially identified by '// **'
         content = re.sub('// \*\*.*$', '', content, flags=re.M)
         # Remove the leading spaces and forgotten trailing ones
@@ -128,6 +130,24 @@ def copyAndUpdate(baseFilename, language, destinationFolder, patterns):
     target = open(destinationFolder + baseFilename + '.html', mode='wt', encoding='utf-8', newline='\n')
     target.write(content)
     target.close()
+
+def getLocalModuleCode():
+    sourceFilename = 'localModule.js'
+
+    # Check the cache
+    if sourceFilename in templateContents:
+        # Get from the cache
+        content = templateContents[sourceFilename]
+    else:
+        crazyAmount = 1024 * 1024
+        # Source: http://docs.python.org/py3k/howto/unicode.html#reading-and-writing-unicode-data
+        source = open(sourceFilename, mode='rt', encoding='utf-8', newline='\n')
+        content = source.read(crazyAmount)
+        source.close()
+        # Save into the cache
+        templateContents[sourceFilename] = content
+        
+    return content
 
 #
 # Global cache for words with stripped accents

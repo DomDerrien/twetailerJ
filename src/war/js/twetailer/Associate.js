@@ -422,7 +422,7 @@
      * Helper building dynamically the pane with the user profile attributes
      */
     module.showProfile = function() {
-        var createContent = dijit.byId('profileForms') == null
+        var createContent = dijit.byId('profileForms') == null;
         if (createContent) {
             // Create the tab container for both the consumer and the associate profiles
             var tC = new dijit.layout.TabContainer({
@@ -714,5 +714,5 @@
             dijit.byId('userProfile').hide();
             dijit.byId('userProfileFormOverlay').hide();
         }
-    }
+    };
 })(); // End of the function limiting the scope of the private variables
