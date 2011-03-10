@@ -5,7 +5,6 @@ import static twetailer.connector.BaseConnector.communicateToCCed;
 import static twetailer.connector.BaseConnector.communicateToConsumer;
 import static twetailer.connector.BaseConnector.getCCedCommunicationChannel;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -13,16 +12,15 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.mail.MessagingException;
 
 import twetailer.ClientException;
 import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.connector.BaseConnector;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MailConnector;
 import twetailer.connector.MessageGenerator;
-import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.dto.Consumer;
 import twetailer.dto.Consumer.Autonomy;
@@ -31,6 +29,7 @@ import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
 import twetailer.task.step.BaseSteps;
+import twetailer.task.step.ConsumerSteps;
 import twetailer.task.step.LocationSteps;
 import twetailer.validator.CommandSettings;
 
@@ -103,36 +102,7 @@ public class DemandValidator {
                 // Check consumer autonomy
                 if (consumer.getAutonomy() == Autonomy.UNCONFIRMED) {
                     if (Source.widget.equals(demand.getSource())) {
-                        Locale locale = consumer.getLocale();
-                        MessageGenerator msgGen = new MessageGenerator(Source.mail, demand.getHashTags(), locale);
-                        msgGen.
-                            put("demand>owner>name", consumer.getName()).
-                            fetch(demand).
-                            fetch(influencer);
-
-                        String subject = LabelExtractor.get(ResourceFileId.fourth, "common_welcome_message_subject_default", locale);
-                        try {
-                            String message = msgGen.getMessage(MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS);
-                            getLogger().warning("Asking for email address confirmation to: " + consumer.getEmail());
-                            try {
-                                MailConnector.sendMailMessage(
-                                        false,
-                                        true,
-                                        consumer.getEmail(),
-                                        consumer.getName(),
-                                        subject,
-                                        message,
-                                        locale
-                                );
-                            }
-                            finally {
-                                // It's possible the message sent to  userId failed... anyway, send the copy to admins
-                                MailConnector.sendCopyToAdmins(Source.mail, consumer, subject, new String[] { message });
-                            }
-                        }
-                        catch (Exception ex) {
-                            throw new CommunicationException("Cannot send message asking to confirm the new Consumer email address");
-                        }
+                        ConsumerSteps.notifyUnconfirmedConsumer(consumer, null, demand, influencer, getLogger());
                         return;
                     }
                     throw new IllegalArgumentException("Do not know how to confirm an account for source=" + demand.getSource());

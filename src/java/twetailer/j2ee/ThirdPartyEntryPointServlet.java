@@ -2,6 +2,7 @@ package twetailer.j2ee;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -15,20 +16,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
 import twetailer.DataSourceException;
+import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
-import twetailer.connector.MailConnector;
 import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MailConnector;
+import twetailer.dao.InfluencerOperations;
 import twetailer.dao.LocationOperations;
+import twetailer.dto.Command;
 import twetailer.dto.Consumer;
+import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Demand;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
+import twetailer.task.step.ConsumerSteps;
 import twetailer.task.step.DemandSteps;
 import twetailer.task.step.StoreSteps;
-import twetailer.validator.LocaleValidator;
 import twetailer.validator.CommandSettings.Action;
+import twetailer.validator.LocaleValidator;
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -162,6 +168,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
 
         if (in.containsKey("callback")) {
+            response.setStatus(200); // To be able to report possible exception
             String callbackName = in.getString("callback");
             getLogger().warning("3rd party for JSONP to: " + callbackName + "(" + out.toString() + ")");
             OutputStream stream = response.getOutputStream();
@@ -273,6 +280,26 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
      * @throws ClientException If the Demand record creation fails
      */
     protected void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+        Consumer consumer = createConsumer(pm, in);
+
+        in.put(Demand.SOURCE, Source.widget.toString());
+        Demand demand = DemandSteps.createDemand(pm, in, consumer);
+
+        // TODO: anonymize the demand so it's not possible to use the Consumer key
+        out.put("resource", demand.toJson());
+    }
+
+    /**
+     * Create a Consumer record with the given email address
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param in Request parameters
+     * @return Consumer record just created
+     *
+     * @throws ClientException If the email is invalid
+     * @throws DataSourceException If the Consumer record management fails
+     */
+    protected Consumer createConsumer(PersistenceManager pm, JsonObject in) throws ClientException, DataSourceException {
         String email = in.getString(Consumer.EMAIL);
         if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
             throw new IllegalArgumentException("Invalid sender email address");
@@ -290,16 +317,12 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             String language = in.getString(Consumer.LANGUAGE);
             if (language != null && 0 < language.length() && !consumer.getLanguage().equals(LocaleValidator.checkLanguage(language))) {
                 consumer.setLanguage(language);
-                BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
+                consumer = BaseSteps.getConsumerOperations().updateConsumer(pm, consumer);
             }
         }
 
-        in.put(Demand.SOURCE, Source.widget.toString());
-        Demand demand = DemandSteps.createDemand(pm, in, consumer);
-        // TODO: anonymize the demand so it's not possible to use the Consumer key
-        out.put("resource", demand.toJson());
+        return consumer;
     }
-
     /**
      * Helper verifying the presence of a Consumer record with the given identifier
      *
@@ -308,19 +331,43 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
      * @param out Bag to be sent back to the user, if everything is successful
      *
      * @throws DataSourceException If the Consumer record manipulation fails
+     * @throws InvalidIdentifierException If the Influencer record cannot be retrieved
+     * @throws ClientException If the given email address is mal-formed
      */
-    protected void lookupConsumer(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException {
+    protected void lookupConsumer(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, InvalidIdentifierException, ClientException {
         String email = in.getString(Consumer.EMAIL);
         if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
             throw new IllegalArgumentException("Invalid sender email address");
         }
+
         List<Consumer> consumers = BaseSteps.getConsumerOperations().getConsumers(pm, Consumer.EMAIL, email, 1);
-        if (0 < consumers.size()) {
-            out.put("status", true);
-            out.put("name", consumers.get(0).getName());
+        Consumer consumer = consumers.size() == 0 ? null : consumers.get(0);
+        if (consumer == null || Autonomy.UNCONFIRMED.equals(consumer.getAutonomy())) {
+            out.put("status", false);
+
+            if (consumer == null) {
+                consumer = createConsumer(pm, in);
+                out.put("recordCreated", true);
+            }
+
+            String referralId = in.getString(Influencer.REFERRAL_ID).trim();
+            Long influencerKey = InfluencerOperations.getInfluencerKey(referralId);
+            Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, influencerKey);
+
+            List<String> hashTags = null;
+            if (in.containsKey(Command.HASH_TAGS)) {
+                hashTags = new ArrayList<String>(in.getJsonArray(Command.HASH_TAGS).size());
+                for (Object hashTag: in.getJsonArray(Command.HASH_TAGS).getList()) {
+                    hashTags.add((String) hashTag);
+                }
+            }
+
+            boolean notified = ConsumerSteps.notifyUnconfirmedConsumer(consumer, hashTags, null, influencer, getLogger());
+            out.put("notified", notified);
         }
         else {
-            out.put("status", false);
+            out.put("status", true);
+            out.put("name", consumers.get(0).getName());
         }
     }
 }

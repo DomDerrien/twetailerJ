@@ -41,6 +41,9 @@
             border-radius: 4px;
             padding: 10px;
         }
+        #emailVerifStatus a, #emailVerifStatus a:active, #emailVerifStatus a:visited {
+            color: white;
+        }
     </style>
 </head>
 <body class="claro">
@@ -57,7 +60,7 @@
                     <span style="font-size: x-small; font-weight: bolder;"> beta</span><br />
                     pour les concessionnaires de <span style="font-weight: bold;">${CITY}</span>
                 </h1>
-            </div> 
+            </div>
             <div class="grid_4 omega">
                 <div class="orange" style="border-radius:8px;">
                     <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
@@ -65,14 +68,14 @@
                     <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">Concessionnaires!</a></div>
                     <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage1">English</a></div>
                 </div>
-            </div> 
-        </div> 
+            </div>
+        </div>
         <div class="clear"></div>
         <div class="grid_16" style="margin-top: -26px;">
             <h2 id="keywordAdTitle" class="blue">${AD_HEADLINE}</h2>
             <h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">${AD_LINE}</h3>
             <h4 style="margin-top: -10px; margin-bottom: 10px;">Vous n'avez qu'à soumettre le formulaire ci-dessous:</h4>
-        </div> 
+        </div>
         <div class="clear"></div>
         <div class="grid_16" style="margin-top: 0em;">
             <div class="grid_3 alpha">
@@ -83,7 +86,7 @@
                 </p>
                 <div style="margin-top: -15px; color: black; font-weight: bold;">Nous ne partagerons jamais, <span class="blue">au grand jamais</span>, vos coordonnées.</div>
                 <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Essayez le service en mode 'démo'.</label>
-            </div> 
+            </div>
             <div class="grid_3">
                 <div class="col_header"><span class="blue col_name">Quoi</span></div>
                 <p>
@@ -94,7 +97,7 @@
                     <label id="modelFieldLabel" for="model">Modèle:</label><br>
                     <input id="model" value="${MODEL}" class="formField" />
                 </p>
-            </div> 
+            </div>
             <div class="grid_3">
                 <div class="col_header"><span class="blue col_name">Où</span></div>
                 <p>
@@ -105,32 +108,32 @@
                     <label id="rangeFieldLabel" for="range">Distance en km:</label><br>
                     <input id="range" value="25" class="formField" />
                 </p>
-            </div> 
+            </div>
             <div class="grid_3">
                 <div class="col_header"><span class="blue col_name">Quand</span></div>
                 <p>
                     <label id="dueDateFieldLabel" for="dueDate">Date d'expiration:</label><br>
                     <input id="dueDate" value="2011-01-30" class="formField" />
                 </p>
-            </div> 
+            </div>
             <div class="grid_4 omega">
                 <div class="col_header"><span class="blue col_name">Pourquoi</span></div>
                 <p>
                     <label id="infoFieldLabel" for="info">Autres informations:</label><br>
                     <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
                 </p>
-            </div> 
-        </div> 
+            </div>
+        </div>
         <div class="clear"></div>
         <div class="grid_16" style="font-size:large; text-align: right; margin-bottom:15px;">
             <div class="grid_3 alpha prefix_9">
                 <div><span class="yellow">Envoyez...</span></div>
                 <div><span class="yellow">C'est GRATUIT!</span></div>
-            </div> 
+            </div>
             <div class="grid_4 omega">
                 <a class="butt_bgorange" id="submitButton" onclick="localModule.showReviewPane(); return false;" href="#">Soumettre votre demande</a>
-            </div> 
-        </div> 
+            </div>
+        </div>
         <div class="clear"></div>
         <div class="grid_16">
             <div>
@@ -138,7 +141,7 @@
                 <span style="font-size:large;">fonctionne le système </span>
                 <span style="font-size: small;">(la mise en relation des demandes et des offres)</span>
             </div>
-        </div> 
+        </div>
         <div class="clear"></div>
         <div class="grid_16">
             <div class="grid_4 alpha">
@@ -149,19 +152,19 @@
                 <span class="blue">Où</span> vous le cherchez,
                 pour <span class="blue">Quand</span> vous en avez besoin et
                 <span class="blue">Pourquoi</span> vous le cherchez.</p>
-            </div> 
+            </div>
             <div class="grid_4">
                 <div class="col_header"><span class="gray col_name">2. Nous diffusons</span></div>
                 <p>Nous diffusons votre <span class="command">Demande</span> -
                 <span class="blue">et non vos coordonnées</span>,
                 aux <strong>concessionnaires automobiles</strong> participants.</p>
-            </div> 
+            </div>
             <div class="grid_4">
                 <div class="col_header"><span class="gray col_name">3. Ils proposent</span></div>
                 <p>Les <strong>concessionnaires</strong> ayant le véhicule que vous cherchez nous
                 soummettent leurs <span class="command">Propositions.</span> Nous vous les
                 <span class="blue">transmettons</span> accompagnées des coordonnées de la concession.</p>
-            </div> 
+            </div>
             <div class="grid_4 omega">
                 <div class="col_header"><span class="gray col_name">4. Vous évaluez</span></div>
                 <p>Libre à vous d'<span class="blue">évaluer</span> ces
@@ -169,8 +172,8 @@
                 <strong>concessionnaires</strong> qui vous intéressent. Le cas échéant, les
                 <span style="font-weight: bold">concessionnaires</span> peuvent vous
                 <span class="command blue">évaluer</span> aussi.</p>
-            </div> 
-        </div> 
+            </div>
+        </div>
         <div class="clear"></div>
         <div class="grid_16">
             <div><span class="gray" style="font-size:large;">À propos</span></div>
@@ -181,13 +184,13 @@
             <p>La puissance de <b>AnotherSocialEconomy</b> permet à <b>son réseau de marchands</b> de rentrer en concurrence
             sur les produits, les services et les prix et non sur les budgets alloués aux moteurs de recherche, ce pour le plus grand bénéfice des clients!
             </p>
-        </div> 
+        </div>
         <div class="clear"></div>
         <div class="grid_16">
             <div class="grid_12 alpha">
                 <div class="col_header"><span class="gray col_name">AnotherSocialEconomy: Là où l'offre rencontre la demande.</span></div>
                 <div>Tous droits réservés &copy; 2011 <a href="milstein-assoc.com">Milstein et associés inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Politique de confidentialité</a></div>
-            </div> 
+            </div>
             <div class="grid_4 omega" style="margin-bottom: 5px;">
                 <div class="orange" style="border-radius:8px;">
                     <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
@@ -196,8 +199,8 @@
                     <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage2">English</a></div>
                 </div>
             </div>
-        </div> 
-    </div>  
+        </div>
+    </div>
 </form>
 <script type="text/javascript">
     var djConfig = {
@@ -210,17 +213,42 @@
     };
     var localizedBundle = {
         locale: 'fr',
-        emailFieldPlaceHolder: 'Votre courriel',
-        modelFieldPlaceHolder: 'Modèle du véhicule',
+        emailFieldPlaceHolder:      'Votre courriel',
+        modelFieldPlaceHolder:      'Modèle du véhicule',
         postalCodeFieldPlaceHolder: 'Votre code postal',
-        sendRequestErrorMessage: 'Une malencontreuse erreur s\'est produite lors de la soumission de votre demande :-(\n\nS\'il vous plaît, veuillez nous informer de l\'incident en envoyant un courriel, avec le détail de votre requête, à: support@anothersocialeconomy.com.',
-        sendRequestInitialMessage: '<p>Soumission de la requête en cours...</p>',
-        sendRequestSuccessMessage: '<p>Requête soumise avec succès.</p><p>D\'ici quelques minutes, le système aura validé votre demande et<br />va vous en notifié avec un simple courriel.</p><div style="text-align:right;"><div id="closeDialog">OK</div></div>',
-        emailCheckInitialMessage: '<div>Vérification du courriel...<div style="text-align:center;margin-top:10px;"><img src="http://anothersocialeconomy.appspot.com/images/loading.gif"/></div></div>',
-        emailCheckErrorMessage: 'Une malencontreuse erreur s\'est produite lors de la soumission de votre demande :-(\n\nS\'il vous plaît, veuillez nous informer de l\'incident en envoyant un courriel, avec le détail de votre requête, à: support@anothersocialeconomy.com.',
-        emailCheckSuccessKnownMessage: '<div style="background-color:#0a0;color:white;">Bonjour _name_,<p>Une fois reçue, votre requête sera traitée rapidement et  <strong>diffusée aux concessionnaires de notre réseau</strong>.</p>Merci pour la confiance accordée à AnotherSocialEconomy.</div>',
-        emailCheckSuccessUnknownMessage: '<div style="background-color:#c00;color:white;"><strong>Avertissement:</strong><p>Avant que nous ne traitions votre requête, nous devons <strong>vérifier votre adresse de courriel</strong>. Une fois votre requête soumise, nous vous enverrons un courriel auquel vous n\'aurez qu\'à simplement <strong>répondre</strong>.</p>Nous ne partagerons <strong>jamais</strong> votre adresse de courriel.</div>',
-        cancelButton: 'Annuler'
+        sendRequestInitialMessage:          '<p>:-) Merci de nous avoir soumis votre requête ...</p>',
+        sendRequestErrorMessage:            '>:-( Zut... quelque chose imprévue vient de se produire.\n\n' +
+                                            'Veuillez envoyé un courriel détaillé à l\'adresse Support@AnotherSocialEconomy.com pour que nous puissions régler votre problème particulier.',
+        sendRequestSuccessMessage:          '<p>Votre requête a été soumise avec succès :-)</p>' +
+                                            '<p>Veuillez consulter votre boîte de courriel (ou votre filtre à <i>pourriel</i>) pour y trouver la confirmation de notre enregistrement de votre demande. ' +
+                                            'Le message va être envoyé depuis l\'adresse <strong>assistant@anothersocialeconomy.appspotmail.com</strong></p>' +
+                                            '<p>Merci pour la confiance accordée à AnotherSocialEconomy !</p>' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>',
+        emailCheckInitialMessage:           '<div style="background-color:#eee;text-align:center;">' +
+                                            'Vérification de l\'adresse de courriel...' +
+                                            '<div style="margin-top: 10px;"><img src="http://anothersocialeconomy.appspot.com/images/loading.gif"/></div>' +
+                                            '</div>',
+        emailCheckErrorMessage:             'Une malencontreuse erreur vient de se produire lors de la vérification de votre adresse de courriel par notre serveur :-(\n\n' +
+                                            'Veuillez envoyer un courriel à support@anothersocialeconomy.com avec le détail de votre requête, où alors essayer un peu plus tard.',
+        emailCheckSuccessKnownMessage:      '<div style="background-color:#0a0;color:white;">' +
+                                            '<p><strong>Bonjour _name_</strong>!<br/>' +
+                                            'Veuillez vérifier le détail de votre requête et cliquer sur le bouton <strong>Soumettre</strong> pour que nous la diffusions aux concessionnaires de notre réseau.</p>' +
+                                            '<p><strong>Merci</strong> pour la confiance accordée à AnotherSocialEconomy :-)</p>' +
+                                            '</div>',
+        emailCheckSuccessUnknownMessage:    '<div style="background-color:#c00;color:white;">' +
+                                            '<p><strong>Vérification d\'une nouvelle adresse de courriel</strong><br>' +
+                                            'Veuillez consulter votre boîte de courriel pour y trouver le message émis par <strong>assistant@anothersocialeconomy.appspotmail.com</strong>. ' +
+                                            'Vous n\'avez qu\'à <strong>y répondre</strong> pour finaliser la vérification de votre adresse.</p>' +
+                                            '<p>Alors vous pourrez cliquer sur le bouton <strong>Soumettre</strong> pour que nous diffusions votre requête aux concessionnaires de notre réseau.</p>' +
+                                            '<p><strong>Conseil</strong><br>' +
+                                            'Si vous ne trouvez pas notre message dans votre boîte de courriel d\'ici 20 minutes, veuillez regarder votre filtre de <i>pourriel</i>. ' +
+                                            'Si notre message ne s\'y trouve pas, alors cliquer sur <a href="mailto:Support@AnotherSocialEconomy.com?subject=Courriel%20de%20vérfication%20jamais%20reçu&Body=_content_">Support</a> ' +
+                                            'pour un message afin que nous puissions régler votre problème particulier.</p>' +
+                                            '<p><strong>Rappel</strong><br>' +
+                                            'Nous ne partagerons <strong>jamais</strong> votre adresse de courriel!</p>' +
+                                            '<p>Merci pour la confiance accordée à AnotherSocialEconomy !</p>' +
+                                            '</div>',
+        cancelButton: '&lt;&lt; Précédent'
     };
     var makes = ['Acura' ,'Audi' ,'BMW' ,'Buick' ,'Cadillac' ,'Chevrolet' ,'Chrysler' ,'Dodge' ,'Ford' ,'GMC' ,'Honda' ,'Hummer' ,'Hyundai' ,'Infiniti' ,'Jeep' ,'Kia' ,'Land Rover' ,'Lexus' ,'Lincoln' ,'Mazda' ,'Mercedes-Benz' ,'Mini' ,'Mitsubishi' ,'Nissan' ,'Pontiac' ,'Porsche' ,'Saab' ,'Saturn' ,'Smart' ,'Subaru' ,'Suzuki' ,'Toyota' ,'Volkswagen' ,'Volvo'];
 </script>

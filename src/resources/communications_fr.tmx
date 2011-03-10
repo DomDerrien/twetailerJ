@@ -468,7 +468,47 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    <p>Bonjour <strong>{demand>owner>name}</strong></p>
+                    <p>Bonjour <strong>{initiator>name}</strong></p>
+                    <p>
+                        Merci pour la confiance témoignée à notre service. Puisque vous utilisez notre service pour la première fois,
+                        <strong>veuillez confirmer votre adresse de courriel en répondant à ce message.</strong>
+                        Une fois votre réponse reçue, nous continuerons de traiter votre demande.
+                    </p>
+                    <p>
+                        Veuillez noter que nous travaillons pour faciliter l'interaction avec les utilisateurs
+                        de l'outil Web de Yahoo!. Si vous utilisez un outil comme Mac Mail ou Outlook Express
+                        pour gérer ce compte, il n'y a pas de problème. Dans le cas contraire, contacter
+                        <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
+                        pour que nous vous aidions personnellement.
+                    </p>
+                    <p>Merci,<br/>Support</p>
+                    <p>Présentation par <a href="{influencer>url}">{influencer>name}</a>.</p>
+                    <hr/>
+                    <p>Hi <strong>{initiator>name}</strong></p>
+                    <p>
+                        Thank you for trusting our service.
+                        Since this is your first time using our service, can you please
+                        <strong>confirm your email address by replying to this message</strong>?
+                        Once received, we'll continue processing your request.
+                    </p>
+                    <p>
+                        Please note that we are currently working to support
+                        Yahoo! web email. In the meantime, you can either use an
+                        email client like Outlook Express, or, contact
+                        <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
+                        for further assistance.
+                    </p>
+                    <p>Thank you,<br/>Support</p>
+                    <p>Brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_core_invitation_to_confirm_email_address_with_demand" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{initiator>name}</strong></p>
                     <p>
                         Merci pour la confiance témoignée avec la soumission de votre rercherhe de voiture:
                         <strong>{demand>content}</strong>. Puisque vous utilisez notre service pour la première fois,
@@ -485,7 +525,7 @@
                     <p>Merci,<br/>Support</p>
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
                     <hr/>
-                    <p>Hi <strong>{demand>owner>name}</strong></p>
+                    <p>Hi <strong>{initiator>name}</strong></p>
                     <p>
                         Thank you for trusting us with your needs of: <strong>{demand>content}</strong>.
                         Since this is your first time using our service, can you please

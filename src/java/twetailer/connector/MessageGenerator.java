@@ -78,6 +78,7 @@ public class MessageGenerator {
 
         // Message asking for a reply to confirm an email address
         INVITATION_TO_CONFIRM_EMAIL_ADDRESS("invitation_to_confirm_email_address"),
+        INVITATION_TO_CONFIRM_EMAIL_ADDRESS_WITH_DEMAND("invitation_to_confirm_email_address_with_demand"),
 
         /// W1. Consumer creates a wish -- CC'ed and associates are notified
         /** For message sent to the wish owner to confirm the wish creation */

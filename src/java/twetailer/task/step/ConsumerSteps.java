@@ -4,24 +4,37 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.TaskOptions.Method;
-
 import twetailer.ClientException;
+import twetailer.CommunicationException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.InvalidStateException;
 import twetailer.ReservedOperationException;
+import twetailer.connector.BaseConnector.Source;
+import twetailer.connector.MailConnector;
+import twetailer.connector.MessageGenerator;
+import twetailer.connector.MessageGenerator.MessageId;
+import twetailer.dao.CacheHandler;
 import twetailer.dto.Consumer;
+import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
-import twetailer.dto.Consumer.Autonomy;
+import twetailer.dto.Influencer;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaelzelServlet;
+
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
+
+import domderrien.i18n.DateUtils;
+import domderrien.i18n.LabelExtractor;
+import domderrien.i18n.LabelExtractor.ResourceFileId;
 import domderrien.jsontools.JsonObject;
 
 public class ConsumerSteps extends BaseSteps {
@@ -202,6 +215,58 @@ public class ConsumerSteps extends BaseSteps {
             finally {
                 pm.close();
             }
+        }
+    }
+
+    /**
+     * Send a message to the Unconfirmed Consumer
+     *
+     * @param consumer   Consumer to communicate with
+     * @param hashTags   Domain identifier
+     * @param demand     One of the consumer demand
+     * @param influencer Influencer who allowed to create the consumer record
+     * @param logger     To identify the source of the notification
+     *
+     * @throws CommunicationException If the email sending fails
+     */
+    public static boolean notifyUnconfirmedConsumer(Consumer consumer, List<String> hashTags, Demand demand, Influencer influencer, Logger logger) throws CommunicationException {
+        Long lastNotificationDate = (Long) CacheHandler.getFromCache("unconfirmed_" + consumer.getEmail());
+        Long nowDate = DateUtils.getNowDate().getTime();
+        if (lastNotificationDate != null && nowDate < lastNotificationDate + 30 * 60 * 1000) { // Less than 30 minutes ago
+            return false;
+        }
+        CacheHandler.setInCache("unconfirmed_" + consumer.getEmail(), nowDate);
+
+        Locale locale = consumer.getLocale();
+        MessageGenerator msgGen = new MessageGenerator(Source.mail, hashTags == null ? demand.getHashTags() : hashTags, locale);
+        msgGen.
+            put("initiator>name", consumer.getName()).
+            fetch(demand).
+            fetch(influencer);
+
+        String subject = LabelExtractor.get(ResourceFileId.fourth, "common_welcome_message_subject_default", locale);
+        try {
+            String message = msgGen.getMessage(demand == null ? MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS : MessageId.INVITATION_TO_CONFIRM_EMAIL_ADDRESS_WITH_DEMAND);
+            logger.warning("Communicating with " + consumer.getEmail() + " (medium: mail) -- message: " + message);
+            try {
+                MailConnector.sendMailMessage(
+                        false,
+                        true,
+                        consumer.getEmail(),
+                        consumer.getName(),
+                        subject,
+                        message,
+                        locale
+                );
+            }
+            finally {
+                // It's possible the message sent to  userId failed... anyway, send the copy to admins
+                MailConnector.sendCopyToAdmins(Source.mail, consumer, subject, new String[] { message });
+            }
+            return true;
+        }
+        catch (Exception ex) {
+            throw new CommunicationException("Cannot send message asking to confirm the new Consumer email address");
         }
     }
 }

@@ -69,7 +69,7 @@ def writeOneAdGroup(parameters, adSubPath, altAdSubPath, patterns):
         patterns.getAdLine1(),
         patterns.getAdLine2(),
         parameters['displayUrl'],
-        'http://anothersocialeconomy.com' + destinationUrl + '?kw={KeyWord}'
+        'http://anothersocialeconomy.com' + destinationUrl
     ))
     
     # 3. Generate the corresponding destination files if needed
@@ -229,11 +229,17 @@ def processAllCities(parameters, patterns):
     parameters['keyword'] = parameters['keyword'].replace('${CITY} ', '')
     city = parameters['cities'][0] # Region is directed towards the first city
     parameters['postalCode'] = city[1]
+    patterns.set(
+        city = city[0],
+        postalCode = city[1],
+        make = parameters['makesAndModels'][0]['make'],
+        model = parameters['makesAndModels'][0]['models'][0]
+    )
     
     parameters['generateFiles'] = False # To no generate the files a second time
     processAllMakes(parameters, twetailer.tmpl.stripAccents(city[0]) + '/', patterns)
 
-    # 3. Generate the default files at the city level with a default make & model
+    # 3. Generate the default files at the root level with a default make & model
     adTextGroup = parameters['ads'][0]
     rootFolder = parameters['rootFolder']
     baseFilenames = parameters['baseFilenames']
@@ -241,6 +247,7 @@ def processAllCities(parameters, patterns):
         adTextGroup = adTextGroup,
         altPageUrl = '/' + rootFolder['alt'] + '/' + baseFilenames[0] + '.html',
         city = parameters['genericCityName'],
+        postalCode = '',
         make = parameters['makesAndModels'][0]['make'],
         model = parameters['makesAndModels'][0]['models'][0]
     )

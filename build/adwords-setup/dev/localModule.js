@@ -22,12 +22,14 @@ var localModule = {};
     dojo.addOnLoad(function() {
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
+
         var city = '${CITY}';
         var maker = '${MAKE}' == 'Cars' || '${MAKE}' == 'Automobile' ? 'BMW' : '${MAKE}';
         var model = '${MODEL}';
         var qualifier = "${PRINTED_QUALIFIER}"; // ** Use the double-quotes as delimiters because of D'occasion, for example
-        var postalCode = '${CITY}' == 'Local' || '${CITY}' == 'Votre Localité' ? '' : '${POSTAL_CODE}';
+        var postalCode = '${POSTAL_CODE}';
         var info = '';
+
         if (window.location.search) {
             // ** Step 1: get the keywords
             var urlParams = dojo.queryToObject(window.location.search.slice(1));
@@ -37,8 +39,7 @@ var localModule = {};
             if (skw) {
                 // ** Step 2: remove extra characters
                 skw = skw.replace(/\"/g, '').replace(/\+/g, '');
-                // ** Step 3: remove the duplicates (keep the first
-                // occurrence)
+                // ** Step 3: remove the duplicates (keep the first occurrence)
                 skw = removeDups(skw, city, true);
                 skw = removeDups(skw, qualifier, true);
                 skw = removeDups(skw, maker, true);
@@ -49,21 +50,18 @@ var localModule = {};
                 // ** Step 5: update the language switchers
                 dojo.byId('switchLanguage1').href += '?kw=' + skw;
                 dojo.byId('switchLanguage2').href += '?kw=' + skw;
-                // ** Step 6: remove the last occurrence of the page
-                // keyword and place the remaining in the 'model'
-                // variable
+                // ** Step 6: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
                 skw = removeDups(skw, city, false);
                 skw = removeDups(skw, qualifier, false);
                 skw = removeDups(skw, maker, false);
-                // ** Step 7: remove the last occurrence of the page
-                // keyword and place the remaining in the 'model'
-                // variable
+                // ** Step 7: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
                 skw = removeDups(skw, city.replace(/é/g, 'e'), false);
                 skw = removeDups(skw, qualifier.replace(/é/g, 'e'), false);
                 skw = removeDups(skw, maker.replace(/é/g, 'e'), false);
                 model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
             }
         }
+
         var options = {
             identifier : 'value',
             items : []
@@ -157,22 +155,23 @@ var localModule = {};
             return;
         // ** Create the dialog box
         var reviewPane = dijit.byId('reviewPane') || new dijit.Dialog({
-            content : 
-                '<div class="dijitDialogPaneContentArea" id="profileForms">' + 
-                '<table class="reviewPaneTable"><tbody>' + 
-                '<tr><th>' + document.getElementById('emailFieldLabel').innerHTML + '</th><td id="emailReview"></td><td id="emailVerifStatus" rowspan="6"></td></tr>' + 
-                '<tr><th>' + document.getElementById('makeFieldLabel').innerHTML + '</th><td id="makeReview"></td></tr>' + 
-                '<tr><th>' + document.getElementById('modelFieldLabel').innerHTML + '</th><td id="modelReview"></td></tr>' + 
-                '<tr><th>' + document.getElementById('postalCodeFieldLabel').innerHTML + '</th><td id="postalCodeReview"></td></tr>' + 
-                '<tr><th>' + document.getElementById('rangeFieldLabel').innerHTML + '</th><td id="rangeReview"></td></tr>' + 
-                '<tr><th>' + document.getElementById('dueDateFieldLabel').innerHTML + '</th><td id="dueDateReview"></td></tr>' + 
-                '<tr><th>' + document.getElementById('infoFieldLabel').innerHTML + '</th><td id="infoReview" colspan="2"></td></tr>' + 
-                '</tbody></table>' + 
+            content :
+                '<div class="dijitDialogPaneContentArea" id="profileForms">' +
+                '<table class="reviewPaneTable"><tbody>' +
+                '<tr><th>' + document.getElementById('emailFieldLabel').innerHTML + '</th><td id="emailReview"></td><td id="emailVerifStatus" rowspan="6"></td></tr>' +
+                '<tr><th>' + document.getElementById('makeFieldLabel').innerHTML + '</th><td id="makeReview"></td></tr>' +
+                '<tr><th>' + document.getElementById('modelFieldLabel').innerHTML + '</th><td id="modelReview"></td></tr>' +
+                '<tr><th>' + document.getElementById('postalCodeFieldLabel').innerHTML + '</th><td id="postalCodeReview"></td></tr>' +
+                '<tr><th>' + document.getElementById('rangeFieldLabel').innerHTML + '</th><td id="rangeReview"></td></tr>' +
+                '<tr><th>' + document.getElementById('dueDateFieldLabel').innerHTML + '</th><td id="dueDateReview"></td></tr>' +
+                '<tr><th>' + document.getElementById('infoFieldLabel').innerHTML + '</th><td id="infoReview" colspan="2"></td></tr>' +
+                '</tbody></table>' +
                 '</div>' +
-                '<div class="dijitDialogPaneActionBar">' + 
-                '<button dojoType="dijit.form.Button" type="submit">' + document.getElementById('submitButton').innerHTML + '</button>' + 
-                '<button dojoType="dijit.form.Button" type="button" onClick="dijit.byId(\'reviewPane\').hide();">' + lB.cancelButton + '</button>' + 
+                '<div class="dijitDialogPaneActionBar">' +
+                '<button dojoType="dijit.form.Button" type="submit">' + document.getElementById('submitButton').innerHTML + '</button>' +
+                '<div style="float:left;padding:4px 0;"><a href="javascript:dijit.byId(\'reviewPane\').hide();">' + lB.cancelButton + '</a></div>' +
                 '</div>',
+            execute: localModule.sendRequest,
             id : 'reviewPane',
             style : 'min-width:400px;max-width:800px;',
             title : "Request Review Step"
@@ -193,6 +192,7 @@ var localModule = {};
             callbackParamName : 'callback',
             content : {
                 referralId : 0, // ** By ASE itself
+                hashTags : [ 'cardealer' ],
                 reportId : reportId,
                 email : document.getElementById('email').value
             },
@@ -205,21 +205,30 @@ var localModule = {};
                         document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessKnownMessage.replace('_name_', dataBack.name);
                     }
                     else {
-                        document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessUnknownMessage;
+                        var content = document.getElementById('makeFieldLabel').innerHTML + document.getElementById('make').value + ',';
+                        content += document.getElementById('modelFieldLabel').innerHTML + document.getElementById('model').value + ',';
+                        content += document.getElementById('infoFieldLabel').innerHTML + document.getElementById('info').value + '\n';
+                        content += document.getElementById('postalCodeFieldLabel').innerHTML + document.getElementById('postalCode').value + ',';
+                        content += document.getElementById('rangeFieldLabel').innerHTML + document.getElementById('range').value + ',';
+                        content += document.getElementById('dueDateFieldLabel').innerHTML + document.getElementById('dueDate').value + ',';
+                        document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessUnknownMessage.replace('_content_', escape(content));
                     }
+                }
+                else {
+                    alert(lB.emailCheckErrorMessage);
                 }
             },
             url : reportHost + 'Consumer'
         });
     };
 
-    var sendRequest = function() {
+    localModule.sendRequest = function() {
         var lB = localizedBundle;
         // ** Submit data
         var dialog = new dijit.Dialog({ // ** Use DialogSimple as soon as Dojo 1.6 is out
         // ** var dialog = new dojox.widget.Dialog({
-            content : lB.sentRequestInitialMessage,
-            style : 'min-height: 100px; background-color: #fff;'
+            content : lB.sendRequestInitialMessage,
+            style : 'min-height: 100px; background-color: #fff; min-width: 400px; max-width: 800px;'
         });
         dialog.startup();
         dialog.show();
@@ -228,7 +237,6 @@ var localModule = {};
             content : getFormData(),
             error : function(dataBack) {
                 alert(lB.sendRequestErrorMessage);
-                dialog.hide();
             },
             load : function(dataBack) {
                 if (dataBack && dataBack.success) {
@@ -246,8 +254,7 @@ var localModule = {};
                     new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=UgQfCMXjkQIQm9P35QM&amp;guid=ON&amp;script=0';
                 }
                 else {
-                    alert(errorMsg);
-                    dialog.hide();
+                    alert(lB.sendRequestErrorMessage);
                 }
             },
             url : reportHost + 'Demand'

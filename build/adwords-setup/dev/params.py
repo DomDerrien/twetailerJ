@@ -39,7 +39,7 @@ def getRegions():
 def getGenericCityNames():
     return {
         'en': 'Your Local',
-        'fr': 'Votre Localité'
+        'fr': 'votre localité'
     }
     
 #

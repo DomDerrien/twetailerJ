@@ -112,13 +112,11 @@ def copyAndUpdate(baseFilename, language, destinationFolder, patterns):
         source = open(sourceFilename, mode='rt', encoding='utf-8', newline='\n')
         content = source.read(crazyAmount)
         source.close()
-        # Inject the localModule.js file content
-        content = content.replace('${LOCAL_MODULE}', getLocalModuleCode())
-        # Remove the comments in JavaScript code, especially identified by '// **'
-        content = re.sub('// \*\*.*$', '', content, flags=re.M)
         # Remove the leading spaces and forgotten trailing ones
         content = re.sub('^\s+', '', content, flags=re.M)
         content = re.sub('\s+$', '', content, flags=re.M)
+        # Inject the localModule.js file content
+        content = content.replace('${LOCAL_MODULE}', getLocalModuleCode())
         # Save into the cache
         templateContents[sourceFilename] = content
 
@@ -144,6 +142,11 @@ def getLocalModuleCode():
         source = open(sourceFilename, mode='rt', encoding='utf-8', newline='\n')
         content = source.read(crazyAmount)
         source.close()
+        # Remove the comments in JavaScript code, especially identified by '// **'
+        content = re.sub('// \*\*.*$', '', content, flags=re.M)
+        # Remove the leading spaces and forgotten trailing ones
+        content = re.sub('^\s+', '', content, flags=re.M)
+        content = re.sub('\s+$', '', content, flags=re.M)
         # Save into the cache
         templateContents[sourceFilename] = content
         
