@@ -83,7 +83,7 @@ public class TestConsumerOperations {
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
             @Override
-            @SuppressWarnings( { "unchecked", "serial" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -127,7 +127,7 @@ public class TestConsumerOperations {
         final String qA = "a";
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -156,7 +156,7 @@ public class TestConsumerOperations {
         final String qA = "a";
         final String qV = "b";
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -186,7 +186,7 @@ public class TestConsumerOperations {
         final String qV = "b";
         final Consumer selected = new Consumer();
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -223,7 +223,7 @@ public class TestConsumerOperations {
         final Consumer spare3 = new Consumer();
         final Consumer spare4 = new Consumer();
         final PersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -434,7 +434,7 @@ public class TestConsumerOperations {
     @Test
     public void testCreateI() throws DataSourceException {
         final MockPersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {
@@ -464,7 +464,7 @@ public class TestConsumerOperations {
     public void testCreateII() throws DataSourceException {
         final Consumer existingConsumer = new Consumer();
         final MockPersistenceManager pm = new MockPersistenceManager() {
-            @SuppressWarnings( { "serial", "unchecked" })
+            @SuppressWarnings( { "serial", "rawtypes" })
             public javax.jdo.Query newQuery(Class clazz) {
                 assertEquals(Consumer.class, clazz);
                 return new MockQuery() {

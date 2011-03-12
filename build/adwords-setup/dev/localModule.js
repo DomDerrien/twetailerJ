@@ -2,7 +2,7 @@ var localModule = {};
 
 (function() { // To limit the scope of the private variables
 
-    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = "-", debugMode = false;
+    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false;
 
     dojo.require('dojo.io.script');
     dojo.require('dijit.Dialog'); // ** Use DialogSimple as soon as Dojo 1.6 is out
@@ -23,19 +23,18 @@ var localModule = {};
         var dueDate = new Date();
         dueDate.setMonth(dueDate.getMonth() + 1);
 
-        var city = '${CITY}';
-        var maker = '${MAKE}' == 'Cars' || '${MAKE}' == 'Automobile' ? 'BMW' : '${MAKE}';
-        var model = '${MODEL}';
-        var qualifier = "${PRINTED_QUALIFIER}"; // ** Use the double-quotes as delimiters because of D'occasion, for example
-        var postalCode = '${POSTAL_CODE}';
-        var info = '';
+        var city = '${CITY}',
+            maker = '${MAKE}' == 'Cars' || '${MAKE}' == 'Automobile' ? 'BMW' : '${MAKE}',
+            model = '${MODEL}',
+            qualifier = "${PRINTED_QUALIFIER}", // ** Use the double-quotes as delimiters because of D'occasion, for example
+            postalCode = '${POSTAL_CODE}',
+            info = '';
 
         if (window.location.search) {
             // ** Step 1: get the keywords
-            var urlParams = dojo.queryToObject(window.location.search.slice(1));
+            var urlParams = dojo.queryToObject(window.location.search.slice(1)), skw = urlParams.kw;
             debugMode = urlParams.debugMode != null;
             reportHost = urlParams.host || reportHost;
-            var skw = urlParams.kw;
             if (skw) {
                 // ** Step 2: remove extra characters
                 skw = skw.replace(/\"/g, '').replace(/\+/g, '');
@@ -72,8 +71,7 @@ var localModule = {};
             });
         }
 
-        var lB = localizedBundle;
-        var makers = new dojo.data.ItemFileReadStore({ data : options });
+        var lB = localizedBundle, makers = new dojo.data.ItemFileReadStore({ data : options });
         new dijit.form.Form({ id : 'requestForm' }, 'requestForm');
         new dijit.form.TextBox({ name : 'model', value : model, placeHolder : lB.modelFieldPlaceHolder, style : 'width:160px;' }, 'model');
         new dijit.form.NumberSpinner({ name : 'range', value : 25, constraints : { min : 5, max : 100 }, style : 'width:160px;' }, 'range');
@@ -90,14 +88,18 @@ var localModule = {};
     });
 
     var reportUsage = function() {
-        var data = getFormData();
+        var data = getFormData(), dc = document;
         data.reportId = reportId;
-        data.reportDelay = reportDelay;
-        data.startDate = startDate;
-        data.reportDate = new Date();
-        data.referrer = document.referrer;
-        data.location = "" + document.location;
-        data.cookie = document.cookie;
+        if (reportId.length == 1) {
+            if (dc.referrer && 0 < dc.referrer.length) {
+                data.referrerUrl = dc.referrer;
+            }
+        }
+        else {
+            if (dc.cookie && 0 < dc.cookie.length) {
+                data.cookie = dc.cookie;
+            }
+        }
         dojo.io.script.get({
             callbackParamName : 'callback',
             content : data,
@@ -136,20 +138,25 @@ var localModule = {};
             countryCode : 'CA',
             hashTags : [ 'cardealer' ],
             exceptions : []
-        };
-        if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.hashTags.push('demo'); } catch (ex) { dataIn.exceptions.push('hashTags - ' + ex); } }
-        try { dataIn.email = document.getElementById('email').value; } catch (ex) { dataIn.exceptions.push('email - ' + ex); }
-        try { dataIn.postalCode = document.getElementById('postalCode').value; } catch (ex) { dataIn.exceptions.push('postalCode - ' + ex); }
-        try { dataIn.range = document.getElementById('range').value; } catch (ex) { dataIn.exceptions.push('range - ' + ex); }
-        try { dataIn.dueDate = toISOString(dijit.byId('dueDate').get('value')); } catch (ex) { dataIn.exceptions.push('dueDate - ' + ex); }
-        try { dataIn.content = 'Manufacturer: ' + document.getElementById('make').value; } catch (ex) { dataIn.exceptions.push('make - ' + ex); }
-        try { dataIn.content += ' Model: ' + document.getElementById('model').value; } catch (ex) { dataIn.exceptions.push('model - ' + ex); }
-        try { dataIn.content += ' Infos: ' + document.getElementById('info').value; } catch (ex) { dataIn.exceptions.push('info - ' + ex); }
+        }, exs = dataIn.exceptions, dc = document;
+        if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
+        try { dataIn.email = dc.getElementById('email').value; } catch (ex) { exs.push('email - ' + ex); }
+        try { dataIn.postalCode = dc.getElementById('postalCode').value; } catch (ex) { exs.push('postalCode - ' + ex); }
+        try { dataIn.range = dc.getElementById('range').value; } catch (ex) { exs.push('range - ' + ex); }
+        try { dataIn.dueDate = toISOString(dijit.byId('dueDate').get('value')); } catch (ex) { exs.push('dueDate - ' + ex); }
+        try { dataIn.content = document.getElementById('makeFieldLabel').innerHTML + ' ' + dc.getElementById('make').value; } catch (ex) { exs.push('make - ' + ex); }
+        try { dataIn.content += ', ' + document.getElementById('modelFieldLabel').innerHTML + ' ' + dc.getElementById('model').value; } catch (ex) { exs.push('model - ' + ex); }
+        try {
+            var info = dc.getElementById('info').value;
+            if (info && 0 < info.length) {
+                dataIn.content += ', ' + document.getElementById('infoFieldLabel').innerHTML + ' ' + info;
+            }
+        } catch (ex) { exs.push('info - ' + ex); }
         return dataIn;
     };
 
     localModule.showReviewPane = function() {
-        var lB = localizedBundle;
+        var lB = localizedBundle, dc = document;
         // ** Validate the input fields content
         if (!dijit.byId('requestForm').validate())
             return;
@@ -158,33 +165,33 @@ var localModule = {};
             content :
                 '<div class="dijitDialogPaneContentArea" id="profileForms">' +
                 '<table class="reviewPaneTable"><tbody>' +
-                '<tr><th>' + document.getElementById('emailFieldLabel').innerHTML + '</th><td id="emailReview"></td><td id="emailVerifStatus" rowspan="6"></td></tr>' +
-                '<tr><th>' + document.getElementById('makeFieldLabel').innerHTML + '</th><td id="makeReview"></td></tr>' +
-                '<tr><th>' + document.getElementById('modelFieldLabel').innerHTML + '</th><td id="modelReview"></td></tr>' +
-                '<tr><th>' + document.getElementById('postalCodeFieldLabel').innerHTML + '</th><td id="postalCodeReview"></td></tr>' +
-                '<tr><th>' + document.getElementById('rangeFieldLabel').innerHTML + '</th><td id="rangeReview"></td></tr>' +
-                '<tr><th>' + document.getElementById('dueDateFieldLabel').innerHTML + '</th><td id="dueDateReview"></td></tr>' +
-                '<tr><th>' + document.getElementById('infoFieldLabel').innerHTML + '</th><td id="infoReview" colspan="2"></td></tr>' +
+                '<tr><th>' + dc.getElementById('emailFieldLabel').innerHTML + '</th><td id="emailReview"></td><td id="emailVerifStatus" rowspan="6"></td></tr>' +
+                '<tr><th>' + dc.getElementById('makeFieldLabel').innerHTML + '</th><td id="makeReview"></td></tr>' +
+                '<tr><th>' + dc.getElementById('modelFieldLabel').innerHTML + '</th><td id="modelReview"></td></tr>' +
+                '<tr><th>' + dc.getElementById('postalCodeFieldLabel').innerHTML + '</th><td id="postalCodeReview"></td></tr>' +
+                '<tr><th>' + dc.getElementById('rangeFieldLabel').innerHTML + '</th><td id="rangeReview"></td></tr>' +
+                '<tr><th>' + dc.getElementById('dueDateFieldLabel').innerHTML + '</th><td id="dueDateReview"></td></tr>' +
+                '<tr><th>' + dc.getElementById('infoFieldLabel').innerHTML + '</th><td id="infoReview" colspan="2"></td></tr>' +
                 '</tbody></table>' +
                 '</div>' +
                 '<div class="dijitDialogPaneActionBar">' +
-                '<button dojoType="dijit.form.Button" type="submit">' + document.getElementById('submitButton').innerHTML + '</button>' +
+                '<button dojoType="dijit.form.Button" type="submit">' + dc.getElementById('submitButton').innerHTML + '</button>' +
                 '<div style="float:left;padding:4px 0;"><a href="javascript:dijit.byId(\'reviewPane\').hide();">' + lB.cancelButton + '</a></div>' +
                 '</div>',
             execute: localModule.sendRequest,
             id : 'reviewPane',
-            style : 'min-width:400px;max-width:800px;',
+            style : 'width: 800px;',
             title : "Request Review Step"
         });
         // ** Fill up the dialog box fields
-        document.getElementById('emailReview').innerHTML = document.getElementById('email').value;
-        document.getElementById('makeReview').innerHTML = document.getElementById('make').value;
-        document.getElementById('modelReview').innerHTML = document.getElementById('model').value;
-        document.getElementById('postalCodeReview').innerHTML = document.getElementById('postalCode').value;
-        document.getElementById('rangeReview').innerHTML = document.getElementById('range').value + ' km';
-        document.getElementById('dueDateReview').innerHTML = document.getElementById('dueDate').value;
-        document.getElementById('infoReview').appendChild(document.createTextNode(document.getElementById('info').value));
-        document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckInitialMessage;
+        dc.getElementById('emailReview').innerHTML = dc.getElementById('email').value;
+        dc.getElementById('makeReview').innerHTML = dc.getElementById('make').value;
+        dc.getElementById('modelReview').innerHTML = dc.getElementById('model').value;
+        dc.getElementById('postalCodeReview').innerHTML = dc.getElementById('postalCode').value;
+        dc.getElementById('rangeReview').innerHTML = dc.getElementById('range').value + ' km';
+        dc.getElementById('dueDateReview').innerHTML = dc.getElementById('dueDate').value;
+        dc.getElementById('infoReview').appendChild(dc.createTextNode(dc.getElementById('info').value));
+        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckInitialMessage;
         // ** Display the dialog box
         reviewPane.show();
         // ** Call the server for an email check
@@ -194,7 +201,7 @@ var localModule = {};
                 referralId : 0, // ** By ASE itself
                 hashTags : [ 'cardealer' ],
                 reportId : reportId,
-                email : document.getElementById('email').value
+                email : dc.getElementById('email').value
             },
             error : function(dataBack) {
                 alert(lB.emailCheckErrorMessage);
@@ -202,16 +209,16 @@ var localModule = {};
             load : function(dataBack) {
                 if (dataBack && dataBack.success) {
                     if (dataBack.status) {
-                        document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessKnownMessage.replace('_name_', dataBack.name);
+                        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessKnownMessage.replace('_name_', dataBack.name);
                     }
                     else {
-                        var content = document.getElementById('makeFieldLabel').innerHTML + document.getElementById('make').value + ',';
-                        content += document.getElementById('modelFieldLabel').innerHTML + document.getElementById('model').value + ',';
-                        content += document.getElementById('infoFieldLabel').innerHTML + document.getElementById('info').value + '\n';
-                        content += document.getElementById('postalCodeFieldLabel').innerHTML + document.getElementById('postalCode').value + ',';
-                        content += document.getElementById('rangeFieldLabel').innerHTML + document.getElementById('range').value + ',';
-                        content += document.getElementById('dueDateFieldLabel').innerHTML + document.getElementById('dueDate').value + ',';
-                        document.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessUnknownMessage.replace('_content_', escape(content));
+                        var content = dc.getElementById('makeFieldLabel').innerHTML + dc.getElementById('make').value + ',';
+                        content += dc.getElementById('modelFieldLabel').innerHTML + dc.getElementById('model').value + ',';
+                        content += dc.getElementById('infoFieldLabel').innerHTML + dc.getElementById('info').value + '\n';
+                        content += dc.getElementById('postalCodeFieldLabel').innerHTML + dc.getElementById('postalCode').value + ',';
+                        content += dc.getElementById('rangeFieldLabel').innerHTML + dc.getElementById('range').value + ',';
+                        content += dc.getElementById('dueDateFieldLabel').innerHTML + dc.getElementById('dueDate').value + ',';
+                        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessUnknownMessage.replace('_content_', escape(content));
                     }
                 }
                 else {

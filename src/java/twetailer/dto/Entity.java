@@ -188,8 +188,8 @@ public class Entity implements TransferObject {
         if ((getKey() == null || isCacheRelated) && in.containsKey(KEY)) { setKey(in.getLong(KEY), isCacheRelated); }
         if (isCacheRelated && in.containsKey(CREATION_DATE)) {
             try {
-                Date creationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
-                setCreationDate(creationDate);
+                Date importedCreationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
+                setCreationDate(importedCreationDate);
             }
             catch (ParseException ex) {
                 Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(CREATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
@@ -200,11 +200,11 @@ public class Entity implements TransferObject {
         if (isCacheRelated && in.containsKey(MARKED_FOR_DELETION)) { setMarkedForDeletion(in.getBoolean(MARKED_FOR_DELETION)); }
         if (isCacheRelated && in.containsKey(MODIFICATION_DATE)) {
             try {
-                Date modificationDate = DateUtils.isoToDate(in.getString(CREATION_DATE));
-                setModificationDate(modificationDate);
+                Date importedModificationDate = DateUtils.isoToDate(in.getString(MODIFICATION_DATE));
+                setModificationDate(importedModificationDate);
             }
             catch (ParseException ex) {
-                Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(CREATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
+                Logger.getLogger(Command.class.getName()).warning("Invalid format in due date: " + in.getString(MODIFICATION_DATE) + ", for serialized consumer.key=" + getKey() + " -- message: " + ex.getMessage());
                 updateModificationDate();
             }
         }

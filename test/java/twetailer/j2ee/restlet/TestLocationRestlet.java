@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.cache.MockCacheFactory;
 import javax.jdo.PersistenceManager;
 
 import org.junit.After;
@@ -17,6 +18,7 @@ import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
 import twetailer.ReservedOperationException;
+import twetailer.dao.CacheHandler;
 import twetailer.dao.LocationOperations;
 import twetailer.dao.MockBaseOperations;
 import twetailer.dto.Demand;
@@ -47,10 +49,13 @@ public class TestLocationRestlet {
         user = MockLoginServlet.buildMockOpenIdUser();
         BaseSteps.resetOperationControllers(true);
         BaseSteps.setMockBaseOperations(new MockBaseOperations());
+        CacheHandler.injectMockCacheFactory(new MockCacheFactory());
     }
 
     @After
     public void tearDown() throws Exception {
+        CacheHandler.injectMockCacheFactory(null);
+        CacheHandler.injectMockCache(null);
     }
 
     @Test
@@ -63,7 +68,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);
@@ -80,7 +85,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);
@@ -101,7 +106,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);
@@ -130,7 +135,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);
@@ -152,7 +157,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) throws InvalidIdentifierException {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) throws InvalidIdentifierException {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);
@@ -203,7 +208,7 @@ public class TestLocationRestlet {
         final Long locationKey = 54645434L;
         BaseSteps.setMockLocationOperations(new LocationOperations() {
             @Override
-            public Location getLocation(PersistenceManager pm, Long key) {
+            public Location getLocation(PersistenceManager pm, Long key, boolean useCache) {
                 assertEquals(locationKey, key);
                 Location resource = new Location();
                 resource.setKey(locationKey);

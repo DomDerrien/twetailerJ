@@ -55,7 +55,7 @@ public class Consumer extends Entity {
     public final static String AUTOMATIC_LOCALE_UPDATE = "automaticLocaleUpdate";
 
     public enum Autonomy {
-        SPAMMER,
+        BLOCKED,
         UNCONFIRMED,
         MODERATED,
         AUTONOMOUS

@@ -278,8 +278,9 @@ public class TestThirdPartyEntryPointServlet {
 
         new ThirdPartyEntryPointServlet() {
             @Override
-            protected void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+            protected Demand createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
                 // Will be tested independently below
+                return new Demand();
             }
         }.doGet(mockRequest, mockResponse);
 
@@ -524,8 +525,9 @@ public class TestThirdPartyEntryPointServlet {
 
         new ThirdPartyEntryPointServlet() {
             @Override
-            protected void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+            protected Demand createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
                 // Will be tested independently below
+                return new Demand();
             }
         }.doPost(mockRequest, mockResponse);
 

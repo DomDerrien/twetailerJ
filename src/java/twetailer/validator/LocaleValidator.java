@@ -19,14 +19,11 @@ import java.util.regex.Pattern;
 
 import javamocks.io.MockInputStream;
 import twetailer.connector.MailConnector;
-import twetailer.connector.BaseConnector.Source;
-import twetailer.dto.Consumer;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
-import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.JsonParser;
 

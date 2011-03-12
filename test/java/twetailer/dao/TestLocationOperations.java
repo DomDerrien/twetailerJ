@@ -23,7 +23,6 @@ import org.junit.Test;
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
-import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.task.RobotResponder;
 import twetailer.task.step.BaseSteps;
@@ -329,7 +328,7 @@ public class TestLocationOperations {
     }
 
     @Test(expected=RuntimeException.class)
-    public void testUpdateII() throws ClientException {
+    public void testUpdateII() throws ClientException, DataSourceException {
         final PersistenceManager pm = new MockPersistenceManagerFactory().getPersistenceManager();
         LocationOperations ops = new LocationOperations() {
             @Override

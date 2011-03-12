@@ -74,7 +74,7 @@ public class StoreSteps extends BaseSteps {
         return queryFilters;
     }
 
-    public static Store createStore(PersistenceManager pm, JsonObject parameters, boolean isPrivileged) throws ClientException {
+    public static Store createStore(PersistenceManager pm, JsonObject parameters, boolean isPrivileged) throws ClientException, DataSourceException {
         // Verify the logged user rights
         if (!isPrivileged) {
             throw new ReservedOperationException("Store instances can only be created by admins");
@@ -98,7 +98,7 @@ public class StoreSteps extends BaseSteps {
         return store;
     }
 
-    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException {
+    public static Store updateStore(PersistenceManager pm, Long storeKey, JsonObject parameters, boolean isUserAdmin) throws ReservedOperationException, InvalidIdentifierException, DataSourceException {
 
         Store store = getStoreOperations().getStore(pm, storeKey);
         Long initialLocationKey = store.getLocationKey();

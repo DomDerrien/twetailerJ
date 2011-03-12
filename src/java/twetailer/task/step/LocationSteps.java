@@ -109,7 +109,7 @@ public class LocationSteps extends BaseSteps {
         return output;
     }
 
-    public static Location updateLocation(PersistenceManager pm, Long locationKey, JsonObject parameters, boolean isUserAdmin) throws InvalidIdentifierException {
+    public static Location updateLocation(PersistenceManager pm, Long locationKey, JsonObject parameters, boolean isUserAdmin) throws InvalidIdentifierException, DataSourceException {
 
         // Get identified location
         Location location = getLocationOperations().getLocation(pm, locationKey);

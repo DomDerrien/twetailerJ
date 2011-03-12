@@ -248,7 +248,7 @@
                                     name="autonomy"
                                     style="width:8em;"
                                 >
-                                    <option value="SPAMMER">Spammer</option>
+                                    <option value="BLOCKED">Blocked</option>
                                     <option value="UNCONFIRMED">Unconfirmed</option>
                                     <option value="MODERATED" selected="true">Moderated</option>
                                     <option value="AUTONOMOUS">Autonomous</option>

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.Text;
+
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
@@ -28,6 +30,7 @@ import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Demand;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
+import twetailer.dto.Report;
 import twetailer.dto.Store;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.ConsumerSteps;
@@ -73,11 +76,11 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         return log;
     }
 
-    protected final static String CONSUMER_PREFIX = "/Consumer";
-    protected final static String DEMAND_PREFIX = "/Demand";
-    protected final static String LOCATION_PREFIX = "/Location";
-    protected final static String STORE_PREFIX = "/Store";
-    protected final static String REPORT_PREFIX = "/Report";
+    protected static final String LOCATION_PREFIX = "/" + Location.class.getSimpleName();
+    protected static final String STORE_PREFIX = "/" + Store.class.getSimpleName();
+    protected static final String CONSUMER_PREFIX = "/" + Consumer.class.getSimpleName();
+    protected static final String DEMAND_PREFIX = "/" + Demand.class.getSimpleName();
+    protected static final String REPORT_PREFIX = "/" + Report.class.getSimpleName();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -98,6 +101,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 verifyReferralId(pm, in, Action.list, Location.class.getName());
                 // TODO ...
             }
+            // Get the Store instances around the described Location
             else if (STORE_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Store.class.getName());
                 List<Store> stores = StoreSteps.getStores(pm, in);
@@ -115,36 +119,56 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 bounds.put("top", searchBounds[3]);
                 out.put("bounds", bounds);
             }
+            // Verify if the given email address is attached to a known Consumer
             else if (CONSUMER_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Consumer.class.getName());
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
-                lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
+                Consumer consumer = lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
+
+                String reportId = in.getString("reportId");
+                boolean newReport = reportId.length() == 1;
+                if (!newReport) {
+                    Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
+                    report.setConsumerKey(consumer.getKey());
+                    BaseSteps.getReportOperations().updateReport(pm, report);
+                }
             }
+            // Create the described Demand
             else if (DEMAND_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.demand, Demand.class.getName());
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
-                createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
+                Demand demand = createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
+
+                String reportId = in.getString("reportId");
+                boolean newReport = reportId.length() == 1;
+                if (!newReport) {
+                    Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
+                    report.setDemandKey(demand.getKey());
+                    report.setConsumerKey(demand.getOwnerKey());
+                    BaseSteps.getReportOperations().updateReport(pm, report);
+                }
             }
+            // Create or update a Report
             else if (REPORT_PREFIX.equals(pathInfo)) {
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
                 String reportId = in.getString("reportId");
-                String message = reportId.length() == 1 ? AuthVerifierFilter.dumpRequest(request) : in.toString();
-                getLogger().warning(message);
-                String subject = "Landing page visit - Report ";
-                if (reportId.length() == 1) {
-                    reportId = new java.util.Date().toString();
+                boolean newReport = reportId.length() == 1;
+                if (newReport) {
+                    Report report = createReport(pm, request, in);
+                    out.put("reportDelay", 4000); // Only 4 seconds after the initial call, 15 seconds between all other calls
+                    out.put("reportId", report.getKey().toString());
                 }
                 else {
-                    subject = "Re: " + subject;
+                    updateReport(pm, in);
+                    out.put("reportDelay", 15000); // Only 4 seconds after the initial call, 15 seconds between all other calls
+                    out.put("reportId", reportId);
                 }
-                out.put("reportId", reportId);
-                MailConnector.reportErrorToAdmins(subject + reportId, message);
             }
             else {
                 response.setStatus(404); // Not Found
@@ -251,15 +275,25 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         out.toStream(response.getOutputStream(), false);
     }
 
-    public static void verifyReferralId(PersistenceManager pm, JsonObject parameters, Action action, String entityName) throws ReservedOperationException {
-        if (!parameters.containsKey(Influencer.REFERRAL_ID)) { // Missing parameter
+    /**
+     * Helper verifying the validity of the passed referralId
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param in Request parameters
+     * @param action Action associated to the verification
+     * @param entityName Entity concerned by the verification
+     *
+     * @throws ReservedOperationException If the referralId is invalid
+     */
+    public static void verifyReferralId(PersistenceManager pm, JsonObject in, Action action, String entityName) throws ReservedOperationException {
+        if (!in.containsKey(Influencer.REFERRAL_ID)) { // Missing parameter
             getLogger().warning("Missing referralId");
             throw new ReservedOperationException(action, entityName);
         }
-        String referralId = parameters.getString(Influencer.REFERRAL_ID).trim();
+        String referralId = in.getString(Influencer.REFERRAL_ID).trim();
         if (!BaseSteps.getInfluencerOperations().verifyReferralIdValidity(pm, referralId)) {
             getLogger().warning("Invalid referralId: " + referralId);
-            parameters.put(Influencer.REFERRAL_ID, Influencer.DEFAULT_REFERRAL_ID); // Reset the given referral identifier!
+            in.put(Influencer.REFERRAL_ID, Influencer.DEFAULT_REFERRAL_ID); // Reset the given referral identifier!
         }
         else {
             getLogger().warning("Valid referralId: " + referralId);
@@ -275,11 +309,12 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
      * @param pm Handles the connection to the back-end storage
      * @param in Request parameters
      * @param out Bag to be sent back to the user, if everything is successful
+     * @return Just created Demand record
      *
      * @throws DataSourceException If the Consumer record manipulation fails
      * @throws ClientException If the Demand record creation fails
      */
-    protected void createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
+    protected Demand createDemand(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, ClientException {
         Consumer consumer = createConsumer(pm, in);
 
         in.put(Demand.SOURCE, Source.widget.toString());
@@ -287,6 +322,8 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         // TODO: anonymize the demand so it's not possible to use the Consumer key
         out.put("resource", demand.toJson());
+
+        return demand;
     }
 
     /**
@@ -323,18 +360,20 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
         return consumer;
     }
+
     /**
      * Helper verifying the presence of a Consumer record with the given identifier
      *
      * @param pm Handles the connection to the back-end storage
      * @param in Request parameters
      * @param out Bag to be sent back to the user, if everything is successful
+     * @return the retrieved or created Consumer record
      *
      * @throws DataSourceException If the Consumer record manipulation fails
      * @throws InvalidIdentifierException If the Influencer record cannot be retrieved
      * @throws ClientException If the given email address is mal-formed
      */
-    protected void lookupConsumer(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, InvalidIdentifierException, ClientException {
+    protected Consumer lookupConsumer(PersistenceManager pm, JsonObject in, JsonObject out) throws DataSourceException, InvalidIdentifierException, ClientException {
         String email = in.getString(Consumer.EMAIL);
         if (email == null || email.length() == 0 || !Pattern.matches(Consumer.EMAIL_REGEXP_VALIDATOR, email)) {
             throw new IllegalArgumentException("Invalid sender email address");
@@ -367,7 +406,101 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         else {
             out.put("status", true);
-            out.put("name", consumers.get(0).getName());
+            out.put("name", consumer.getName());
         }
+
+        return consumer;
+    }
+
+    /**
+     * Helper creating a new report and saving it into the data store
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param request Descriptor of the HTTP request
+     * @param in Request parameters
+     * @return The newly created Report instance
+     */
+    protected Report createReport(PersistenceManager pm, HttpServletRequest request, JsonObject in) {
+        Report report = new Report();
+
+        if (in.containsKey(Command.CONTENT)) {
+            report.setContent(in.getString(Command.CONTENT));
+        }
+        report.setIpAddress(request.getRemoteAddr());
+        try {
+            report.setRange(in.getDouble(Demand.RANGE));
+        }
+        catch(ClassCastException ex) {
+            // Invalid range, just ignored
+        }
+        if (in.containsKey(Report.REFERRER_URL)) {
+            report.setReferrerUrl(new Text(in.getString(Report.REFERRER_URL))); // Referrer of the landing page
+        }
+        report.setReporterUrl(request.getHeader("Referer")); // Landing page URL
+        report.setUserAgent(request.getHeader("User-Agent"));
+
+        Location location = new Location();
+        location.setCountryCode(in.getString(Location.COUNTRY_CODE));
+        location.setPostalCode(in.getString(Location.POSTAL_CODE), location.getCountryCode());
+        location = BaseSteps.getLocationOperations().createLocation(pm, location);
+
+        report.setLocationKey(location.getKey());
+
+        report = BaseSteps.getReportOperations().createReport(pm, report);
+
+        getLogger().warning("New report created: " + report.getKey());
+        return report;
+    }
+
+    /**
+     * Helper updating an existing report and saving it into the data store
+     *
+     * @param pm Handles the connection to the back-end storage
+     * @param in Request parameters
+     * @return The just updated Report instance
+     *
+     * @throws InvalidIdentifierException If the resource identifiers are invalid
+     * @throws DataSourceException If the data could not be persisted into the data store
+     */
+    protected Report updateReport(PersistenceManager pm, JsonObject in) throws InvalidIdentifierException, DataSourceException {
+        Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(in.getString("reportId")));
+
+        String email = in.getString(Consumer.EMAIL);
+        if (email != null && 0 < email.length() && report.getConsumerKey() != null) {
+            Consumer consumer = BaseSteps.getConsumerOperations().getConsumer(pm, report.getConsumerKey());
+            if (!consumer.getEmail().equals(email)) {
+                // TODO: should the consumerKey field be reset?
+            }
+        }
+
+        String countryCode = LocaleValidator.checkCountryCode(in.getString(Location.COUNTRY_CODE));
+        String postalCode = LocaleValidator.standardizePostalCode(in.getString(Location.POSTAL_CODE), countryCode);
+        // TODO: use the countryCode and verify the postalCode against all default values!
+        if (!LocaleValidator.DEFAULT_POSTAL_CODE_CA.equals(postalCode)) {
+            Location location = BaseSteps.getLocationOperations().getLocation(pm, report.getLocationKey());
+            if (!location.getCountryCode().equals(countryCode) || !location.getPostalCode().equals(postalCode)) {
+                location = new Location();
+                location.setCountryCode(in.getString(Location.COUNTRY_CODE));
+                location.setPostalCode(in.getString(Location.POSTAL_CODE), location.getCountryCode());
+                location = BaseSteps.getLocationOperations().createLocation(pm, location);
+
+                report.setLocationKey(location.getKey());
+            }
+        }
+
+        try {
+            Double range = in.getDouble(Demand.RANGE);
+            if (!range.equals(report.getRange())) {
+                report.setRange(range);
+            }
+        }
+        catch(ClassCastException ex) {
+            // Invalid range, just ignored
+        }
+
+        report.updateModificationDate(); // The updated lastModificationDate value will allow to track the time spend in the page
+        report = BaseSteps.getReportOperations().updateReport(pm, report);
+
+        return report;
     }
 }
