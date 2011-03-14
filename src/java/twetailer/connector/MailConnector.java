@@ -76,6 +76,7 @@ public class MailConnector {
 
     public static InternetAddress twetailer;
     public static InternetAddress twetailer_cc;
+    public static InternetAddress notifier;
     public static InternetAddress[] support;
     static {
         try {
@@ -89,11 +90,17 @@ public class MailConnector {
                     ApplicationSettings.get().getProductName(), // TODO: Change the label by "noreply"
                     MailResponderServlet.getResponderEndpoints().get(0).replace("@", "-noreply@")
             );
+            notifier = prepareInternetAddress(
+                    StringUtils.JAVA_UTF8_CHARSET,
+                    (ApplicationSettings.get().getProductEmailDomain().charAt(0) == 't' ? "Twetailer" : "ASE") + " admin notifier",
+                    "notifier-noreply@" + ApplicationSettings.get().getProductEmailDomain()
+            );
             support = new InternetAddress[] { prepareInternetAddress(
                     StringUtils.JAVA_UTF8_CHARSET,
                     "Support " + ApplicationSettings.get().getProductName(), // TODO: place this informations in the application settings
                     "support@anothersocialeconomy.com"                       // TODO: place this informations in the application settings
             )};
+
         }
         catch (AddressException e) { } // Not expected as the default are valid addresses
     }
@@ -365,12 +372,7 @@ public class MailConnector {
         Session session = Session.getDefaultInstance(new Properties(), null);
 
         MimeMessage messageToForward = new MimeMessage(session);
-        messageToForward.setFrom(
-            prepareInternetAddress(
-                StringUtils.JAVA_UTF8_CHARSET,
-                "ASE admin notifier",
-                "twetailer@gmail.com" // One admin of the application
-        ));
+        messageToForward.setFrom(notifier);
         messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
         messageToForward.setSubject(from == null ? subject : "Fwd: (" + from + ") " + subject);
         setContentAsPlainTextAndHtml(messageToForward, body, "en");
@@ -407,12 +409,7 @@ public class MailConnector {
             Session session = Session.getDefaultInstance(new Properties(), null);
 
             MimeMessage messageToForward = new MimeMessage(session);
-            messageToForward.setFrom(
-                prepareInternetAddress(
-                    StringUtils.JAVA_UTF8_CHARSET,
-                    "ASE admin notifier",
-                    "twetailer@gmail.com" // One admin of the application
-            ));
+            messageToForward.setFrom(notifier);
             messageToForward.setRecipient(Message.RecipientType.TO, new InternetAddress("admins"));
             messageToForward.setSubject("Silent copy");
 

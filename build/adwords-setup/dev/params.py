@@ -335,5 +335,5 @@ fullMakesAndModels = [
 # Return the list of makes and models
 #
 def getMakesModels():
-    # return fullMakesAndModels
-    return shortMakesAndModels
+    return fullMakesAndModels
+    #return shortMakesAndModels

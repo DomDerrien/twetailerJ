@@ -230,18 +230,20 @@ var localModule = {};
     };
 
     localModule.sendRequest = function() {
-        var lB = localizedBundle;
-        // ** Submit data
-        var dialog = new dijit.Dialog({ // ** Use DialogSimple as soon as Dojo 1.6 is out
-        // ** var dialog = new dojox.widget.Dialog({
-            content : lB.sendRequestInitialMessage,
-            style : 'min-height: 100px; background-color: #fff; min-width: 400px; max-width: 800px;'
-        });
+        var lB = localizedBundle,
+            dialog = new dijit.Dialog({ // ** Use DialogSimple as soon as Dojo 1.6 is out
+            // ** var dialog = new dojox.widget.Dialog({
+                content : lB.sendRequestInitialMessage,
+                style : 'min-height: 100px; background-color: #fff; min-width: 400px; max-width: 800px;'
+            }),
+            data = getFormData();
         dialog.startup();
         dialog.show();
+        data.reportId = reportId;
+        data.referralId = 0; // ** By ASE itself
         dojo.io.script.get({
             callbackParamName : 'callback',
-            content : getFormData(),
+            content : data,
             error : function(dataBack) {
                 alert(lB.sendRequestErrorMessage);
             },

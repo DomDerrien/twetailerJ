@@ -4,6 +4,7 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,6 +32,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
+import twetailer.dto.Report;
 import twetailer.dto.Settings;
 import twetailer.dto.Wish;
 import twetailer.task.CommandProcessor;
@@ -54,8 +56,8 @@ import com.google.appengine.api.taskqueue.TaskOptions.Method;
 
 import domderrien.i18n.DateUtils;
 import domderrien.i18n.LabelExtractor;
-import domderrien.i18n.StringUtils;
 import domderrien.i18n.LabelExtractor.ResourceFileId;
+import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonObject;
 import domderrien.jsontools.JsonException;
 import domderrien.jsontools.JsonObject;
@@ -300,6 +302,59 @@ public class MaelzelServlet extends HttpServlet {
                     pm.close();
                 }
             }
+            else if ("/shareReports".equals(pathInfo)) {
+                PersistenceManager pm = BaseSteps.getBaseOperations().getPersistenceManager();
+                try {
+                    Date now = DateUtils.getNowDate();
+                    StringBuilder listing = new StringBuilder();
+                    listing.append("<p>Date: " + now + "</p>");
+                    listing.append("<table><tr style='background-color:black;color:white;'>").
+                            append("<th>Creation date</th>").
+                            append("<th>Duration (seconds)</th>").
+                            append("<th>IP Address</th>").
+                            append("<th>Content</th>").
+                            append("<th>Consumer</th>").
+                            append("<th>Demand</th>").
+                            append("<th>Postal Code</th>").
+                            append("<th>Range (km)</th>").
+                            append("<th>Language</th>").
+                            append("<th>Source</th>").
+                            append("<th>User Agent</th>").
+                            append("</tr>");
+                    boolean evenRow = true;
+                    List<Long> keys = BaseSteps.getReportOperations().getReadyReports();
+                    if (keys != null && 0 < keys.size()) {
+                        List<Report> reports = BaseSteps.getReportOperations().getReports(pm, keys);
+                        for(Report report: reports) {
+                            String name       = report.getConsumerKey() == null ? "" : BaseSteps.getConsumerOperations().getConsumer(pm, report.getConsumerKey()).getName();
+                            String demandKey  = report.getDemandKey() == null ?   "" : report.getDemandKey().toString();
+                            String postalCode = report.getLocationKey() == null ? "" : BaseSteps.getLocationOperations().getLocation(pm, report.getLocationKey()).getPostalCode();
+                            listing.append("<tr style='background-color:" + (evenRow ? "transparent" : "lightgrey") + ";'>").
+                                    append("<td>" + report.getCreationDate() + "</td>").
+                                    append("<td>" + (report.getModificationDate().getTime() - report.getCreationDate().getTime()) / 1000 + "</td>").
+                                    append("<td><a href='http://www.iplocationfinder.com/" + report.getIpAddress() + "'>" + report.getIpAddress() + "</a></td>").
+                                    append("<td>" + report.getContent() + "</td>").
+                                    append("<td><a href='http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Consumer&key=" + report.getConsumerKey() + "'>" + name + "</a></td>").
+                                    append("<td><a href='http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Consumer&key=" + report.getConsumerKey() + "&type=Demand&key=" + report.getDemandKey() + "'>" + demandKey + "</a></td>").
+                                    append("<td><a href='http://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>").
+                                    append("<td>" + report.getRange() + "</td>").
+                                    append("<td>" + report.getLanguage() + "</td>").
+                                    append("<td>" + report.getReferrerUrl().getValue() + "</td>").
+                                    append("<td>" + report.getUserAgent() + "</td>").
+                                    append("</tr>");
+                            evenRow = !evenRow;
+                            // TODO: send a tweet
+                            // TODO: decache the report which has been processed
+                        }
+                        listing.append("</table>");
+                        getLogger().finest(listing.toString());
+                        MailConnector.reportErrorToAdmins("Landing page visit digest -- " + DateUtils.dateToYMD(now), listing.toString());
+                    }
+                }
+                finally {
+                    pm.close();
+                }
+            }
             /* legacy *
             else if ("/cbuiEndPoint".equals(pathInfo)) {
                 if (amazonFPS.verifyCoBrandedServiceResponse(request)) {
@@ -381,7 +436,9 @@ public class MaelzelServlet extends HttpServlet {
                     getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
                 }
             }
-            response.setStatus(500); // Server error
+            // FIXME: find a way to stop infinite loop due to permanent errors...
+            // response.setStatus(500); // Server error
+            response.setStatus(200); // OK
         }
 
         out.toStream(response.getOutputStream(), false);
@@ -432,11 +489,11 @@ public class MaelzelServlet extends HttpServlet {
                         // Account with an e-mail address
                         MailConnector.sendMailMessage(
                                 false,
+                                false,
                                 email,
                                 in.getString(Consumer.NAME),
                                 LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", locale),
-                                LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, locale),
-                                locale
+                                LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, locale), locale
                         );
                     }
                     else {
@@ -527,10 +584,13 @@ public class MaelzelServlet extends HttpServlet {
                     getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
                 }
             }
+
+            // FIXME: find a way to stop infinite loop due to permanent errors...
+            // response.setStatus(500); // Server error
+            response.setStatus(200); // OK
         }
 
         out.toStream(response.getOutputStream(), false);
-        response.setStatus(500); // Server error
     }
 
     /**
@@ -592,8 +652,7 @@ public class MaelzelServlet extends HttpServlet {
      *
      * @param demand Entity to validate
      */
-    public static void triggerValidationTask(Demand demand) {
-        Long demandKey = demand.getKey();
+    public static void triggerValidationTask(Long demandKey) {
         // Create a task for that demand validation
         Queue queue = BaseSteps.getBaseOperations().getQueue();
         queue.add(

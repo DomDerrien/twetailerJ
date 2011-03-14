@@ -6,4 +6,9 @@
     <description>Check if a new retailer can be notified about the published demands</description>
     <schedule>every 24 hours</schedule>
   </cron>
+  <cron>
+    <url>/_tasks/shareReports</url>
+    <description>Broadcast the reports which did not evolved since last call</description>
+    <schedule>every 5 minutes</schedule>
+  </cron>
 </cronentries>

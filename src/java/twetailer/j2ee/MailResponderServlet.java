@@ -143,17 +143,30 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setSubject(subject);
 
             // Extract information about a supported receiver
+            StringBuilder log = new StringBuilder();
             InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
             for (int idx = 0; to == null && idx < recipients.length; idx ++) {
                 to = recipients[idx].getAddress();
+                log.append("\"").append(recipients[idx].getPersonal()).append("\" <").append(recipients[idx].getAddress()).append(">, ");
                 if (!getResponderEndpoints().contains(to)) {
                     to = null;
                 }
             }
             if (to == null) {
-                // Put a tracker here...
-                getLogger().warning("Email '" + messageId + "' not addressed to Twetailer!");
-                throw new RuntimeException("Message received without the To: field!");
+                String messageContent;
+                try {
+                    messageContent = MailConnector.getText(mailMessage);
+                }
+                catch(IOException ex) {
+                    messageContent = MailConnector.alternateGetText(mailMessage);
+                }
+                getLogger().warning(
+                        "Email '" + messageId + "' not addressed to Twetailer!\n" +
+                        "From: \"" + name + "\" <" + email + ">\n" +
+                        "To: " + log.toString() + "\n" +
+                        "Subject: " + subject + "\n--\n" + messageContent
+                );
+                throw new RuntimeException("Message received without the To: field! Sent by: \"" + name + "\" <" + email + ">");
             }
             StringBuilder ccList = new StringBuilder();
             recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.CC));

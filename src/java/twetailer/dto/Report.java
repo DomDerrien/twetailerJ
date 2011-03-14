@@ -41,6 +41,11 @@ public class Report extends Entity {
     public final static String IP_ADDRESS = "ipAddress";
 
     @Persistent
+    private String language;
+
+    public final static String LANGUAGE = Consumer.LANGUAGE;
+
+    @Persistent
     private Long locationKey;
 
     public final static String LOCATION_KEY = Location.LOCATION_KEY;
@@ -114,6 +119,14 @@ public class Report extends Entity {
         this.ipAddress = ipAddress;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public Long getLocationKey() {
         return locationKey;
     }
@@ -176,6 +189,7 @@ public class Report extends Entity {
         if (getContent() != null) { out.put(CONTENT, getContent()); }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
         if (getIpAddress() != null) { out.put(IP_ADDRESS, getIpAddress()); }
+        if (getLanguage() != null) { out.put(LANGUAGE, getLanguage()); }
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getRange() != null) { out.put(RANGE, getRange()); }
         if (getReferrerUrl() != null) { out.put(REFERRER_URL, getReferrerUrl().getValue()); }
@@ -202,6 +216,7 @@ public class Report extends Entity {
         if (in.containsKey(CONTENT)) { setContent(in.getString(CONTENT)); }
         if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
         if (in.containsKey(IP_ADDRESS)) { setIpAddress(in.getString(IP_ADDRESS)); }
+        if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(REFERRER_URL)) { setReferrerUrl(new Text(in.getString(REFERRER_URL))); }

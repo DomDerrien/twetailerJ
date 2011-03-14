@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jdo.JDOHelper;
 import javax.jdo.ObjectState;
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
@@ -145,6 +146,44 @@ public class ReportOperations extends BaseOperations {
     }
 
     /**
+     * Get the identified Report instances while leaving the given persistence manager open for future updates
+     *
+     * @param pm Persistence manager instance to use - let open at the end to allow possible object updates later
+     * @param reportKeys list of Report instance identifiers
+     * @return Collection of consumers matching the given filter
+     *
+     * @throws DataSourceException If given value cannot matched a data store type
+     */
+    @SuppressWarnings("unchecked")
+    public List<Report> getReports(PersistenceManager pm, List<Long> reportKeys) throws DataSourceException {
+        // Select the corresponding resources
+        Query query = pm.newQuery(Report.class, ":p.contains(key)"); // Reported as being more efficient than pm.getObjectsById()
+        try {
+            // Copy the list
+            List<Long> loadKeys = new ArrayList<Long>();
+            loadKeys.addAll(reportKeys);
+            // Get the report from the cache
+            List<Report> reports = new ArrayList<Report>();
+            for (Long key: reportKeys) {
+                Report report = getCachedReport(key);
+                if (report != null) {
+                    reports.add(report);
+                    loadKeys.remove(key);
+                }
+            }
+            // Get remaining reports from the data store
+            if (0 < loadKeys.size()) {
+                List<Report> loadedReports = (List<Report>) query.execute(reportKeys);
+                reports.addAll(loadedReports);
+            }
+            return reports;
+        }
+        finally {
+            query.closeAll();
+        }
+    }
+
+    /**
      * Persist the given (probably updated) resource
      *
      * @param report Resource to update
@@ -195,5 +234,89 @@ public class ReportOperations extends BaseOperations {
         // Cache the new instance
         cacheReport(report);
         return report;
+    }
+
+    protected final static String RECENT_REPORT_KEYS_ENTRY = "recentReportKeys";
+    protected final static String STANDBY_REPORT_KEYS_ENTRY = "standbyReportKeys";
+
+    /**
+     * Add the given report identifier in a shared memory to ease its process by
+     * the next cron job
+     *
+     * @param key Identifier of the report to track
+     */
+    @SuppressWarnings("unchecked")
+    public void trackRecentReport(Long key) {
+        List<Long> recentKeys = (List<Long>) CacheHandler.getFromCache(RECENT_REPORT_KEYS_ENTRY);
+        if (recentKeys == null) {
+            recentKeys = new ArrayList<Long>();
+        }
+        if (!recentKeys.contains(key)) {
+            recentKeys.add(key);
+            CacheHandler.setInCache(RECENT_REPORT_KEYS_ENTRY, recentKeys);
+        }
+    }
+
+    /**
+     * Return the list of reports that have not been updated since last call. Note
+     * that recently updated reports are not immediately returned just in case it's
+     * going to be updated again in the future...
+     *
+     * @return List of inactive reports
+     */
+    // recent:  1, 2, 3    2, 3, 4, 5    4, 5, 6, 7    7, 8          ---        ---
+    // standby: ---        1, 2, 3       2, 3, 4, 5    4, 5, 6, 7    7, 8       ---
+    // return:  ---        1             2, 3          4, 5, 6       7, 8       ---
+    @SuppressWarnings("unchecked")
+    public List<Long> getReadyReports() {
+        List<Long> recentKeys = (List<Long>) CacheHandler.getFromCache(RECENT_REPORT_KEYS_ENTRY);
+        List<Long> standbyKeys = (List<Long>) CacheHandler.getFromCache(STANDBY_REPORT_KEYS_ENTRY);
+        List<Long> readyKeys = null;
+
+        // No new report, so return all in standby
+        if (recentKeys == null || recentKeys.size() == 0) {
+            if (standbyKeys != null && 0 < standbyKeys.size()) {
+                readyKeys = new ArrayList<Long>();
+                readyKeys.addAll(standbyKeys);
+                standbyKeys.clear();
+                CacheHandler.setInCache(STANDBY_REPORT_KEYS_ENTRY, standbyKeys);
+            }
+        }
+        // Put all new reports in standby, nothing ready
+        else if (standbyKeys == null || standbyKeys.size() == 0) {
+            if (standbyKeys == null) {
+                standbyKeys = new ArrayList<Long>();
+            }
+            for (Long key: recentKeys) {
+                // Don't add duplicates
+                if (!standbyKeys.contains(key)) {
+                    standbyKeys.add(key);
+                }
+            }
+            recentKeys.clear();
+            CacheHandler.setInCache(RECENT_REPORT_KEYS_ENTRY, recentKeys);
+            CacheHandler.setInCache(STANDBY_REPORT_KEYS_ENTRY, standbyKeys);
+        }
+        // Extract as ready only the keys in standby but not recent, merge recent ones in standby, and clear recent
+        else {
+            readyKeys = new ArrayList<Long>();
+            for(Long key: standbyKeys) {
+                // Don't consider ready a report that has been recently updated
+                if (!recentKeys.contains(key)) {
+                    readyKeys.add(key);
+                }
+            }
+            standbyKeys.removeAll(readyKeys);
+            for (Long key: recentKeys) {
+                // Don't add duplicates
+                if (!standbyKeys.contains(key)) {
+                    standbyKeys.add(key);
+                }
+            }
+            recentKeys.clear();
+            CacheHandler.setInCache(RECENT_REPORT_KEYS_ENTRY, recentKeys);
+            CacheHandler.setInCache(STANDBY_REPORT_KEYS_ENTRY, standbyKeys);
+        }
+        return readyKeys;
     }
 }

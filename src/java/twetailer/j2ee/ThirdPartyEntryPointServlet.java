@@ -144,7 +144,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 Demand demand = createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
 
                 String reportId = in.getString("reportId");
-                boolean newReport = reportId.length() == 1;
+                boolean newReport = reportId == null || reportId.length() == 1;
                 if (!newReport) {
                     Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
                     report.setDemandKey(demand.getKey());
@@ -157,18 +157,20 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
+                Report report = null;
                 String reportId = in.getString("reportId");
                 boolean newReport = reportId.length() == 1;
                 if (newReport) {
-                    Report report = createReport(pm, request, in);
+                    report = createReport(pm, request, in);
                     out.put("reportDelay", 4000); // Only 4 seconds after the initial call, 15 seconds between all other calls
                     out.put("reportId", report.getKey().toString());
                 }
                 else {
-                    updateReport(pm, in);
+                    report = updateReport(pm, in);
                     out.put("reportDelay", 15000); // Only 4 seconds after the initial call, 15 seconds between all other calls
                     out.put("reportId", reportId);
                 }
+                BaseSteps.getReportOperations().trackRecentReport(report.getKey());
             }
             else {
                 response.setStatus(404); // Not Found
@@ -423,12 +425,17 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
     protected Report createReport(PersistenceManager pm, HttpServletRequest request, JsonObject in) {
         Report report = new Report();
 
-        if (in.containsKey(Command.CONTENT)) {
-            report.setContent(in.getString(Command.CONTENT));
+        report.setLanguage(LocaleValidator.checkLanguage(in.getString(Report.LANGUAGE)));
+
+        if (in.containsKey(Report.CONTENT)) {
+            String content = in.getString(Report.CONTENT);
+            if (0 < content.length()) {
+                report.setContent(content);
+            }
         }
         report.setIpAddress(request.getRemoteAddr());
         try {
-            report.setRange(in.getDouble(Demand.RANGE));
+            report.setRange(in.getDouble(Report.RANGE));
         }
         catch(ClassCastException ex) {
             // Invalid range, just ignored
@@ -496,6 +503,11 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         }
         catch(ClassCastException ex) {
             // Invalid range, just ignored
+        }
+
+        String content = in.getString(Demand.CONTENT);
+        if (content != null && 0 < content.length() && !content.equals(report.getContent())) {
+            report.setContent(content);
         }
 
         report.updateModificationDate(); // The updated lastModificationDate value will allow to track the time spend in the page
