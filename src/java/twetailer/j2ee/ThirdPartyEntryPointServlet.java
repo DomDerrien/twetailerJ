@@ -128,7 +128,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 Consumer consumer = lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
 
                 String reportId = in.getString("reportId");
-                boolean newReport = reportId.length() == 1;
+                boolean newReport = reportId == null || reportId.length() == 1;
                 if (!newReport) {
                     Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
                     report.setConsumerKey(consumer.getKey());
@@ -162,7 +162,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 boolean newReport = reportId.length() == 1;
                 if (newReport) {
                     report = createReport(pm, request, in);
-                    out.put("reportDelay", 4000); // Only 4 seconds after the initial call, 15 seconds between all other calls
+                    out.put("reportDelay", 5000); // Only 5 seconds after the initial call, 15 seconds between all other calls
                     out.put("reportId", report.getKey().toString());
                 }
                 else {

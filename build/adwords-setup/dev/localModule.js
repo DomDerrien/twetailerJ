@@ -4,6 +4,7 @@ var localModule = {};
 
     var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false;
 
+    dojo.require('dojo.cookie');
     dojo.require('dojo.io.script');
     dojo.require('dijit.Dialog'); // ** Use DialogSimple as soon as Dojo 1.6 is out
     dojo.require('dojo.data.ItemFileReadStore');
@@ -82,8 +83,9 @@ var localModule = {};
         new dijit.form.ValidationTextBox({ name : 'email', placeHolder : lB.emailFieldPlaceHolder, regExp : '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required : true, trim : true }, 'email').focus();
         new dijit.form.CheckBox({ name : 'demoMode' }, 'demoMode');
         if (!debugMode) {
-            new dojox.analytics.Urchin({ acct : 'UA-11910037-5' });
+            reportId = dojo.cookie('reportId') || reportId;
             setTimeout(reportUsage, reportDelay);
+            new dojox.analytics.Urchin({ acct : 'UA-11910037-5' });
         }
     });
 
@@ -107,6 +109,7 @@ var localModule = {};
             load : function(dataBack) {
                 if (dataBack && dataBack.success) {
                     reportId = dataBack.reportId;
+                    dojo.cookie('reportId', reportId);
                     reportDelay = dataBack.reportDelay || 5 * reportDelay;
                     setTimeout(reportUsage, reportDelay);
                 }

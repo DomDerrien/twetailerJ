@@ -30,6 +30,7 @@ import twetailer.dto.Command;
 import twetailer.dto.Consumer;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
+import twetailer.dto.HashTag.RegisteredHashTag;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Report;
@@ -308,40 +309,65 @@ public class MaelzelServlet extends HttpServlet {
                     Date now = DateUtils.getNowDate();
                     StringBuilder listing = new StringBuilder();
                     listing.append("<p>Date: " + now + "</p>");
-                    listing.append("<table><tr style='background-color:black;color:white;'>").
-                            append("<th>Creation date</th>").
-                            append("<th>Duration (seconds)</th>").
-                            append("<th>IP Address</th>").
-                            append("<th>Content</th>").
-                            append("<th>Consumer</th>").
-                            append("<th>Demand</th>").
-                            append("<th>Postal Code</th>").
-                            append("<th>Range (km)</th>").
-                            append("<th>Language</th>").
-                            append("<th>Source</th>").
-                            append("<th>User Agent</th>").
-                            append("</tr>");
+                    listing.append("<table><tr style='background-color:black;color:white;'>"). // 0
+                            append("<th>Creation date</th>").       //  1
+                            append("<th>Duration (seconds)</th>").  //  2
+                            append("<th>IP Address</th>").          //  3
+                            append("<th>Demo Mode</th>").           //  4
+                            append("<th>Content</th>").             //  5
+                            append("<th>Demand Key</th>").          //  6
+                            append("<th>Consumer</th>").            //  7
+                            append("<th>Postal Code</th>").         //  8
+                            append("<th>Range (km)</th>").          //  9
+                            append("<th>Language</th>").            // 10
+                            append("<th>Source</th>").              // 11
+                            append("<th>Landing Page</th>").        // 12
+                            append("<th>User Agent</th>").          // 13
+                            append("</tr>");                        // 14
                     boolean evenRow = true;
                     List<Long> keys = BaseSteps.getReportOperations().getReadyReports();
                     if (keys != null && 0 < keys.size()) {
                         List<Report> reports = BaseSteps.getReportOperations().getReports(pm, keys);
                         for(Report report: reports) {
-                            String name       = report.getConsumerKey() == null ? "" : BaseSteps.getConsumerOperations().getConsumer(pm, report.getConsumerKey()).getName();
-                            String demandKey  = report.getDemandKey() == null ?   "" : report.getDemandKey().toString();
-                            String postalCode = report.getLocationKey() == null ? "" : BaseSteps.getLocationOperations().getLocation(pm, report.getLocationKey()).getPostalCode();
-                            listing.append("<tr style='background-color:" + (evenRow ? "transparent" : "lightgrey") + ";'>").
-                                    append("<td>" + report.getCreationDate() + "</td>").
-                                    append("<td>" + (report.getModificationDate().getTime() - report.getCreationDate().getTime()) / 1000 + "</td>").
-                                    append("<td><a href='http://www.iplocationfinder.com/" + report.getIpAddress() + "'>" + report.getIpAddress() + "</a></td>").
-                                    append("<td>" + report.getContent() + "</td>").
-                                    append("<td><a href='http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Consumer&key=" + report.getConsumerKey() + "'>" + name + "</a></td>").
-                                    append("<td><a href='http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?type=Consumer&key=" + report.getConsumerKey() + "&type=Demand&key=" + report.getDemandKey() + "'>" + demandKey + "</a></td>").
-                                    append("<td><a href='http://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>").
-                                    append("<td>" + report.getRange() + "</td>").
-                                    append("<td>" + report.getLanguage() + "</td>").
-                                    append("<td>" + report.getReferrerUrl().getValue() + "</td>").
-                                    append("<td>" + report.getUserAgent() + "</td>").
-                                    append("</tr>");
+                            // 0. Row opening
+                            listing.append("<tr style='background-color:" + (evenRow ? "transparent" : "lightgrey") + ";'>");
+                            // 1. Creation date
+                            Date creationDate = report.getCreationDate();
+                            listing.append("<td>" + creationDate + "</td>");
+                            // 2. Duration
+                            listing.append("<td>" + (report.getModificationDate().getTime() - creationDate.getTime()) / 1000 + "</td>");
+                            // 3. IP address
+                            String ipAddress = report.getIpAddress();
+                            listing.append("<td><a href='http://www.iplocationfinder.com/" + ipAddress + "'>" + ipAddress + "</a></td>");
+                            // 4. Demo mode
+                            Long demandKey = report.getDemandKey();
+                            Demand demand = demandKey == null ? null : BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
+                            listing.append("<td>" + (demandKey == null ? "" : demand.getHashTags().contains(RegisteredHashTag.demo) ? "Y" : "N") + "</td>");
+                            // 5. Content
+                            listing.append("<td>" + report.getContent() + "</td>");
+                            // 6. Demand key
+                            Long consumerKey = report.getConsumerKey();
+                            String monitoringUrl = "http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp";
+                            listing.append("<td>" + (demandKey == null ? "" : "<a href='" + monitoringUrl + "?type=Consumer&key=" + consumerKey + "&type=Demand&key=" + demandKey + "'>" + demandKey + "</a>") + "</td>");
+                            // 7. Consumer
+                            String name = consumerKey == null ? "" : BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey).getName();
+                            listing.append("<td>" + (consumerKey == null ? "" : "<a href='" + monitoringUrl + "?type=Consumer&key=" + consumerKey + "'>" + name + "</a>") + "</td>");
+                            // 8. Postal code
+                            Long locationKey = report.getLocationKey();
+                            String postalCode = locationKey == null ? "" : BaseSteps.getLocationOperations().getLocation(pm, locationKey).getPostalCode();
+                            listing.append("<td><a href='http://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>");
+                            // 9. Range
+                            listing.append("<td>" + report.getRange() + "</td>");
+                            // 10. Language
+                            listing.append("<td>" + report.getLanguage() + "</td>");
+                            // 11. Source
+                            listing.append("<td>" + report.getReferrerUrl().getValue() + "</td>");
+                            // 12. Landing page
+                            listing.append("<td>" + report.getReporterUrl() + "</td>");
+                            // 13. User agent
+                            listing.append("<td>" + report.getUserAgent() + "</td>");
+                            // 14. Row closing
+                            listing.append("</tr>");
                             evenRow = !evenRow;
                             // TODO: send a tweet
                             // TODO: decache the report which has been processed
