@@ -17,7 +17,8 @@ public class TestTwitterConnector {
 
     @Before
     public void setUp() throws Exception {
-        TwitterConnector.resetAccountLists();
+        TwitterConnector.resetAseHubAccountLists();
+        TwitterConnector.resetAsePublicAccountLists();
         TwitterConnector.setMockLogger(new MockLogger("test", null));
         BaseConnector.setMockLogger(new MockLogger("test", null));
     }
@@ -29,14 +30,14 @@ public class TestTwitterConnector {
 
     @Test
     public void testTwetailerAccountDistributorI() {
-        Twitter first = TwitterConnector.getTwetailerAccount();
-        Twitter second = TwitterConnector.getTwetailerAccount();
+        Twitter first = TwitterConnector.getAseHubAccount();
+        Twitter second = TwitterConnector.getAseHubAccount();
 
         assertNotSame(first, second);
 
-        TwitterConnector.releaseTwetailerAccount(first);
+        TwitterConnector.releaseAseHubAccount(first);
 
-        Twitter third = TwitterConnector.getTwetailerAccount();
+        Twitter third = TwitterConnector.getAseHubAccount();
 
         assertEquals(first, third);
     }
@@ -44,7 +45,7 @@ public class TestTwitterConnector {
     @Test
     public void testSendPublicMessageI() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME));
+        TwitterConnector.releaseAsePublicAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME));
 
         Status response = TwitterConnector.sendPublicMessage("test 12345");
         assertEquals("test 12345", response.getText());
@@ -54,7 +55,7 @@ public class TestTwitterConnector {
     @Test(expected=TwitterException.class)
     public void testSendPublicMessageII() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAsePublicAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public Status updateStatus(String text) throws TwitterException {
                 throw new TwitterException("Done in purpose!");
@@ -67,7 +68,7 @@ public class TestTwitterConnector {
     @Test
     public void testSendDirectMessageI() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME));
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME));
 
         DirectMessage response = TwitterConnector.sendDirectMessage("target", "test");
         assertEquals("target", response.getRecipientScreenName());
@@ -78,7 +79,7 @@ public class TestTwitterConnector {
     @Test(expected=TwitterException.class)
     public void testSendDirectMessageII() throws TwitterException {
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String to, String text) throws TwitterException {
                 throw new TwitterException("Done in purpose!");

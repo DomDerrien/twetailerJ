@@ -36,8 +36,8 @@ public class TwitterConnector {
      * Username: twetailer
      * Password: 6GmeM3FJzPOy-zNJ
      */
-    // public static final String TWETAILER_TWITTER_SCREEN_NAME = "twetailer";
-    // private static final String TWETAILER_TWITTER_PASSWORD = "6GmeM3FJzPOy-zNJ";
+    // public static final String TWETAILER_USER_SCREEN_NAME = "twetailer";
+    // private static final String TWETAILER_USER_PASSWORD = "6GmeM3FJzPOy-zNJ";
 
     /* Information for OAuth authentication
      * Consumer key:          Kxo0DAP1ImQ1PV1pAAZkQ
@@ -49,18 +49,18 @@ public class TwitterConnector {
      * Access token key:      18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4
      * Access token secret:   GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk
      */
-    // public static final String TWETAILER_TWITTER_CONSUMER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
-    // public static final String TWETAILER_TWITTER_CONSUMER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";
+    // public static final String TWETAILER_USER_KEY = "Kxo0DAP1ImQ1PV1pAAZkQ";
+    // public static final String TWETAILER_USER_SECRET = "8Ia1q1Eag6VZ0JoW2XT0APDwvxMMLmY1WAkBf32Y9o";
 
-    // public static final String TWETAILER_TWITTER_ACCESS_KEY = "18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4";
-    // public static final String TWETAILER_TWITTER_ACCESS_SECRET = "GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk";
+    // public static final String TWETAILER_ACCESS_KEY = "18082942-4TqNSEbiRc2kQs8EeYT2nJvQ4aVdPyQDVwar4ldf4";
+    // public static final String TWETAILER_ACCESS_SECRET = "GJsExv4iVdjmNsJS4uq6WSvyZbm9K9GuN7vckaq1Xk";
 
-    /* Information for basic authentication -- to be depreciated on June 30, 2010
+    /* Information for basic authentication
      * Username: ASEconomy
      * Password: s4kprgX2QFp7SQ
      */
-    // public static final String ASE_TWITTER_SCREEN_NAME = "ASEconomy";
-    // private static final String TWETAILER_TWITTER_PASSWORD = "s4kprgX2QFp7SQ";
+    public static final String ASE_PUBLIC_USER_SCREEN_NAME = "ASEconomy";
+    // private static final String ASE_PUBLIC_USER_PASSWORD = "s4kprgX2QFp7SQ";
 
     /* Information for OAuth authentication
      * Consumer key:          Yiyh4b0BJpAGcEP8f08ug
@@ -72,17 +72,18 @@ public class TwitterConnector {
      * Access token key:      190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE
      * Access token secret:   5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw
      */
-    // public static final String ASE_TWITTER_CONSUMER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
-    // public static final String ASE_TWITTER_CONSUMER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
-    // public static final String ASE_TWITTER_ACCESS_KEY = "190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE";
-    // public static final String ASE_TWITTER_ACCESS_SECRET = "5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw";
+    public static final String ASE_PUBLIC_USER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
+    public static final String ASE_PUBLIC_USER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
+
+    public static final String ASE_PUBLIC_ACCESS_KEY = "190003819-0BKtTpmBLd9CzODopwEltO4RO177OTlhm5eOaDE";
+    public static final String ASE_PUBLIC_ACCESS_SECRET = "5xRkfJeoCQrwrNez8UWIUJWFZUXAYwfLx5iwpqK7Mw";
 
     /* Information for basic authentication -- to be depreciated on June 30, 2010
      * Username: ASEconomyHub
      * Password: 6j2rwEzqrHFQKi
      */
-    public static final String ASE_TWITTER_SCREEN_NAME = "ASEconomyHub";
-    // private static final String TWETAILER_TWITTER_PASSWORD = "6j2rwEzqrHFQKi";
+    public static final String ASE_HUB_USER_SCREEN_NAME = "ASEconomyHub";
+    // private static final String ASE_HUB_USER_PASSWORD = "6j2rwEzqrHFQKi";
 
     /* Information for OAuth authentication
      * Consumer key:          Yiyh4b0BJpAGcEP8f08ug
@@ -94,39 +95,63 @@ public class TwitterConnector {
      * Access token key:      190053886-Gum2P28u55Mz4QG5P8up6RizzMYmkRuUvO7shJKs
      * Access token secret:   oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8
      */
-    public static final String ASE_TWITTER_CONSUMER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
-    public static final String ASE_TWITTER_CONSUMER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
+    public static final String ASE_HUB_USER_KEY = "Yiyh4b0BJpAGcEP8f08ug";
+    public static final String ASE_HUB_USER_SECRET = "S4lA7EN0AwneFSDuGGGBuSxd8kfDvxNhQ2REoljZs";
 
-    public static final String ASE_TWITTER_ACCESS_KEY = "190053886-Gum2P28u55Mz4QG5P8up6RizzMYmkRuUvO7shJKs";
-    public static final String ASE_TWITTER_ACCESS_SECRET = "oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8";
+    public static final String ASE_HUB_ACCESS_KEY = "190053886-Gum2P28u55Mz4QG5P8up6RizzMYmkRuUvO7shJKs";
+    public static final String ASE_HUB_ACCESS_SECRET = "oWb6781Tg9sAucrvBV5KLVSTSFmpd7RCkejX0rgNU8";
 
-    private static List<Twitter> _twetailerAccounts = new ArrayList<Twitter>();
+    private static List<Twitter> _aseHubAccounts = new ArrayList<Twitter>();
+    private static List<Twitter> _asePublicAccounts = new ArrayList<Twitter>();
 
     /**
      * Accessor provided for unit tests
      * @return Twitter account controller
      *
-     * @see TwitterUtils#releaseTwetailerAccount(Twitter)
+     * @see TwitterUtils#releaseAseHubAccount(Twitter)
      */
     @SuppressWarnings("deprecation")
-    public static Twitter getTwetailerAccount() {
-        int size = _twetailerAccounts.size();
+    public static Twitter getAseHubAccount() {
+        int size = _aseHubAccounts.size();
         if (size == 0) {
-            // Depreciated: return new Twitter(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
-            // Depreciated: return new TwitterFactory().getInstance(TWETAILER_TWITTER_SCREEN_NAME, TWETAILER_TWITTER_PASSWORD);
             return new TwitterFactory().getInstance(
                     new OAuthAuthorization(
                             ConfigurationContext.getInstance(),
-                            TwitterConnector.ASE_TWITTER_CONSUMER_KEY,
-                            TwitterConnector.ASE_TWITTER_CONSUMER_SECRET,
+                            TwitterConnector.ASE_HUB_USER_KEY,
+                            TwitterConnector.ASE_HUB_USER_SECRET,
                             new AccessToken(
-                                    TwitterConnector.ASE_TWITTER_ACCESS_KEY,
-                                    TwitterConnector.ASE_TWITTER_ACCESS_SECRET
+                                    TwitterConnector.ASE_HUB_ACCESS_KEY,
+                                    TwitterConnector.ASE_HUB_ACCESS_SECRET
                             )
                     )
             );
         }
-        return _twetailerAccounts.remove(size - 1);
+        return _aseHubAccounts.remove(size - 1);
+    }
+
+    /**
+     * Accessor provided for unit tests
+     * @return Twitter account controller
+     *
+     * @see TwitterUtils#releaseAseHubAccount(Twitter)
+     */
+    @SuppressWarnings("deprecation")
+    public static Twitter getAsePublicAccount() {
+        int size = _asePublicAccounts.size();
+        if (size == 0) {
+            return new TwitterFactory().getInstance(
+                    new OAuthAuthorization(
+                            ConfigurationContext.getInstance(),
+                            TwitterConnector.ASE_PUBLIC_USER_KEY,
+                            TwitterConnector.ASE_PUBLIC_USER_SECRET,
+                            new AccessToken(
+                                    TwitterConnector.ASE_PUBLIC_ACCESS_KEY,
+                                    TwitterConnector.ASE_PUBLIC_ACCESS_SECRET
+                            )
+                    )
+            );
+        }
+        return _asePublicAccounts.remove(size - 1);
     }
 
     /**
@@ -134,15 +159,31 @@ public class TwitterConnector {
      *
      * @see TwitterUtils#getTwetailerAccount(Twitter)
      */
-    public static void releaseTwetailerAccount(Twitter account) {
-        _twetailerAccounts.add(account);
+    public static void releaseAseHubAccount(Twitter account) {
+        _aseHubAccounts.add(account);
+    }
+
+    /**
+     * Allow to return the Twitter account object to the pool
+     *
+     * @see TwitterUtils#getTwetailerAccount(Twitter)
+     */
+    public static void releaseAsePublicAccount(Twitter account) {
+        _asePublicAccounts.add(account);
     }
 
     /**
      * Accessor provided for the unit tests
      */
-    protected static void resetAccountLists() {
-        _twetailerAccounts.clear();
+    protected static void resetAseHubAccountLists() {
+        _aseHubAccounts.clear();
+    }
+
+    /**
+     * Accessor provided for the unit tests
+     */
+    protected static void resetAsePublicAccountLists() {
+        _asePublicAccounts.clear();
     }
 
     /**
@@ -156,12 +197,12 @@ public class TwitterConnector {
      * @see TwitterUtils#sendPublicMessage(Twitter, String)
      */
     public static Status sendPublicMessage(String message) throws TwitterException {
-        Twitter account = getTwetailerAccount();
+        Twitter account = getAsePublicAccount();
         try {
             return sendPublicMessage(account, message);
         }
         finally {
-            releaseTwetailerAccount(account);
+            releaseAsePublicAccount(account);
         }
     }
 
@@ -190,12 +231,12 @@ public class TwitterConnector {
      * @see TwitterUtils#sendDirectMessage(Twitter, String, String)
      */
     public static DirectMessage sendDirectMessage(String recipientScreenName, String message) throws TwitterException {
-        Twitter account = getTwetailerAccount();
+        Twitter account = getAseHubAccount();
         try {
             return sendDirectMessage(account, recipientScreenName, message);
         }
         finally {
-            releaseTwetailerAccount(account);
+            releaseAseHubAccount(account);
         }
     }
 
@@ -209,7 +250,7 @@ public class TwitterConnector {
      *
      * @throws TwitterException If the message submission fails
      */
-    public static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
+    protected static DirectMessage sendDirectMessage(Twitter account, String recipientScreenName, String message) throws TwitterException {
         getLogger().fine("Before sending a DM to " + recipientScreenName + ": " + message);
         return account.sendDirectMessage(recipientScreenName, message);
     }
@@ -225,12 +266,12 @@ public class TwitterConnector {
      * @see TwitterUtils#getDirectMessages(Twitter, Long)
      */
     public static List<DirectMessage> getDirectMessages(long sinceId) throws TwitterException {
-        Twitter account = getTwetailerAccount();
+        Twitter account = getAseHubAccount();
         try {
             return getDirectMessages(account, sinceId);
         }
         finally {
-            releaseTwetailerAccount(account);
+            releaseAseHubAccount(account);
         }
     }
 
@@ -243,7 +284,7 @@ public class TwitterConnector {
      *
      * @throws TwitterException If the message retrieval fails
      */
-    public static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
+    protected static List<DirectMessage> getDirectMessages(Twitter account, long sinceId) throws TwitterException {
         getLogger().warning("Before getting new direct messages from Twitter, after the message id: " + sinceId);
         return account.getDirectMessages(new Paging(1, sinceId));
     }

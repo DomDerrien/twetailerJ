@@ -80,7 +80,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -110,7 +110,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         servlet.doPost(request, null);
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected account from the connector account pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected account from the connector account pool
     }
 
     @Test
@@ -134,7 +134,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -167,7 +167,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         servlet.doPost(request, null);
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected account from the connector account pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected account from the connector account pool
     }
 
     @Test
@@ -191,7 +191,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -218,7 +218,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         servlet.doPost(request, null);
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected account from the connector account pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected account from the connector account pool
     }
 
     @Test
@@ -242,7 +242,7 @@ public class TestTwitterMailNotifHandlerServlet {
         };
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public User createFriendship(String screenName, boolean follow) throws TwitterException {
                 assertEquals(followerScreenName, screenName);
@@ -269,7 +269,7 @@ public class TestTwitterMailNotifHandlerServlet {
 
         servlet.doPost(request, null);
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected account from the connector account pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected account from the connector account pool
     }
 
     @Test

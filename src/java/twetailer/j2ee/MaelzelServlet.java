@@ -52,6 +52,7 @@ import twetailer.task.WishValidator;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.State;
 import twetailer.validator.LocaleValidator;
+import twetailer.validator.UrlShortener;
 import twitter4j.TwitterException;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -369,7 +370,8 @@ public class MaelzelServlet extends HttpServlet {
                             // 11. Source
                             listing.append("<td>" + report.getReferrerUrl().getValue() + "</td>");
                             // 12. Landing page
-                            listing.append("<td>" + report.getReporterUrl() + "</td>");
+                            String reporterUrl = report.getReporterUrl();
+                            listing.append("<td>" + reporterUrl + "</td>");
                             // 13. User agent
                             listing.append("<td>" + report.getUserAgent() + "</td>");
                             // 14. Row closing
@@ -382,8 +384,24 @@ public class MaelzelServlet extends HttpServlet {
                                 try {
                                     MessageGenerator msgGen = new MessageGenerator(Source.twitter, report.getHashTags(), LocaleValidator.getLocale(report.getLanguage()));
                                     String message = msgGen.fetch(report).getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);
+                                    if (reporterUrl != null && 0 < reporterUrl.length()) {
+                                        int indexOfQuestionMark = reporterUrl.indexOf('?');
+                                        if (indexOfQuestionMark != 0) {
+                                            reporterUrl = reporterUrl.substring(0, indexOfQuestionMark);
+                                        }
+                                        String shortUrl = UrlShortener.getShortUrl(reporterUrl);
+                                        if (shortUrl != null && message.length() + shortUrl.length() < 138) { // 138 = 140 - 1 (for the space in between) and - 1 (for security)
+                                            message += " " + shortUrl;
+                                        }
+                                    }
                                     getLogger().warning("Ready to send a status update on ASEconomy: " + message);
                                     TwitterConnector.sendPublicMessage(message);
+                                }
+                                catch(JsonException ex) {
+                                    getLogger().info("Issue while processing the JSON response with the short URL for report key=" + report.getKey() + ": " + reporterUrl + " -- message: " + ex.getMessage());
+                                }
+                                catch(IOException ex) {
+                                    getLogger().info("Issue while trying to get a shortened URL of report key=" + report.getKey() + ": " + reporterUrl + " -- message: " + ex.getMessage());
                                 }
                                 catch(TwitterException ex) {
                                     getLogger().info("Issue while communicating on Twitter about report key=" + report.getKey() + ": " + metadata + " -- message: " + ex.getMessage());

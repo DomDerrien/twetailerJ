@@ -78,7 +78,7 @@ public class TweetLoader {
         return -1L;
     }
 
-    public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.ASE_TWITTER_SCREEN_NAME.toLowerCase(Locale.ENGLISH);
+    public static final String HARMFULL_D_TWETAILER_PREFIX = "d " + TwitterConnector.ASE_HUB_USER_SCREEN_NAME.toLowerCase(Locale.ENGLISH);
 
     /**
      * Extract commands from the pending Direct Messages and save them into the command table

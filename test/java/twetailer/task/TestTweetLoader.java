@@ -92,7 +92,7 @@ public class TestTweetLoader {
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageI() throws TwitterException, DataSourceException {
         // Inject a fake Twitter account
-        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) {
                 return null;
@@ -107,7 +107,7 @@ public class TestTweetLoader {
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageII() throws TwitterException, DataSourceException {
         // Inject a fake Twitter account
-        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
@@ -127,7 +127,7 @@ public class TestTweetLoader {
     @SuppressWarnings("serial")
     public void testProcessDirectMessageWithNoMessageIII() throws TwitterException, DataSourceException {
         // Inject a fake Twitter account
-        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = (new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 throw new TwitterException("done in purpose");
@@ -297,12 +297,12 @@ public class TestTweetLoader {
         // Sender mock
         // User sender = createUser(senderId, true, senderScreenName);
         User sender = new MockUser(senderId, senderScreenName, senderScreenName);
-        User receiver = new MockUser(senderId * 3232, TwitterConnector.ASE_TWITTER_SCREEN_NAME, TwitterConnector.ASE_TWITTER_SCREEN_NAME);
+        User receiver = new MockUser(senderId * 3232, TwitterConnector.ASE_HUB_USER_SCREEN_NAME, TwitterConnector.ASE_HUB_USER_SCREEN_NAME);
         // DirectMessage mock
         // final DirectMessage dm = createDM(dmId, senderId, senderScreenName, sender, );
         final DirectMessage dm = new MockDirectMessage(dmId, sender, receiver, "action:demand tags:wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
         // Twitter mock
-        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
@@ -356,12 +356,12 @@ public class TestTweetLoader {
         // Sender mock
         // User sender = createUser(senderId, true, senderScreenName);
         User sender = new MockUser(senderId, senderScreenName, senderScreenName);
-        User receiver = new MockUser(senderId * 3232, TwitterConnector.ASE_TWITTER_SCREEN_NAME, TwitterConnector.ASE_TWITTER_SCREEN_NAME);
+        User receiver = new MockUser(senderId * 3232, TwitterConnector.ASE_HUB_USER_SCREEN_NAME, TwitterConnector.ASE_HUB_USER_SCREEN_NAME);
         // DirectMessage mock
         // final DirectMessage dm = createDM(dmId, senderId, senderScreenName, sender, );
         final DirectMessage dm = new MockDirectMessage(dmId, sender, receiver, "action:demand tags:wii console quantity:1 loc:h0h0h0 ca exp:2050-01-01");
         // Twitter mock
-        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 try {
@@ -426,7 +426,7 @@ public class TestTweetLoader {
         });
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) throws TwitterException {
                 throw new TwitterException("Done in purpose!");

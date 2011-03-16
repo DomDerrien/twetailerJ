@@ -193,7 +193,7 @@ public class TestMaelzelServlet {
     @SuppressWarnings("serial")
     public void testDoGetLoadTweets() throws IOException {
         // Inject a mock Twitter account
-        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        final Twitter mockTwitterAccount = new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public ResponseList<DirectMessage> getDirectMessages(Paging paging) {
                 return null;
@@ -1151,7 +1151,7 @@ public class TestMaelzelServlet {
         final String msg2 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_body", new Object[] { code }, Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             boolean firstMessage = true;
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
@@ -1165,7 +1165,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':true"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test
@@ -1221,7 +1221,7 @@ public class TestMaelzelServlet {
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
                 assertEquals(identifier, screenName);
@@ -1233,7 +1233,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test
@@ -1289,7 +1289,7 @@ public class TestMaelzelServlet {
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
                 assertEquals(identifier, screenName);
@@ -1310,7 +1310,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test
@@ -1366,7 +1366,7 @@ public class TestMaelzelServlet {
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
                 assertEquals(identifier, screenName);
@@ -1387,7 +1387,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test
@@ -1454,7 +1454,7 @@ public class TestMaelzelServlet {
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
                 assertEquals(identifier, screenName);
@@ -1469,7 +1469,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test
@@ -1536,7 +1536,7 @@ public class TestMaelzelServlet {
         final String msg1 = LabelExtractor.get(ResourceFileId.third, "consumer_info_verification_notification_title", Locale.ENGLISH);
 
         // To inject the mock account
-        TwitterConnector.releaseTwetailerAccount(new MockTwitter(TwitterConnector.ASE_TWITTER_SCREEN_NAME) {
+        TwitterConnector.releaseAseHubAccount(new MockTwitter(TwitterConnector.ASE_HUB_USER_SCREEN_NAME) {
             @Override
             public DirectMessage sendDirectMessage(String screenName, String text) throws TwitterException {
                 assertEquals(identifier, screenName);
@@ -1551,7 +1551,7 @@ public class TestMaelzelServlet {
         servlet.doPost(mockRequest, mockResponse);
         assertTrue(stream.contains("'success':false"));
 
-        TwitterConnector.getTwetailerAccount(); // To remove the injected TwitterAccount from the connector pool
+        TwitterConnector.getAseHubAccount(); // To remove the injected TwitterAccount from the connector pool
     }
 
     @Test

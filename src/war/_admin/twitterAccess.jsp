@@ -106,8 +106,8 @@
             <fieldset class="entityInformation" style="margin:5px;">
                 <legend>AnotherSocialEconomy Account</legend>
                 <button dojoType="dijit.form.Button" style="float:right;" onclick="location+='?getOAuthToken=true'" type="button">Get Application OAuth Token</button>
-                Consumer Key: <%= TwitterConnector.ASE_TWITTER_CONSUMER_KEY %><br />
-                Consumer Secret: <%= TwitterConnector.ASE_TWITTER_CONSUMER_SECRET %><br />
+                Consumer Key: <%= TwitterConnector.ASE_HUB_USER_KEY %><br />
+                Consumer Secret: <%= TwitterConnector.ASE_HUB_USER_SECRET %><br />
                 <br />
                 <%@page
                     import="twitter4j.Twitter"
@@ -121,7 +121,7 @@
                 <% if (request.getParameter("getOAuthToken") != null) {
                     try {
                         Twitter twitter = new TwitterFactory().getInstance();
-                        twitter.setOAuthConsumer(TwitterConnector.ASE_TWITTER_CONSUMER_KEY, TwitterConnector.ASE_TWITTER_CONSUMER_SECRET);
+                        twitter.setOAuthConsumer(TwitterConnector.ASE_HUB_USER_KEY, TwitterConnector.ASE_HUB_USER_SECRET);
 
                         RequestToken requestToken = null;
                         try {
@@ -214,18 +214,18 @@
                 }
                 else {
                     try {
-                        out.write("Acces Key: " + TwitterConnector.ASE_TWITTER_ACCESS_KEY + "<br />");
-                        out.write("Access Secret: " + TwitterConnector.ASE_TWITTER_ACCESS_SECRET + "<br />");
+                        out.write("Acces Key: " + TwitterConnector.ASE_HUB_ACCESS_KEY + "<br />");
+                        out.write("Access Secret: " + TwitterConnector.ASE_HUB_ACCESS_SECRET + "<br />");
                         out.write("<br />");
                         // 1. Build the Twitter accessor
                         Twitter twitter = new TwitterFactory().getInstance(
                                 new OAuthAuthorization(
                                         ConfigurationContext.getInstance(), //Configuration conf,
-                                        TwitterConnector.ASE_TWITTER_CONSUMER_KEY,
-                                        TwitterConnector.ASE_TWITTER_CONSUMER_SECRET,
+                                        TwitterConnector.ASE_HUB_USER_KEY,
+                                        TwitterConnector.ASE_HUB_USER_SECRET,
                                         new AccessToken(
-                                                TwitterConnector.ASE_TWITTER_ACCESS_KEY,
-                                                TwitterConnector.ASE_TWITTER_ACCESS_SECRET
+                                                TwitterConnector.ASE_HUB_ACCESS_KEY,
+                                                TwitterConnector.ASE_HUB_ACCESS_SECRET
                                         )
                                 )
                         );

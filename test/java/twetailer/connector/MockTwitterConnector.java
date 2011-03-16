@@ -6,11 +6,11 @@ public class MockTwitterConnector extends TwitterConnector {
 
     public static void injectMockTwitterAccount(Twitter mockTwitterAccount) {
         // Inject the account into the pool
-        TwitterConnector.resetAccountLists();
-        TwitterConnector.releaseTwetailerAccount(mockTwitterAccount);
+        TwitterConnector.resetAseHubAccountLists();
+        TwitterConnector.releaseAseHubAccount(mockTwitterAccount);
     }
 
     public static void restoreTwitterConnector() {
-        TwitterConnector.resetAccountLists();
+        TwitterConnector.resetAseHubAccountLists();
     }
 }
