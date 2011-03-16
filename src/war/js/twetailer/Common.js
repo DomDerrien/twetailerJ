@@ -250,8 +250,8 @@
     /**
      * Locale formatter with a lookup in the Location list
      *
-     * @param {String[]} locationKey Identifier of the Location to represente.
-     * @return {String} Composition of the postal and the country codes in a link to Google Maps.
+     * @param {String} serialized metadata
+     * @return {String} Formatted metadata
      */
     module.displayMetadata = function(metadata) {
         if (!metadata) {

@@ -675,6 +675,51 @@
             </tuv>
         </tu>
 
+        <tu tuid="short_core_report_landing_page_visit" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message to publish about a landing page report
+                {report}: just posted demand
+                {source>shortUrl}: shortened URL of the landing page
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Someone is thinking about buying a {report>content} in the Montreal area.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_cardealer_report_landing_page_visit" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message to publish about a landing page report
+                {report}: just posted demand
+                {source>shortUrl}: shortened URL of the landing page
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Someone is thinking about buying a used {report>metadata>make} {report>metadata>model} in the Montreal area.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_report_landing_page_visit" datatype="Text">
+            <prop type="x-version">1</prop>
+            <prop type="x-tier">javarb</prop>
+            <note>
+                Message to publish about a landing page report
+                {report}: just posted demand
+                {source>shortUrl}: shortened URL of the landing page
+            </note>
+            <tuv xml:lang="en">
+                <seg>
+                    Someone is thinking about reserving a tee-off for {report>quantity} in the Montreal area.
+                </seg>
+            </tuv>
+        </tu>
+
         <tu tuid="short_core_wish_creation_ackToConsumer" datatype="Text">
             <prop type="x-version">1</prop>
             <prop type="x-tier">javarb</prop>

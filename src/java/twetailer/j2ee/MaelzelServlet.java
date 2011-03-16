@@ -21,8 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import twetailer.ClientException;
 import twetailer.InvalidIdentifierException;
+import twetailer.connector.BaseConnector.Source;
 import twetailer.connector.JabberConnector;
 import twetailer.connector.MailConnector;
+import twetailer.connector.MessageGenerator;
+import twetailer.connector.MessageGenerator.MessageId;
 import twetailer.connector.TwitterConnector;
 import twetailer.dao.CacheHandler;
 import twetailer.dao.DemandOperations;
@@ -48,6 +51,7 @@ import twetailer.task.TweetLoader;
 import twetailer.task.WishValidator;
 import twetailer.task.step.BaseSteps;
 import twetailer.validator.CommandSettings.State;
+import twetailer.validator.LocaleValidator;
 import twitter4j.TwitterException;
 
 import com.dyuproject.openid.OpenIdUser;
@@ -329,6 +333,8 @@ public class MaelzelServlet extends HttpServlet {
                     if (keys != null && 0 < keys.size()) {
                         List<Report> reports = BaseSteps.getReportOperations().getReports(pm, keys);
                         for(Report report: reports) {
+
+                            // Build the information for the report table
                             // 0. Row opening
                             listing.append("<tr style='background-color:" + (evenRow ? "transparent" : "lightgrey") + ";'>");
                             // 1. Creation date
@@ -342,7 +348,7 @@ public class MaelzelServlet extends HttpServlet {
                             // 4. Demo mode
                             Long demandKey = report.getDemandKey();
                             Demand demand = demandKey == null ? null : BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
-                            listing.append("<td>" + (demandKey == null ? "" : demand.getHashTags().contains(RegisteredHashTag.demo) ? "Y" : "N") + "</td>");
+                            listing.append("<td style='font-weight:bold;'>" + (demandKey == null ? "" : demand.getHashTags().contains(RegisteredHashTag.demo.toString()) ? "<span style='color:red;'>Yes :-(</span>" : "<span style='color:green;'>No :-)</span>") + "</td>");
                             // 5. Content
                             listing.append("<td>" + report.getContent() + "</td>");
                             // 6. Demand key
@@ -369,7 +375,21 @@ public class MaelzelServlet extends HttpServlet {
                             // 14. Row closing
                             listing.append("</tr>");
                             evenRow = !evenRow;
-                            // TODO: send a tweet
+
+                            // Send a tweet
+                            String metadata = report.getMetadata();
+                            if (metadata != null && 0 < metadata.length()) {
+                                try {
+                                    MessageGenerator msgGen = new MessageGenerator(Source.twitter, report.getHashTags(), LocaleValidator.getLocale(report.getLanguage()));
+                                    String message = msgGen.fetch(report).getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);
+                                    getLogger().warning("Ready to send a status update on ASEconomy: " + message);
+                                    TwitterConnector.sendPublicMessage(message);
+                                }
+                                catch(TwitterException ex) {
+                                    getLogger().info("Issue while communicating on Twitter about report key=" + report.getKey() + ": " + metadata + " -- message: " + ex.getMessage());
+                                }
+                            }
+
                             // TODO: decache the report which has been processed
                         }
                         listing.append("</table>");

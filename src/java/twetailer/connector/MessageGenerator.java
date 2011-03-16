@@ -15,6 +15,7 @@ import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.Proposal;
 import twetailer.dto.Registrar;
+import twetailer.dto.Report;
 import twetailer.dto.Request;
 import twetailer.dto.ReviewSystem;
 import twetailer.dto.Store;
@@ -79,6 +80,9 @@ public class MessageGenerator {
         // Message asking for a reply to confirm an email address
         INVITATION_TO_CONFIRM_EMAIL_ADDRESS("invitation_to_confirm_email_address"),
         INVITATION_TO_CONFIRM_EMAIL_ADDRESS_WITH_DEMAND("invitation_to_confirm_email_address_with_demand"),
+
+        // Message to share the news about a user searching a product with our service
+        REPORT_LANDING_PAGE_VISIT("report_landing_page_visit"),
 
         /// W1. Consumer creates a wish -- CC'ed and associates are notified
         /** For message sent to the wish owner to confirm the wish creation */
@@ -439,6 +443,53 @@ public class MessageGenerator {
             parameters.put(prefix + Location.LATITUDE, location.getLatitude());
             parameters.put(prefix + Location.LONGITUDE, location.getLongitude());
             parameters.put(prefix + Location.POSTAL_CODE, location.getPostalCode());
+        }
+        return this;
+    }
+
+    /**
+     * Extracts non null attributes and keeps them into the local parameter map
+     *
+     * @param report Object to scan
+     * @param parentPrefix Identifier of the parent's type
+     * @return The object instance, ready to be chained to another <code>fetch()</code> call
+     */
+    public MessageGenerator fetch(Report report) {
+        if (report != null) {
+            final String emptyListIndicator = getAlternateMessage(MessageId.emptyListIndicator);
+            final String prefix = "report" + FIELD_SEPARATOR;
+            // Entity
+            fetchEntity(report, prefix);
+            // Report
+            // Report.CONSUMER_KEY
+            parameters.put(prefix + Report.CONTENT, report.getContent());
+            // Report.DEMAND_KEY
+            parameters.put(prefix + Report.HASH_TAGS, report.getSerializedHashTags(emptyListIndicator));
+            // Report.IP_ADDRESS
+            parameters.put(prefix + Report.LANGUAGE, report.getLanguage());
+            // Report.LOCATION_KEY
+            String metadata = report.getMetadata();
+            parameters.put(prefix + Command.META_DATA, emptyListIndicator); // Default setting
+            if (metadata != null && 0 < metadata.length()) {
+                try {
+                    JsonObject data = new JsonParser(metadata).getJsonObject();
+                    if (0 < data.size()) {
+                        parameters.put(prefix + Command.META_DATA, metadata);
+                        for(String key: data.getMap().keySet()) {
+                            // TODO: use the metadata descriptor to decide the type of the data to extract
+                            parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getString(key));
+                        }
+                    }
+                }
+                catch(JsonException ex) {
+                    // Malformed metadata are just not echoed back
+                    getLogger().info("Malformed metadata in " + prefix + ".key=" + report.getKey() + ": " + metadata + " -- message: " + ex.getMessage());
+                }
+            }
+            parameters.put(prefix + Report.RANGE, report.getRange());
+            // Report.REFERRER_URL
+            // Report.REPORTER_URL
+            // Report.USER_AGENT
         }
         return this;
     }

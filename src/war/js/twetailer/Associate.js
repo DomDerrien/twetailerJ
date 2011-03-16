@@ -237,7 +237,7 @@
         dijit.byId('proposal.quantity').set('value', proposal.quantity);
         if (proposal.metadata) {
             // dijit.byId('proposal.metadata').set('value', proposal.metadata);
-            dijit.byId('proposal.metadata').set('value', dojo.toJson(dojo.fromJson(proposal.metadata), true));
+            dijit.byId('proposal.metadata').set('value', _globalCommon.displayMetadata(proposal.metadata));
         }
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);

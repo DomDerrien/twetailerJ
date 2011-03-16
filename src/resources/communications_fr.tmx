@@ -544,6 +544,35 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="short_core_report_landing_page_visit" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Quelqu'un envisage l'achat de {report>content} dans la région de Montréal.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_cardealer_report_landing_page_visit" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Quelqu'un envisage l'achat d'une {report>metadata>make} {report>metadata>model} dans la région de Montréal.
+                </seg>
+            </tuv>
+        </tu>
+
+        <tu tuid="short_golf_report_landing_page_visit" datatype="Text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    Quelqu'un prépare la réservation d'un départ de golf pour {report>quantity} dans la région de Montréal.
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="short_core_wish_creation_ackToConsumer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>

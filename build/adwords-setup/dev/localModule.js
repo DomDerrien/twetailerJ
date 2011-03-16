@@ -29,13 +29,15 @@ var localModule = {};
             model = '${MODEL}',
             qualifier = "${PRINTED_QUALIFIER}", // ** Use the double-quotes as delimiters because of D'occasion, for example
             postalCode = '${POSTAL_CODE}',
+            checkCookie = true,
             info = '';
 
         if (window.location.search) {
             // ** Step 1: get the keywords
             var urlParams = dojo.queryToObject(window.location.search.slice(1)), skw = urlParams.kw;
-            debugMode = urlParams.debugMode != null;
+            debugMode = urlParams.debugMode;
             reportHost = urlParams.host || reportHost;
+            checkCookie = !urlParams.skipCookie;
             if (skw) {
                 // ** Step 2: remove extra characters
                 skw = skw.replace(/\"/g, '').replace(/\+/g, '');
@@ -83,7 +85,9 @@ var localModule = {};
         new dijit.form.ValidationTextBox({ name : 'email', placeHolder : lB.emailFieldPlaceHolder, regExp : '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required : true, trim : true }, 'email').focus();
         new dijit.form.CheckBox({ name : 'demoMode' }, 'demoMode');
         if (!debugMode) {
-            reportId = dojo.cookie('reportId') || reportId;
+            if (checkCookie) {
+                reportId = dojo.cookie('reportId') || reportId;
+            }
             setTimeout(reportUsage, reportDelay);
             new dojox.analytics.Urchin({ acct : 'UA-11910037-5' });
         }
@@ -109,7 +113,7 @@ var localModule = {};
             load : function(dataBack) {
                 if (dataBack && dataBack.success) {
                     reportId = dataBack.reportId;
-                    dojo.cookie('reportId', reportId);
+                    dojo.cookie('reportId', reportId, {'max-age': 10 * 60}); // ** 10 minutes
                     reportDelay = dataBack.reportDelay || 5 * reportDelay;
                     setTimeout(reportUsage, reportDelay);
                 }
@@ -149,6 +153,7 @@ var localModule = {};
         try { dataIn.dueDate = toISOString(dijit.byId('dueDate').get('value')); } catch (ex) { exs.push('dueDate - ' + ex); }
         try { dataIn.content = document.getElementById('makeFieldLabel').innerHTML + ' ' + dc.getElementById('make').value; } catch (ex) { exs.push('make - ' + ex); }
         try { dataIn.content += ', ' + document.getElementById('modelFieldLabel').innerHTML + ' ' + dc.getElementById('model').value; } catch (ex) { exs.push('model - ' + ex); }
+        try { dataIn.metadata = '{\'make\':\'' + dc.getElementById('make').value + '\',\'model\':\'' + dc.getElementById('model').value + '\'}';  } catch (ex) { exs.push('metadata - ' + ex); }
         try {
             var info = dc.getElementById('info').value;
             if (info && 0 < info.length) {

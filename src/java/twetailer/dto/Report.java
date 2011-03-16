@@ -1,11 +1,16 @@
 package twetailer.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import com.google.appengine.api.datastore.Text;
 
+import domderrien.jsontools.GenericJsonArray;
+import domderrien.jsontools.JsonArray;
 import domderrien.jsontools.JsonObject;
 import domderrien.jsontools.TransferObject;
 
@@ -36,6 +41,11 @@ public class Report extends Entity {
     public final static String DEMAND_KEY = Demand.DEMAND_KEY;
 
     @Persistent
+    private List<String> hashTags;
+
+    public final static String HASH_TAGS = Command.HASH_TAGS;
+
+    @Persistent
     private String ipAddress;
 
     public final static String IP_ADDRESS = "ipAddress";
@@ -49,6 +59,11 @@ public class Report extends Entity {
     private Long locationKey;
 
     public final static String LOCATION_KEY = Location.LOCATION_KEY;
+
+    @Persistent
+    private String metadata;
+
+    public final static String META_DATA = Command.META_DATA;
 
     @Persistent
     private Double range;
@@ -111,6 +126,55 @@ public class Report extends Entity {
         this.demandKey = demandKey;
     }
 
+    public String getSerializedHashTags(String defaultLabel) {
+        if (hashTags == null || hashTags.size() == 0) {
+            return defaultLabel;
+        }
+        return getSerializedHashTags();
+    }
+
+    public String getSerializedHashTags() {
+        return Command.getSerializedTags(Command.HASH, Command.SPACE, hashTags);
+    }
+
+    public List<String> getHashTags() {
+        return hashTags;
+    }
+
+    public void setHashTags(List<String> hashTags) {
+        if (hashTags == null) {
+            throw new IllegalArgumentException("Cannot nullify the attribute 'hashTags' of type List<String>");
+        }
+        this.hashTags = hashTags;
+    }
+
+    public void addHashTag(String hashTag) {
+        if (hashTag == null || hashTag.length() == 0) {
+            return;
+        }
+        if (hashTags == null) {
+            hashTags = new ArrayList<String>();
+        }
+        if (!hashTags.contains(hashTag)) {
+            hashTags.add(hashTag);
+        }
+    }
+
+    public Report resetHashTags() {
+        if (hashTags == null) {
+            return this;
+        }
+        hashTags = new ArrayList<String>();
+        return this;
+    }
+
+    public void removeHashTag(String hashTag) {
+        if (hashTags == null || hashTag == null || hashTag.length() == 0) {
+            return;
+        }
+        hashTags.remove(hashTag);
+    }
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -133,6 +197,14 @@ public class Report extends Entity {
 
     public void setLocationKey(Long locationKey) {
         this.locationKey = locationKey;
+    }
+
+    public String getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
     }
 
     public Double getRange() {
@@ -188,9 +260,17 @@ public class Report extends Entity {
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         if (getContent() != null) { out.put(CONTENT, getContent()); }
         if (getDemandKey() != null) { out.put(DEMAND_KEY, getDemandKey()); }
+        if (getHashTags() != null && 0 < getHashTags().size()) {
+            JsonArray jsonArray = new GenericJsonArray();
+            for(String hashTag: getHashTags()) {
+                jsonArray.add(hashTag);
+            }
+            out.put(HASH_TAGS, jsonArray);
+        }
         if (getIpAddress() != null) { out.put(IP_ADDRESS, getIpAddress()); }
         if (getLanguage() != null) { out.put(LANGUAGE, getLanguage()); }
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
+        if (getMetadata() != null) { out.put(META_DATA, getMetadata()); }
         if (getRange() != null) { out.put(RANGE, getRange()); }
         if (getReferrerUrl() != null) { out.put(REFERRER_URL, getReferrerUrl().getValue()); }
         if (getReporterUrl() != null) { out.put(REPORTER_URL, getReporterUrl()); }
@@ -215,9 +295,17 @@ public class Report extends Entity {
         if (in.containsKey(CONSUMER_KEY)) { setConsumerKey(in.getLong(CONSUMER_KEY)); }
         if (in.containsKey(CONTENT)) { setContent(in.getString(CONTENT)); }
         if (in.containsKey(DEMAND_KEY)) { setDemandKey(in.getLong(DEMAND_KEY)); }
+        if (in.containsKey(HASH_TAGS)) {
+            JsonArray jsonArray = in.getJsonArray(HASH_TAGS);
+            resetHashTags();
+            for (int i=0; i<jsonArray.size(); ++i) {
+                addHashTag(jsonArray.getString(i));
+            }
+        }
         if (in.containsKey(IP_ADDRESS)) { setIpAddress(in.getString(IP_ADDRESS)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
         if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
+        if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(REFERRER_URL)) { setReferrerUrl(new Text(in.getString(REFERRER_URL))); }
         if (in.containsKey(REPORTER_URL)) { setReporterUrl(in.getString(REPORTER_URL)); }

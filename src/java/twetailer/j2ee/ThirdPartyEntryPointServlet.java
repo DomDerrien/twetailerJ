@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.appengine.api.datastore.Text;
-
 import twetailer.ClientException;
 import twetailer.DataSourceException;
 import twetailer.InvalidIdentifierException;
@@ -38,6 +36,9 @@ import twetailer.task.step.DemandSteps;
 import twetailer.task.step.StoreSteps;
 import twetailer.validator.CommandSettings.Action;
 import twetailer.validator.LocaleValidator;
+
+import com.google.appengine.api.datastore.Text;
+
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.GenericJsonArray;
 import domderrien.jsontools.GenericJsonObject;
@@ -426,14 +427,26 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         Report report = new Report();
 
         report.setLanguage(LocaleValidator.checkLanguage(in.getString(Report.LANGUAGE)));
-
         if (in.containsKey(Report.CONTENT)) {
             String content = in.getString(Report.CONTENT);
             if (0 < content.length()) {
                 report.setContent(content);
             }
         }
+        if (in.containsKey(Report.HASH_TAGS)) {
+            JsonArray jsonArray = in.getJsonArray(Report.HASH_TAGS);
+            for (int i=0; i<jsonArray.size(); ++i) {
+                report.addHashTag(jsonArray.getString(i));
+            }
+        }
         report.setIpAddress(request.getRemoteAddr());
+        if (in.containsKey(Report.META_DATA)) {
+            String metadata = in.getString(Report.META_DATA);
+            int metadataLength = metadata.length();
+            if (1 < metadataLength && metadata.charAt(0) == '{' && metadata.charAt(metadataLength - 1) == '}') {
+                report.setMetadata(metadata);
+            }
+        }
         try {
             report.setRange(in.getDouble(Report.RANGE));
         }
