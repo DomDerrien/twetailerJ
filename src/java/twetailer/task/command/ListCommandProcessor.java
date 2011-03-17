@@ -388,7 +388,8 @@ public class ListCommandProcessor {
                         param(Location.COUNTRY_CODE, countryCode).
                         param(Consumer.CONSUMER_KEY, consumer.getKey().toString()).
                         param(Command.KEY, rawCommand.getKey().toString()).
-                        method(Method.GET)
+                        method(Method.GET).
+                        countdownMillis(2000)
             );
         }
     }

@@ -139,7 +139,8 @@ public class TwitterMailNotificationHandlerServlet extends HttpServlet {
                 Queue queue = BaseSteps.getBaseOperations().getQueue();
                 queue.add(
                         withUrl("/_tasks/loadTweets").
-                            method(Method.GET)
+                            method(Method.GET).
+                            countdownMillis(2000)
                 );
                 // Forward the message to the "admins" list
                 MailConnector.reportErrorToAdmins(followerName, subject, body);

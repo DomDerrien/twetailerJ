@@ -228,11 +228,13 @@ public class LocaleValidator {
             return testValidatorStream;
         }
         if (Locale.CANADA.getCountry().equals(countryCode)) {
-            return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20Canada").openStream();
+            return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20Canada").openStream();
+            // return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20Canada").openStream();
             // return new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode).openStream();
         }
         if (Locale.US.getCountry().equals(countryCode)) {
-            return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20USA").openStream();
+            return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20USA").openStream();
+            // return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20USA").openStream();
             // return new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode).openStream();
         }
         throw new MalformedURLException("Unsupported coutry code: " + countryCode);
@@ -253,7 +255,8 @@ public class LocaleValidator {
         }
         address = URLEncoder.encode(address, StringUtils.JAVA_UTF8_CHARSET);
         Logger.getLogger(LocaleValidator.class.getName()).warning("Address to lookup: " + address);
-        return new URL("http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + address).openStream();
+        return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=fr&address=" + address).openStream();
+        // return new URL("http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + address).openStream();
     }
 
     public static final Locale DEFAULT_LOCALE = Locale.CANADA;

@@ -128,7 +128,7 @@
         dijit.byId('proposal.date').set('value', dueDate);
         dijit.byId('proposal.date').constraints.min = new Date();
         dijit.byId('proposal.time').set('value', dueDate);
-        dijit.byId('demand.content').set('value', item.content[0])
+        dijit.byId('demand.content').set('value', item.content ? item.content[0] : '')
 //        TODO: remove when the transition from criteria to content is completed
 //        if (dojo.isArray(item.criteria)) {
 //            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
@@ -193,7 +193,7 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);
         dijit.byId('proposal.time').set('value', dateObject);
-        dijit.byId('proposal.content').set('value', proposal.content)
+        dijit.byId('proposal.content').set('value', proposal.content || '')
 //        TODO: remove when the transition from criteria to content is completed
 //        if (dojo.isArray(proposal.criteria)) {
 //            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));

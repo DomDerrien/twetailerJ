@@ -160,7 +160,8 @@ public class DemandProcessor {
                     queue.add(
                             withUrl("/_tasks/processDemandForRobot").
                                 param(Demand.KEY, demand.getKey().toString()).
-                                method(Method.GET)
+                                method(Method.GET).
+                                countdownMillis(2000)
                     );
                     // Keep track of the notification to not ping him/her another time
                     demand.addSaleAssociateKey(RobotResponder.getRobotSaleAssociateKey(pm));

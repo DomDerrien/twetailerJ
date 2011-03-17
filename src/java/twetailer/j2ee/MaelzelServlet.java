@@ -179,22 +179,6 @@ public class MaelzelServlet extends HttpServlet {
                 Long newSinceId = TweetLoader.loadDirectMessages();
                 out.put(Settings.LAST_PROCESSED_DIRECT_MESSAGE_ID, newSinceId);
             }
-            else if ("/speedUpLoadTweets".equals(pathInfo)) {
-                // Get parameters
-                String givenDuration = request.getParameter("duration");
-                long duration = givenDuration == null ? 300 : Long.parseLong(givenDuration);
-                final long defaultDelay = 20;
-                // Prepare the loop to post the batch of "loadTweets" requests
-                Queue queue = BaseSteps.getBaseOperations().getQueue();
-                while (0 < duration) {
-                    queue.add(
-                            withUrl("/_tasks/loadTweets").
-                            countdownMillis(duration * 1000).
-                            method(Method.GET)
-                    );
-                    duration -= defaultDelay;
-                }
-            }
             else if ("/processCommand".equals(pathInfo)) {
                 // Get parameters
                 Long commandId = Long.parseLong(request.getParameter(Command.KEY));
@@ -362,7 +346,7 @@ public class MaelzelServlet extends HttpServlet {
                             // 8. Postal code
                             Long locationKey = report.getLocationKey();
                             String postalCode = locationKey == null ? "" : BaseSteps.getLocationOperations().getLocation(pm, locationKey).getPostalCode();
-                            listing.append("<td><a href='http://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>");
+                            listing.append("<td><a href='https://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>");
                             // 9. Range
                             listing.append("<td>" + report.getRange() + "</td>");
                             // 10. Language
@@ -386,7 +370,7 @@ public class MaelzelServlet extends HttpServlet {
                                     String message = msgGen.fetch(report).getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);
                                     if (reporterUrl != null && 0 < reporterUrl.length()) {
                                         int indexOfQuestionMark = reporterUrl.indexOf('?');
-                                        if (indexOfQuestionMark != 0) {
+                                        if (-1 < indexOfQuestionMark) {
                                             reporterUrl = reporterUrl.substring(0, indexOfQuestionMark);
                                         }
                                         String shortUrl = UrlShortener.getShortUrl(reporterUrl);
@@ -434,7 +418,8 @@ public class MaelzelServlet extends HttpServlet {
                     queue.add(
                             withUrl("/_tasks/makePayment").
                                 param(Payment.KEY, payment.getKey().toString()).
-                                method(Method.GET)
+                                method(Method.GET).
+                                countdownMillis(2000)
                     );
                 }
                 else {
@@ -705,7 +690,8 @@ public class MaelzelServlet extends HttpServlet {
         queue.add(
                 withUrl("/_tasks/processCommand").
                     param(Command.KEY, rawCommandKey.toString()).
-                    method(Method.GET)
+                    method(Method.GET).
+                    countdownMillis(2000)
         );
     }
 
@@ -722,7 +708,8 @@ public class MaelzelServlet extends HttpServlet {
         queue.add(
                 withUrl("/_tasks/validateOpenDemand").
                     param(Demand.KEY, demandKey.toString()).
-                    method(Method.GET)
+                    method(Method.GET).
+                    countdownMillis(2000)
         );
     }
 
@@ -740,7 +727,8 @@ public class MaelzelServlet extends HttpServlet {
         queue.add(
                 withUrl("/_tasks/validateOpenWish").
                     param(Wish.KEY, wishKey.toString()).
-                    method(Method.GET)
+                    method(Method.GET).
+                    countdownMillis(2000)
         );
     }
 
@@ -758,7 +746,8 @@ public class MaelzelServlet extends HttpServlet {
         queue.add(
                 withUrl("/_tasks/validateOpenProposal").
                     param(Proposal.KEY, proposalKey.toString()).
-                    method(Method.GET)
+                    method(Method.GET).
+                    countdownMillis(2000)
         );
     }
 

@@ -230,7 +230,8 @@ public class MailResponderServlet extends HttpServlet {
             queue.add(
                     withUrl("/_tasks/processCommand").
                         param(Command.KEY, rawCommand.getKey().toString()).
-                        method(Method.GET)
+                        method(Method.GET).
+                        countdownMillis(2000)
             );
         }
         catch (MessagingException ex) {

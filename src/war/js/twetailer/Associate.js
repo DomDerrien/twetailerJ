@@ -182,8 +182,8 @@
         dojo.byId('proposalForm.demand.hashTags').style.display = showDemandField ? '' : 'none';
         dojo.byId('proposalForm.proposal.metadata').style.display = showDemandField ? '' : 'none'; // No hash tag means no metadata support out of the box
         showDemandField = false;
-        dijit.byId('demand.content').set('value', item.content[0]);
-        showDemandField = 0 < item.content[0].length;
+        dijit.byId('demand.content').set('value', item.content ? item.content[0] : '');
+        showDemandField = item.content && 0 < item.content[0].length;
 //        TODO: remove when the transition from criteria to content is completed
 //        if (dojo.isArray(item.criteria)) {
 //            dijit.byId('demand.criteria').set('value', item.criteria.join(' '));
@@ -242,7 +242,7 @@
         var dateObject = dojo.date.stamp.fromISOString(proposal.dueDate);
         dijit.byId('proposal.date').set('value', dateObject);
         dijit.byId('proposal.time').set('value', dateObject);
-        dijit.byId('proposal.content').set('value', proposal.content)
+        dijit.byId('proposal.content').set('value', proposal.content || '')
 //        TODO: remove when the transition from criteria to content is completed
 //        if (dojo.isArray(proposal.criteria)) {
 //            dijit.byId('proposal.criteria').set('value', proposal.criteria.join(' '));

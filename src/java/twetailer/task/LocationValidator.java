@@ -132,7 +132,8 @@ public class LocationValidator {
             queue.add(
                     withUrl("/_tasks/processCommand").
                         param(Command.KEY, commandKey.toString()).
-                        method(Method.GET)
+                        method(Method.GET).
+                        countdownMillis(2000)
             );
         }
     }

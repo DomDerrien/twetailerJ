@@ -206,7 +206,8 @@ public class ConsumerSteps extends BaseSteps {
                                     withUrl("/_tasks/consolidateConsumerAccounts").
                                     param(Demand.KEY, demandKey.toString()).
                                     param(Demand.OWNER_KEY, consumerKey.toString()).
-                                    method(Method.GET)
+                                    method(Method.GET).
+                                    countdownMillis(2000)
                             );
                         }
                     }

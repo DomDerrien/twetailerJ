@@ -770,7 +770,7 @@
                         <li>Details: {wish>content} HashTags:{wish>hashTags}</li>
                         <li>Quantity: {wish>quantity};</li>
                         <li>Due date: {wish>dueDate};</li>
-                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a>;</li>
+                        <li>Where: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a>;</li>
                         <li>Range: {wish>range} {wish>rangeUnit};</li>
                     </ul>
                     <p>
@@ -835,7 +835,7 @@
                         <li>Due date: <strong>{wish>dueDate}</strong></li>
                         <li>Expiration date: {wish>expirationDate}</li>
                         <li>Quantity: <strong>{wish>quantity}</strong></li>
-                        <li>Within: <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong></li>
+                        <li>Within: <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong></li>
                     </ul>
                     <p>
                         The new wish {wish>key} is going to be kept private.
@@ -902,7 +902,7 @@
                     <p>Hi <strong>{wish>owner>name}</strong>,</p>
                     <p>
                         We're confirming your <strong>update</strong> of the wish within <strong>{wish>range} {wish>rangeUnit}</strong> of
-                        <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
                         on <strong>{wish>dueDate}</strong>. You've also requested:
                     </p>
                     <ul>
@@ -965,7 +965,7 @@
                 <seg>
                     <p>
                         <strong>{wish>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> wish
-                        within <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
+                        within <strong>{wish>range} {wish>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={wish>location>postalCode} {wish>location>countryCode}">{wish>location>postalCode} {wish>location>countryCode}</a></strong>,
                         on <strong>{wish>dueDate}</strong>. Also requested:
                     </p>
                     <ul>
@@ -1221,7 +1221,7 @@
                         <li>Details: {demand>content} HashTags:{demand>hashTags}</li>
                         <li>Quantity: {demand>quantity};</li>
                         <li>Due date: {demand>dueDate};</li>
-                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
+                        <li>Where: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
                         <li>Range: {demand>range} {demand>rangeUnit};</li>
                     </ul>
                     <p>
@@ -1260,7 +1260,7 @@
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
                     <p>
                        We're confirming your desire to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                       <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>, on <strong>{demand>dueDate}</strong>.
+                       <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>, on <strong>{demand>dueDate}</strong>.
                        You've also requested:
                     </p>
                     <ul>
@@ -1345,7 +1345,7 @@
                         <li>Due date: <strong>{demand>dueDate}</strong></li>
                         <li>Expiration date: {demand>expirationDate}</li>
                         <li>Quantity: <strong>{demand>quantity}</strong></li>
-                        <li>Within: <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong></li>
+                        <li>Within: <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong></li>
                     </ul>
                     <p>The new demand {demand>key}, is going to be broadcasted to relevant retailers. We will communicate their proposals, as soon as possible.</p>
                     <p>
@@ -1376,7 +1376,7 @@
                 <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their desire to tee-off
-                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         on <strong>{demand>dueDate}</strong>.
                         Also requested:
                     </p>
@@ -1601,7 +1601,7 @@
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         We're confirming your <strong>update</strong> of the demand within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                        <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         on <strong>{demand>dueDate}</strong>. You've also requested:
                     </p>
                     <ul>
@@ -1644,7 +1644,7 @@
                     <p>Hi <strong>{demand>owner>name}</strong>,</p>
                     <p>
                         We're confirming your <strong>update</strong> to tee-off within <strong>{demand>range} {demand>rangeUnit}</strong> of
-                        <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         on <strong>{demand>dueDate}</strong>. You've also requested:
                     </p>
                     <ul>
@@ -1722,7 +1722,7 @@
                 <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> demand
-                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         on <strong>{demand>dueDate}</strong>. Also requested:
                     </p>
                     <ul>
@@ -1758,7 +1758,7 @@
                 <seg>
                     <p>
                         <strong>{demand>owner>name}</strong> has chosen to keep you notified regarding their <strong>updated</strong> desire to tee-off
-                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        within <strong>{demand>range} {demand>rangeUnit}</strong> of <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
                         on <strong>{demand>dueDate}</strong>. Also requested:
                     </p>
                     <ul>
@@ -2099,7 +2099,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2161,7 +2161,7 @@
                     </ol>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2216,7 +2216,7 @@
                         simply wait to see if any others come in.</p>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2301,7 +2301,7 @@
                     </ul>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2350,7 +2350,7 @@
                     </ul>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2450,7 +2450,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2513,7 +2513,7 @@
                     </ol>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2572,7 +2572,7 @@
                     </p>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2657,7 +2657,7 @@
                     </ul>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2706,7 +2706,7 @@
                     </ul>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2804,7 +2804,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2853,7 +2853,7 @@
                     </p>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2945,7 +2945,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -2988,7 +2988,7 @@
                     <p>Have a great game!</p>
                     <p>More course information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Course's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Golf course registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -3674,7 +3674,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -3728,7 +3728,7 @@
                     </p>
                     <p>More store information:</p>
                     <ul>
-                        <li>Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
+                        <li>Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a></li>
                         <li>Telephone: {store>phoneNb}</li>
                         <li>Store's closing rate: {store>closedProposalNb} of {store>publishedProposalNb}, or, {store>closedProposalPercentage}%</li>
                         <li>Store registered by <a href="{registrar>url}">{registrar>name}</a></li>
@@ -3860,7 +3860,7 @@
                         <li>Details: {demand>content} HashTags:{demand>hashTags}</li>
                         <li>Quantity: {demand>quantity};</li>
                         <li>Due date: {demand>dueDate};</li>
-                        <li>Where: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
+                        <li>Where: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
                         <li>Range: {demand>range} {demand>rangeUnit};</li>
                     </ul>
                     <p>So far, you have received {demand>proposalNb} proposal(s).</p>
@@ -3934,7 +3934,7 @@
                         Rating: <strong>{proposal>score}</strong> -- Comment: {proposal>comment}.
                         <br/>
                         Store: <a href="{store>url}">{store>name}</a>;
-                        Address: <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a>.
+                        Address: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={store>address}">{store>address}</a>.
                         Telephone: {store>phoneNb}.
                         <br/>
                         Commands:

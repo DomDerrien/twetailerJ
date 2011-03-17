@@ -414,6 +414,6 @@
     </script>
 
     <script src='/_ah/channel/jsapi'></script>
-    <script src="http://maps.google.com/maps/api/js?sensor=false&language=<%= localeId %>" type="text/javascript"></script>
+    <script src="https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 </body>
 </html>

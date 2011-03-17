@@ -386,7 +386,7 @@
             li.innerHTML = dojo.string.substitute(localModule._demandItem, [
                 demand.key,              // 0
                 demand.cc ? demand.cc.join(', ') : '',                    // 1
-                demand.content ,         // 2
+                demand.content || '' ,   // 2
 //                TODO: remove when the transition from criteria to content is completed
 //                demand.criteria ? demand.criteria.join(' ') : '',         // 2
                 demand.dueDate,          // 3
@@ -460,7 +460,7 @@
             '<span class="fbEntityLabel">Due date:</span> ${3}<br />' +
             '<span class="fbEntityLabel">Store:</span> ${15} <a href="#" onclick="dojo.query(\'#proposal\'+${0}+\' .fbStoreInfo\').style(\'display\', \'\');this.style.display=\'none\';return false;">more...</a>' +
             '<div class="fbStoreInfo" style="display: none;">' +
-                '<span class="fbEntityLabel">Address:</span> <a href="http://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q=${22}" target="_blank">${12}</a><br />' +
+                '<span class="fbEntityLabel">Address:</span> <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q=${22}" target="_blank">${12}</a><br />' +
                 '<span class="fbEntityLabel">Phone:</span> ${16}<br />' +
                 '<span class="fbEntityLabel">Website:</span> <a href="${20}" target="_blank">${20}</a><br/>' +
                 '<span class="fbEntityLabel">Email:</span> <a href="mailto:${14}">${14}</a><br/>' +
@@ -487,7 +487,7 @@
             var store = twetailer.Common.getCachedStore(proposal.storeKey);
             li.innerHTML = dojo.string.substitute(localModule._proposalResponse, [
                 proposal.key,      // 0
-                proposal.content , // 1
+                proposal.content || '' , // 1
 //                TODO: remove when the transition from criteria to content is completed
 //                proposal.criteria ? proposal.criteria.join(' ') : '',         // 2
                 currencySymbol,    // 2
