@@ -476,8 +476,20 @@ public class MessageGenerator {
                     if (0 < data.size()) {
                         parameters.put(prefix + Command.META_DATA, metadata);
                         for(String key: data.getMap().keySet()) {
-                            // TODO: use the metadata descriptor to decide the type of the data to extract
-                            parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getString(key));
+                            if (data.isInstance(key, Long.class)) {
+                                parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getLong(key));
+                            }
+                            else if (data.isInstance(key, Double.class)) {
+                                parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getLong(key));
+                                // FIXME: use the metadata to report a float or a long!
+                                // parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getDouble(key));
+                            }
+                            else if (data.isInstance(key, String.class)) {
+                                parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getString(key));
+                            }
+                            else {
+                                // TODO: use the metadata descriptor to decide the type of the data to extract
+                            }
                         }
                     }
                 }
@@ -520,8 +532,20 @@ public class MessageGenerator {
                 if (0 < data.size()) {
                     parameters.put(prefix + Command.META_DATA, metadata);
                     for(String key: data.getMap().keySet()) {
-                        // TODO: use the metadata descriptor to decide the type of the data to extract
-                        parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getLong(key));
+                        if (data.isInstance(key, Long.class)) {
+                            parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getLong(key));
+                        }
+                        else if (data.isInstance(key, Double.class)) {
+                            parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getLong(key));
+                            // FIXME: use the metadata to report a float or a long!
+                            // parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getDouble(key));
+                        }
+                        else if (data.isInstance(key, String.class)) {
+                            parameters.put(prefix + Command.META_DATA + FIELD_SEPARATOR + key, data.getString(key));
+                        }
+                        else {
+                            // TODO: use the metadata descriptor to decide the type of the data to extract
+                        }
                     }
                 }
             }

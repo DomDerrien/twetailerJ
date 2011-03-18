@@ -1,6 +1,7 @@
 package twetailer.validator;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +23,11 @@ import twetailer.connector.MailConnector;
 import twetailer.dto.Location;
 import twetailer.dto.Store;
 import twetailer.task.RobotResponder;
+
+import com.google.appengine.api.urlfetch.HTTPRequest;
+import com.google.appengine.api.urlfetch.HTTPResponse;
+import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
+
 import domderrien.i18n.LabelExtractor;
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonObject;
@@ -227,17 +233,27 @@ public class LocaleValidator {
         if (testValidatorStream != null) {
             return testValidatorStream;
         }
+        String serviceAddress = null;
         if (Locale.CANADA.getCountry().equals(countryCode)) {
-            return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20Canada").openStream();
+            serviceAddress = "https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20Canada";
+            // return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20Canada").openStream();
             // return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20Canada").openStream();
             // return new URL("http://geocoder.ca/?geoit=xml&postal=" + postalCode).openStream();
         }
-        if (Locale.US.getCountry().equals(countryCode)) {
-            return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20USA").openStream();
+        else if (Locale.US.getCountry().equals(countryCode)) {
+            serviceAddress = "https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20USA";
+            // return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=en&address=" + postalCode + ",%20USA").openStream();
             // return new URL("http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address=" + postalCode + ",%20USA").openStream();
             // return new URL("http://geocoder.us/service/csv/geocode?zip=" + postalCode).openStream();
         }
-        throw new MalformedURLException("Unsupported coutry code: " + countryCode);
+        else {
+            throw new MalformedURLException("Unsupported coutry code: " + countryCode);
+        }
+        URL url = new URL(serviceAddress);
+        HTTPRequest request = new HTTPRequest(url);
+        request.getFetchOptions().doNotValidateCertificate();
+        HTTPResponse response = URLFetchServiceFactory.getURLFetchService().fetch(request);
+        return new ByteArrayInputStream(response.getContent());
     }
 
     /**
@@ -255,8 +271,14 @@ public class LocaleValidator {
         }
         address = URLEncoder.encode(address, StringUtils.JAVA_UTF8_CHARSET);
         Logger.getLogger(LocaleValidator.class.getName()).warning("Address to lookup: " + address);
-        return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=fr&address=" + address).openStream();
+        String serviceAddress = "https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=fr&address=" + address;
+        // return new URL("https://maps-api-ssl.google.com/maps/api/geocode/json?v=3&sensor=false&language=fr&address=" + address).openStream();
         // return new URL("http://maps.google.com/maps/api/geocode/json?sensor=false&address=" + address).openStream();
+        URL url = new URL(serviceAddress);
+        HTTPRequest request = new HTTPRequest(url);
+        request.getFetchOptions().doNotValidateCertificate();
+        HTTPResponse response = URLFetchServiceFactory.getURLFetchService().fetch(request);
+        return new ByteArrayInputStream(response.getContent());
     }
 
     public static final Locale DEFAULT_LOCALE = Locale.CANADA;

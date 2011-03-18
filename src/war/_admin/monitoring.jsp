@@ -484,11 +484,11 @@
                         </tr>
                         <tr>
                             <td><label for="store.latitude">Latitude:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.latitude" name="latitude" type="text" /></td>
+                            <td><input dojoType="dijit.form.NumberTextBox" id="store.latitude" name="latitude" type="text" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.longitude">Longitude:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.longitude" name="longitude" type="text" /></td>
+                            <td><input dojoType="dijit.form.NumberTextBox" id="store.longitude" name="longitude" type="text" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.name">Name:</label></td>

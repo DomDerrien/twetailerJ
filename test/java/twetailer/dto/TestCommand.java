@@ -283,7 +283,7 @@ public class TestCommand {
         assertEquals(metadata, clone.getMetadata());
         assertEquals(ownerKey, clone.getOwnerKey());
         assertEquals(quantity, clone.getQuantity());
-        assertNull(clone.getRawCommandId());
+        assertEquals(rawCommandId, clone.getRawCommandId());
         assertEquals(source, clone.getSource());
         assertEquals(State.opened, clone.getState());
     }

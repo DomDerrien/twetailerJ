@@ -12,6 +12,7 @@ import javamocks.io.MockInputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import twetailer.dto.Location;
@@ -192,6 +193,7 @@ public class TestLocaleValidator {
     }
 
     @Test
+    @Ignore
     public void testGetValidatorInputStreamII() throws IOException {
         try {
             LocaleValidator.getValidatorStream(null, Locale.US.getCountry());
@@ -203,6 +205,7 @@ public class TestLocaleValidator {
     }
 
     @Test
+    @Ignore
     public void testGetValidatorInputStreamIII() throws IOException {
         try {
             LocaleValidator.getValidatorStream(null, RobotResponder.ROBOT_COUNTRY_CODE);

@@ -117,6 +117,10 @@ public class ChannelConnector {
             catch(ChannelFailureException ex) {
                 getLogger().severe("Cannot send data to: " + consumer.getName() + " over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
             }
+            catch(Exception ex) {
+                getLogger().severe("Unexpected error when sending data to: " + consumer.getName() + " over Channel: " + data.toString() + " -- ex: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -335,7 +335,7 @@ public class DemandSteps extends BaseSteps {
 
         if (parameters.containsKey(Influencer.REFERRAL_ID)) {
             demand.setInfluencerKey(InfluencerOperations.getInfluencerKey(parameters.getString(Influencer.REFERRAL_ID)));
-            demand = getDemandOperations().createDemand(pm, demand);
+            demand = getDemandOperations().updateDemand(pm, demand);
         }
 
         // Related workflow step

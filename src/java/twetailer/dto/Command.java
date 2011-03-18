@@ -495,7 +495,7 @@ public class Command extends Entity {
         if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
         if ((getKey() == null || isUserAdmin) && in.containsKey(OWNER_KEY)) { setOwnerKey(in.getLong(OWNER_KEY)); }
         if (in.containsKey(QUANTITY)) { setQuantity(in.getLong(QUANTITY)); }
-        if (isCacheRelated && in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
+        if ((getKey() == null || isCacheRelated) && in.containsKey(RAW_COMMAND_ID)) { setRawCommandId(in.getLong(RAW_COMMAND_ID)); }
         if ((getKey() == null || isCacheRelated) && in.containsKey(SOURCE)) { setSource(in.getString(SOURCE)); }
         if (isUserAdmin && in.containsKey(STATE)) { setState(in.getString(STATE)); }
         return this;

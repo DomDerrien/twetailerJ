@@ -30,9 +30,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/easymock/cglib-nodep-2.2.jar"/>
-	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-1.5.4.jar" sourcepath="deps/lib/domderrien/domderrien-1.5.4-src.jar">
+	<classpathentry kind="lib" path="deps/lib/domderrien/domderrien-1.5.5.jar" sourcepath="deps/lib/domderrien/domderrien-1.5.5-src.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-1.5.4-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/domderrien/domderrien-1.5.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-stubs.jar"/>
@@ -43,11 +43,6 @@
 	<classpathentry kind="lib" path="deps/lib/appengine/appengine-api-labs-1.4.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="deps/lib/appengine/appengine-api-1.0-sdk-1.4.2-javadoc.zip"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="deps/lib/wave/wave-robot-api-20090916.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://wave-robot-java-client.googlecode.com/svn/trunk/doc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="deps/lib/dyuproject/dyuproject-openid-1.1.7.jar" sourcepath="deps/lib/dyuproject/dyuproject-1.1.7.zip">
