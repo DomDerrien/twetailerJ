@@ -282,6 +282,7 @@
                     countryCode: dijit.byId('countryCode').get('value'),
                     range: dijit.byId('range').get('value'),
                     rangeUnit: dijit.byId('rangeUnit').get('value'),
+                    hasStore: true,
                     referralId: 0<%
                     if (serializedHashTags != null) { %>,
                     hashTags: ['<%= serializedHashTags.replaceAll(",", "','") %>']<% } %>
