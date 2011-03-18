@@ -1,8 +1,8 @@
 var localModule = {};
 
-(function() { // To limit the scope of the private variables
+(function() { // ** To limit the scope of the private variables
 
-    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false;
+    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false, reportOrder = 3;
 
     dojo.require('dojo.cookie');
     dojo.require('dojo.io.script');
@@ -120,6 +120,10 @@ var localModule = {};
             },
             url : reportHost + 'Report'
         });
+        -- reportOrder;
+        if (reportOrder == 0) {
+            new Image().src = localizedBundle.visitTrackerURL;
+        }
     };
 
     var removeDups = function(source, pattern, keepFirst) {
@@ -144,9 +148,10 @@ var localModule = {};
             language : localizedBundle.locale,
             countryCode : 'CA',
             hashTags : [ 'cardealer' ],
+            demoMode: false,
             exceptions : []
         }, exs = dataIn.exceptions, dc = document;
-        if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
+        if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.demoMode = true; dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
         try { dataIn.email = dc.getElementById('email').value; } catch (ex) { exs.push('email - ' + ex); }
         try { dataIn.postalCode = dc.getElementById('postalCode').value; } catch (ex) { exs.push('postalCode - ' + ex); }
         try { dataIn.range = dc.getElementById('range').value; } catch (ex) { exs.push('range - ' + ex); }
@@ -268,7 +273,11 @@ var localModule = {};
                             dialog.hide();
                         }
                     }, 'closeDialog');
-                    new Image().src = 'https://www.googleadservices.com/pagead/conversion/1019079067/?label=UgQfCMXjkQIQm9P35QM&amp;guid=ON&amp;script=0';
+                    if (!data.demoMode) {
+                        new Image().src = lB.demandTrackerURL;
+                    }
+                    new Image().src = lB.interestTrackerURL;
+                    dojo.cookie('reportId', null, { expires: -1 }); // ** To delete the cookie
                 }
                 else {
                     alert(lB.sendRequestErrorMessage);
@@ -286,4 +295,4 @@ var localModule = {};
         var minutes = time ? time.getMinutes() : 59;
         return date.getFullYear() + (month < 10 ? '-0' : '-') + month + (day < 10 ? '-0' : '-') + day + (hours < 10 ? 'T0' : 'T') + hours + (minutes < 10 ? ':0' : ':') + minutes + ':00';
     };
-})(); // End of the function limiting the scope of the private variables
+})(); // ** End of the function limiting the scope of the private variables
