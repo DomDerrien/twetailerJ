@@ -145,7 +145,7 @@ public class MailResponderServlet extends HttpServlet {
             // Extract information about a supported receiver
             StringBuilder log = new StringBuilder();
             InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
-            for (int idx = 0; to == null && idx < recipients.length; idx ++) {
+            for (int idx = 0; to == null && idx < (recipients == null ? 0 : recipients.length); idx ++) {
                 to = recipients[idx].getAddress();
                 log.append("\"").append(recipients[idx].getPersonal()).append("\" <").append(recipients[idx].getAddress()).append(">, ");
                 if (!getResponderEndpoints().contains(to)) {

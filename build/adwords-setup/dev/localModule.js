@@ -171,8 +171,9 @@ var localModule = {};
     localModule.showReviewPane = function() {
         var lB = localizedBundle, dc = document;
         // ** Validate the input fields content
-        if (!dijit.byId('requestForm').validate())
+        if (!dijit.byId('requestForm').validate()) {
             return;
+        }
         // ** Create the dialog box
         var reviewPane = dijit.byId('reviewPane') || new dijit.Dialog({
             content :

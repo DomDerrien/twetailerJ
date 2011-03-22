@@ -313,6 +313,8 @@
             <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
             <file name="jdo/jdo2-api-2.3-eb.jar" />
             <file name="junit/junit-4.8.2.jar" />
+            <file name="selenium2/selenium-java-2.0b3.jar" />
+            <file name="selenium2/libs/guava-r08.jar" />
             <file name="twitter4j/twitter4j-core-2.1.10.jar" />
             <file name="xml/xalan-2.7.0.jar" />
             <file name="xml/xercesImpl-2.4.0.jar" />
@@ -334,6 +336,12 @@
             <file name="dyuproject/jetty-util-6.1.19.jar" />
             <file name="geronimo/geronimo-jpa_3.0_spec-1.1.1.jar" />
             <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
+            <file name="selenium2/selenium-java-2.0b3.jar" />
+            <file name="selenium2/libs/guava-r08.jar" />
+            <file name="selenium2/libs/httpclient-4.0.2.jar" />
+            <file name="selenium2/libs/httpcore-4.0.1.jar" />
+            <file name="selenium2/libs/httpmime-4.0.1.jar" />
+            <file name="selenium2/libs/json-20080701.jar" />
         </filelist>
     </path>
 

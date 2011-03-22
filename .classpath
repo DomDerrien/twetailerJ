@@ -67,5 +67,8 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/twetailerJ/deps/lib/commons/commons-codec-1.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="deps/lib/selenium2/selenium-java-2.0b3.jar" sourcepath="deps/lib/selenium2/selenium-java-2.0b3-srcs.jar"/>
+	<classpathentry kind="lib" path="deps/lib/selenium2/libs/testng-5.14.1.jar"/>
+	<classpathentry kind="lib" path="deps/lib/selenium2/libs/guava-r08.jar"/>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
 </classpath>

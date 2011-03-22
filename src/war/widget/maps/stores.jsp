@@ -122,7 +122,8 @@
     <% } else { %>
         <div dojoType="dijit.layout.BorderContainer" id="centerZone" region="center" style="margin: 0; height: 100%; background-color: transparent;">
     <% } %>
-            <div dojoType="dojox.layout.ExpandoPane" id="formPane" splitter="true" region="left" style="width: 170px; border-bottom: 1px solid #CCC !important; background-color: #FFF;" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
+            <div dojoType="dojox.layout.ExpandoPane" id="formPane" splitter="true" region="left" style="width: 260px; border-bottom: 1px solid #CCC !important; background-color: #FFF;" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
+                <form dojoType="dijit.form.Form" id="formEntity">
                 <table>
                     <tr>
                         <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandPostalCode", locale) %></label></td>
@@ -135,7 +136,7 @@
                                 placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
                                 regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
                                 required="true"
-                                style="width:7em;"
+                                style="width:6em;"
                                 type="text"
                             />
                             <button
@@ -166,8 +167,8 @@
                     <tr>
                         <td align="right"><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandRange", locale) %></label></td>
                         <td>
-                            <input constraints="{min:1,max:50,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" required="true" style="width:7em;" type="text" value="10" />
-                            <select dojoType="dijit.form.Select" id="rangeUnit" name="rangeUnit" required="true" style="width:5em;">
+                            <input constraints="{min:1,max:100,places:0}" dojoType="dijit.form.NumberSpinner" id="range" name="range" required="true" style="width:4em;" type="text" value="10" />
+                            <select dojoType="dijit.form.Select" id="rangeUnit" name="rangeUnit" required="true" style="width:3em;">
                                 <option value="<%= LocaleValidator.KILOMETER_UNIT %>" selected="true"><%= LocaleValidator.KILOMETER_UNIT %></option>
                                 <option value="<%= LocaleValidator.MILE_UNIT %>"><%= LocaleValidator.MILE_UNIT %></option>
                             </select>
@@ -180,12 +181,13 @@
                                 dojoType="dijit.form.Button"
                                 iconClass="silkIcon silkIconGMaps"
                                 id="showMapButton"
-                                onclick="twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'});"
+                                onclick="localModule._mapFetchedWithData = false; if (dijit.byId('formEntity').validate()) { twetailer.Common.showMap(dijit.byId('postalCode').get('value'), dijit.byId('countryCode').get('value'), {zoom: 11, notification: 'mapReady', iconOnDragEnd: 'iconDragged'}); }"
                                 type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
                         </td>
                     </tr>
                 </table>
+                </form>
                 <div style="display: none;">
                     <p style="border-top: 1px solid lightgrey;"><%= LabelExtractor.get(ResourceFileId.third, "sm_statistics_sectionTitle", locale) %></p>
                     <div id="statPane"></div>
@@ -268,6 +270,7 @@
     localModule._infoWindows;
     localModule._markerImages;
     localModule._lastInfoWindow = null;
+    localModule._mapFetchedWithData = false;
 
     localModule.init = function() {
         localModule._getLabel = twetailer.Common.init('<%= localeId %>', null, 'detectLocationButton');
@@ -347,6 +350,7 @@
                         dojo.byId('statPane').innerHTML = '<div>' + localModule._getLabel('console', 'sm_statistics_sectionBody', params) + '</div>';
                         // 5. Restore the transparent background
                         dijit.byId('formPaneOverlay').hide();
+                        localModule._mapFetchedWithData = true
                     }
                     else {
                         alert(response.message + '\nurl: '+ ioArgs.url);
@@ -368,7 +372,7 @@
                 'countryCode',
                 'formPaneOverlay'
             );
-            // http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=true_or_false
+            // https://maps-api-ssl.google.com/maps/api/geocode/json?latlng=40.714224,-73.961452&sensor=false
         });
 
         dijit.byId('countryCode').set('value', '<%= countryCode %>');

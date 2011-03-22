@@ -229,7 +229,7 @@
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*"
+                excludes="_tmp/**/*.*,**/*sample*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
@@ -245,7 +245,7 @@
         <replaceregexp match="/\*.+?\*/" replace="" flags="gs" byline="false">
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*"
+                excludes="_tmp/**/*.*,**/*sample*.*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
