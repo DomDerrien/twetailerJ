@@ -33,6 +33,11 @@ public class Demand extends Request {
     public static final String PROPOSAL_KEYS = "proposalKeys";
 
     @Persistent
+    private Long reportKey;
+
+    public static final String REPORT_KEY = "reportKey";
+
+    @Persistent
     private List<Long> saleAssociateKeys = new ArrayList<Long>();
 
     public static final String SALE_ASSOCIATE_KEYS = "saleAssociateKeys";
@@ -41,6 +46,8 @@ public class Demand extends Request {
     public static final String DEMAND_KEY = "demandKey";
 
     public static final String REFERENCE = "reference";
+
+    public static final String REPORT_ID = "reportId";
 
     /** Default constructor */
     public Demand() {
@@ -124,6 +131,23 @@ public class Demand extends Request {
         }
     }
 
+    public Long getReportKey() {
+        return reportKey;
+    }
+
+    public void setReportKey(Long reportKey) {
+        this.reportKey = reportKey;
+    }
+
+    public void setReportKey(String reportId) {
+        if (reportId != null && 1 < reportId.length()) {
+            try {
+                this.reportKey = Long.valueOf(reportId);
+            }
+            catch(NumberFormatException ex) {} // Too bad, attribute won't be updated
+        }
+    }
+
     public List<Long> getSaleAssociateKeys() {
         return saleAssociateKeys;
     }
@@ -169,6 +193,9 @@ public class Demand extends Request {
             }
             out.put(PROPOSAL_KEYS, jsonArray);
         }
+        if (getReportKey() != null) {
+            out.put(REPORT_KEY, getReportKey());
+        }
         if (getSaleAssociateKeys() != null && 0 < getSaleAssociateKeys().size()) {
             JsonArray jsonArray = new GenericJsonArray();
             for(Long key: getSaleAssociateKeys()) {
@@ -195,6 +222,9 @@ public class Demand extends Request {
                 addProposalKey(jsonArray.getLong(i));
             }
         }
+        if (getKey() == null && in.containsKey(REPORT_KEY)) {
+            setReportKey(in.getLong(REPORT_KEY));
+        }
         if (isUserAdmin && in.containsKey(SALE_ASSOCIATE_KEYS)) {
             resetSaleAssociateKeys();
             JsonArray jsonArray = in.getJsonArray(SALE_ASSOCIATE_KEYS);
@@ -205,6 +235,9 @@ public class Demand extends Request {
 
         // Shortcut
         if (in.containsKey(REFERENCE)) { setKey(in.getLong(REFERENCE)); }
+        if (getKey() == null && getReportKey() == null && in.containsKey(REPORT_ID)) {
+            setReportKey(in.getString(REPORT_ID));
+        }
 
         return this;
     }

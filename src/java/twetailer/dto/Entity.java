@@ -61,6 +61,11 @@ public class Entity implements TransferObject {
 
     public static final String MODIFICATION_DATE = "modificationDate";
 
+    @Persistent
+    private String tracking;
+
+    public static final String TRACKING = "_tracking";
+
     /** Default constructor */
     public Entity() {
         Date now = DateUtils.getNowDate();
@@ -166,6 +171,14 @@ public class Entity implements TransferObject {
         this.modificationDate = modificationDate;
     }
 
+    public String getTracking() {
+        return tracking;
+    }
+
+    public void setTracking(String tracking) {
+        this.tracking = tracking;
+    }
+
     @Override
     public JsonObject toJson() {
         JsonObject out = new GenericJsonObject();
@@ -174,6 +187,7 @@ public class Entity implements TransferObject {
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(MARKED_FOR_DELETION, getMarkedForDeletion());
         if (getModificationDate() != null) { out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate())); }
+        if (getTracking() != null && 0 < getTracking().length()) { out.put(TRACKING, getTracking()); }
         return out;
     }
 
@@ -211,6 +225,7 @@ public class Entity implements TransferObject {
         else {
             updateModificationDate();
         }
+        if (in.containsKey(TRACKING)) { setTracking(in.getString(TRACKING)); }
 
         return this;
     }

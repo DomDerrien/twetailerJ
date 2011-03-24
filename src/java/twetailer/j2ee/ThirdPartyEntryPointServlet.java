@@ -100,17 +100,20 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
 
             if (LOCATION_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Location.class.getName());
+
                 // TODO ...
             }
             // Get the Store instances around the described Location
             else if (STORE_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Store.class.getName());
+
                 List<Store> stores = StoreSteps.getStores(pm, in);
                 JsonArray list = new GenericJsonArray();
                 for (Store store: stores) {
                     list.add(store.toJson());
                 }
                 out.put("resources", list);
+
                 Location location = BaseSteps.getLocationOperations().createLocation(pm, in);
                 double[] searchBounds = LocationOperations.getLocationBounds(location, in.getDouble(Demand.RANGE), in.getString(Demand.RANGE_UNIT));
                 JsonObject bounds = new GenericJsonObject();
@@ -123,41 +126,31 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
             // Verify if the given email address is attached to a known Consumer
             else if (CONSUMER_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.list, Consumer.class.getName());
+
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
-                Consumer consumer = lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
 
-                String reportId = in.getString("reportId");
-                boolean newReport = reportId == null || reportId.length() == 1;
-                if (!newReport) {
-                    Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
-                    report.setConsumerKey(consumer.getKey());
-                    BaseSteps.getReportOperations().updateReport(pm, report);
-                }
+                lookupConsumer(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
             // Create the described Demand
             else if (DEMAND_PREFIX.equals(pathInfo)) {
                 verifyReferralId(pm, in, Action.demand, Demand.class.getName());
+
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
-                Demand demand = createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
 
-                String reportId = in.getString("reportId");
-                boolean newReport = reportId == null || reportId.length() == 1;
-                if (!newReport) {
-                    Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
-                    report.setDemandKey(demand.getKey());
-                    report.setConsumerKey(demand.getOwnerKey());
-                    BaseSteps.getReportOperations().updateReport(pm, report);
-                }
+                createDemand(pm, in, out); // Can be JSONP or HttpMethod.POST
             }
             // Create or update a Report
             else if (REPORT_PREFIX.equals(pathInfo)) {
+                verifyReferralId(pm, in, Action.demand, Demand.class.getName());
+
                 if (!in.containsKey("callback")) {
                     throw new IllegalArgumentException("Invalid JSONP call!");
                 }
+
                 Report report = null;
                 String reportId = in.getString("reportId");
                 boolean newReport = reportId.length() == 1;
@@ -168,7 +161,7 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 }
                 else {
                     report = updateReport(pm, in);
-                    out.put("reportDelay", 15000); // Only 4 seconds after the initial call, 15 seconds between all other calls
+                    out.put("reportDelay", 15000); // Only 5 seconds after the initial call, 15 seconds between all other calls
                     out.put("reportId", reportId);
                 }
                 BaseSteps.getReportOperations().trackRecentReport(report.getKey());
@@ -323,6 +316,19 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         in.put(Demand.SOURCE, Source.widget.toString());
         Demand demand = DemandSteps.createDemand(pm, in, consumer);
 
+        String reportId = in.getString("reportId");
+        boolean newReport = reportId == null || reportId.length() == 1;
+        if (!newReport) {
+            Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
+            report.setDemandKey(demand.getKey());
+            report.setConsumerKey(demand.getOwnerKey());
+            BaseSteps.getReportOperations().updateReport(pm, report);
+
+            // If the message asking to reply by email for verification has not been sent
+            // when lookupConsumer() has been called, or if it has been sent a long time ago,
+            // it will be sent again by the DemandValidator process.
+        }
+
         // TODO: anonymize the demand so it's not possible to use the Consumer key
         out.put("resource", demand.toJson());
 
@@ -392,20 +398,31 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 out.put("recordCreated", true);
             }
 
-            String referralId = in.getString(Influencer.REFERRAL_ID).trim();
-            Long influencerKey = InfluencerOperations.getInfluencerKey(referralId);
-            Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, influencerKey);
-
-            List<String> hashTags = null;
-            if (in.containsKey(Command.HASH_TAGS)) {
-                hashTags = new ArrayList<String>(in.getJsonArray(Command.HASH_TAGS).size());
-                for (Object hashTag: in.getJsonArray(Command.HASH_TAGS).getList()) {
-                    hashTags.add((String) hashTag);
+            String reportId = in.getString("reportId");
+            boolean newReport = reportId == null || reportId.length() == 1;
+            if (!newReport) {
+                Report report = BaseSteps.getReportOperations().getReport(pm, Long.valueOf(reportId));
+                if (report.getReporterTitle() == null && in.containsKey(Report.REPORTER_TITLE)) {
+                    report.setReporterTitle(in.getString(Report.REPORTER_TITLE));
                 }
-            }
+                report.setConsumerKey(consumer.getKey());
+                BaseSteps.getReportOperations().updateReport(pm, report);
 
-            boolean notified = ConsumerSteps.notifyUnconfirmedConsumer(consumer, hashTags, null, influencer, getLogger());
-            out.put("notified", notified);
+                String referralId = in.getString(Influencer.REFERRAL_ID).trim();
+                Long influencerKey = InfluencerOperations.getInfluencerKey(referralId);
+                Influencer influencer = BaseSteps.getInfluencerOperations().getInfluencer(pm, influencerKey);
+
+                List<String> hashTags = null;
+                if (in.containsKey(Command.HASH_TAGS)) {
+                    hashTags = new ArrayList<String>(in.getJsonArray(Command.HASH_TAGS).size());
+                    for (Object hashTag: in.getJsonArray(Command.HASH_TAGS).getList()) {
+                        hashTags.add((String) hashTag);
+                    }
+                }
+
+                boolean notified = ConsumerSteps.notifyUnconfirmedConsumer(consumer, hashTags, null, influencer, report, getLogger());
+                out.put("notified", notified);
+            }
         }
         else {
             out.put("status", true);
@@ -456,7 +473,17 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
         if (in.containsKey(Report.REFERRER_URL)) {
             report.setReferrerUrl(new Text(in.getString(Report.REFERRER_URL))); // Referrer of the landing page
         }
-        report.setReporterUrl(request.getHeader("Referer")); // Landing page URL
+        if (in.containsKey(Report.REPORTER_TITLE)) {
+            report.setReporterTitle(in.getString(Report.REPORTER_TITLE));
+        }
+        String reporterUrl = in.containsKey(Report.REPORTER_URL) ? in.getString(Report.REPORTER_URL) : request.getHeader("Referer");
+        if (reporterUrl != null && 0 < reporterUrl.length()) {
+            int questionMarkPosition = reporterUrl.indexOf('?');
+            if (questionMarkPosition != -1) {
+                reporterUrl = reporterUrl.substring(0, questionMarkPosition);
+            }
+            report.setReporterUrl(reporterUrl);
+        }
         report.setUserAgent(request.getHeader("User-Agent"));
 
         Location location = new Location();

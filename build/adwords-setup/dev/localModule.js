@@ -106,6 +106,8 @@ var localModule = {};
                 data.cookie = dc.cookie;
             }
         }
+        data.reporterUrl =  window.location.toString();
+        data.reporterTitle =  localizedBundle.pageTitle;
         dojo.io.script.get({
             callbackParamName : 'callback',
             content : data,
@@ -215,6 +217,9 @@ var localModule = {};
                 referralId : 0, // ** By ASE itself
                 hashTags : [ 'cardealer' ],
                 reportId : reportId,
+                reporterTitle: lB.pageTitle,
+                reporterUrl: window.location.toString(),
+                language : localizedBundle.locale,
                 email : dc.getElementById('email').value
             },
             error : function(dataBack) {

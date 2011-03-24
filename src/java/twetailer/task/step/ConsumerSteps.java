@@ -26,8 +26,10 @@ import twetailer.dto.Consumer.Autonomy;
 import twetailer.dto.Demand;
 import twetailer.dto.Entity;
 import twetailer.dto.Influencer;
+import twetailer.dto.Report;
 import twetailer.j2ee.BaseRestlet;
 import twetailer.j2ee.MaelzelServlet;
+import twetailer.validator.ApplicationSettings;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
@@ -226,11 +228,11 @@ public class ConsumerSteps extends BaseSteps {
      * @param hashTags   Domain identifier
      * @param demand     One of the consumer demand
      * @param influencer Influencer who allowed to create the consumer record
+     * @param report     Report with the indication of the page who sent us the consumer
      * @param logger     To identify the source of the notification
-     *
      * @throws CommunicationException If the email sending fails
      */
-    public static boolean notifyUnconfirmedConsumer(Consumer consumer, List<String> hashTags, Demand demand, Influencer influencer, Logger logger) throws CommunicationException {
+    public static boolean notifyUnconfirmedConsumer(Consumer consumer, List<String> hashTags, Demand demand, Influencer influencer, Report report, Logger logger) throws CommunicationException {
         Long lastNotificationDate = (Long) CacheHandler.getFromCache("unconfirmed_" + consumer.getEmail());
         Long nowDate = DateUtils.getNowDate().getTime();
         if (lastNotificationDate != null && nowDate < lastNotificationDate + 30 * 60 * 1000) { // Less than 30 minutes ago
@@ -241,6 +243,8 @@ public class ConsumerSteps extends BaseSteps {
         Locale locale = consumer.getLocale();
         MessageGenerator msgGen = new MessageGenerator(Source.mail, hashTags == null ? demand.getHashTags() : hashTags, locale);
         msgGen.
+            put("landingPage>title", report != null ? report.getReporterTitle() : ApplicationSettings.get().getProductName()).
+            put("landingPage>url", report != null ? report.getReporterUrl() : ApplicationSettings.get().getProductWebsite()).
             put("initiator>name", consumer.getName()).
             fetch(demand).
             fetch(influencer);

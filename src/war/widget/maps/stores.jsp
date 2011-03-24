@@ -405,8 +405,6 @@
                 params['store>publishedProposalNb'] = store.publishedProposalNb;
                 params['store>closedProposalPercentage'] = store.publishedProposalNb == 0 ? 0 : (store.closedProposalNb * 100 / store.publishedProposalNb);
             }
-            console.log(dojo.toJson(params));
-            console.log(localModule._getLabel('console', msgId));
             var content = '<div>' + localModule._getLabel('console', msgId, params) + '</div>';
             infoWindow = new google.maps.InfoWindow({
                 content: content

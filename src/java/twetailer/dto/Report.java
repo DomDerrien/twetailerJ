@@ -78,6 +78,11 @@ public class Report extends Entity {
     public final static String REFERRER_URL = "referrerUrl";
 
     @Persistent
+    private String reporterTitle;
+
+    public final static String REPORTER_TITLE = "reporterTitle";
+
+    @Persistent
     private String reporterUrl;
 
     public final static String REPORTER_URL = "reporterUrl";
@@ -238,6 +243,14 @@ public class Report extends Entity {
         this.referrerUrl = referrerUrl;
     }
 
+    public String getReporterTitle() {
+        return reporterTitle;
+    }
+
+    public void setReporterTitle(String reporterTitle) {
+        this.reporterTitle = reporterTitle;
+    }
+
     public String getReporterUrl() {
         return reporterUrl;
     }
@@ -273,6 +286,7 @@ public class Report extends Entity {
         if (getMetadata() != null) { out.put(META_DATA, getMetadata()); }
         if (getRange() != null) { out.put(RANGE, getRange()); }
         if (getReferrerUrl() != null) { out.put(REFERRER_URL, getReferrerUrl().getValue()); }
+        if (getReporterTitle() != null) { out.put(REPORTER_TITLE, getReporterTitle()); }
         if (getReporterUrl() != null) { out.put(REPORTER_URL, getReporterUrl()); }
         if (getUserAgent() != null) { out.put(USER_AGENT, getUserAgent()); }
 
@@ -308,6 +322,7 @@ public class Report extends Entity {
         if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(REFERRER_URL)) { setReferrerUrl(new Text(in.getString(REFERRER_URL))); }
+        if (in.containsKey(REPORTER_TITLE)) { setReporterTitle(in.getString(REPORTER_TITLE)); }
         if (in.containsKey(REPORTER_URL)) { setReporterUrl(in.getString(REPORTER_URL)); }
         if (in.containsKey(USER_AGENT)) { setUserAgent(in.getString(USER_AGENT)); }
 

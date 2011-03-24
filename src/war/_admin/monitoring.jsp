@@ -227,6 +227,10 @@
                             <td><label for="consumer.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="consumer.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="consumer._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="consumer._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="consumer.address">Address:</label></td>
@@ -379,6 +383,10 @@
                             <td><label for="saleassociate.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="saleassociate.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="saleassociate._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="saleassociate._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="saleassociate.closedProposalNb">Closed proposal #:</label></td>
@@ -468,6 +476,10 @@
                         <tr>
                             <td><label for="store.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="store.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="store._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="store._tracking" name="_tracking" style="width:10em;"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
@@ -568,6 +580,10 @@
                             <td><label for="location.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="location.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="location._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="location._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="location.countryCode">Country code:</label></td>
@@ -667,6 +683,10 @@
                         <tr>
                             <td><label for="demand.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="demand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand._tracking" name="_tracking" style="width:10em;"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
@@ -872,6 +892,10 @@
                         <tr>
                             <td><label for="proposal.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="proposal.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="proposal._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="proposal._tracking" name="_tracking" style="width:10em;"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
@@ -1085,6 +1109,10 @@
                             <td><label for="rawcommand.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="rawcommand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="rawcommand._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="rawcommand._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="rawcommand.command">Command:</label></td>
@@ -1168,6 +1196,10 @@
                             <td><label for="payment.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="payment.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="payment._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="payment._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="payment.authorizationId">Authorization identifier:</label></td>
@@ -1237,6 +1269,10 @@
                             <td><label for="influencer.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="influencer.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="influencer._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="influencer._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="influencer.consumerKey">Consumer key:</label></td>
@@ -1304,6 +1340,10 @@
                             <td><label for="registrar.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="registrar.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="registrar._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="registrar._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="registrar.consumerKey">Consumer key:</label></td>
@@ -1367,6 +1407,10 @@
                             <td><label for="reseller.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="reseller.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="reseller._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="reseller._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="reseller.consumerKey">Consumer key:</label></td>
@@ -1422,6 +1466,10 @@
                             <td><label for="reviewsystem.modificationDate">Modification date:</label></td>
                             <td><input dojoType="dijit.form.DateTextBox" id="reviewsystem.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
                         </tr>
+                        <tr>
+                            <td><label for="reviewsystem._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="reviewsystem._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="reviewsystem.email">E-mail:</label></td>
@@ -1456,7 +1504,7 @@
         style="min-width:260px;"
     >
         <div id="keyZone" style="min-height:60px;"></div>
-        <div style="text-align:right;padding-top:5px;">
+        <div class="dijitDialogPaneActionBar" style="text-align:right;padding-top:5px;">
             <button dojoType="dijit.form.Button" onclick="dijit.byId('entityKeysDialog').hide();" type="button">Close</button>
         </div>
     </div>
@@ -1575,7 +1623,7 @@
                     params.type = [params.type];
                     params.key = [params.key];
                 }
-                var types = params.type, idx = 0; limit = types.length, keys = params.key;
+                var types = params.type, idx = 0, limit = types.length, keys = params.key;
                 while (idx < limit) {
                     var type = types[idx], key = keys[idx], id = type.toLowerCase() + '.key';
                     dijit.byId(id).set('value', key);

@@ -28,6 +28,7 @@ import twetailer.dto.Demand;
 import twetailer.dto.Influencer;
 import twetailer.dto.Location;
 import twetailer.dto.RawCommand;
+import twetailer.dto.Report;
 import twetailer.task.step.BaseSteps;
 import twetailer.task.step.ConsumerSteps;
 import twetailer.task.step.LocationSteps;
@@ -102,7 +103,9 @@ public class DemandValidator {
                 // Check consumer autonomy
                 if (consumer.getAutonomy() == Autonomy.UNCONFIRMED) {
                     if (Source.widget.equals(demand.getSource())) {
-                        ConsumerSteps.notifyUnconfirmedConsumer(consumer, null, demand, influencer, getLogger());
+                        Long reportKey = demand.getReportKey();
+                        Report report = reportKey == null ? null : BaseSteps.getReportOperations().getReport(pm, reportKey);
+                        ConsumerSteps.notifyUnconfirmedConsumer(consumer, null, demand, influencer, report, getLogger());
                         return;
                     }
                     throw new IllegalArgumentException("Do not know how to confirm an account for source=" + demand.getSource());

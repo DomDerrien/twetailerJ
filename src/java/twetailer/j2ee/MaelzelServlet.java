@@ -302,17 +302,16 @@ public class MaelzelServlet extends HttpServlet {
                             append("<th>Creation date</th>").       //  1
                             append("<th>Duration (seconds)</th>").  //  2
                             append("<th>IP Address</th>").          //  3
-                            append("<th>Demo Mode</th>").           //  4
-                            append("<th>Content</th>").             //  5
-                            append("<th>Demand Key</th>").          //  6
-                            append("<th>Consumer</th>").            //  7
-                            append("<th>Postal Code</th>").         //  8
-                            append("<th>Range (km)</th>").          //  9
-                            append("<th>Language</th>").            // 10
-                            append("<th>Source</th>").              // 11
-                            append("<th>Landing Page</th>").        // 12
-                            append("<th>User Agent</th>").          // 13
-                            append("</tr>");                        // 14
+                            append("<th>Content</th>").             //  4
+                            append("<th>Demand Key</th>").          //  5
+                            append("<th>Consumer</th>").            //  6
+                            append("<th>Postal Code</th>").         //  7
+                            append("<th>Range (km)</th>").          //  8
+                            append("<th>Language</th>").            //  9
+                            append("<th>Source</th>").              // 10
+                            append("<th>Landing Page</th>").        // 11
+                            append("<th>User Agent</th>").          // 12
+                            append("</tr>");                        // 13
                     boolean evenRow = true;
                     List<Long> keys = BaseSteps.getReportOperations().getReadyReports();
                     if (keys != null && 0 < keys.size()) {
@@ -321,7 +320,14 @@ public class MaelzelServlet extends HttpServlet {
 
                             // Build the information for the report table
                             // 0. Row opening
-                            listing.append("<tr style='background-color:" + (evenRow ? "transparent" : "lightgrey") + ";'>");
+                            Demand demand = null;
+                            Long demandKey = report.getDemandKey();
+                            String rowColor = evenRow ? "transparent" : "lightgrey";
+                            if (demandKey != null) {
+                                demand = BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
+                                rowColor = demand.getHashTags().contains(RegisteredHashTag.demo.toString()) ? "#fbb" : "#bfb";
+                            }
+                            listing.append("<tr style='background-color:" + rowColor + ";'>");
                             // 1. Creation date
                             Date creationDate = report.getCreationDate();
                             listing.append("<td>" + creationDate + "</td>");
@@ -330,41 +336,37 @@ public class MaelzelServlet extends HttpServlet {
                             // 3. IP address
                             String ipAddress = report.getIpAddress();
                             listing.append("<td><a href='http://www.iplocationfinder.com/" + ipAddress + "'>" + ipAddress + "</a></td>");
-                            // 4. Demo mode
-                            Long demandKey = report.getDemandKey();
-                            Demand demand = demandKey == null ? null : BaseSteps.getDemandOperations().getDemand(pm, demandKey, null);
-                            listing.append("<td style='font-weight:bold;'>" + (demandKey == null ? "" : demand.getHashTags().contains(RegisteredHashTag.demo.toString()) ? "<span style='color:red;'>Yes :-(</span>" : "<span style='color:green;'>No :-)</span>") + "</td>");
-                            // 5. Content
+                            // 4. Content
                             listing.append("<td>" + report.getContent() + "</td>");
-                            // 6. Demand key
+                            // 5. Demand key
                             Long consumerKey = report.getConsumerKey();
                             String monitoringUrl = "http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp";
                             listing.append("<td>" + (demandKey == null ? "" : "<a href='" + monitoringUrl + "?type=Consumer&key=" + consumerKey + "&type=Demand&key=" + demandKey + "'>" + demandKey + "</a>") + "</td>");
-                            // 7. Consumer
+                            // 6. Consumer
                             String name = consumerKey == null ? "" : BaseSteps.getConsumerOperations().getConsumer(pm, consumerKey).getName();
                             listing.append("<td>" + (consumerKey == null ? "" : "<a href='" + monitoringUrl + "?type=Consumer&key=" + consumerKey + "'>" + name + "</a>") + "</td>");
-                            // 8. Postal code
+                            // 7. Postal code
                             Long locationKey = report.getLocationKey();
                             String postalCode = locationKey == null ? "" : BaseSteps.getLocationOperations().getLocation(pm, locationKey).getPostalCode();
                             listing.append("<td><a href='https://maps.google.com/?q=" + postalCode + ",CA'>" + postalCode + "</a></td>");
-                            // 9. Range
+                            // 8. Range
                             listing.append("<td>" + report.getRange() + "</td>");
-                            // 10. Language
+                            // 9. Language
                             listing.append("<td>" + report.getLanguage() + "</td>");
-                            // 11. Source
+                            // 10. Source
                             listing.append("<td>" + report.getReferrerUrl().getValue() + "</td>");
-                            // 12. Landing page
+                            // 11. Landing page
                             String reporterUrl = report.getReporterUrl();
                             listing.append("<td>" + reporterUrl + "</td>");
-                            // 13. User agent
+                            // 12. User agent
                             listing.append("<td>" + report.getUserAgent() + "</td>");
-                            // 14. Row closing
+                            // 13. Row closing
                             listing.append("</tr>");
                             evenRow = !evenRow;
 
                             // Send a tweet
                             String metadata = report.getMetadata();
-                            if (metadata != null && 0 < metadata.length()) {
+                            if (metadata != null && 0 < metadata.length() && !in.containsKey("debugMode")) {
                                 try {
                                     MessageGenerator msgGen = new MessageGenerator(Source.twitter, report.getHashTags(), LocaleValidator.getLocale(report.getLanguage()));
                                     String message = msgGen.fetch(report).getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);

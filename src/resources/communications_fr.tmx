@@ -35,7 +35,7 @@
                 <seg>Tr: {0}</seg>
             </tuv>
         </tu>
-        <tu tuid="common_welcome_message_subject_default" datatype="Text">
+        <tu tuid="common_welcome_message_subject_default" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -463,14 +463,16 @@
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="long_core_invitation_to_confirm_email_address" datatype="Text">
+        <tu tuid="long_core_invitation_to_confirm_email_address" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
                     <p>Bonjour <strong>{initiator>name}</strong></p>
                     <p>
-                        Merci pour la confiance témoignée à notre service. Puisque vous utilisez notre service pour la première fois,
+                        Merci pour la confiance témoignée à notre service
+                        <a href="{landingPage>url}"><strong>{landingPage>title}</strong></a>.
+                        Puisque vous utilisez notre service pour la première fois,
                         <strong>veuillez confirmer votre adresse de courriel en répondant à ce message.</strong>
                         Une fois votre réponse reçue, nous continuerons de traiter votre demande.
                     </p>
@@ -481,9 +483,9 @@
                         <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
                         pour que nous vous aidions personnellement.
                     </p>
-                    <p>Merci,<br/>Support</p>
+                    <p>Merci,<br />Support</p>
                     <p>Présentation par <a href="{influencer>url}">{influencer>name}</a>.</p>
-                    <hr/>
+                    <hr />
                     <p>Hi <strong>{initiator>name}</strong></p>
                     <p>
                         Thank you for trusting our service.
@@ -498,20 +500,22 @@
                         <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
                         for further assistance.
                     </p>
-                    <p>Thank you,<br/>Support</p>
+                    <p>Thank you,<br />Support</p>
                     <p>Brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="long_core_invitation_to_confirm_email_address_with_demand" datatype="Text">
+        <tu tuid="long_core_invitation_to_confirm_email_address_with_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
                     <p>Bonjour <strong>{initiator>name}</strong></p>
                     <p>
-                        Merci pour la confiance témoignée avec la soumission de votre rercherhe de voiture:
-                        <strong>{demand>content}</strong>. Puisque vous utilisez notre service pour la première fois,
+                        Merci pour la confiance témoignée à notre service
+                        <a href="{landingPage>url}"><strong>{landingPage>title}</strong></a>,
+                        avec la soumission de votre rercherhe de voiture: <strong>{demand>content}</strong>.
+                        Puisque vous utilisez notre service pour la première fois,
                         <strong>veuillez confirmer votre adresse de courriel en répondant à ce message.</strong>
                         Une fois votre réponse reçue, nous continuerons de traiter votre demande.
                     </p>
@@ -522,9 +526,9 @@
                         <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
                         pour que nous vous aidions personnellement.
                     </p>
-                    <p>Merci,<br/>Support</p>
+                    <p>Merci,<br />Support</p>
                     <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
-                    <hr/>
+                    <hr />
                     <p>Hi <strong>{initiator>name}</strong></p>
                     <p>
                         Thank you for trusting us with your needs of: <strong>{demand>content}</strong>.
@@ -539,12 +543,12 @@
                         <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a>
                         for further assistance.
                     </p>
-                    <p>Thank you,<br/>Support</p>
+                    <p>Thank you,<br />Support</p>
                     <p>Demand: {demand>key}, brought to you by <a href="{influencer>url}">{influencer>name}</a>.</p>
                 </seg>
             </tuv>
         </tu>
-        <tu tuid="short_core_report_landing_page_visit" datatype="Text">
+        <tu tuid="short_core_report_landing_page_visit" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -553,8 +557,7 @@
                 </seg>
             </tuv>
         </tu>
-
-        <tu tuid="short_cardealer_report_landing_page_visit" datatype="Text">
+        <tu tuid="short_cardealer_report_landing_page_visit" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -563,8 +566,7 @@
                 </seg>
             </tuv>
         </tu>
-
-        <tu tuid="short_golf_report_landing_page_visit" datatype="Text">
+        <tu tuid="short_golf_report_landing_page_visit" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
@@ -903,6 +905,34 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="long_cardealer_demand_creation_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{demand>owner>name}</strong></p>
+                    <p>Votre demande a été créée avec les éléments suivants:</p>
+                    <ul>
+                        <li>Détails: {demand>content}</li>
+                        <li>Date limite: {demand>dueDate};</li>
+                        <li>Localité: <a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a>;</li>
+                        <li>Distance: {demand>range} {demand>rangeUnit};</li>
+                    </ul>
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="long_golf_demand_creation_ackToConsumer" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1063,6 +1093,35 @@
                 </seg>
             </tuv>
         </tu>
+        <tu tuid="long_cardealer_demand_creation_associateNotif" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{proposal>owner>name}</strong>,</p>
+                    <p>Une nouvelle demande pour le <strong>{demand>dueDate}</strong> a été créée dans votre région. Pouvez-vous fournir:</p>
+                    <ul>
+                        <li>Détails: <strong>{demand>content} Étiquettes:{demand>hashTags}</strong></li>
+                        <li>Date limite: <strong>{demand>dueDate}</strong></li>
+                        <li>Taux de transactions complétées par le consommateur: {demand>owner>closedDemandNb} pour {demand>owner>publishedDemandNb}, ou {demand>owner>closedDemandPercentage}%</li>
+                    </ul>
+                    <p>
+                        Si <strong>vous pouvez fournir</strong> la demande, alors utilisez la
+                        <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp?lang=fr&amp;demand={demand>key}">Console pour Associés</a>
+                        et remplissez la fiche pour créer une proposition pour la <strong>demande {demand>key}</strong>.
+                        Vous pouvez aussi créer la proposition en envoyant le courriel produit par un clic sur
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>createProposal}&amp;subject={command>threadSubject}">Créer une proposition</a>
+                        en ayant pris soin de remplacer les 'X' par les bonnes valeurs.
+                    </p>
+                    <p>
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
         <tu tuid="long_golf_demand_creation_associateNotif" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">1</prop>
@@ -1135,6 +1194,35 @@
                         <li>Quantité: <strong>{demand>quantity}</strong></li>
                         <li>Détails: <strong>{demand>content}</strong></li>
                         <li>Autres options: <strong>{demand>metadata}</strong></li>
+                    </ul>
+                    <p>
+                        Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
+                        et vous communiquerons leurs propositions, dès que possible, à vous et à <strong>{demand>cc}</strong>.
+                    </p>
+                    <p>
+                        Si vous n'êtes plus intéressé à poursuivre avec cette demande, vous pouvez envoyer un courriel en cliquant
+                        <a href="mailto:assistant@anothersocialeconomy.appspotmail.com?body={command>cancelDemand}&amp;subject={command>threadSubject}">Annuler la demande</a>.
+                        Si vous avez reçu ce message par erreur, cliquer sur
+                        <a href="mailto:Support@anothersocialeconomy.com?body=Je ne devrais pas recevoir ce message. Veuillez retirer mon adresse de courriel.&amp;subject=Il y a sans doute une erreur avec la Demande:{demand>key}">Il y a sans doute une erreur</a> :-(
+                    </p>
+                    {message>footer}
+                    <p>Demande: {demand>key}, présentée par <a href="{influencer>url}">{influencer>name}</a>.</p>
+                </seg>
+            </tuv>
+        </tu>
+        <tu tuid="long_cardealer_demand_update_ackToConsumer" dataType="text">
+            <prop type="x-tier">javarb</prop>
+            <prop type="x-version">1</prop>
+            <tuv xml:lang="fr">
+                <seg>
+                    <p>Bonjour <strong>{demand>owner>name}</strong>,</p>
+                    <p>
+                        Nous confirmons la <strong>mise-à-jour</strong> de la demande à <strong>{demand>range} {demand>rangeUnit}</strong>
+                        autour de <strong><a href="https://maps.google.com/maps?hl=en&amp;ie=UTF8&amp;z=13&amp;q={demand>location>postalCode} {demand>location>countryCode}">{demand>location>postalCode} {demand>location>countryCode}</a></strong>,
+                        pour le <strong>{demand>dueDate}</strong>. Autres détails:
+                    </p>
+                    <ul>
+                        <li><strong>{demand>content}</strong></li>
                     </ul>
                     <p>
                         Nous allons diffuser de manière anonyme votre demande {demand>key} aux commerces environnants
@@ -1479,10 +1567,7 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a proposé:</p>
                     <ul>
                         <li>Détails: <strong>{proposal>content}</strong></li>
-                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Prix: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -1719,10 +1804,7 @@
                     <p><strong><a href="{store>url}">{store>name}</a></strong> a modifié la <strong>proposition {proposal>key}</strong> for:</p>
                     <ul>
                         <li>Détails: <strong>{proposal>content}</strong></li>
-                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Prix: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                     </ul>
                     <p>
@@ -2466,10 +2548,7 @@
                     <p>L'évaluation de la proposition {proposal>key} a bien été prise en compte:</p>
                     <ul>
                         <li>Détails: <strong>{proposal>content}</strong></li>
-                        <li>Autres options: <strong>{proposal>metadata}</strong></li>
-                        <li>Quantité: <strong>{proposal>quantity}</strong></li>
-                        <li>Prix unitaire: <strong>{proposal>price}{proposal>currencyCode}</strong></li>
-                        <li>Coût total: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
+                        <li>Prix: <strong>{proposal>total}{proposal>currencyCode}</strong></li>
                         <li>Date limite: <strong>{proposal>dueDate}</strong></li>
                         <li>Évaluation: <strong>{proposal>score}</strong> -- Commentaire: {proposal>comment}</li>
                     </ul>
