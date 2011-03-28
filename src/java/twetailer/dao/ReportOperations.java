@@ -35,6 +35,7 @@ public class ReportOperations extends BaseOperations {
         return cacheHandler.getCachedInstance(Report.KEY, key);
     }
 
+    @SuppressWarnings("unused")
     private static List<Report> getCachedReports(String key, Object value) {
         Report report = cacheHandler.getCachedInstance(key, value);
         if (report != null) {

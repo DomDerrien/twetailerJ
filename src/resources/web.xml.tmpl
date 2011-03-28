@@ -190,6 +190,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>report</servlet-name>
+        <servlet-class>twetailer.j2ee.restlet.ReportRestlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>report</servlet-name>
+        <url-pattern>/API/Report/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>saleassociate</servlet-name>
         <servlet-class>twetailer.j2ee.restlet.SaleAssociateRestlet</servlet-class>
     </servlet>

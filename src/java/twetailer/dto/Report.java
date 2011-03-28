@@ -56,11 +56,6 @@ public class Report extends Entity {
     public final static String LANGUAGE = Consumer.LANGUAGE;
 
     @Persistent
-    private Long locationKey;
-
-    public final static String LOCATION_KEY = Location.LOCATION_KEY;
-
-    @Persistent
     private String metadata;
 
     public final static String META_DATA = Command.META_DATA;
@@ -196,14 +191,6 @@ public class Report extends Entity {
         this.language = language;
     }
 
-    public Long getLocationKey() {
-        return locationKey;
-    }
-
-    public void setLocationKey(Long locationKey) {
-        this.locationKey = locationKey;
-    }
-
     public String getMetadata() {
         return metadata;
     }
@@ -282,7 +269,6 @@ public class Report extends Entity {
         }
         if (getIpAddress() != null) { out.put(IP_ADDRESS, getIpAddress()); }
         if (getLanguage() != null) { out.put(LANGUAGE, getLanguage()); }
-        if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         if (getMetadata() != null) { out.put(META_DATA, getMetadata()); }
         if (getRange() != null) { out.put(RANGE, getRange()); }
         if (getReferrerUrl() != null) { out.put(REFERRER_URL, getReferrerUrl().getValue()); }
@@ -318,7 +304,6 @@ public class Report extends Entity {
         }
         if (in.containsKey(IP_ADDRESS)) { setIpAddress(in.getString(IP_ADDRESS)); }
         if (in.containsKey(LANGUAGE)) { setLanguage(in.getString(LANGUAGE)); }
-        if (in.containsKey(LOCATION_KEY)) { setLocationKey(in.getLong(LOCATION_KEY)); }
         if (in.containsKey(META_DATA)) { setMetadata(in.getString(META_DATA)); }
         if (in.containsKey(RANGE)) { setRange(in.getDouble(RANGE)); }
         if (in.containsKey(REFERRER_URL)) { setReferrerUrl(new Text(in.getString(REFERRER_URL))); }

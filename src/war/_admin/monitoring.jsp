@@ -107,32 +107,6 @@
             region="center"
             style="margin-top: 5px; margin-bottom: 10px;"
         >
-            <fieldset class="entityInformation" style="float:right;margin-left:10px;text-align:center;">
-                <legend>Resources</legend>
-                GAE console:
-                    <a href="https://appengine.google.com/dashboard?&app_id=anothersocialeconomy" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://appengine.google.com/dashboard?&app_id=twetailer" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_ah/admin" title="Local development environment">D</a>
-                <br />
-                Registration:
-                    <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/_admin/registration.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_admin/registration.jsp" title="Local development environment">D</a>
-                <br />
-                Monitoring:
-                    <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/_admin/monitoring.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_admin/monitoring.jsp" title="Local development environment">D</a>
-                <br />
-                Associate:
-                    <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/console/associate.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/console/associate.jsp" title="Local development environment">D</a>
-                <br />
-                <div style="color:grey;font-size:smaller;">ASE / Twetailer / Dev</div>
-            </fieldset>
-            <div style="background-color:red;color:white;font-weight:bold;padding:5px;float:left;border-radius:4px;">Warning: To avoid conflicts regarding the ownership of the commands to process, you MUST logout from all non <i>admin</i> console!</div>
-            <br clear="left"/>
             <fieldset class="entityInformation" id="queryFieldset" style="">
                 <legend>
                     Search
@@ -347,6 +321,434 @@
                     </table>
                 </form>
             </fieldset>
+            <fieldset class="entityInformation" id="demandInformationFieldset" style="float:left;margin:5px;">
+                <legend>
+                    Demand Information
+                    <a href="javascript:dojo.query('#demandInformation>table').style('display','none');">[&ndash;]</a> /
+                    <a href="javascript:dojo.query('#demandInformation>table').style('display','');">[+]</a>
+                </legend>
+                <form  dojoType="dijit.form.Form" id="demandInformation">
+                    <table>
+                        <tr>
+                            <td style="font-weight:bold;text-align:right;padding-right:10px;color:orange;">Point of view:</td>
+                            <td id="demand.pointOfView" style="font-weight:bold;color:orange;"></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td><label for="demand.key">Key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.key', 'Demand'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.key', 'Demand');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.creationDate">Creation date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="demand.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.locationKey">Location key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.locationKey', 'Location'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.locationKey', 'Location');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input dojoType="dijit.form.CheckBox" id="demand.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><label for="demand.markedForDeletion">Marked for deletion</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.modificationDate">Modification date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="demand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td><label for="demand.action">Action:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="demand.action" name="action" readonly="true" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.cancelerKey">Canceler key:</label></td>
+                            <td>
+                                <input dojoType="dijit.form.TextBox" id="demand.cancelerKey" name="cancelerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.cancelerKey', 'Consumer'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.cancelerKey', 'Consumer');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.cc">CC-ed:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand.cc" name="cc" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.content">Content:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand.content" name="content" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.dueDate">Due date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="demand.dueDate" name="dueDate" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.hashTags">Hash tags:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.metadata">Metadata:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="demand.metadata" name="metadata" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.ownerKey">Owner key:</label></td>
+                            <td>
+                                <input dojoType="dijit.form.TextBox" id="demand.ownerKey" name="ownerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.ownerKey', 'Consumer'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.ownerKey', 'Consumer');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.rawCommandId">RawCommand key:</label></td>
+                            <td>
+                                <input dojoType="dijit.form.TextBox" id="demand.rawCommandId" name="rawCommandId" readonly="true" style="width:8em;" type="text" />
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.rawCommandId', 'RawCommand');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.source">Source:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    hasDownArrow="true"
+                                    id="demand.source"
+                                    name="source"
+                                    readonly="true"
+                                    style="width:10em;"
+                                >
+                                    <option value="mail" selected="true">E-mail</option>
+                                    <option value="jabber">Jabber/XMPP</option>
+                                    <option value="twitter">Twitter</option>
+                                    <option value="simulated">Simulated</option>
+                                    <option value="robot">Robot</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="api">REST API</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.state">State:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    hasDownArrow="true"
+                                    id="demand.state"
+                                    name="state"
+                                    style="width:10em;"
+                                >
+                                    <option value="opened" selected="true">Open</option>
+                                    <option value="invalid">Invalid</option>
+                                    <option value="published">Published</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                    <option value="closed">Closed</option>
+                                    <option value="declined">Declined</option>
+                                    <option value="markedForDeletion">Marked for deletion</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input dojoType="dijit.form.CheckBox" id="demand.stateCmdList" name="stateCmdList" readonly="true" type="checkbox" /></td>
+                            <td><label for="demand.stateCmdList">State for command: !list</label></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td><label for="demand.expirationDate">Expiration date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="demand.expirationDate" name="expirationDate" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.influencerKey">Influencer key:</label></td>
+                            <td>
+                                <input dojoType="dijit.form.TextBox" id="demand.influencerKey" name="influencerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.influencerKey', 'Influencer'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.influencerKey', 'Influencer');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.proposalKeys">Proposal keys:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.ComboBox"
+                                    hasDownArrow="true"
+                                    id="demand.proposalKeys"
+                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER'); }"
+                                    style="width:8em;"
+                                >
+                                    <option value="none" selected="true">None</option>
+                                </select>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.quantity">Quantity:</label></td>
+                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.quantity" name="quantity" style="width:3em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.range">Range:</label></td>
+                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.range" name="range" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.rangeUnit">Range unit:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    hasDownArrow="true"
+                                    id="demand.rangeUnit"
+                                    name="rangeUnit"
+                                    style="width:9em;"
+                                >
+                                    <option value="km" selected="true">Kilometers</option>
+                                    <option value="mi">Miles</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.reportKey">Report key:</label></td>
+                            <td>
+                                <input dojoType="dijit.form.TextBox" id="demand.reportKey" name="reportKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.reportKey', 'Report'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.reportKey', 'Report');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="demand.saleAssociateKeys">Sale associate keys:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.ComboBox"
+                                    hasDownArrow="true"
+                                    id="demand.saleAssociateKeys"
+                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate'); }"
+                                    style="width:8em;"
+                                >
+                                    <option value="none" selected="true">None</option>
+                                </select>
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <button dojoType="dijit.form.Button" id="demand.updateButton" onclick="localModule.saveEntity('Demand');" type="button">Update</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
+            <fieldset class="entityInformation" id="locationInformationFieldset" style="float:left;margin:5px;">
+                <legend>
+                    Location Information
+                    <a href="javascript:dojo.query('#locationInformation>table').style('display','none');">[&ndash;]</a> /
+                    <a href="javascript:dojo.query('#locationInformation>table').style('display','');">[+]</a>
+                </legend>
+                <form  dojoType="dijit.form.Form" id="locationInformation">
+                    <table id="locationAttributeTable">
+                        <tr>
+                            <td><label for="location.key">Key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.key', 'Location'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.key', 'Location');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="location.creationDate">Creation date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="location.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="location.locationKey">Location key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.locationKey', 'Location');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input dojoType="dijit.form.CheckBox" id="location.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><label for="location.markedForDeletion">Marked for deletion</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="location.modificationDate">Modification date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="location.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="location._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="location._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td><label for="location.countryCode">Country code:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    id="location.countryCode"
+                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'location.postalCode');"
+                                >
+                                    <option value="CA" selected="true">Canada</option>
+                                    <option value="US">United States of America</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input dojoType="dijit.form.CheckBox" id="location.hasStore" name="hasStore" readonly="true" type="checkbox" /></td>
+                            <td><label for="location.hasStore">Has store</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="location.latitude">Latitude:</label></td>
+                            <td><input dojoType="dijit.form.NumberTextBox" id="location.latitude" name="latitude" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for=location.longitude>Longitude:</label></td>
+                            <td><input dojoType="dijit.form.NumberTextBox" id="location.longitude" name="longitude" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="location.postalCode">Postal code:</label></td>
+                            <td>
+                                <input
+                                    dojoType="dijit.form.ValidationTextBox"
+                                    id="location.postalCode"
+                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
+                                    name="postalCode"
+                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
+                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
+                                    required="true"
+                                    style="width:6em;"
+                                    type="text"
+                                />
+                            </td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');" type="button">Update</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
+                                <button disabled="true" dojoType="dijit.form.Button" type="button">View map</button>
+                                <br />
+                                <button dojoType="dijit.form.Button" onclick="localModule.openLocationFilterDialog();" type="button">Get location keys</button>
+                                <button dojoType="dijit.form.Button" onclick="localModule.openStoreFilterDialog();" type="button">Get store keys</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
+            <fieldset class="entityInformation" id="reportInformationFieldset" style="float:left;margin:5px;">
+                <legend>
+                    Report Information
+                    <a href="javascript:dojo.query('#reportInformation>table').style('display','none');">[&ndash;]</a> /
+                    <a href="javascript:dojo.query('#reportInformation>table').style('display','');">[+]</a>
+                </legend>
+                <form  dojoType="dijit.form.Form" id="reportInformation">
+                    <table id="reportAttributeTable">
+                        <tr>
+                            <td><label for="report.key">Key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.key', 'Report'); }" style="width:8em;" type="text" />
+                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.key', 'Report');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.creationDate">Creation date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="report.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.locationKey">Location key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.locationKey', 'Location');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input dojoType="dijit.form.CheckBox" id="report.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><label for="report.markedForDeletion">Marked for deletion</label></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.modificationDate">Modification date:</label></td>
+                            <td><input dojoType="dijit.form.DateTextBox" id="report.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report._tracking" style="font-style: italic;">Tracking:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td><label for="report.consumerKey">Consumer key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.consumerKey', 'Consumer'); }" readonly="true" style="width:8em;" type="text" />
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.consumerKey', 'Consumer');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.content">Content:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.content" name="content" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.demandKey">Demand key:</label></td>
+                            <td>
+                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.demandKey" name="demandKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.demandKey', 'Demand'); }" readonly="true" style="width:8em;" type="text" />
+                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.demandKey', 'Demand');" type="button">Fetch</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.hashTags">Hash tags:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.ipAddress">IP address:</label></td>
+                            <td><input dojoType="dijit.form.TextBox" id="report.ipAddress" name="ipAddress" type="text" /></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.language">Language:</label></td>
+                            <td>
+                                <select
+                                    dojoType="dijit.form.Select"
+                                    hasDownArrow="true"
+                                    id="report.language"
+                                    name="language"
+                                    style="width:8em;"
+                                >
+                                    <option value="en" selected="true">English</option>
+                                    <option value="fr">French</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.metadata">Metadata:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.metadata" name="metadata" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.referrerUrl">Referrer URL:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.referrerUrl" name="referrerUrl" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.reporterTitle">Reporter title:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.reporterTitle" name="reporterTitle" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.reporterUrl">Reporter URL:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.reporterUrl" name="reporterUrl" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.userAgent">userAgent:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="report.userAgent" name="userAgent" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td><label for="report.range">Range:</label></td>
+                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="report.range" name="range" style="width:8em;" type="text" /></td>
+                        </tr>
+                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
+                        <tr>
+                            <td colspan="2" style="text-align:center;">
+                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Report');" type="button">Update</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
+            <br clear="both" />
+            <div style="float:left;">
+               <a id="turnOffRow2" href="javascript:dojo.query('#turnOffRow2').style('display', 'none');dojo.query('#turnOnRow2').style('display', '');dojo.query('#demandInformation>table').style('display','none');dojo.query('#proposalInformation>table').style('display','none');dojo.query('#rawcommandInformation>table').style('display','none');dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a>
+               <a id="turnOnRow2" href="javascript:dojo.query('#turnOnRow2').style('display', 'none');dojo.query('#turnOffRow2').style('display', '');dojo.query('#demandInformation>table').style('display','');dojo.query('#proposalInformation>table').style('display','');dojo.query('#rawcommandInformation>table').style('display','');dojo.query('#paymentInformation>table').style('display','');" style="display:none;">[+]</a>
+            </div>
             <fieldset class="entityInformation" id="saleassociateInformationFieldset" style="float:left;margin:5px;">
                 <legend>
                     Sale Associate Information
@@ -546,314 +948,6 @@
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="locationInformationFieldset" style="float:left;margin:5px;">
-                <legend>
-                    Location Information
-                    <a href="javascript:dojo.query('#locationInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#locationInformation>table').style('display','');">[+]</a>
-                </legend>
-                <form  dojoType="dijit.form.Form" id="locationInformation">
-                    <table id="locationAttributeTable">
-                        <tr>
-                            <td><label for="location.key">Key:</label></td>
-                            <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.key', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.key', 'Location');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="location.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="location.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="location.locationKey">Location key:</label></td>
-                            <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.locationKey', 'Location');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="location.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
-                            <td><label for="location.markedForDeletion">Marked for deletion</label></td>
-                        </tr>
-                        <tr>
-                            <td><label for="location.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="location.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="location._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="location._tracking" name="_tracking" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td><label for="location.countryCode">Country code:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.Select"
-                                    id="location.countryCode"
-                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'location.postalCode');"
-                                >
-                                    <option value="CA" selected="true">Canada</option>
-                                    <option value="US">United States of America</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="location.hasStore" name="hasStore" readonly="true" type="checkbox" /></td>
-                            <td><label for="location.hasStore">Has store</label></td>
-                        </tr>
-                        <tr>
-                            <td><label for="location.latitude">Latitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="location.latitude" name="latitude" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for=location.longitude>Longitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="location.longitude" name="longitude" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="location.postalCode">Postal code:</label></td>
-                            <td>
-                                <input
-                                    dojoType="dijit.form.ValidationTextBox"
-                                    id="location.postalCode"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                                    name="postalCode"
-                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
-                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
-                                    required="true"
-                                    style="width:6em;"
-                                    type="text"
-                                />
-                            </td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');" type="button">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
-                                <button disabled="true" dojoType="dijit.form.Button" type="button">View map</button>
-                                <br />
-                                <button dojoType="dijit.form.Button" onclick="localModule.openLocationFilterDialog();" type="button">Get location keys</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.openStoreFilterDialog();" type="button">Get store keys</button>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </fieldset>
-            <br clear="both" />
-            <div style="float:left;">
-               <a id="turnOffRow2" href="javascript:dojo.query('#turnOffRow2').style('display', 'none');dojo.query('#turnOnRow2').style('display', '');dojo.query('#demandInformation>table').style('display','none');dojo.query('#proposalInformation>table').style('display','none');dojo.query('#rawcommandInformation>table').style('display','none');dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow2" href="javascript:dojo.query('#turnOnRow2').style('display', 'none');dojo.query('#turnOffRow2').style('display', '');dojo.query('#demandInformation>table').style('display','');dojo.query('#proposalInformation>table').style('display','');dojo.query('#rawcommandInformation>table').style('display','');dojo.query('#paymentInformation>table').style('display','');" style="display:none;">[+]</a>
-            </div>
-            <fieldset class="entityInformation" id="demandInformationFieldset" style="float:left;margin:5px;">
-                <legend>
-                    Demand Information
-                    <a href="javascript:dojo.query('#demandInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#demandInformation>table').style('display','');">[+]</a>
-                </legend>
-                <form  dojoType="dijit.form.Form" id="demandInformation">
-                    <table>
-                        <tr>
-                            <td style="font-weight:bold;text-align:right;padding-right:10px;color:orange;">Point of view:</td>
-                            <td id="demand.pointOfView" style="font-weight:bold;color:orange;"></td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td><label for="demand.key">Key:</label></td>
-                            <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.key', 'Demand'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.key', 'Demand');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.locationKey">Location key:</label></td>
-                            <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.locationKey', 'Location');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="demand.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
-                            <td><label for="demand.markedForDeletion">Marked for deletion</label></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand._tracking" name="_tracking" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td><label for="demand.action">Action:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="demand.action" name="action" readonly="true" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.cancelerKey">Canceler key:</label></td>
-                            <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.cancelerKey" name="cancelerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.cancelerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.cancelerKey', 'Consumer');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.cc">CC-ed:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.cc" name="cc" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.content">Content:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.content" name="content" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.dueDate">Due date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.dueDate" name="dueDate" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.hashTags">Hash tags:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.hashTags" name="hashTags" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.metadata">Metadata:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.metadata" name="metadata" style="width:10em;"></textarea></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.ownerKey">Owner key:</label></td>
-                            <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.ownerKey" name="ownerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.ownerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.ownerKey', 'Consumer');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.rawCommandId">RawCommand key:</label></td>
-                            <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.rawCommandId" name="rawCommandId" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.rawCommandId', 'RawCommand');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.source">Source:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
-                                    id="demand.source"
-                                    name="source"
-                                    readonly="true"
-                                    style="width:10em;"
-                                >
-                                    <option value="mail" selected="true">E-mail</option>
-                                    <option value="jabber">Jabber/XMPP</option>
-                                    <option value="twitter">Twitter</option>
-                                    <option value="simulated">Simulated</option>
-                                    <option value="robot">Robot</option>
-                                    <option value="facebook">Facebook</option>
-                                    <option value="api">REST API</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.state">State:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
-                                    id="demand.state"
-                                    name="state"
-                                    style="width:10em;"
-                                >
-                                    <option value="opened" selected="true">Open</option>
-                                    <option value="invalid">Invalid</option>
-                                    <option value="published">Published</option>
-                                    <option value="confirmed">Confirmed</option>
-                                    <option value="cancelled">Cancelled</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="declined">Declined</option>
-                                    <option value="markedForDeletion">Marked for deletion</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="demand.stateCmdList" name="stateCmdList" readonly="true" type="checkbox" /></td>
-                            <td><label for="demand.stateCmdList">State for command: !list</label></td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td><label for="demand.expirationDate">Expiration date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.expirationDate" name="expirationDate" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.influencerKey">Influencer key:</label></td>
-                            <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.influencerKey" name="influencerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.influencerKey', 'Influencer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.influencerKey', 'Influencer');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.proposalKeys">Proposal keys:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.ComboBox"
-                                    hasDownArrow="true"
-                                    id="demand.proposalKeys"
-                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER'); }"
-                                    style="width:8em;"
-                                >
-                                    <option value="none" selected="true">None</option>
-                                </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.quantity">Quantity:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.quantity" name="quantity" style="width:3em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.range">Range:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.range" name="range" style="width:8em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.rangeUnit">Range unit:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
-                                    id="demand.rangeUnit"
-                                    name="rangeUnit"
-                                    style="width:9em;"
-                                >
-                                    <option value="km" selected="true">Kilometers</option>
-                                    <option value="mi">Miles</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.saleAssociateKeys">Sale associate keys:</label></td>
-                            <td>
-                                <select
-                                    dojoType="dijit.form.ComboBox"
-                                    hasDownArrow="true"
-                                    id="demand.saleAssociateKeys"
-                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate'); }"
-                                    style="width:8em;"
-                                >
-                                    <option value="none" selected="true">None</option>
-                                </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate');" type="button">Fetch</button>
-                            </td>
-                        </tr>
-                        <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
-                        <tr>
-                            <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" id="demand.updateButton" onclick="localModule.saveEntity('Demand');" type="button">Update</button>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-            </fieldset>
             <fieldset class="entityInformation" id="proposalInformationFieldset" style="float:left;margin:5px;">
                 <legend>
                     Proposal Information
@@ -1023,10 +1117,6 @@
                                 <input dojoType="dijit.form.TextBox" id="proposal.demandKey" name="demandKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE'); }" readonly="true" style="width:8em;" type="text" />
                                 <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE');" type="button">Fetch</button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td><label for="proposal.historic">Historic:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.historic" name="historic"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.price">Price:</label></td>
@@ -1632,6 +1722,7 @@
                 }
             }
         }
+        dijit.byId('topContainer').resize();
     };
     localModule.fetchEntity = function(keyFieldId, entityName, pointOfView) {
         var key = dijit.byId(keyFieldId).get('value');

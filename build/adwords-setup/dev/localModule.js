@@ -16,6 +16,7 @@ var localModule = {};
     dojo.require('dijit.form.NumberSpinner');
     dojo.require('dijit.form.Textarea');
     dojo.require('dijit.form.TextBox');
+    dojo.require('dijit.Tooltip');
     dojo.require('dijit.form.ValidationTextBox');
     dojo.require('dojox.analytics.Urchin');
     // ** dojo.require('dojox.widget.DialogSimple');
@@ -84,6 +85,9 @@ var localModule = {};
         new dijit.form.Textarea({ name : 'info', value : info, style : 'min-height:80px;', style : 'width:100%; min-height: 80px;' }, 'info');
         new dijit.form.ValidationTextBox({ name : 'email', placeHolder : lB.emailFieldPlaceHolder, regExp : '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required : true, trim : true }, 'email').focus();
         new dijit.form.CheckBox({ name : 'demoMode' }, 'demoMode');
+        var lock = dojo.byId('emailLock');
+        new dijit.Tooltip({label:lock.title, connectId:[lock]});
+        lock.title = '';
         if (!debugMode) {
             if (checkCookie) {
                 reportId = dojo.cookie('reportId') || reportId;

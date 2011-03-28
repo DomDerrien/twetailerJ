@@ -107,36 +107,11 @@
             region="center"
             style="margin-top: 5px; margin-bottom: 10px;"
         >
-            <fieldset class="entityInformation" style="float:right;margin-left:10px;text-align:center;">
-                <legend>Resources</legend>
-                GAE console:
-                    <a href="https://appengine.google.com/dashboard?&app_id=anothersocialeconomy" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://appengine.google.com/dashboard?&app_id=twetailer" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_ah/admin" title="Local development environment">D</a>
-                <br />
-                Registration:
-                    <a href="https://anothersocialeconomy.appspot.com/_admin/registration.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/_admin/registration.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_admin/registration.jsp" title="Local development environment">D</a>
-                <br />
-                Monitoring:
-                    <a href="https://anothersocialeconomy.appspot.com/_admin/monitoring.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/_admin/monitoring.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/_admin/monitoring.jsp" title="Local development environment">D</a>
-                <br />
-                Associate:
-                    <a href="https://anothersocialeconomy.appspot.com/console/associate.jsp" title="AnotherSocialEconomy">A</a> /
-                    <a href="https://twetailer.appspot.com/console/associate.jsp" title="Twetailer">T</a> /
-                    <a href="http://localhost:9999/console/associate.jsp" title="Local development environment">D</a>
-                <br />
-                <div style="color:grey;font-size:smaller;">ASE / Twetailer / Dev</div>
-            </fieldset>
             <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;height:100%;">
                 <div dojoType="dijit.layout.ContentPane" jsId="step1">
                     <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
                         <form dojoType="dijit.form.Form" id="locationInformation" onsubmit="localModule.createLocation();return false;">
-                            <div style="background-color:red;color:white;margin-bottom:10px;font-weight:bold;padding:5px;border-radius:4px;">Warning: To avoid conflicts regarding the ownership of the commands to process, you MUST logout from all non <i>admin</i> console!</div>
                             <div>
                                 <label for="<%= Location.POSTAL_CODE %>">Postal Code</label><br/>
                                 <input
@@ -306,10 +281,14 @@
             } %>
             dojo.byId('logoutLink').href = '<%= com.google.appengine.api.users.UserServiceFactory.getUserService().createLogoutURL(request.getRequestURI()) %>';
             twetailer.Common.init('en', null, null);
+            localModule.init();
         });
     });
 
     var localModule = new Object();
+    localModule.init = function() {
+        dijit.byId('topContainer').resize();
+    };
     localModule.createLocation = function() {
         var form = dijit.byId('locationInformation');
         if (!form.validate()) {
