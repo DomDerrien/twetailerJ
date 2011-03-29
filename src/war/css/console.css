@@ -63,6 +63,7 @@ body {
 #headerZone {
     background-color: #aaa;
     margin: 0 10px;
+    padding: 0;
 }
 
 #brand {
@@ -315,6 +316,7 @@ body {
  * Main console
  */
 #centerZone.console {
+    padding: 0;
 }
 
 /**

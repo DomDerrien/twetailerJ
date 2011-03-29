@@ -99,8 +99,15 @@
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
-        <div data-dojo-type="dijit.layout.ContentPane" id="centerZone" data-dojo-props="region:'center'"><div id="consumerGrid"></div></div>
-        <div data-dojo-type="dijit.layout.ContentPane" id="footerZone" data-dojo-props="region: 'bottom'">
+        <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%;">
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+                Data transfer: <span id="transferCount">none</span>.
+            </div>
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center'" style="padding: 0">
+                <div id="consumerGrid"></div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'bottom'" id="footerZone">
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
@@ -186,15 +193,18 @@
         dojo.connect(window, "onresize", grid, "resize");
         return grid;
     };
+    localModule.transferCount = 0;
     localModule.fetchConsumers = function(modificationDate) {
+        dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: {
-                '>modificationDate': twetailer.Common.toISOString(modificationDate, null),
+                'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
                 '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
             },
             handleAs: 'json',
             load: function(response, ioArgs) {
+                dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
                 if (response !== null && response.success) {
                     // Build the array of Consumer instances for the grid
                     var resources = response.resources, idx, limit = resources.length, resource, keys = [];
@@ -232,24 +242,31 @@
         var idx, limit = keys.length, consumerKey;
         for (idx = 0; idx < limit; idx++) {
             consumerKey = keys[idx];
+            dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
             dojo.xhrGet({
                 headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                 content: {
                     'pointOfView': 'CONSUMER',
                     'onBehalfConsumerKey': consumerKey,
-                    '>modificationDate': twetailer.Common.toISOString(modificationDate, null),
+                    'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
                     '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
                 },
                 handleAs: 'json',
                 load: function(response, ioArgs) {
+                    dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
                     if (response !== null && response.success) {
-                        var resources = response.resources, jdx, jimit = resources.length, resource;
+                        var resources = response.resources, jdx, jimit = resources.length, resource, anyProposal = false;
                         for (jdx = 0; jdx < jimit; jdx++) {
                             resource = resources[jdx];
                             resource._type = 'Demand';
+                            if (resource.content) { resource.content = resource.content.replace(/\\n/g, '\n'); }
+                            if (resource._tracking) { resource._tracking = resource._tracking.replace(/\\n/g, '\n'); }
                             localModule.addChild(resource.ownerKey, resource);
+                            anyProposal = anyProposal || resource.proposalKeys;
                         }
-                        localModule.fetchProposals(consumerKey, modificationDate);
+                        if (anyProposal) {
+                            localModule.fetchProposals(resource.ownerKey, modificationDate);
+                        }
                     }
                     else {
                         alert(response.message+'\nurl: '+ioArgs.url);
@@ -261,16 +278,18 @@
         }
     };
     localModule.fetchProposals = function(consumerKey, modificationDate) {
+        dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: {
                 'pointOfView': 'CONSUMER',
                 'onBehalfConsumerKey': consumerKey,
-                '>modificationDate': twetailer.Common.toISOString(modificationDate, null),
+                'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
                 '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
             },
             handleAs: 'json',
             load: function(response, ioArgs) {
+                dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
                 if (response !== null && response.success) {
                     var resources = response.resources, jdx, jimit = resources.length, resource, keys = [];
                     for (jdx = 0; jdx < jimit; jdx++) {

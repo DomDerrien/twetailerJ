@@ -260,7 +260,7 @@ public abstract class BaseRestlet extends HttpServlet {
         JsonObject in = null;
 
         try {
-            // TODO: verify Content-type == "application/json"
+            // TODO: verify Content-type == "application/json; charset:UTF-8"
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);
@@ -306,7 +306,7 @@ public abstract class BaseRestlet extends HttpServlet {
         JsonObject in = null;
 
         try {
-            // TODO: verify Content-type == "application/json"
+            // TODO: verify Content-type == "application/json; charset:UTF-8"
             in = new JsonParser(request.getInputStream(), StringUtils.JAVA_UTF8_CHARSET).getJsonObject();
 
             OpenIdUser loggedUser = getLoggedUser(request);

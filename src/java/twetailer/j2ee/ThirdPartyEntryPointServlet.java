@@ -541,6 +541,9 @@ public class ThirdPartyEntryPointServlet extends HttpServlet {
                 report.setRange(range);
             }
         }
+        catch(NumberFormatException ex) {
+            // Invalid number, just ignored
+        }
         catch(ClassCastException ex) {
             // Invalid range, just ignored
         }

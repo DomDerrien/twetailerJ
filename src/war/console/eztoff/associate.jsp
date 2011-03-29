@@ -337,6 +337,7 @@
             if (!"localhost".equals(request.getServerName()) && !"127.0.0.1".equals(request.getServerName()) && !"10.0.2.2".equals(request.getServerName())) { %>
             new dojox.analytics.Urchin({ acct: 'UA-11910037-2' });<%
             } %>
+            dijit.byId('topContainer').resize();
         });
     });
     </script>

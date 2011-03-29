@@ -1751,44 +1751,7 @@
             handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    dijit.byId(prefix + 'Information').reset();
-                    var resource = response.resource;
-                    for (var attr in resource) {
-                        try {
-                            var value = resource[attr];
-                            if (attr.indexOf('Date') != -1) {
-                                value = dojo.date.stamp.fromISOString(value);
-                            }
-                            if (attr == 'criteria' || attr == 'hashTags' || attr == 'cc') {
-                                value = value.join('\n');
-                            }
-                            if (attr == 'proposalKeys' || attr == 'saleAssociateKeys') {
-                                var options = new dojo.data.ItemFileWriteStore({ data: { identifier: 'name', items: [] } })
-                                var limit = value.length;
-                                for (var idx = 0; idx < limit; idx++) {
-                                    options.newItem({ name: value [idx] });
-                                }
-                                dijit.byId(prefix + '.' + attr).set('store', options);
-                                dijit.byId(prefix + '.' + attr).set('value', value[0]);
-                            }
-                            else {
-                                var field = dijit.byId(prefix + '.' + attr)
-                                if (field) {
-                                    field.set('value', value);
-                                }
-                                else if (attr != 'criteria') {
-                                    alert('Field "' + prefix + '.' + attr + '" is missing!');
-                                }
-                            }
-                            if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
-                                var isNonModifiable = value == 'closed' || value == 'cancelled' || value == 'markedForDeletion';
-                                dijit.byId(prefix + '.updateButton').set('disabled', isNonModifiable);
-                            }
-                        }
-                        catch (ex) {
-                            alert('Error while processing attribute "' + attr + '" for an instance of class "' + entityName + '".\nError: ' + ex);
-                        }
-                    }
+                    localModule.displayEntityAttributes(prefix, response.resource);
                 }
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
@@ -1801,6 +1764,48 @@
             error: function(message, ioArgs) { twetailer.Common.handleError(message, ioArgs, true); },
             url: '/API/' + entityName + '/' + key
         });
+    };
+    localModule.displayEntityAttributes = function(prefix, resource) {
+        dijit.byId(prefix + 'Information').reset();
+        for (var attr in resource) {
+            try {
+                var value = resource[attr];
+                if (attr.indexOf('Date') != -1) {
+                    value = dojo.date.stamp.fromISOString(value);
+                }
+                if (attr == '_tracking' || content == 'content') {
+                    value = value.replace(/\\n/g, '\n');
+                }
+                if (attr == 'criteria' || attr == 'hashTags' || attr == 'cc') {
+                    value = value.join('\n');
+                }
+                if (attr == 'proposalKeys' || attr == 'saleAssociateKeys') {
+                    var options = new dojo.data.ItemFileWriteStore({ data: { identifier: 'name', items: [] } })
+                    var limit = value.length;
+                    for (var idx = 0; idx < limit; idx++) {
+                        options.newItem({ name: value [idx] });
+                    }
+                    dijit.byId(prefix + '.' + attr).set('store', options);
+                    dijit.byId(prefix + '.' + attr).set('value', value[0]);
+                }
+                else {
+                    var field = dijit.byId(prefix + '.' + attr)
+                    if (field) {
+                        field.set('value', value);
+                    }
+                    else if (attr != 'criteria') {
+                        alert('Field "' + prefix + '.' + attr + '" is missing!');
+                    }
+                }
+                if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
+                    var isNonModifiable = value == 'closed' || value == 'cancelled' || value == 'markedForDeletion';
+                    dijit.byId(prefix + '.updateButton').set('disabled', isNonModifiable);
+                }
+            }
+            catch (ex) {
+                alert('Error while processing attribute "' + attr + '" for an instance of class "' + entityName + '".\nError: ' + ex);
+            }
+        }
     };
     localModule.saveEntity = function(entityName) {
         var prefix = entityName.toLowerCase();
@@ -1835,7 +1840,7 @@
             handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
-                    // No visual feedback
+                    localModule.displayEntityAttributes(prefix, response.resource);
                 }
                 else {
                     alert(response.exceptionMessage+'\nurl: '+ioArgs.url+'\n\n'+response.originalExceptionMessage);
