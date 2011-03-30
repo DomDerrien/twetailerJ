@@ -66,6 +66,7 @@ public class StoreSteps extends BaseSteps {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
 
         // Date fields
+        processDateFilter(Entity.CREATION_DATE, parameters, queryFilters);
         processDateFilter(Entity.MODIFICATION_DATE, parameters, queryFilters);
 
         // String fields

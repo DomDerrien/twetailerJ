@@ -178,10 +178,10 @@ public class BaseSteps {
     protected static Map<String, Object> processDateFilter(String fieldName, JsonObject parameters, Map<String, Object> queryFilters) {
 
         if (parameters.containsKey(fieldName)) {
-            Date lastModificationDate = null;
+            Date date = null;
             try {
-                lastModificationDate = DateUtils.isoToDate(parameters.getString(fieldName));
-                queryFilters.put('>' + fieldName, lastModificationDate);
+                date = DateUtils.isoToDate(parameters.getString(fieldName));
+                queryFilters.put('>' + fieldName, date);
             }
             catch (ParseException e) { } // Date not set, too bad.
         }

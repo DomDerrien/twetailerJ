@@ -28,6 +28,7 @@
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
     cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
+    String pageUrl = request.getRequestURL().replace(request.getRequestURL().indexOf(request.getRequestURI().substring(0, 4)), request.getRequestURL().length(), "/").toString();
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -79,14 +80,14 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/html/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="/js/dojo/dojo/dojo.js"
         type="text/javascript"
     ></script><%
@@ -102,11 +103,19 @@
         <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%;">
             <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
                 <div style="float: right">
-                    Modification date:
-                    <input data-dojo-type="dijit.form.DateTextBox" id="modificationDate" style="width:8em;" type="text" />
+                    Date filter:
+                    <select
+                        data-dojo-type="dijit.form.Select"
+                        data-dojo-propos="hasDownArrow: true"
+                        id="dateFilter"
+                    >
+                        <option value="modificationDate">Modification</option>
+                        <option value="creationDate" selected="true">Creation</option>
+                    </select>
+                    <input data-dojo-type="dijit.form.DateTextBox" id="dateLimit" type="text" />
                     <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: localModule.loadGrid">Load</button>
                 </div>
-                Data transfer: <span id="transferCount">none</span>.
+                Pending data transfer: <span id="transferCount">none</span>.
             </div>
             <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center'" style="padding: 0">
                 <div id="consumerGrid"></div>
@@ -147,7 +156,7 @@
         dojo.require('dijit.tree.ForestStoreModel');
         dojo.require('dojox.analytics.Urchin');
         dojo.require('dojox.data.JsonRestStore');
-        dojo.require("dojox.grid.TreeGrid");
+        dojo.require('dojox.grid.TreeGrid');
         dojo.require('twetailer.Common');
         dojo.addOnLoad(function(){
             dojo.parser.parse();
@@ -171,29 +180,30 @@
     localModule.init = function() {
         var limit = new Date();
         limit.setDate(limit.getDate() - 7); // Last 7 days
-        dijit.byId('modificationDate').set('value', limit);
+        dijit.byId('dateLimit').set('value', limit);
 
         dijit.byId('topContainer').resize();
     };
     localModule.loadGrid = function() {
-        var limit = dijit.byId('modificationDate').get('value');
+        var filter = dijit.byId('dateFilter').get('value');
+        var limit = dijit.byId('dateLimit').get('value');
         limit = twetailer.Common.toISOString(limit, null);
 
-        localModule.fetchConsumers(limit);
+        localModule.fetchConsumers(filter, limit);
     };
     localModule.instanciateTreeGrid = function(model) {
         var grid = dijit.byId('consumerList');
         if (grid) {
+            grid.setModel(model);
             return grid;
         }
         var layout = [
-            { name: "Type", field: "_type", width: "auto" },
-            { name: "Key", field: "key", width: "auto" },
-            { name: "State", field: "state", width: "auto" },
-            { name: "Name", field: "name", width: "auto" },
-            { name: "Content", field: "content", width: "auto" },
-            { name: "Expiration Date", field: "expirationDate", width: "auto" },
-            { name: "Modification Date", field: "modificationDate", width: "auto" }
+            { name: 'Summary', get: localModule.displayInfo , width: 'auto' },
+            { name: 'State', field: 'state', width: 'auto' },
+            { name: 'Content', field: 'content', width: 'auto' },
+            { name: 'Creation Date', field: 'creationDate', styles: 'text-align: center;', width: '12em' },
+            { name: 'Modification Date', field: 'modificationDate', styles: 'text-align: center;', width: '12em' },
+            { name: 'Tracking', get: localModule.displayTracking, width: 'auto' }
         ];
         grid = new dojox.grid.TreeGrid({
             id: 'consumerList',
@@ -202,18 +212,47 @@
             defaultOpen: true
         }, 'consumerGrid');
         grid.startup();
-        dojo.connect(window, "onresize", grid, "resize");
+        dojo.connect(window, 'onresize', grid, 'resize');
         return grid;
     };
+    localModule.displayInfo = function(rowItem, item) {
+        try {
+            if (item) {
+                var type = item._type[0], key = item.key[0];
+                if (type == 'Consumer') {
+                    var name = item.name[0], email = item.email[0];
+                    return '<a href="monitoring.jsp?type=' + type + '&key=' + key + '" target="_monitoring">' + type + ' ' + key + '</a>' +
+                        '<br/><div style="float:left;width:18px">&nbsp;</div>' + name +
+                        (name != email ? ('<br/><div style="float:left;width:18px">&nbsp;</div>' + email) : '');
+                }
+                return type + ' ' + key;
+            }
+        }
+        catch(ex) {
+            return '<span style="color:red;">Error with row: ' + rowItem + '</span>';
+        }
+    };
+    localModule.displayTracking = function(rowItem, item) {
+        try {
+            if (item) {
+                if (item._tracking && 0 < item._tracking.length) {
+                    return item._tracking[0].replace(/\\n/g, '<br/>');
+                }
+                return '';
+            }
+        }
+        catch(ex) {
+            return '<span style="color:red;">Error with row: ' + rowItem + '</span>';
+        }
+    };
     localModule.transferCount = 0;
-    localModule.fetchConsumers = function(modificationDate) {
+    localModule.fetchConsumers = function(filter, limit) {
         dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
+        var data = { '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes' };
+        data[filter] = limit;
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            content: {
-                'modificationDate': modificationDate,
-                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
-            },
+            content: data,
             handleAs: 'json',
             load: function(response, ioArgs) {
                 dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
@@ -233,14 +272,13 @@
                         store: localModule.jsonStore,
                         query: { _type: 'Consumer' },
                         rootId: 'consumerBase',
-                        rootLabel: 'ASE Consumer Base',
-                        childrenAttrs: [ '_children' ]
+                        rootLabel: 'ASE Consumer Base'
                     });
                     // Fetch the grid
                     localModule.instanciateTreeGrid(localModule.treeModel);
                     // Get the related Demand instances
                     if (0 < keys.length) {
-                        localModule.fetchDemands(keys, modificationDate);
+                        localModule.fetchDemands(keys, filter, limit);
                     }
                 }
                 else {
@@ -251,19 +289,20 @@
             url: '/API/Consumer'
         });
     };
-    localModule.fetchDemands = function(keys, modificationDate) {
-        var idx, limit = keys.length, consumerKey;
+    localModule.fetchDemands = function(keys, filter, limit) {
+        var idx, limit = keys.length, consumerKey, data;
         for (idx = 0; idx < limit; idx++) {
             consumerKey = keys[idx];
             dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
+            data = {
+                'pointOfView': 'CONSUMER',
+                'onBehalfConsumerKey': consumerKey,
+                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+            };
+            data[filter] = limit;
             dojo.xhrGet({
                 headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-                content: {
-                    'pointOfView': 'CONSUMER',
-                    'onBehalfConsumerKey': consumerKey,
-                    'modificationDate': modificationDate,
-                    '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
-                },
+                content: data,
                 handleAs: 'json',
                 load: function(response, ioArgs) {
                     dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
@@ -274,13 +313,11 @@
                             resource.key = '' + resource.key;
                             resource.ownerKey = '' + resource.ownerKey;
                             resource._type = 'Demand';
-                            if (resource.content) { resource.content = resource.content.replace(/\\n/g, '\n'); }
-                            if (resource._tracking) { resource._tracking = resource._tracking.replace(/\\n/g, '\n'); }
                             localModule.addChild(resource.ownerKey, resource);
                             anyProposal = anyProposal || resource.proposalKeys;
                         }
                         if (anyProposal) {
-                            localModule.fetchProposals(resource.ownerKey, modificationDate);
+                            localModule.fetchProposals(resource.ownerKey, filter, limit);
                         }
                     }
                     else {
@@ -292,16 +329,17 @@
             });
         }
     };
-    localModule.fetchProposals = function(consumerKey, modificationDate) {
+    localModule.fetchProposals = function(consumerKey, filter, limit) {
         dojo.byId('transferCount').innerHTML = (++ localModule.transferCount);
+        var data = {
+            'pointOfView': 'CONSUMER',
+            'onBehalfConsumerKey': consumerKey,
+            '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+        };
+        data[filter] = limit;
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            content: {
-                'pointOfView': 'CONSUMER',
-                'onBehalfConsumerKey': consumerKey,
-                'modificationDate': modificationDate,
-                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
-            },
+            content: data,
             handleAs: 'json',
             load: function(response, ioArgs) {
                 dojo.byId('transferCount').innerHTML = (-- localModule.transferCount);
