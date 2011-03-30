@@ -72,7 +72,7 @@ public class LocationSteps extends BaseSteps {
             String postalCode = LocaleValidator.standardizePostalCode(parameters.getString(Location.POSTAL_CODE), countryCode);
             List<Location> possibleCenters = getLocationOperations().getLocations(pm, postalCode, countryCode);
             if (possibleCenters.size() == 0) {
-                parameters.put(Location.POSTAL_CODE, postalCode); // Inject normalize postal code
+                parameters.put(Location.POSTAL_CODE, postalCode); // Inject normalized postal code
                 center = getLocationOperations().createLocation(pm, parameters);
             }
             else {
@@ -100,8 +100,12 @@ public class LocationSteps extends BaseSteps {
             boolean hasStore = parameters.containsKey(Location.HAS_STORE) && parameters.getBoolean(Location.HAS_STORE);
 
             output = getLocationOperations().getLocations(pm, center, range, rangeUnit, hasStore, maximumResults);
-            if (!hasStore || hasStore && center.hasStore()) {
-                output = new ArrayList<Location>(output);
+            boolean coordinateFound = false;
+            for (int i=0, limit=output.size(); !coordinateFound && i<limit; i++) {
+                coordinateFound = center.getKey().equals(output.get(i).getKey());
+            }
+            if (!coordinateFound && (!hasStore || hasStore && center.hasStore())) {
+                output = new ArrayList<Location>(output); // Need to duplicate the list, otherwise the following addition will fail
                 output.add(center);
             }
         }

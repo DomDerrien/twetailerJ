@@ -907,7 +907,7 @@
             return;
         }
 
-        var countryShortLabel = _countryCode == 'CA' ? 'Cananda' : 'USA';
+        var countryShortLabel = _countryCode == 'CA' ? 'Canada' : 'USA';
         var geoCoderParameters = {
             language: _locale,
             address: _postalCode + ',' + countryShortLabel,
@@ -997,6 +997,11 @@
         // Return the map handle to the caller if needed
         if (mapParams && mapParams.notification) {
             dojo.publish(mapParams.notification, [map]);
+        }
+
+        // Return the geo-coordinates to the caller if needed
+        if (mapParams && mapParams.geocoordinates) {
+            dojo.publish(mapParams.geocoordinates, [location]);
         }
 
         // Prepare the handler to notify the caller when the central icon has been dragged

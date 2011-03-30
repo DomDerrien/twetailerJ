@@ -101,6 +101,11 @@
         </jsp:include>
         <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%;">
             <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
+                <div style="float: right">
+                    Modification date:
+                    <input data-dojo-type="dijit.form.DateTextBox" id="modificationDate" style="width:8em;" type="text" />
+                    <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: localModule.loadGrid">Load</button>
+                </div>
                 Data transfer: <span id="transferCount">none</span>.
             </div>
             <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'center'" style="padding: 0">
@@ -164,26 +169,33 @@
 
     var localModule = new Object();
     localModule.init = function() {
-        // 1. Prepare local variables
-        // dojo.date.stamp.fromISOString(value)
         var limit = new Date();
-        limit.setMonth(limit.getMonth() - 1);
-
-        // 2. Start to get live data
-        localModule.fetchConsumers(limit);
+        limit.setDate(limit.getDate() - 7); // Last 7 days
+        dijit.byId('modificationDate').set('value', limit);
 
         dijit.byId('topContainer').resize();
     };
+    localModule.loadGrid = function() {
+        var limit = dijit.byId('modificationDate').get('value');
+        limit = twetailer.Common.toISOString(limit, null);
+
+        localModule.fetchConsumers(limit);
+    };
     localModule.instanciateTreeGrid = function(model) {
+        var grid = dijit.byId('consumerList');
+        if (grid) {
+            return grid;
+        }
         var layout = [
             { name: "Type", field: "_type", width: "auto" },
             { name: "Key", field: "key", width: "auto" },
             { name: "State", field: "state", width: "auto" },
             { name: "Name", field: "name", width: "auto" },
             { name: "Content", field: "content", width: "auto" },
-            { name: "Expiration Date", field: "expirationDate", width: "auto" }
+            { name: "Expiration Date", field: "expirationDate", width: "auto" },
+            { name: "Modification Date", field: "modificationDate", width: "auto" }
         ];
-        var grid = new dojox.grid.TreeGrid({
+        grid = new dojox.grid.TreeGrid({
             id: 'consumerList',
             treeModel: model,
             structure: layout,
@@ -199,7 +211,7 @@
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             content: {
-                'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
+                'modificationDate': modificationDate,
                 '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
             },
             handleAs: 'json',
@@ -210,6 +222,7 @@
                     var resources = response.resources, idx, limit = resources.length, resource, keys = [];
                     for (idx = 0; idx < limit; idx++) {
                         resource = resources[idx];
+                        resource.key = '' + resource.key;
                         resource._type = 'Consumer';
                         resource.state = resource.autonomy;
                         keys.push(resource.key);
@@ -248,7 +261,7 @@
                 content: {
                     'pointOfView': 'CONSUMER',
                     'onBehalfConsumerKey': consumerKey,
-                    'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
+                    'modificationDate': modificationDate,
                     '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
                 },
                 handleAs: 'json',
@@ -258,6 +271,8 @@
                         var resources = response.resources, jdx, jimit = resources.length, resource, anyProposal = false;
                         for (jdx = 0; jdx < jimit; jdx++) {
                             resource = resources[jdx];
+                            resource.key = '' + resource.key;
+                            resource.ownerKey = '' + resource.ownerKey;
                             resource._type = 'Demand';
                             if (resource.content) { resource.content = resource.content.replace(/\\n/g, '\n'); }
                             if (resource._tracking) { resource._tracking = resource._tracking.replace(/\\n/g, '\n'); }
@@ -284,7 +299,7 @@
             content: {
                 'pointOfView': 'CONSUMER',
                 'onBehalfConsumerKey': consumerKey,
-                'modificationDate': '>' + twetailer.Common.toISOString(modificationDate, null),
+                'modificationDate': modificationDate,
                 '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
             },
             handleAs: 'json',
@@ -294,6 +309,8 @@
                     var resources = response.resources, jdx, jimit = resources.length, resource, keys = [];
                     for (jdx = 0; jdx < jimit; jdx++) {
                         resource = resources[jdx];
+                        resource.key = '' + resource.key;
+                        resource.demandKey = '' + resource.demandKey;
                         resource._type = 'Proposal';
                         localModule.addChild(resource.demandKey, resource);
                     }
@@ -317,5 +334,7 @@
         });
     };
     </script>
+
+    <script src="https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 </body>
 </html>

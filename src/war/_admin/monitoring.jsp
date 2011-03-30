@@ -622,7 +622,7 @@
                             <td colspan="2" style="text-align:center;">
                                 <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');" type="button">Update</button>
                                 <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
-                                <button disabled="true" dojoType="dijit.form.Button" type="button">View map</button>
+                                <button dojoType="dijit.form.Button" onclick="twetailer.Common.showMap(dijit.byId('location.postalCode').get('value'), dijit.byId('location.countryCode').get('value'), { geocoordinates: 'geoCoordinatesAvailable' });" type="button">View map</button>
                                 <br />
                                 <button dojoType="dijit.form.Button" onclick="localModule.openLocationFilterDialog();" type="button">Get location keys</button>
                                 <button dojoType="dijit.form.Button" onclick="localModule.openStoreFilterDialog();" type="button">Get store keys</button>
@@ -1668,6 +1668,14 @@
         </div>
     </div>
 
+    <div
+        dojoType="dijit.Dialog"
+        id="locationMapDialog"
+        title="<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>"
+    >
+        <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
+    </div>
+
     <script type="text/javascript">
     dojo.addOnLoad(function(){
         dojo.require('dojo.data.ItemFileWriteStore');
@@ -1721,8 +1729,18 @@
                     ++ idx;
                 }
             }
+            if (params.queryLocation) {
+                dijit.byId('queryLocation').set('value', params.queryLocation);
+                localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true });
+            }
         }
         dijit.byId('topContainer').resize();
+
+        dojo.subscribe('geoCoordinatesAvailable', function(location) {
+            console.log('Geo-coordinates: ' + dojo.toJson(location));
+            if (location.Ca) { dijit.byId('location.latitude').set('value', location.Ca); }
+            if (location.Ea) { dijit.byId('location.longitude').set('value', location.Ea); }
+        });
     };
     localModule.fetchEntity = function(keyFieldId, entityName, pointOfView) {
         var key = dijit.byId(keyFieldId).get('value');
@@ -1773,7 +1791,7 @@
                 if (attr.indexOf('Date') != -1) {
                     value = dojo.date.stamp.fromISOString(value);
                 }
-                if (attr == '_tracking' || content == 'content') {
+                if (attr == '_tracking' || attr == 'content') {
                     value = value.replace(/\\n/g, '\n');
                 }
                 if (attr == 'criteria' || attr == 'hashTags' || attr == 'cc') {
@@ -1797,13 +1815,15 @@
                         alert('Field "' + prefix + '.' + attr + '" is missing!');
                     }
                 }
+                /*
                 if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
                     var isNonModifiable = value == 'closed' || value == 'cancelled' || value == 'markedForDeletion';
                     dijit.byId(prefix + '.updateButton').set('disabled', isNonModifiable);
                 }
+                */
             }
             catch (ex) {
-                alert('Error while processing attribute "' + attr + '" for an instance of class "' + entityName + '".\nError: ' + ex);
+                alert('Error while processing attribute "' + attr + '" for an instance of class "' + prefix + '".\nError: ' + ex);
             }
         }
     };
@@ -1832,7 +1852,7 @@
         if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
         data['<%= CommandProcessor.DEBUG_INFO_SWITCH %>'] = 'yes';
         data['pointOfView'] = pointOfView;
-        data['<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>'] = parseInt(dijit.byId('consumer.key').get('value'));
+        data['<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>'] = parseInt(dijit.byId('consumer.key').get('value') || 0);
         data['<%= BaseRestlet.ON_BEHALF_ASSOCIATE_KEY %>'] = parseInt(dijit.byId('saleassociate.key').get('value') || 0);
         dojo.xhrPut({
             headers: { 'content-type': 'application/json; charset=UTF-8' },
@@ -2040,6 +2060,9 @@
         if (filterName.indexOf('Date') != -1) {
             data[filterName] = twetailer.Common.toISOString(filterField.get('value'), localModule._earlyHourTime);
         }
+        else if (entityName == 'Location') {
+            data[filterName] = filterField.get('value');
+        }
         else {
             data[filterName] = '*' + filterField.get('value');
         }
@@ -2085,5 +2108,7 @@
         });
     };
     </script>
+
+    <script src="https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=false&language=<%= localeId %>" type="text/javascript"></script>
 </body>
 </html>

@@ -482,19 +482,31 @@ public class LocationOperations extends BaseOperations {
         // Prepare the query
         Query query = pm.newQuery(Location.class);
         try {
-            query.setFilter(
-                    Location.COUNTRY_CODE + " == givenCountryCode && " +
-                    Location.HAS_STORE + " == hasStoreRegistered && " +
-                    Location.LATITUDE + " > bottomLatitude && " +
-                    Location.LATITUDE + " < topLatitude"
-            );
-            query.declareParameters("String givenCountryCode, Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
+            if (withStore) {
+                query.setFilter(
+                        Location.COUNTRY_CODE + " == givenCountryCode && " +
+                        Location.HAS_STORE + " == hasStoreRegistered && " +
+                        Location.LATITUDE + " > bottomLatitude && " +
+                        Location.LATITUDE + " < topLatitude"
+                );
+                query.declareParameters("String givenCountryCode, Boolean hasStoreRegistered, Double topLatitude, Double bottomLatitude");
+            }
+            else {
+                query.setFilter(
+                        Location.COUNTRY_CODE + " == givenCountryCode && " +
+                        Location.LATITUDE + " > bottomLatitude && " +
+                        Location.LATITUDE + " < topLatitude"
+                );
+                query.declareParameters("String givenCountryCode, Double topLatitude, Double bottomLatitude");
+            }
             if (0 < limit) {
                 query.setRange(0, limit);
             }
 
             // Execute the query
-            List<Location> locations = (List<Location>) query.executeWithArray(location.getCountryCode(), Boolean.valueOf(withStore), topLatitude, bottomLatitude);
+            List<Location> locations = (List<Location>) (withStore ?
+                    query.executeWithArray(location.getCountryCode(), Boolean.valueOf(withStore), topLatitude, bottomLatitude) :
+                    query.executeWithArray(location.getCountryCode(), topLatitude, bottomLatitude));
             locations.size(); // FIXME: remove workaround for a bug in DataNucleus
 
             List<Location> selection = new ArrayList<Location>();

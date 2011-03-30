@@ -48,6 +48,11 @@
         <property name="creationDate" direction="desc"/>
     </datastore-index>
 
+    <datastore-index kind="Consumer" ancestor="false" source="manual">
+        <property name="modificationDate" direction="desc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+
     <!--
      Wish
       -->
@@ -233,6 +238,11 @@
 
     <datastore-index kind="Location" ancestor="false" source="manual">
         <property name="countryCode" direction="asc"/>
+        <property name="latitude" direction="asc"/>
+    </datastore-index>
+
+    <datastore-index kind="Location" ancestor="false" source="manual">
+        <property name="countryCode" direction="asc"/>
         <property name="hasStore" direction="asc"/>
         <property name="latitude" direction="asc"/>
     </datastore-index>
@@ -265,6 +275,13 @@
     <datastore-index kind="Proposal" ancestor="false" source="manual">
          <property name="consumerKey" direction="asc"/>
          <property name="stateCmdList" direction="asc"/>
+         <property name="creationDate" direction="desc"/>
+     </datastore-index>
+
+    <datastore-index kind="Proposal" ancestor="false" source="manual">
+         <property name="consumerKey" direction="asc"/>
+         <property name="stateCmdList" direction="asc"/>
+         <property name="modificationDate" direction="desc"/>
          <property name="creationDate" direction="desc"/>
      </datastore-index>
 
