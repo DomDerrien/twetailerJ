@@ -156,7 +156,7 @@ public class LocaleValidator {
                     null, // No From
                     "Retrieved coordinates for: " + postalCode + " " + countryCode,
                     "<p>*** Coordinates: {" + coordinates[0] + "; " + coordinates[1] + "} ***<br/>"
-                    + "*** Update: http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp??queryLocation=" + postalCode + "<br/>"
+                    + "*** Update: http://anothersocialeconomy.appspot.com/_admin/monitoring.jsp?queryLocation=" + postalCode + "<br/>"
                     + (ex == null ? "*** No exception, retrieval was OK ***<p>" : "*** Exception: " + ex.getMessage() + " ***<br/>*** Google maps response:\n" + buffer + "</p>")
             );
             if (ex != null) {
