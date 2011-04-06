@@ -380,6 +380,11 @@
         dijit.byId('range').set('value', '<%= range %>');
         dijit.byId('rangeUnit').set('value', '<%= rangeUnit %>');
         <% if (autoload && postalCode != null) { %>setTimeout(function(){ dijit.byId('showMapButton').onClick(); }, 0);<% } %>
+
+        var topContainer = dijit.byId('topContainer');
+        if (topContainer) {
+            topContainer.resize();
+        }
     };
     localModule.getInfoWindowHandler = function(map, storeIdx) {
         return function(event) { localModule.showInfoWindow(map, storeIdx); }

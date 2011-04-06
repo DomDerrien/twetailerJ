@@ -270,6 +270,8 @@
     localModule.displayContent = function(rowItem, item) {
         try {
             if (item) {
+                // TODO: return #hashTags
+                // TODO: return metadata
                 if (item.content && 0 < item.content.length) {
                     var content = item.content[0].replace(/\\n/g, '<br/>');
                     if (item.hashTags && item.hashTags.length == 2) {

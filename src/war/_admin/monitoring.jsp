@@ -164,8 +164,8 @@
                 <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queyDueDate', 'creationDate', 'RawCommand', 'rawcommand.key');" type="button">Search</button>
             </fieldset>
             <div style="float:left;">
-               <a id="turnOffRow1" href="javascript:dojo.query('#turnOffRow1').style('display', 'none');dojo.query('#turnOnRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','none');dojo.query('#saleassociateInformation>table').style('display','none');dojo.query('#storeInformation>table').style('display','none');dojo.query('#locationInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow1" href="javascript:dojo.query('#turnOnRow1').style('display', 'none');dojo.query('#turnOffRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','');dojo.query('#saleassociateInformation>table').style('display','');dojo.query('#storeInformation>table').style('display','');dojo.query('#locationInformation>table').style('display','');" style="display:none;">[+]</a>
+               <a id="turnOffRow1" href="javascript:dojo.query('#turnOffRow1').style('display', 'none');dojo.query('#turnOnRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','none');dojo.query('#demandInformation>table').style('display','none');dojo.query('#locationInformation>table').style('display','none');dojo.query('#reportInformation>table').style('display','none');">[&ndash;]</a>
+               <a id="turnOnRow1" href="javascript:dojo.query('#turnOnRow1').style('display', 'none');dojo.query('#turnOffRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','');dojo.query('#demandInformation>table').style('display','');dojo.query('#locationInformation>table').style('display','');dojo.query('#reportInformation>table').style('display','');" style="display:none;">[+]</a>
             </div>
             <fieldset class="entityInformation" id="consumerInformationFieldset" style="float:left;margin:5px;">
                 <legend>
@@ -746,8 +746,8 @@
             </fieldset>
             <br clear="both" />
             <div style="float:left;">
-               <a id="turnOffRow2" href="javascript:dojo.query('#turnOffRow2').style('display', 'none');dojo.query('#turnOnRow2').style('display', '');dojo.query('#demandInformation>table').style('display','none');dojo.query('#proposalInformation>table').style('display','none');dojo.query('#rawcommandInformation>table').style('display','none');dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow2" href="javascript:dojo.query('#turnOnRow2').style('display', 'none');dojo.query('#turnOffRow2').style('display', '');dojo.query('#demandInformation>table').style('display','');dojo.query('#proposalInformation>table').style('display','');dojo.query('#rawcommandInformation>table').style('display','');dojo.query('#paymentInformation>table').style('display','');" style="display:none;">[+]</a>
+               <a id="turnOffRow2" href="javascript:dojo.query('#turnOffRow2').style('display', 'none');dojo.query('#turnOnRow2').style('display', '');dojo.query('#saleassociateInformation>table').style('display','none');dojo.query('#storeInformation>table').style('display','none');dojo.query('#proposalInformation>table').style('display','none');dojo.query('#rawcommandInformation>table').style('display','none');dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a>
+               <a id="turnOnRow2" href="javascript:dojo.query('#turnOnRow2').style('display', 'none');dojo.query('#turnOffRow2').style('display', '');dojo.query('#saleassociateInformation>table').style('display','');dojo.query('#storeInformation>table').style('display','');dojo.query('#proposalInformation>table').style('display','');dojo.query('#rawcommandInformation>table').style('display','');dojo.query('#paymentInformation>table').style('display','');" style="display:none;">[+]</a>
             </div>
             <fieldset class="entityInformation" id="saleassociateInformationFieldset" style="float:left;margin:5px;">
                 <legend>

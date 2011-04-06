@@ -24,7 +24,7 @@
 
     <property name="app.release"
         description="Planned release of this build"
-        value="49"
+        value="50"
     />
 
     <property name="app.companyName"
@@ -297,11 +297,12 @@
 
     <path id="java.compile.classpath">
         <filelist dir="deps/lib">
-            <file name="appengine/appengine-api-1.0-sdk-1.4.2.jar" />
-            <file name="appengine/appengine-api-labs-1.4.2.jar" />
+            <file name="appengine/appengine-api-1.0-sdk-1.4.3.jar" />
+            <file name="appengine/appengine-api-labs-1.4.3.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-api-labs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />
+            <file name="appengine/appengine-remote-api.jar" />
             <file name="appengine/appengine-testing.jar" />
             <file name="commons/commons-codec-1.4.jar" />
             <file name="datanucleus/datanucleus-appengine-1.0.8.final.jar" />
@@ -337,6 +338,7 @@
             <file name="geronimo/geronimo-jpa_3.0_spec-1.1.1.jar" />
             <file name="geronimo/geronimo-servlet_2.5_spec-1.2.jar" />
             <file name="selenium2/selenium-java-2.0b3.jar" />
+            <file name="selenium2/libs/commons-logging-1.1.1.jar" />
             <file name="selenium2/libs/guava-r08.jar" />
             <file name="selenium2/libs/httpclient-4.0.2.jar" />
             <file name="selenium2/libs/httpcore-4.0.1.jar" />
