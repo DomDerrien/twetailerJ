@@ -3296,7 +3296,6 @@
                     <p>Hi {demand>owner>name},</p>
                     <p>
                         Thank you for closing <strong>demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                        In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
                     </p>
                     <p>We thank you once again for buying locally with AnotherSocialEconomy.com and hope you'll recomment us to your friends.</p>
                     <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: Your missing link between shopping online &amp; <strong>buying offline</strong>.</p>
@@ -3323,7 +3322,6 @@
                     <p>Hi {demand>owner>name},</p>
                     <p>
                         Thank you for closing the <strong>ezToff demand {demand>key}</strong>. In return, we'll be updating your Closing Rate shortly.
-                        In the meantime, we invite you to share your experience by writing a review with <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
                     </p>
                     <p>We thank you once again for reserving your tee-time wth ezToff.com.com and hope you'll recomment us to your friends.</p>
                     {message>footer}

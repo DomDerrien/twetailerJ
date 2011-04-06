@@ -2236,7 +2236,6 @@
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         Merci d'avoir complété la <strong>demand {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
-                        Pendant ce temps, nous vous invitons à écrire un commentaire avec le service <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
                     </p>
                     <p>Nous vous remercions pour magasiner localement avec AnotherSocialEconomy.com et espérons que vous nous recommenderez à vos amis.</p>
                     <p><a href="http://anothersocialeconomy.com">AnotherSocialEconomy.com</a>: comble le lien entre le magasinage virtuel et &amp; <strong>l'achat réel</strong>.</p>
@@ -2253,7 +2252,6 @@
                     <p>Bonjour {demand>owner>name},</p>
                     <p>
                         Merci d'avoir complété la <strong>demande {demand>key}</strong>. Votre taux de transactions complétées va être mis-à-jour sous peu.
-                        Pendant ce temps, nous vous invitons à écrire un commentaire avec le service <a href="{reviewSystem>url}&amp;storeId={store>reviewSystemId}">{reviewSystem>name}</a>.
                     </p>
                     <p>Nous vous remercions pour la réservation de vos parties de golf avec ezToff.com et espérons que vous nous recommenderez à vos amis et partenaires de golf.</p>
                     {message>footer}
