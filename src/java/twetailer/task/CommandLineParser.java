@@ -436,7 +436,10 @@ public class CommandLineParser {
         matcher = patterns.get(Prefix.tags.toString()).matcher(messageCopy);
         if (matcher.find()) { // Runs the matcher once
             String currentGroup = matcher.group(1).trim();
-            command.put(Command.CONTENT, getTags(currentGroup, patterns));
+            String tags = getTags(currentGroup, patterns);
+            if (tags != null && 0 < tags.length()) {
+                command.put(Command.CONTENT, tags);
+            }
             messageCopy = extractPart(messageCopy, currentGroup);
             oneFieldOverriden = true;
         }

@@ -404,6 +404,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><label for="demand.quantity">Quantity:</label></td>
+                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.quantity" name="quantity" style="width:3em;" type="text" /></td>
+                        </tr>
+                        <tr>
                             <td><label for="demand.rawCommandId">RawCommand key:</label></td>
                             <td>
                                 <input dojoType="dijit.form.TextBox" id="demand.rawCommandId" name="rawCommandId" readonly="true" style="width:8em;" type="text" />
@@ -482,10 +486,6 @@
                                 </select>
                                 <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER');" type="button">Fetch</button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td><label for="demand.quantity">Quantity:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.quantity" name="quantity" style="width:3em;" type="text" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.range">Range:</label></td>
@@ -1004,6 +1004,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <td><label for="proposal.cc">CC-ed:</label></td>
+                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.cc" name="cc" style="width:10em;"></textarea></td>
+                        </tr>
+                        <tr>
                             <td><label for="proposal.content">Content:</label></td>
                             <td><textarea dojoType="dijit.form.Textarea" id="proposal.content" name="content" style="width:10em;"></textarea></td>
                         </tr>
@@ -1025,6 +1029,10 @@
                                 <input dojoType="dijit.form.TextBox" id="proposal.ownerKey" name="ownerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate'); }" style="width:8em;" type="text" />
                                 <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate');" type="button">Fetch</button>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><label for="proposal.quantity">Quantity:</label></td>
+                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.rawCommandId">RawCommand key:</label></td>
@@ -1121,10 +1129,6 @@
                         <tr>
                             <td><label for="proposal.price">Price:</label></td>
                             <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.price" name="price" style="width:7em;" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="proposal.quantity">Quantity:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.score">Score:</label></td>
