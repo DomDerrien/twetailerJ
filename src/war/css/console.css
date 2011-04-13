@@ -10,8 +10,8 @@ html, body {
     padding: 0;
 }
 
-body, th, td {
-    font-family: Tahoma, Segoe UI, Arial, Bitstream Vera Sans, Verdana, Helvetica, sans-serif;
+body, th, td, textarea {
+        font-family: Myriad,Helvetica,Tahoma,Arial,clean,sans-serif;
 }
 
 body {

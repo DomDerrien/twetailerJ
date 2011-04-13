@@ -187,7 +187,9 @@ public class Entity implements TransferObject {
         if (getLocationKey() != null) { out.put(LOCATION_KEY, getLocationKey()); }
         out.put(MARKED_FOR_DELETION, getMarkedForDeletion());
         if (getModificationDate() != null) { out.put(MODIFICATION_DATE, DateUtils.dateToISO(getModificationDate())); }
-        if (getTracking() != null && 0 < getTracking().length()) { out.put(TRACKING, getTracking(), true); }
+        if (getTracking() != null && 0 < getTracking().length()) {
+            out.put(TRACKING, getTracking(), true);
+        }
         return out;
     }
 
@@ -225,7 +227,9 @@ public class Entity implements TransferObject {
         else {
             updateModificationDate();
         }
-        if (in.containsKey(TRACKING)) { setTracking(in.getString(TRACKING, true)); }
+        if (in.containsKey(TRACKING)) {
+            setTracking(in.getString(TRACKING, true));
+        }
 
         return this;
     }

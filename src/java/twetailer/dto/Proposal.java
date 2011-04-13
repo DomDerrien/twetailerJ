@@ -194,11 +194,11 @@ public class Proposal extends Command {
     @Override
     public JsonObject toJson() {
         JsonObject out = super.toJson();
-        if (AWSCBUIURL != null) {
+        if (getAWSCBUIURL() != null && 0 < getAWSCBUIURL().length()) {
             out.put(AWSCBUIURL_KEY, getAWSCBUIURL());
         }
-        if (comment != null) {
-            out.put(COMMENT, getComment());
+        if (getComment() != null && 0 < getComment().length()) {
+            out.put(COMMENT, getComment(), true);
         }
         if (getConsumerKey() != null) { out.put(CONSUMER_KEY, getConsumerKey()); }
         out.put(CURRENCY_CODE, getCurrencyCode());
@@ -220,7 +220,9 @@ public class Proposal extends Command {
         super.fromJson(in, isUserAdmin, isCacheRelated);
 
         if (isCacheRelated && in.containsKey(AWSCBUIURL_KEY)) { setAWSCBUIURL(in.getString(AWSCBUIURL_KEY)); }
-        if (isUserAdmin && in.containsKey(COMMENT)) { setComment(in.getString(COMMENT)); } // Set by the system from the Consumer !rate action
+        if (isUserAdmin && in.containsKey(COMMENT)) {
+            setComment(in.getString(COMMENT, true)); // Set by the system from the Consumer !rate action
+        }
         if ((getKey() == null || isUserAdmin) && in.containsKey(CONSUMER_KEY)) {
             setConsumerKey(in.getLong(CONSUMER_KEY)); // Can only be set at creation time
         }

@@ -28,7 +28,6 @@
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
     cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
-    String pageUrl = request.getRequestURL().replace(request.getRequestURL().indexOf(request.getRequestURI().substring(0, 4)), request.getRequestURL().length(), "/").toString();
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -80,7 +79,7 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
@@ -110,7 +109,7 @@
                         id="dateFilter"
                     >
                         <option value="modificationDate">Modification</option>
-                        <option value="creationDate" selected="true">Creation</option>
+                        <option value="creationDate" selected="selected">Creation</option>
                     </select>
                     <input data-dojo-type="dijit.form.DateTextBox" id="dateLimit" type="text" />
                     <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: localModule.loadGrid">Load</button>

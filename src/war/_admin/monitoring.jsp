@@ -27,6 +27,7 @@
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+    cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -43,24 +44,24 @@
     if (useCDN) {
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/resources/claroGrid.css";
         @import "/css/console.css";
     </style><%
     }
     else { // elif (!useCDN)
     %><style type="text/css">
         @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
+        @import "/js/dojo/dijit/themes/claro/claro.css";
         @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
+        @import "/js/dojo/dojox/grid/resources/claroGrid.css";
         @import "/css/console.css";
     </style><%
     } // endif (useCDN)
     %>
     <style type="text/css">
-        .entityInformation td {
+        .entityInformation>form>table>tbody>tr>td {
             height: 24px;
             vertical-align: middle;
         }
@@ -70,9 +71,22 @@
         .entityInformation>form>table>tbody>tr>td:nth-child(2), #locationFilterTable>tbody>tr>td:nth-child(2) {
             padding-left: 10px;
         }
+        .shortField {
+            width: 8em;
+        }
+        .longField {
+            width: 12em;
+        }
+        textarea.longField {
+            width: 12.2em;
+            font-size: 12px;
+        }
+        .autoField {
+            width: auto;
+        }
     </style>
 </head>
-<body class="tundra">
+<body class="claro">
 
     <div id="introFlash">
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
@@ -81,138 +95,109 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="/js/dojo/dojo/dojo.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
     %>
 
-    <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+    <div id="topContainer" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
-        <div
-            dojoType="dijit.layout.ContentPane"
-            id="centerZone"
-            region="center"
-            style="margin-top: 5px; margin-bottom: 10px;"
-        >
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%; margin-top: 5px; margin-bottom: 10px;">
             <fieldset class="entityInformation" id="queryFieldset" style="">
                 <legend>
                     Search
                 </legend>
-
                 Consumer by e-mail:
                 <input
-                    dojoType="dijit.form.ValidationTextBox"
                     id="queryConsumer"
-                    invalidMessage="Must be at least 3 characters long, used to select the Consumers with an e-mail starting with the field value"
-                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryConsumer', 'email', 'Consumer', 'consumer.key'); }"
-                    placeHolder="e-mail address (starts with)"
-                    regExp="\S\S[^\s|\*].*"
-                    required="true"
-                    type="text"
+                    data-dojo-type="dijit.form.ValidationTextBox"
+                    data-dojo-props="'class': 'shortField', invalidMessage: 'Must be at least 3 characters long', placeHolder: 'e-mail (starts with)', regExp: '(\\w|\\d|\\@){3}.*', required: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryConsumer', 'email', 'Consumer', 'consumer.key'); } }"
                 />
-                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryConsumer', 'email', 'Consumer', 'consumer.key');" type="button">Search</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.searchEntityKey('queryConsumer', 'email', 'Consumer', 'consumer.key'); }" type="button">Search</button>
 
                 Location by postal code (in Canada):
                 <input
-                    dojoType="dijit.form.ValidationTextBox"
                     id="queryLocation"
-                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true }); }"
-                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
-                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
-                    required="true"
-                    style="width:6em;"
-                    type="text"
+                    data-dojo-type="dijit.form.ValidationTextBox"
+                    data-dojo-props="'class': 'shortField', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', placeHolder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true }); } }"
                 />
-                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true });" type="button">Search</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true }); }" type="button">Search</button>
 
                 Store by name:
                 <input
                     id="queryStore"
-                    dojoType="dijit.form.ValidationTextBox"
-                    invalidMessage="Must be at least 3 characters long, used to select the Stores with a name starting with the field value"
-                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key'); }"
-                    placeHolder="name (starts with)"
-                    regExp="\S\S[^\s|\*].*"
-                    required="true"
-                    type="text"
+                    data-dojo-type="dijit.form.ValidationTextBox"
+                    data-dojo-props="'class': 'shortField', invalidMessage: 'Must be at least 3 characters long', placeHolder: 'name (starts with)', regExp: '(\\w|\\d|\\s){3}.*', required: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key'); } }"
                 />
-                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key');" type="button">Search</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.searchEntityKey('queryStore', 'name', 'Store', 'store.key'); }" type="button">Search</button>
 
                 RawCommand after date:
                 <input
-                    id="queyDueDate"
-                    dojoType="dijit.form.DateTextBox"
-                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queyDueDate', 'creationDate', 'RawCommand', 'rawcommand.key'); }"
-                    required="true"
-                    style="width:8em;"
-                    type="text"
+                    id="queryDueDate"
+                    data-dojo-type="dijit.form.DateTextBox"
+                    data-dojo-props="'class': 'shortField', required: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryDueDate', 'creationDate', 'RawCommand', 'rawcommand.key'); } }"
                 />
-                <button dojoType="dijit.form.Button" onclick="localModule.searchEntityKey('queyDueDate', 'creationDate', 'RawCommand', 'rawcommand.key');" type="button">Search</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.searchEntityKey('queryDueDate', 'creationDate', 'RawCommand', 'rawcommand.key'); }" type="button">Search</button>
             </fieldset>
-            <div style="float:left;">
-               <a id="turnOffRow1" href="javascript:dojo.query('#turnOffRow1').style('display', 'none');dojo.query('#turnOnRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','none');dojo.query('#demandInformation>table').style('display','none');dojo.query('#locationInformation>table').style('display','none');dojo.query('#reportInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow1" href="javascript:dojo.query('#turnOnRow1').style('display', 'none');dojo.query('#turnOffRow1').style('display', '');dojo.query('#consumerInformation>table').style('display','');dojo.query('#demandInformation>table').style('display','');dojo.query('#locationInformation>table').style('display','');dojo.query('#reportInformation>table').style('display','');" style="display:none;">[+]</a>
-            </div>
-            <fieldset class="entityInformation" id="consumerInformationFieldset" style="float:left;margin:5px;">
+            <div id="expandedBoxes"></div>
+            <fieldset class="entityInformation" id="consumerFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Consumer Information
-                    <a href="javascript:dojo.query('#consumerInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#consumerInformation>table').style('display','');">[+]</a>
+                    Consumer
+                    <a href="javascript:localModule.expandBox('consumer');" id="consumerExpand">[+]</a>
                 </legend>
-                <form dojoType="dijit.form.Form" id="consumerInformation">
+                <form data-dojo-type="dijit.form.Form" id="consumerBox">
                     <table>
                         <tr>
                             <td><label for="consumer.key">Key:</label></td>
-                            <td><input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.key', 'Consumer'); }" style="width:8em;" type="text" />
-                            <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.key', 'Consumer');" type="button">Fetch</button></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.key', 'Consumer'); } }" id="consumer.key" />
+                            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('consumer.key', 'Consumer'); }" type="button">Fetch</button></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="consumer.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="consumer.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'locationKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.locationKey', 'Location'); } }" id="consumer.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('consumer.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <input dojoType="dijit.form.CheckBox" id="consumer.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" />
+                                <input data-dojo-type="dijit.form.CheckBox" data-dojo-props="name: 'markedForDeletion', readOnly: true" id="consumer.markedForDeletion" type="checkbox" />
                             </td>
                             <td><label for="consumer.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="consumer.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="consumer.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="consumer._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="consumer._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="consumer.address">Address:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.address" name="address" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'address'" id="consumer.address" /></td>
                         </tr>
                         <tr>
                             <td>
-                                <input dojoType="dijit.form.CheckBox" id="consumer.automaticLocaleUpdate" name="automaticLocaleUpdate" type="checkbox" />
+                                <input data-dojo-type="dijit.form.CheckBox" data-dojo-props="name: 'automaticLocaleUpdate'" id="consumer.automaticLocaleUpdate" type="checkbox" />
                             </td>
                             <td><label for="consumer.automaticLocaleUpdate">Automatic locale update</label></td>
                         </tr>
@@ -220,73 +205,67 @@
                             <td><label for="consumer.autonomy">Autonomy:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'autonomy'"
                                     id="consumer.autonomy"
-                                    name="autonomy"
-                                    style="width:8em;"
                                 >
                                     <option value="BLOCKED">Blocked</option>
                                     <option value="UNCONFIRMED">Unconfirmed</option>
-                                    <option value="MODERATED" selected="true">Moderated</option>
+                                    <option value="MODERATED" selected="selected">Moderated</option>
                                     <option value="AUTONOMOUS">Autonomous</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="consumer.closedDemandNb">Closed demand #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.closedDemandNb" style="width:6em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'closedDemandNb'" id="consumer.closedDemandNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.email" name="email" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'email'" id="consumer.email" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.facebookId">Facebook identifier:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.facebookId" name="facebookId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'facebookId'" id="consumer.facebookId" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.jabberId">Jabber identifier:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.jabberId" name="jabberId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'jabberId'" id="consumer.jabberId" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.language">Language:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'language'"
                                     id="consumer.language"
-                                    name="language"
-                                    style="width:8em;"
                                 >
-                                    <option value="en" selected="true">English</option>
+                                    <option value="en" selected="selected">English</option>
                                     <option value="fr">French</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="consumer.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.name" name="name" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'name'" id="consumer.name" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.openID">OpenID:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.openID" name="openID" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'openID'" id="consumer.openID" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.phoneNb">Phone number:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.phoneNb" name="phoneNb" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'phoneNb'" id="consumer.phoneNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="consumer.preferredConnection">Preferred connection:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'preferredConnection'"
                                     id="consumer.preferredConnection"
-                                    name="preferredConnection"
-                                    style="width:10em;"
                                 >
-                                    <option value="mail" selected="mail">Mail</option>
+                                    <option value="mail" selected="selected">Mail</option>
                                     <option value="jabber">Jabber / XMPP</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="facebook">Facebook (not implemented yet)</option>
@@ -298,36 +277,35 @@
                         </tr>
                         <tr>
                             <td><label for="consumer.publishedDemandNb">Published demand #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.publishedDemandNb" style="width:6em;" type="text" /></td>
+                            <td><input  data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'publishedDemandNb'" id="consumer.publishedDemandNb" /></td>
                         </tr>
                         <tr>
-                            <td><label for="consumer.twitterId">Sale Associate key:</label></td>
+                            <td><label for="consumer.saleAssociateKey">Sale Associate key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="consumer.saleAssociateKey" name="saleAssociateKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'saleAssociateKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate'); } }" id="consumer.saleAssociateKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('consumer.saleAssociateKey', 'SaleAssociate'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="consumer.twitterId">Twitter name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="consumer.twitterId" name="twitterId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'twitterId'" id="consumer.twitterId" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Consumer');" type="button">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.getDemandKeys();" type="button">Get demand keys</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Consumer'); }" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getDemandKeys(); }" type="button">Get demand keys</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="demandInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="demandFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Demand Information
-                    <a href="javascript:dojo.query('#demandInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#demandInformation>table').style('display','');">[+]</a>
+                    Demand
+                    <a href="javascript:localModule.expandBox('demand');" id="demandExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="demandInformation">
+                <form  data-dojo-type="dijit.form.Form" id="demandBox">
                     <table>
                         <tr>
                             <td style="font-weight:bold;text-align:right;padding-right:10px;color:orange;">Point of view:</td>
@@ -337,95 +315,92 @@
                         <tr>
                             <td><label for="demand.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.key', 'Demand'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.key', 'Demand');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.key', 'Demand'); } }" id="demand.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.key', 'Demand'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="demand.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="demand.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'locationKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.locationKey', 'Location'); } }" id="demand.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.locationKey', 'Location');}" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="demand.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="demand.markedForDeletion" type="checkbox" /></td>
                             <td><label for="demand.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="demand.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="demand.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="demand._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="demand.action">Action:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="demand.action" name="action" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="demand.action" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.cancelerKey">Canceler key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.cancelerKey" name="cancelerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.cancelerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.cancelerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'cancelerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.cancelerKey', 'Consumer'); } }" id="demand.cancelerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.cancelerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.cc">CC-ed:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.cc" name="cc" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'cc'" id="demand.cc"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="demand.content">Content:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.content" name="content" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'content'" id="demand.content"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="demand.dueDate">Due date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.dueDate" name="dueDate" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', name: 'dueDate'" id="demand.dueDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.hashTags">Hash tags:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'hashTags'" id="demand.hashTags"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="demand.metadata">Metadata:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="demand.metadata" name="metadata" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'metadata'" id="demand.metadata"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="demand.ownerKey">Owner key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.ownerKey" name="ownerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.ownerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.ownerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'ownerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.ownerKey', 'Consumer'); } }" id="demand.ownerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.ownerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.quantity">Quantity:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.quantity" name="quantity" style="width:3em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,space:0}, name: 'quantity'" id="demand.quantity" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.rawCommandId">RawCommand key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.rawCommandId" name="rawCommandId" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.rawCommandId', 'RawCommand');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="demand.rawCommandId" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.rawCommandId', 'RawCommand'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.source">Source:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, readOnly: true"
                                     id="demand.source"
-                                    name="source"
-                                    readonly="true"
-                                    style="width:10em;"
                                 >
-                                    <option value="mail" selected="true">E-mail</option>
+                                    <option value="mail" selected="selected">E-mail</option>
                                     <option value="jabber">Jabber/XMPP</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="simulated">Simulated</option>
@@ -439,13 +414,11 @@
                             <td><label for="demand.state">State:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'state'"
                                     id="demand.state"
-                                    name="state"
-                                    style="width:10em;"
                                 >
-                                    <option value="opened" selected="true">Open</option>
+                                    <option value="opened" selected="selected">Open</option>
                                     <option value="invalid">Invalid</option>
                                     <option value="published">Published</option>
                                     <option value="confirmed">Confirmed</option>
@@ -457,51 +430,47 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="demand.stateCmdList" name="stateCmdList" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="demand.stateCmdList" type="checkbox" /></td>
                             <td><label for="demand.stateCmdList">State for command: !list</label></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="demand.expirationDate">Expiration date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="demand.expirationDate" name="expirationDate" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', name: 'expirationDate'" id="demand.expirationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.influencerKey">Influencer key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.influencerKey" name="influencerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.influencerKey', 'Influencer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.influencerKey', 'Influencer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'influencerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.influencerKey', 'Influencer'); } }" id="demand.influencerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.influencerKey', 'Influencer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.proposalKeys">Proposal keys:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.ComboBox"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true"
                                     id="demand.proposalKeys"
-                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER'); }"
-                                    style="width:8em;"
                                 >
-                                    <option value="none" selected="true">None</option>
+                                    <option value="none" selected="selected">None</option>
                                 </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER');" type="button">Fetch</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.proposalKeys', 'Proposal', 'CONSUMER'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.range">Range:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="demand.range" name="range" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:5,places:0}, name: 'range'" id="demand.range" /></td>
                         </tr>
                         <tr>
                             <td><label for="demand.rangeUnit">Range unit:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'rangeUnit'"
                                     id="demand.rangeUnit"
-                                    name="rangeUnit"
-                                    style="width:9em;"
                                 >
-                                    <option value="km" selected="true">Kilometers</option>
+                                    <option value="km" selected="selected">Kilometers</option>
                                     <option value="mi">Miles</option>
                                 </select>
                             </td>
@@ -509,452 +478,443 @@
                         <tr>
                             <td><label for="demand.reportKey">Report key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="demand.reportKey" name="reportKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.reportKey', 'Report'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.reportKey', 'Report');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'reportKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.reportKey', 'Report'); } }" id="demand.reportKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.reportKey', 'Report'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="demand.saleAssociateKeys">Sale associate keys:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.ComboBox"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true"
                                     id="demand.saleAssociateKeys"
-                                    onchange="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate'); }"
-                                    style="width:8em;"
                                 >
-                                    <option value="none" selected="true">None</option>
+                                    <option value="none" selected="selected">None</option>
                                 </select>
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate');" type="button">Fetch</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('demand.saleAssociateKeys', 'SaleAssociate'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" id="demand.updateButton" onclick="localModule.saveEntity('Demand');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" id="demand.updateButton" data-dojo-props="onClick: function() { localModule.saveEntity('Demand'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="locationInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="locationFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Location Information
-                    <a href="javascript:dojo.query('#locationInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#locationInformation>table').style('display','');">[+]</a>
+                    Location
+                    <a href="javascript:localModule.expandBox('location');" id="locationExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="locationInformation">
+                <form  data-dojo-type="dijit.form.Form" id="locationBox">
                     <table id="locationAttributeTable">
                         <tr>
                             <td><label for="location.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.key', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.key', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.key', 'Location'); } }" id="location.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('location.key', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="location.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="location.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="location.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="location.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="location.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('location.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('location.locationKey', 'Location'); } }" id="location.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true, onClick: function() { localModule.fetchEntity('location.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="location.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="location.markedForDeletion" type="checkbox" /></td>
                             <td><label for="location.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="location.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="location.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="location.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="location._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="location._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="location._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="location.countryCode">Country code:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, onChange: function() { twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'location.postalCode'); }"
                                     id="location.countryCode"
-                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'location.postalCode');"
                                 >
-                                    <option value="CA" selected="true">Canada</option>
+                                    <option value="CA" selected="selected">Canada</option>
                                     <option value="US">United States of America</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="location.hasStore" name="hasStore" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="location.hasStore" type="checkbox" /></td>
                             <td><label for="location.hasStore">Has store</label></td>
                         </tr>
                         <tr>
                             <td><label for="location.latitude">Latitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="location.latitude" name="latitude" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'latitude'" id="location.latitude" /></td>
                         </tr>
                         <tr>
                             <td><label for=location.longitude>Longitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="location.longitude" name="longitude" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'longitude'" id="location.longitude" /></td>
                         </tr>
                         <tr>
                             <td><label for="location.postalCode">Postal code:</label></td>
                             <td>
                                 <input
-                                    dojoType="dijit.form.ValidationTextBox"
                                     id="location.postalCode"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                                    name="postalCode"
-                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
-                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
-                                    required="true"
-                                    style="width:6em;"
-                                    type="text"
+                                    data-dojo-type="dijit.form.ValidationTextBox"
+                                    data-dojo-props="'class': 'shortField', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', name: 'postalCode', placeHolder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true"
                                 />
                             </td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Location');" type="button">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.resolveLocation();" type="button">Resolve</button>
-                                <button dojoType="dijit.form.Button" onclick="twetailer.Common.showMap(dijit.byId('location.postalCode').get('value'), dijit.byId('location.countryCode').get('value'), { geocoordinates: 'geoCoordinatesAvailable' });" type="button">View map</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Location'); }" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.resolveLocation(); }" type="button">Resolve</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { twetailer.Common.showMap(dijit.byId('location.postalCode').get('value'), dijit.byId('location.countryCode').get('value'), { geocoordinates: 'geoCoordinatesAvailable' }); }" type="button">View map</button>
                                 <br />
-                                <button dojoType="dijit.form.Button" onclick="localModule.openLocationFilterDialog();" type="button">Get location keys</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.openStoreFilterDialog();" type="button">Get store keys</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.openLocationFilterDialog(); }" type="button">Get location keys</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.openStoreFilterDialog(); }" type="button">Get store keys</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="reportInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="reportFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Report Information
-                    <a href="javascript:dojo.query('#reportInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#reportInformation>table').style('display','');">[+]</a>
+                    Report
+                    <a href="javascript:localModule.expandBox('report');" id="reportExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="reportInformation">
+                <form  data-dojo-type="dijit.form.Form" id="reportBox">
                     <table id="reportAttributeTable">
                         <tr>
                             <td><label for="report.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.key', 'Report'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.key', 'Report');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.key', 'Report'); } }" id="report.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('report.key', 'Report'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="report.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="report.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="report.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="report.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.locationKey', 'Location'); } }" id="report.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('report.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="report.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="report.markedForDeletion" type="checkbox" /></td>
                             <td><label for="report.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="report.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="report.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="report.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="report._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="report._tracking" ></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="report.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.consumerKey', 'Consumer'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.consumerKey', 'Consumer'); } }" id="report.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('report.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="report.content">Content:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.content" name="content" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.content"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.demandKey">Demand key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="report.demandKey" name="demandKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.demandKey', 'Demand'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('report.demandKey', 'Demand');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('report.demandKey', 'Demand'); } }" id="report.demandKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('report.demandKey', 'Demand'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="report.hashTags">Hash tags:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.hashTags"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.ipAddress">IP address:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="report.ipAddress" name="ipAddress" type="text" /></td>
+                            <td>
+                                <input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="report.ipAddress" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { window.open('http://www.iplocationfinder.com/' + dijit.byId('report.ipAddress').get('value'), 'ipLocator'); }" type="button">Fetch</button>
+                            </td>
                         </tr>
                         <tr>
                             <td><label for="report.language">Language:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, readOnly: true"
                                     id="report.language"
-                                    name="language"
-                                    style="width:8em;"
                                 >
-                                    <option value="en" selected="true">English</option>
+                                    <option value="en" selected="selected">English</option>
                                     <option value="fr">French</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="report.metadata">Metadata:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.metadata" name="metadata" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.metadata"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.referrerUrl">Referrer URL:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.referrerUrl" name="referrerUrl" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.referrerUrl"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.reporterTitle">Reporter title:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.reporterTitle" name="reporterTitle" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.reporterTitle"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.reporterUrl">Reporter URL:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.reporterUrl" name="reporterUrl" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.reporterUrl"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.userAgent">userAgent:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="report.userAgent" name="userAgent" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', readOnly: true" id="report.userAgent"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="report.range">Range:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="report.range" name="range" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:5,places:0}, readOnly: true" id="report.range" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Report');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Report'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <br clear="both" />
-            <div style="float:left;">
-               <a id="turnOffRow2" href="javascript:dojo.query('#turnOffRow2').style('display', 'none');dojo.query('#turnOnRow2').style('display', '');dojo.query('#saleassociateInformation>table').style('display','none');dojo.query('#storeInformation>table').style('display','none');dojo.query('#proposalInformation>table').style('display','none');dojo.query('#rawcommandInformation>table').style('display','none');dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow2" href="javascript:dojo.query('#turnOnRow2').style('display', 'none');dojo.query('#turnOffRow2').style('display', '');dojo.query('#saleassociateInformation>table').style('display','');dojo.query('#storeInformation>table').style('display','');dojo.query('#proposalInformation>table').style('display','');dojo.query('#rawcommandInformation>table').style('display','');dojo.query('#paymentInformation>table').style('display','');" style="display:none;">[+]</a>
-            </div>
-            <fieldset class="entityInformation" id="saleassociateInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="saleassociateFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Sale Associate Information
-                    <a href="javascript:dojo.query('#saleassociateInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#saleassociateInformation>table').style('display','');">[+]</a>
+                    Sale Associate
+                    <a href="javascript:localModule.expandBox('saleassociate');" id="saleassociateExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="saleassociateInformation">
+                <form  data-dojo-type="dijit.form.Form" id="saleassociateBox">
                     <table>
                         <tr>
                             <td><label for="saleassociate.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.key', 'SaleAssociate'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.key', 'SaleAssociate');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.key', 'SaleAssociate'); } }" id="saleassociate.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('saleassociate.key', 'SaleAssociate'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="saleassociate.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="saleassociate.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.locationKey', 'Location'); } }" id="saleassociate.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('saleassociate.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <input dojoType="dijit.form.CheckBox" id="saleassociate.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" />
+                                <input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="saleassociate.markedForDeletion" type="checkbox" />
                             </td>
                             <td><label for="saleassociate.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="saleassociate.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="saleassociate.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="saleassociate._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="saleassociate._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="saleassociate.closedProposalNb">Closed proposal #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="saleassociate.closedProposalNb" style="width:6em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}" id="saleassociate.closedProposalNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.NumberTextBox" id="saleassociate.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.consumerKey', 'Consumer'); }" style="width:5em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'consumerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.consumerKey', 'Consumer'); } }" id="saleassociate.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('saleassociate.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.creatorKey">Creator key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.NumberTextBox" id="saleassociate.creatorKey" name="creatorKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.creatorKey', 'Consumer'); }" style="width:5em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.creatorKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'creatorKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.creatorKey', 'Consumer'); } }" id="saleassociate.creatorKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('saleassociate.creatorKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.criteria">Criteria:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="saleassociate.criteria" name="criteria" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'criteria'" id="saleassociate.criteria"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.hashTags">Hash tags:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="saleassociate.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'hashTags'" id="saleassociate.hashTags"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.publishedProposalNb">Published proposal #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="saleassociate.publishedProposalNb" style="width:6em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}" id="saleassociate.publishedProposalNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.score">Req. match score:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="saleassociate.score" name="score" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'shortField', name: 'score'" id="saleassociate.score" /></td>
                         </tr>
                         <tr>
                             <td><label for="saleassociate.storeKey">Store key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="saleassociate.storeKey" name="storeKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.storeKey', 'Store'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('saleassociate.storeKey', 'Store');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'storeKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('saleassociate.storeKey', 'Store'); } }" id="saleassociate.storeKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('saleassociate.storeKey', 'Store'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="saleassociate.isStoreAdmin" name="isStoreAdmin" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="name: 'isStoreAdmin'" id="saleassociate.isStoreAdmin" type="checkbox" /></td>
                             <td><label for="saleassociate.isStoreAdmin">Store administrator</label></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('SaleAssociate');" type="button">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.getProposalKeys();" type="button">Get proposal keys</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('SaleAssociate'); }" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getProposalKeys(); }" type="button">Get proposal keys</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="storeInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="storeFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Store Information
-                    <a href="javascript:dojo.query('#storeInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#storeInformation>table').style('display','');">[+]</a>
+                    Store
+                    <a href="javascript:localModule.expandBox('store');" id="storeExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="storeInformation">
+                <form  data-dojo-type="dijit.form.Form" id="storeBox">
                     <table>
                         <tr>
                             <td><label for="store.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="store.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.key', 'Store'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.key', 'Store');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.key', 'Store'); } }" id="store.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('store.key', 'Store'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="store.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="store.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="store.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="store.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.locationKey', 'Location'); } }" id="store.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('store.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="store.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="store.markedForDeletion" type="checkbox" /></td>
                             <td><label for="store.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="store.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="store.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="store.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="store._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="store._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="store._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="store.address">Address:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.address" name="address" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'address'" id="store.address" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.closedProposalNb">Closed proposal #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.closedProposalNb" style="width:6em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}" id="store.closedProposalNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.email" name="email" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'email'" id="store.email" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.latitude">Latitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="store.latitude" name="latitude" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'latitude'" id="store.latitude" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.longitude">Longitude:</label></td>
-                            <td><input dojoType="dijit.form.NumberTextBox" id="store.longitude" name="longitude" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'longitude'" id="store.longitude" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.name" name="name" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'name'" id="store.name" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.phoneNb">Phone number:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.phoneNb" name="phoneNb" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'phoneNb'" id="store.phoneNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.publishedProposalNb">Published proposal #:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.publishedProposalNb" style="width:6em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}" id="store.publishedProposalNb" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.registrarKey">Registrar key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="store.registrarKey" name="registrarKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.registrarKey', 'Registrar'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.registrarKey', 'Registrar');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'registratrKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.registrarKey', 'Registrar'); } }" id="store.registrarKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('store.registrarKey', 'Registrar'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="store.reviewSystemKey">Review system key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="store.reviewSystemKey" name="reviewSystemKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'reviewSystemKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem'); } }" id="store.reviewSystemKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('store.reviewSystemKey', 'ReviewSystem'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="store.state">State:</label></td>
-                            <td><select dojoType="dijit.form.Select" id="store.state" name="state"><option value="referenced" selected="true">Referenced (minimal)</option><option value="inProgress">Needs follow-up</option><option value="waiting">Waiting activation</option><option value="active">Activated</option><option value="excluded">Excluded</option></select></td>
+                            <td>
+                                <select data-dojo-type="dijit.form.Select" data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'state'" id="store.state">
+                                    <option value="referenced" selected="selected">Referenced (minimal)</option>
+                                    <option value="inProgress">Needs follow-up</option>
+                                    <option value="waiting">Waiting activation</option>
+                                    <option value="active">Activated</option>
+                                    <option value="excluded">Excluded</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td><label for="store.url">URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="store.url" name="url" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'url'" id="store.url" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Store');" type="button">Update</button>
-                                <button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociateKeys();" type="button">Get sale associate keys</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Store'); }" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getSaleAssociateKeys(); }" type="button">Get sale associate keys</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="proposalInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="proposalFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Proposal Information
-                    <a href="javascript:dojo.query('#proposalInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#proposalInformation>table').style('display','');">[+]</a>
+                    Proposal
+                    <a href="javascript:localModule.expandBox('proposal');" id="proposalExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="proposalInformation">
+                <form  data-dojo-type="dijit.form.Form" id="proposalBox">
                     <table>
                         <tr>
                             <td style="font-weight:bold;text-align:right;padding-right:10px;color:orange;">Point of view:</td>
@@ -964,95 +924,92 @@
                         <tr>
                             <td><label for="proposal.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.key', 'Proposal'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.key', 'Proposal');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.key', 'Proposal'); } }" id="proposal.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.key', 'Proposal'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="proposal.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="proposal.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="proposal.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.locationKey', 'Location'); } }" id="proposal.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="proposal.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="proposal.markedForDeletion" type="checkbox" /></td>
                             <td><label for="proposal.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="proposal.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="proposal.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="proposal._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="proposal.action">Action:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="proposal.action" name="action" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="proposal.action" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.cancelerKey">Canceler key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.cancelerKey" name="cancelerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.cancelerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.cancelerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'cancelerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.cancelerKey', 'Consumer'); } }" id="proposal.cancelerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.cancelerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.cc">CC-ed:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.cc" name="cc" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'cc'" id="proposal.cc"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.content">Content:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.content" name="content" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'content'" id="proposal.content"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.dueDate">Due date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="proposal.dueDate" name="dueDate" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', name: 'dueDate'" id="proposal.dueDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.hashTags">Hash tags:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.hashTags" name="hashTags" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'hashTags'" id="proposal.hashTags"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.metadata">Metadata:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.metadata" name="metadata" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'metadåta'" id="proposal.metadata"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.ownerKey">Owner key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.ownerKey" name="ownerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'ownerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate'); } }" id="proposal.ownerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.ownerKey', 'SaleAssociate'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.quantity">Quantity:</label></td>
-                            <td><input constraints="{min:0,space:0}" dojoType="dijit.form.NumberTextBox" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:1,places:0}, name: 'quantity'" id="proposal.quantity" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.rawCommandId">RawCommand key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.rawCommandId" name="rawCommandId" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.rawCommandId', 'RawCommand');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true" id="proposal.rawCommandId" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.rawCommandId', 'RawCommand'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.source">Source:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, readOnly: true"
                                     id="proposal.source"
-                                    name="source"
-                                    readonly="true"
-                                    style="width:10em;"
                                 >
-                                    <option value="mail" selected="true">E-mail</option>
+                                    <option value="mail" selected="selected">E-mail</option>
                                     <option value="jabber">Jabber/XMPP</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="simulated">Simulated</option>
@@ -1066,13 +1023,11 @@
                             <td><label for="proposal.state">State:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'state'"
                                     id="proposal.state"
-                                    name="state"
-                                    style="width:10em;"
                                 >
-                                    <option value="opened" selected="true">Open</option>
+                                    <option value="opened" selected="selected">Open</option>
                                     <option value="invalid">Invalid</option>
                                     <option value="published">Published</option>
                                     <option value="confirmed">Confirmed</option>
@@ -1084,36 +1039,34 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="proposal.stateCmdList" name="stateCmdList" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="proposal.stateCmdList" type="checkbox" /></td>
                             <td><label for="proposal.stateCmdList">State for command: !list</label></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="proposal.AWSCBUIURL">Co-branded service URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="proposal.AWSCBUIURL" name="AWSCBUIURL" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="proposal.AWSCBUIURL" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.consumerKey', 'Consumer'); }" readonly="true" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'consumerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.consumerKey', 'Consumer'); } }" id="proposal.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.comment">Comment:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="proposal.comment" name="comment"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'comment'" id="proposal.comment"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.currencyCode">Currency:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'currencyCode'"
                                     id="proposal.currencyCode"
-                                    name="currencyCode"
-                                    style="width:10em;"
                                 >
-                                    <option value="USD" selected="true">$ / USD</option>
+                                    <option value="USD" selected="selected">$ / USD</option>
                                     <option value="CAD">$ / CAD</option>
                                     <option value="EUR">€ / EUR</option>
                                 </select>
@@ -1122,25 +1075,23 @@
                         <tr>
                             <td><label for="proposal.demandKey">Demand key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.demandKey" name="demandKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE'); }" readonly="true" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'demandKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE'); } }" id="proposal.demandKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.demandKey', 'Demand', 'SALE_ASSOCIATE'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.price">Price:</label></td>
-                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.price" name="price" style="width:7em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:2}, name: 'price'" id="proposal.price" /></td>
                         </tr>
                         <tr>
                             <td><label for="proposal.score">Score:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, name: 'score'"
                                     id="proposal.score"
-                                    name="score"
-                                    style="width:10em;"
                                 >
-                                    <option value="0" selected="true">Not rated</option>
+                                    <option value="0" selected="selected">Not rated</option>
                                     <option value="1">:-(</option>
                                     <option value="2">Between :-( and :-|</option>
                                     <option value="3">:-|</option>
@@ -1152,90 +1103,86 @@
                         <tr>
                             <td><label for="proposal.storeKey">Store key:</label></td>
                             <td>
-                                <input dojoType="dijit.form.TextBox" id="proposal.storeKey" name="storeKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.storeKey', 'Store'); }" readonly="true" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('proposal.storeKey', 'Store');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'storeKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('proposal.storeKey', 'Store'); } }" id="proposal.storeKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('proposal.storeKey', 'Store'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="proposal.total">Total:</label></td>
-                            <td><input constraints="{min:0,space:2}" dojoType="dijit.form.NumberTextBox" id="proposal.total" name="total" style="width:7em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:2}, name: 'total'" id="proposal.total" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" id="proposal.updateButton" onclick="localModule.saveEntity('Proposal');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" id="proposal.updateButton" data-dojo-props="onClick: function() { localModule.saveEntity('Proposal'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="rawcommandInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="rawcommandFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Raw Command Information
-                    <a href="javascript:dojo.query('#rawcommandInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#rawcommandInformation>table').style('display','');">[+]</a>
+                    Raw Command
+                    <a href="javascript:localModule.expandBox('rawcommand');" id="rawcommandExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="rawcommandInformation">
+                <form  data-dojo-type="dijit.form.Form" id="rawcommandBox">
                     <table>
                         <tr>
                             <td><label for="rawcommand.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="rawcommand.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('rawcommand.key', 'RawCommand'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('rawcommand.key', 'RawCommand');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('rawcommand.key', 'RawCommand'); } }" id="rawcommand.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('rawcommand.key', 'RawCommand'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="rawcommand.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="rawcommand.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="rawcommand.locationKey" name="locationKey" readonly="true" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('rawcommand.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('rawcommand.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('rawcommand.locationKey', 'Location'); } }" id="rawcommand.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true" data-dojo-props="onClick: function() { localModule.fetchEntity('rawcommand.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="rawcommand.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="rawcommand.markedForDeletion" type="checkbox" /></td>
                             <td><label for="rawcommand.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="rawcommand.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="rawcommand.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="rawcommand._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="rawcommand._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="rawcommand.command">Command:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.command" name="command" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="rawcommand.command" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.commandId">Command Id:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.commandId" name="commandId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="rawcommand.commandId" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.emitterId">Emitter Id:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.emitterId" name="emitterId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="rawcommand.emitterId" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.errorMessage">Error msg:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="rawcommand.errorMessage" name="errorMessage" ></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: 'errorMessage'" id="rawcommand.errorMessage"></textarea></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.source">Source:</label></td>
                             <td>
                                 <select
-                                    dojoType="dijit.form.Select"
-                                    hasDownArrow="true"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="'class': 'autoField', hasDownArrow: true, readOnly: true"
                                     id="rawcommand.source"
-                                    name="source"
-                                    readonly="true"
-                                    style="width:10em;"
                                 >
-                                    <option value="mail" selected="true">E-mail</option>
+                                    <option value="mail" selected="selected">E-mail</option>
                                     <option value="jabber">Jabber/XMPP</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="simulated">Simulated</option>
@@ -1247,367 +1194,355 @@
                         </tr>
                         <tr>
                             <td><label for="rawcommand.subject">Subject:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.subject" name="subject" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'subject'" id="rawcommand.subject" /></td>
                         </tr>
                         <tr>
                             <td><label for="rawcommand.toId">To Id:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="rawcommand.toId" name="toId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="rawcommand.toId" /></td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="paymentInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="paymentFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Payment Information
-                    <a href="javascript:dojo.query('#paymentInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#paymentInformation>table').style('display','');">[+]</a>
+                    Payment
+                    <a href="javascript:localModule.expandBox('payment');" id="paymentExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="paymentInformation">
+                <form  data-dojo-type="dijit.form.Form" id="paymentBox">
                     <table style="display:none;">
                         <tr>
                             <td><label for="payment.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="payment.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('payment.key', 'Payment'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.key', 'Payment');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('payment.key', 'Payment'); } }" id="payment.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('payment.key', 'Payment'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="payment.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="payment.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="payment.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="payment.locationKey" name="locationKey" readonly="true" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('payment.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('payment.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('payment.locationKey', 'Location'); } }" id="payment.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true" data-dojo-props="onClick: function() { localModule.fetchEntity('payment.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="payment.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="payment.markedForDeletion" type="checkbox" /></td>
                             <td><label for="payment.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="payment.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="payment.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="payment.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="payment._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="payment._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="payment.authorizationId">Authorization identifier:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="payment.authorizationId" name="authorizationId" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="payment.authorizationId" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment.reference">Reference:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="payment.reference" name="reference" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="payment.reference" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment.requestId">Request identifier:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="payment.requestId" name="requestId" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="payment.requestId" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment.transactionId">Transaction identifier:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="payment.transactionId" name="transactionId" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="payment.transactionId" /></td>
                         </tr>
                         <tr>
                             <td><label for="payment.status">Status:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="payment.status" name="status" readonly="true" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', readOnly: true" id="payment.status" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.saveEntity('Payment');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true" data-dojo-props="onClick: function() { localModule.saveEntity('Payment'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <br clear="both" />
-            <div style="float:left;">
-               <a id="turnOffRow3" href="javascript:dojo.query('#turnOffRow3').style('display', 'none');dojo.query('#turnOnRow3').style('display', '');dojo.query('#influencerInformation>table').style('display','none');dojo.query('#registrarInformation>table').style('display','none');dojo.query('#resellerInformation>table').style('display','none');dojo.query('#reviewsystemInformation>table').style('display','none');">[&ndash;]</a>
-               <a id="turnOnRow3" href="javascript:dojo.query('#turnOnRow3').style('display', 'none');dojo.query('#turnOffRow3').style('display', '');dojo.query('#influencerInformation>table').style('display','');dojo.query('#registrarInformation>table').style('display','');dojo.query('#resellerInformation>table').style('display','');dojo.query('#reviewsystemInformation>table').style('display','');" style="display:none;">[+]</a>
-            </div>
-            <fieldset class="entityInformation" id="influencerInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="influencerFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Influencer Information
-                    <a href="javascript:dojo.query('#influencerInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#influencerInformation>table').style('display','');">[+]</a>
+                    Influencer
+                    <a href="javascript:localModule.expandBox('influencer');" id="influencerExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="influencerInformation">
+                <form  data-dojo-type="dijit.form.Form" id="influencerBox">
                     <table id="influencerAttributeTable" style="display:none;">
                         <tr>
                             <td><label for="influencer.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.key', 'Influencer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.key', 'Influencer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.key', 'Influencer'); } }" id="influencer.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('influencer.key', 'Influencer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="influencer.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="influencer.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="influencer.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="influencer.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.locationKey', 'Location'); } }" id="influencer.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('influencer.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="influencer.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="influencer.markedForDeletion" type="checkbox" /></td>
                             <td><label for="influencer.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="influencer.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="influencer.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="influencer.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="influencer._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="influencer._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="influencer._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="influencer.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="influencer.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.consumerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('influencer.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'consumerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('influencer.consumerKey', 'Consumer'); } }" id="influencer.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('influencer.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="influencer.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="influencer.email" name="email" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'email'" id="influencer.email" /></td>
                         </tr>
                         <tr>
                             <td><label for="influencer.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="influencer.name" name="name" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'name'" id="influencer.name" /></td>
                         </tr>
                         <tr>
                             <td><label for="influencer.referralId">Referral Id:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="influencer.referralId" name="referralId" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'referralId'" id="influencer.referralId" /></td>
                         </tr>
                         <tr>
                             <td><label for="influencer.url">URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="influencer.url" name="url" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'url'" id="influencer.url" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Influencer');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Influencer'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="registrarInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="registrarFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Registrar Information
-                    <a href="javascript:dojo.query('#registrarInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#registrarInformation>table').style('display','');">[+]</a>
+                    Registrar
+                    <a href="javascript:localModule.expandBox('registrar');" id="registrarExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="registrarInformation">
+                <form  data-dojo-type="dijit.form.Form" id="registrarBox">
                     <table id="registrarAttributeTable" style="display:none;">
                         <tr>
                             <td><label for="registrar.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.key', 'Registrar'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.key', 'Registrar');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.key', 'Registrar'); } }" id="registrar.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('registrar.key', 'Registrar'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="registrar.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="registrar.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="registrar.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="registrar.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.locationKey', 'Location'); } }" id="registrar.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('registrar.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="registrar.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="registrar.markedForDeletion" type="checkbox" /></td>
                             <td><label for="registrar.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="registrar.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="registrar.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="registrar.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="registrar._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="registrar._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="registrar._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="registrar.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="registrar.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.consumerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('registrar.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'consumerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('registrar.consumerKey', 'Consumer'); } }" id="registrar.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('registrar.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="registrar.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="registrar.email" name="email" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'email'" id="registrar.email" /></td>
                         </tr>
                         <tr>
                             <td><label for="registrar.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="registrar.name" name="name" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'name'" id="registrar.name" /></td>
                         </tr>
                         <tr>
                             <td><label for="registrar.url">URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="registrar.url" name="url" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'url'" id="registrar.url" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Registrar');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Registrar'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="resellerInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="resellerFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Reseller Information
-                    <a href="javascript:dojo.query('#resellerInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#resellerInformation>table').style('display','');">[+]</a>
+                    Reseller
+                    <a href="javascript:localModule.expandBox('reseller');" id="resellerExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="resellerInformation">
+                <form  data-dojo-type="dijit.form.Form" id="resellerBox">
                     <table id="resellerAttributeTable" style="display:none;">
                         <tr>
                             <td><label for="reseller.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.key', 'Reseller'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.key', 'Reseller');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.key', 'Reseller'); } }" id="reseller.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('reseller.key', 'Reseller'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="reseller.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="reseller.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="reseller.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="reseller.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.locationKey', 'Location'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.locationKey', 'Location'); } }" id="reseller.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('reseller.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="reseller.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="reseller.markedForDeletion" type="checkbox" /></td>
                             <td><label for="reseller.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="reseller.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="reseller.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="reseller.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="reseller._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="reseller._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="reseller._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="reseller.consumerKey">Consumer key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reseller.consumerKey" name="consumerKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.consumerKey', 'Consumer'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reseller.consumerKey', 'Consumer');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'consumerKey', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reseller.consumerKey', 'Consumer'); } }" id="reseller.consumerKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('reseller.consumerKey', 'Consumer'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="reseller.tokenNb">Tokens:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reseller.tokenNb" name="tokenNb" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'tokenNb'" id="reseller.tokenNb" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('Reseller');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('Reseller'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
-            <fieldset class="entityInformation" id="reviewsystemInformationFieldset" style="float:left;margin:5px;">
+            <fieldset class="entityInformation" id="reviewsystemFieldset" style="float:left;margin:5px;">
                 <legend>
-                    Review System Information
-                    <a href="javascript:dojo.query('#reviewsystemInformation>table').style('display','none');">[&ndash;]</a> /
-                    <a href="javascript:dojo.query('#reviewsystemInformation>table').style('display','');">[+]</a>
+                    Review System
+                    <a href="javascript:localModule.expandBox('reviewsystem');" id="reviewsystemExpand">[+]</a>
                 </legend>
-                <form  dojoType="dijit.form.Form" id="reviewsystemInformation">
+                <form  data-dojo-type="dijit.form.Form" id="reviewsystemBox">
                     <table id="reviewsystemAttributeTable" style="display:none;">
                         <tr>
                             <td><label for="reviewsystem.key">Key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reviewsystem.key" name="key" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reviewsystem.key', 'ReviewSystem'); }" style="width:8em;" type="text" />
-                                <button dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewsystem.key', 'ReviewSystem');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, name: 'key', onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reviewsystem.key', 'ReviewSystem'); } }" id="reviewsystem.key" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.fetchEntity('reviewsystem.key', 'ReviewSystem'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem.creationDate">Creation date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="reviewsystem.creationDate" name="creationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="reviewsystem.creationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem.locationKey">Location key:</label></td>
                             <td>
-                                <input constraints="{min:0,places:0}" dojoType="dijit.form.NumberTextBox" id="reviewsystem.locationKey" name="locationKey" onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reviewsystem.locationKey', 'Location'); }" readonly="true" style="width:8em;" type="text" />
-                                <button disabled="true" dojoType="dijit.form.Button" onclick="localModule.fetchEntity('reviewsystem.locationKey', 'Location');" type="button">Fetch</button>
+                                <input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:0,places:0}, readOnly: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { localModule.fetchEntity('reviewsystem.locationKey', 'Location'); } }" id="reviewsystem.locationKey" />
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="disabled: true" data-dojo-props="onClick: function() { localModule.fetchEntity('reviewsystem.locationKey', 'Location'); }" type="button">Fetch</button>
                             </td>
                         </tr>
                         <tr>
-                            <td><input dojoType="dijit.form.CheckBox" id="reviewsystem.markedForDeletion" name="markedForDeletion" readonly="true" type="checkbox" /></td>
+                            <td><input data-dojo-type="dijit.form.CheckBox" data-dojo-props="readOnly: true" id="reviewsystem.markedForDeletion" type="checkbox" /></td>
                             <td><label for="reviewsystem.markedForDeletion">Marked for deletion</label></td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem.modificationDate">Modification date:</label></td>
-                            <td><input dojoType="dijit.form.DateTextBox" id="reviewsystem.modificationDate" name="modificationDate" readonly="true" style="width:8em;" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="'class': 'shortField', readOnly: true" id="reviewsystem.modificationDate" /></td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem._tracking" style="font-style: italic;">Tracking:</label></td>
-                            <td><textarea dojoType="dijit.form.Textarea" id="reviewsystem._tracking" name="_tracking" style="width:10em;"></textarea></td>
+                            <td><textarea data-dojo-type="dijit.form.Textarea" data-dojo-props="'class': 'longField', name: '_tracking'" id="reviewsystem._tracking"></textarea></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td><label for="reviewsystem.email">E-mail:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reviewsystem.email" name="email" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'email'" id="reviewsystem.email" /></td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem.name">Name:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reviewsystem.name" name="name" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'name'" id="reviewsystem.name" /></td>
                         </tr>
                         <tr>
                             <td><label for="reviewsystem.url">URL:</label></td>
-                            <td><input dojoType="dijit.form.TextBox" id="reviewsystem.url" name="url" type="text" /></td>
+                            <td><input data-dojo-type="dijit.form.TextBox" data-dojo-props="'class': 'longField', name: 'url'" id="reviewsystem.url" /></td>
                         </tr>
                         <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                         <tr>
                             <td colspan="2" style="text-align:center;">
-                                <button dojoType="dijit.form.Button" onclick="localModule.saveEntity('ReviewSystem');" type="button">Update</button>
+                                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.saveEntity('ReviewSystem'); }" type="button">Update</button>
                             </td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
         </div>
-        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'bottom'" id="footerZone">
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
+        data-dojo-type="dijit.Dialog"
+        data-dojo-props="style: 'min-width: 260px'"
         id="entityKeysDialog"
-        style="min-width:260px;"
     >
         <div id="keyZone" style="min-height:60px;"></div>
         <div class="dijitDialogPaneActionBar" style="text-align:right;padding-top:5px;">
-            <button dojoType="dijit.form.Button" onclick="dijit.byId('entityKeysDialog').hide();" type="button">Close</button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { dijit.byId('entityKeysDialog').hide(); }" type="button">Close</button>
         </div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
-        execute="localModule.getLocationKeys();"
+        data-dojo-type="dijit.Dialog"
         id="locationFilterDialog"
-        title="Location filters"
     >
         <div class="dijitDialogPaneContentArea">
             <table id="locationFilterTable">
@@ -1617,28 +1552,22 @@
                 <tr>
                     <td><label for="locationFilter.postalCode">Postal code:</label></td>
                     <td>
-                                <input
-                                    dojoType="dijit.form.ValidationTextBox"
-                                    id="locationFilter.postalCode"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                                    name="postalCode"
-                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
-                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
-                                    required="true"
-                                    style="width:6em;"
-                                    type="text"
-                                />
+                        <input
+                            data-dojo-type="dijit.form.ValidationTextBox"
+                            data-dojo-props="'class': 'shortField', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', placeHolder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true, onKeyUp: function() { if (event.keyCode == dojo.keys.ENTER) { var dialog = dijit.byId('locationFilterDialog'); dialog.execute(); dialog.hide(); } }"
+                            id="locationFilter.postalCode"
+                        />
                     </td>
                 </tr>
                 <tr>
                     <td><label for="locationFilter.countryCode">Country code:</label></td>
                     <td>
                         <select
-                            dojoType="dijit.form.Select"
+                            data-dojo-type="dijit.form.Select"
+                            data-dojo-props="'class': 'autoField', hasDownArrow: true, readOnly: true, onChange: function() { twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'locationFilter.postalCode'); }"
                             id="locationFilter.countryCode"
-                            onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, 'locationFilter.postalCode');"
                         >
-                            <option value="CA" selected="true">Canada</option>
+                            <option value="CA" selected="selected">Canada</option>
                             <option value="US">United States of America</option>
                         </select>
                     </td>
@@ -1646,34 +1575,34 @@
                 <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>
                     <td><label for="locationFilter.latitude">Latitude:</label></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="locationFilter.latitude" type="text" value="-1000" /></td>
+                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}" id="locationFilter.latitude" value="-1000" /></td>
                 </tr>
                 <tr>
                     <td><label for=locationFilter.longitude>Longitude:</label></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="locationFilter.longitude" type="text" value="-1000" /></td>
+                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}" id="locationFilter.longitude" value="-1000" /></td>
                 </tr>
                 <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>
                     <td><label for="locationFilter.range">Range:</label></td>
                     <td>
-                        <input dojoType="dijit.form.TextBox" id="locationFilter.range" style="width:4em;" type="text" value="100" />
-                        <select dojoType="dijit.form.Select" id="locationFilter.rangeUnit"><option value="km" selected="true">km</option><option value="mi">miles</option></select>
+                        <input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:25,places:0}, value: 25" id="locationFilter.range" />
+                        <select data-dojo-type="dijit.form.Select" data-dojo-props="'class': 'autoField', hasDownArrow: true" id="locationFilter.rangeUnit"><option value="km" selected="selected">km</option><option value="mi">miles</option></select>
                     </td>
                 </tr>
                 <tr id="hasStoreRow">
-                    <td><input dojoType="dijit.form.CheckBox" id="locationFilter.hasStore" type="checkbox" /></td>
+                    <td><input data-dojo-type="dijit.form.CheckBox" id="locationFilter.hasStore" type="checkbox" /></td>
                     <td><label for="locationFilter.hasStore">Has store</label></td>
                 </tr>
             </table>
         </div>
         <div class="dijitDialogPaneActionBar" style="text-align:right;margin-top:10px;">
-            <button dojoType="dijit.form.Button" id="ok" type="submit">Search</button>
-            <button dojoType="dijit.form.Button" onClick="dijit.byId('locationFilterDialog').hide();" type="button">Cancel</button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="type: 'submit'">Search</button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { dijit.byId('locationFilterDialog').hide(); }" type="button">Cancel</button>
         </div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
+        data-dojo-type="dijit.Dialog"
         id="locationMapDialog"
         title="<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>"
     >
@@ -1694,6 +1623,7 @@
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberTextBox');
         dojo.require('dijit.form.Select');
+        dojo.require('dijit.form.NumberSpinner');
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dojox.analytics.Urchin');
@@ -1718,6 +1648,7 @@
 
     var localModule = new Object();
     localModule.init = function() {
+        dojo.query('.entityInformation>form>table').style('display','none');
         if (window.location.search) {
             var params = dojo.queryToObject(window.location.search.slice(1));
             if (params.type && params.key) {
@@ -1741,9 +1672,27 @@
         dijit.byId('topContainer').resize();
 
         dojo.subscribe('geoCoordinatesAvailable', function(location) {
-            if (location.Ca) { dijit.byId('location.latitude').set('value', location.Ca); }
-            if (location.Ea) { dijit.byId('location.longitude').set('value', location.Ea); }
+            var dataOK = true;
+            if (location.lat) { dijit.byId('location.latitude').set('value', location.lat()); }
+            else if (location.Ca) { dijit.byId('location.latitude').set('value', location.Ca); }
+            else if (location.Da) { dijit.byId('location.latitude').set('value', location.Da); }
+            else { dataOK = false; }
+            if (location.lng) { dijit.byId('location.longitude').set('value', location.lng()); }
+            else if (location.Ea) { dijit.byId('location.longitude').set('value', location.Ea); }
+            else if (location.Fa) { dijit.byId('location.longitude').set('value', location.Fa); }
+            else { dataOK = false; }
+            if (!dataOK) {
+                alert('Cannot extract the geo-coordinates...');
+            }
         });
+    };
+    localModule.expandBox = function(boxId) {
+        var plus = dojo.byId(boxId + 'Expand');
+        if (plus) {
+            plus.parentNode.removeChild(plus);
+            dojo.byId('expandedBoxes').appendChild(dojo.byId(boxId + 'Fieldset'));
+            dojo.query('#' + boxId + 'Box>table').style('display','');
+        }
     };
     localModule.fetchEntity = function(keyFieldId, entityName, pointOfView) {
         var key = dijit.byId(keyFieldId).get('value');
@@ -1757,8 +1706,9 @@
         if (pointOfViewField) {
             pointOfViewField.innerHTML = pointOfView;
         }
+        localModule.expandBox(prefix);
         dojo.animateProperty({
-            node: prefix + 'InformationFieldset',
+            node: prefix + 'Fieldset',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         dojo.xhrGet({
@@ -1778,7 +1728,7 @@
                     alert(response.message+'\nurl: '+ioArgs.url);
                 }
                 dojo.animateProperty({
-                    node: prefix + 'InformationFieldset',
+                    node: prefix + 'Fieldset',
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
@@ -1787,36 +1737,33 @@
         });
     };
     localModule.displayEntityAttributes = function(prefix, resource) {
-        dijit.byId(prefix + 'Information').reset();
+        dijit.byId(prefix + 'Box').reset();
         for (var attr in resource) {
             try {
                 var value = resource[attr];
                 if (attr.indexOf('Date') != -1) {
                     value = dojo.date.stamp.fromISOString(value);
                 }
-                if (attr == '_tracking' || attr == 'content') {
+                if (attr == '_tracking' || attr == 'content' || attr == 'comment') {
                     value = value.replace(/\\n/g, '\n');
                 }
                 if (attr == 'criteria' || attr == 'hashTags' || attr == 'cc') {
                     value = value.join('\n');
                 }
                 if (attr == 'proposalKeys' || attr == 'saleAssociateKeys') {
-                    var options = new dojo.data.ItemFileWriteStore({ data: { identifier: 'name', items: [] } })
-                    var limit = value.length;
-                    for (var idx = 0; idx < limit; idx++) {
-                        options.newItem({ name: value [idx] });
+                    var options = [], limit = value.length, idx;
+                    for (idx = 0; idx < limit; idx++) {
+                        options.push({ label: value[idx], value: value[idx] });
                     }
-                    dijit.byId(prefix + '.' + attr).set('store', options);
-                    dijit.byId(prefix + '.' + attr).set('value', value[0]);
+                    dijit.byId(prefix + '.' + attr).set('options', options);
+                    value = value[0];
                 }
-                else {
-                    var field = dijit.byId(prefix + '.' + attr)
-                    if (field) {
-                        field.set('value', value);
-                    }
-                    else if (attr != 'criteria') {
-                        alert('Field "' + prefix + '.' + attr + '" is missing!');
-                    }
+                var field = dijit.byId(prefix + '.' + attr)
+                if (field) {
+                    field.set('value', value);
+                }
+                else if (attr != 'criteria') {
+                    alert('Field "' + prefix + '.' + attr + '" is missing!');
                 }
                 /*
                 if (attr == 'state' && (entityName == 'Demand' || entityName == 'Proposal')) {
@@ -1834,11 +1781,11 @@
         var prefix = entityName.toLowerCase();
         var key = dijit.byId(prefix + '.key').get('value');
         if (isNaN(key)) {
-            alert('The key in the field \'' + keyFieldId + '\' is not a number!');
+            alert('The key in the field \'' + prefix + '.key\' is not a number!');
             return;
         }
         dojo.animateProperty({
-            node: prefix + 'InformationFieldset',
+            node: prefix + 'Fieldset',
             properties: { backgroundColor: { end: 'yellow' } }
         }).play();
         var pointOfView = (entityName == 'Proposal' || entityName == 'Store') ? 'SALE_ASSOCIATE' : 'CONSUMER';
@@ -1847,7 +1794,7 @@
         if (pointOfViewField) {
             pointOfViewField.innerHTML = pointOfView;
         }
-        var data = localModule.formToObject(prefix + 'Information');
+        var data = localModule.formToObject(prefix + 'Box');
         if (data.cc != null) { data.cc = data.cc.split('\n'); }
         if (data.criteria != null) { data.criteria = data.criteria.split('\n'); }
         if (data.hashTags != null) { data.hashTags = data.hashTags.split('\n'); }
@@ -1869,7 +1816,7 @@
                     alert(response.exceptionMessage+'\nurl: '+ioArgs.url+'\n\n'+response.originalExceptionMessage);
                 }
                 dojo.animateProperty({
-                    node: prefix + 'InformationFieldset',
+                    node: prefix + 'Fieldset',
                     properties: { backgroundColor: { end: 'transparent' } }
                 }).play();
             },
@@ -1882,8 +1829,8 @@
         dojo.forEach(dojo.byId(formNode).elements, function(item){
             var item = dijit.getEnclosingWidget(item);
             if (item != null) {
-                var _in = item.name;
-                if (item.checked === true) {
+                var _in = item.get('name');
+                if (item.get('checked') === true) {
                     data[_in] = true;
                 }
                 else {

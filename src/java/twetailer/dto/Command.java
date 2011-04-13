@@ -411,7 +411,9 @@ public class Command extends Entity {
             }
             out.put(CC, jsonArray);
         }
-        if (getContent().length() != 0) { out.put(CONTENT, getContent(), true); }
+        if (getContent().length() != 0) {
+            out.put(CONTENT, getContent(), true);
+        }
         if (getDueDate() != null) { out.put(DUE_DATE, DateUtils.dateToISO(getDueDate())); }
         if (getHashTags() != null && 0 < getHashTags().size()) {
             JsonArray jsonArray = new GenericJsonArray();
@@ -461,7 +463,9 @@ public class Command extends Entity {
                 addCoordinate(jsonArray.getString(i));
             }
         }
-        if (in.containsKey(CONTENT)) { setContent(in.getString(CONTENT, true)); }
+        if (in.containsKey(CONTENT)) {
+            setContent(in.getString(CONTENT, true));
+        }
         if (in.containsKey(DUE_DATE)) {
             try {
                 Date dueDate = DateUtils.isoToDate(in.getString(DUE_DATE));
