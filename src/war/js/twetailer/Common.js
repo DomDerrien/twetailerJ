@@ -114,12 +114,13 @@
         var day = date.getDate();
         var hours = time ? time.getHours() : 23;
         var minutes = time ? time.getMinutes() : 59;
+        var seconds = time ? time.getSeconds() : 59;
         return date.getFullYear() +
               (month < 10 ? '-0' : '-') + month +
               (day < 10 ? '-0' : '-') + day +
               (hours < 10 ? 'T0' : 'T') + hours +
               (minutes < 10 ? ':0' : ':') + minutes +
-              ':00';
+              (seconds < 10 ? ':0' : ':') + seconds;
     };
 
     /**

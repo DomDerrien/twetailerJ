@@ -565,7 +565,7 @@
                         </tr>
                         <tr>
                             <td><label for=location.longitude>Longitude:</label></td>
-                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'longitude'" id="location.longitude" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-180.0,max:180.0}, name: 'longitude'" id="location.longitude" /></td>
                         </tr>
                         <tr>
                             <td><label for="location.postalCode">Postal code:</label></td>
@@ -855,7 +855,7 @@
                         </tr>
                         <tr>
                             <td><label for="store.longitude">Longitude:</label></td>
-                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, name: 'longitude'" id="store.longitude" /></td>
+                            <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-180.0,max:180.0}, name: 'longitude'" id="store.longitude" /></td>
                         </tr>
                         <tr>
                             <td><label for="store.name">Name:</label></td>
@@ -1579,7 +1579,7 @@
                 </tr>
                 <tr>
                     <td><label for=locationFilter.longitude>Longitude:</label></td>
-                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}" id="locationFilter.longitude" value="-1000" /></td>
+                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-180.0,max:180.0}" id="locationFilter.longitude" value="-1000" /></td>
                 </tr>
                 <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>

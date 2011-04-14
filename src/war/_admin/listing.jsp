@@ -100,18 +100,51 @@
             <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%;">
-            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top'">
-                <div style="float: right">
-                    Date filter:
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top', style: 'border-radius: 5px;'" id="statsBar">
+                <div style="float: right; vertical-align: bottom">
+                    Filter:
                     <select
+                        id="dateFilter"
                         data-dojo-type="dijit.form.Select"
                         data-dojo-propos="hasDownArrow: true"
-                        id="dateFilter"
                     >
                         <option value="modificationDate">Modification</option>
                         <option value="creationDate" selected="selected">Creation</option>
                     </select>
-                    <input data-dojo-type="dijit.form.DateTextBox" id="dateLimit" type="text" />
+                    UTC gap:
+                    <select
+                        id="timezoneShift"
+                        data-dojo-type="dijit.form.Select"
+                        data-dojo-propos="hasDownArrow: true"
+                    >
+                        <option value="-12">-12 hours</option>
+                        <option value="-11">-11 hours</option>
+                        <option value="-10">-10 hours</option>
+                        <option value="-9">-9 hours</option>
+                        <option value="-8">-8 hours</option>
+                        <option value="-7">-7 hours</option>
+                        <option value="-6">-6 hours</option>
+                        <option value="-5">-5 hours</option>
+                        <option value="-4">-4 hours</option>
+                        <option value="-3">-3 hours</option>
+                        <option value="-2">-2 hours</option>
+                        <option value="-1">-1 hours</option>
+                        <option value="0">0 hours</option>
+                        <option value="1">1 hours</option>
+                        <option value="2">2 hours</option>
+                        <option value="3">3 hours</option>
+                        <option value="4" selected="selected">4 hours</option>
+                        <option value="5">5 hours</option>
+                        <option value="6">6 hours</option>
+                        <option value="7">7 hours</option>
+                        <option value="8">8 hours</option>
+                        <option value="9">9 hours</option>
+                        <option value="10">10 hours</option>
+                        <option value="11">11 hours</option>
+                        <option value="12">12 hours</option>
+                    </select>
+                    Limit:
+                    <input data-dojo-type="dijit.form.DateTextBox" data-dojo-props="style: 'width:8em;'" id="dateLimit" type="text" />
                     <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: localModule.loadGrid">Load</button>
                 </div>
                 <span style="float:left;width:10em">Pending transfer:</span>
@@ -207,7 +240,10 @@
     localModule.loadGrid = function() {
         var dateFilter = dijit.byId('dateFilter').get('value');
         var dateLimit = dijit.byId('dateLimit').get('value');
-        dateLimit = twetailer.Common.toISOString(dateLimit, null);
+        dateLimit.setHours(parseInt(dijit.byId('timezoneShift').get('value')));
+        dateLimit.setMinutes(0);
+        dateLimit.setSeconds(1);
+        dateLimit = twetailer.Common.toISOString(dateLimit, dateLimit);
 
         localModule.initializeCounters();
         localModule.fetchConsumers(dateFilter, dateLimit);
@@ -290,6 +326,18 @@
     };
     localModule.updateCounters = function() {
         dojo.byId('counts.transfer').innerHTML = localModule.counts.transfer;
+        if (localModule.counts.transfer == 0) {
+            dojo.animateProperty({
+                node: 'statsBar',
+                properties: { backgroundColor: { end: 'transparent' } }
+            }).play();
+        }
+        else if (localModule.counts.transfer == 1) {
+            dojo.animateProperty({
+                node: 'statsBar',
+                properties: { backgroundColor: { end: 'yellow' } }
+            }).play();
+        }
         dojo.byId('counts.consumers.total').innerHTML = localModule.counts.consumers.total;
         dojo.byId('counts.consumers.moderated').innerHTML = localModule.counts.consumers.moderated;
         dojo.byId('counts.consumers.unconfirmed').innerHTML = localModule.counts.consumers.unconfirmed;
