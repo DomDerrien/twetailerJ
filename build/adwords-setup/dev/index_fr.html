@@ -25,6 +25,9 @@
             font-size: 0pt;
             width: 100%;
         }
+        .reviewPaneTable {
+            width: 600px;
+        }
         .reviewPaneTable th, .reviewPaneTable td {
             vertical-align: top;
             padding: 6px;
@@ -33,19 +36,13 @@
             text-align: right;
             margin-right: 10px;
         }
-        #emailVerifStatus {
-            width: 540px;
-        }
-        #emailVerifStatus>div {
-            border-radius: 4px;
-            padding: 10px;
-        }
-        #emailVerifStatus a, #emailVerifStatus a:active, #emailVerifStatus a:visited {
-            color: white;
+        #confirmationPane {
+            width: 600px;
         }
     </style>
 </head>
 <body class="claro">
+<div id="socialLinks" style="position:absolute;top:20px;left:0px"></div>
 <form id="requestForm" onsubmit="return false;">
     <div id="container" class="container_16">
         <div class="grid_16" style="margin-top: 25px;">
@@ -217,40 +214,46 @@
         emailFieldPlaceHolder:      'Votre courriel',
         modelFieldPlaceHolder:      'Modèle du véhicule',
         postalCodeFieldPlaceHolder: 'Votre code postal',
+        sendRequestPaneTitle:               'Émission de votre requête',
         sendRequestInitialMessage:          '<p>:-) Merci de nous avoir soumis votre requête ...</p>',
         sendRequestErrorMessage:            '>:-( Zut... quelque chose imprévue vient de se produire.\n\n' +
-                                            'Veuillez envoyé un courriel détaillé à l\'adresse Support@AnotherSocialEconomy.com pour que nous puissions régler votre problème particulier.',
-        sendRequestSuccessMessage:          '<p>Votre requête a été soumise avec succès :-)</p>' +
+                                            'Veuillez envoyer un courriel détaillé à l\'adresse Support@AnotherSocialEconomy.com pour que nous puissions régler votre problème particulier.',
+        sendRequestSuccessMessageKnownUser: '<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Votre requête a été soumise avec succès :-)</p>' +
                                             '<p>Veuillez consulter votre boîte de courriel (ou votre filtre à <i>pourriel</i>) pour y trouver la confirmation de notre enregistrement de votre demande. ' +
                                             'Le message va être envoyé depuis l\'adresse <strong>assistant@anothersocialeconomy.appspotmail.com</strong></p>' +
                                             '<p>Merci pour la confiance accordée à AnotherSocialEconomy !</p>' +
-                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>',
-        emailCheckInitialMessage:           '<div style="background-color:#eee;text-align:center;">' +
-                                            'Vérification de l\'adresse de courriel...' +
-                                            '<div style="margin-top: 10px;"><img src="http://anothersocialeconomy.appspot.com/images/loading.gif"/></div>' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
                                             '</div>',
-        emailCheckErrorMessage:             'Une malencontreuse erreur vient de se produire lors de la vérification de votre adresse de courriel par notre serveur :-(\n\n' +
-                                            'Veuillez envoyer un courriel à support@anothersocialeconomy.com avec le détail de votre requête, où alors essayer un peu plus tard.',
-        emailCheckSuccessKnownMessage:      '<div style="background-color:#0a0;color:white;">' +
-                                            '<p><strong>Bonjour _name_</strong>!<br/>' +
-                                            'Veuillez vérifier le détail de votre requête et cliquer sur le bouton <strong>Soumettre</strong> pour que nous la diffusions aux concessionnaires de notre réseau.</p>' +
-                                            '<p><strong>Merci</strong> pour la confiance accordée à AnotherSocialEconomy :-)</p>' +
-                                            '</div>',
-        emailCheckSuccessUnknownMessage:    '<div style="background-color:orange;color:white;">' +
-                                            '<p><strong>Vérification d\'une nouvelle adresse de courriel</strong><br>' +
-                                            'Puisque vous allez utiliser notre service pour la première fois, sachez que votre requête restera suspendue tant que vous n\'aurez pas ' +
-                                            'confirmé votre adresse de courriel. Pour le moment, vous n\'avez qu\'à réviser le détail de votre requête, en faisant bien attention à ' +
-                                            'l\'exactitude de votre adresse de courriel. Puis cliquer simplement sur le bouton <strong>Soumettre</strong>.</p>' +
-                                            '<p>Pour la vérification proprement dite, recherchez notre courriel émis par <strong>assistant@anothersocialeconomy.appspotmail.com</strong>' +
-                                            'Vous n\'avez qu\'à <strong>y répondre</strong> pour finaliser le processus de vérification qui débloquera votre requête.</p>' +
-                                            '<p>Alors vous pourrez cliquer sur le bouton <strong>Soumettre</strong> pour que nous diffusions votre requête aux concessionnaires de notre réseau.</p>' +
-                                            '<p><strong>Conseil</strong><br>' +
+        sendRequestSuccessMessageUnknownUser:'<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Votre requête a été soumise avec succès :-)</p>' +
+                                            '<p>Veuillez consulter votre boîte de courriel (ou votre filtre à <i>pourriel</i>) pour y trouver la confirmation de notre enregistrement de votre demande. ' +
+                                            'Le message va être envoyé depuis l\'adresse <strong>assistant@anothersocialeconomy.appspotmail.com</strong></p>' +
+                                            '<div style="background-color:orange;color:white;padding:5px;">' +
+                                            '<p><strong>Vérification d\'une nouvelle adresse de courriel</strong><br/>' +
+                                            'Puisque vous allez utiliser notre service pour la première fois, il faut que nous confirmiez votre adresse de courriel ' +
+                                            'en répondant au courriel émis par <strong>assistant@anothersocialeconomy.appspotmail.com</strong>. Votre réponse ' +
+                                            'débloquera votre requête et nous la diffuserons aux concessionnaires de notre réseau.</p>' +
+                                            '<p><strong>Conseil</strong><br/>' +
                                             'Si vous ne trouvez pas notre message dans votre boîte de courriel d\'ici 20 minutes, veuillez regarder votre filtre de <i>pourriel</i>. ' +
                                             'Si notre message ne s\'y trouve pas, alors cliquer sur <a href="mailto:Support@AnotherSocialEconomy.com?subject=Courriel%20de%20vérfication%20jamais%20reçu&Body=_content_">Support</a> ' +
                                             'pour un message afin que nous puissions régler votre problème particulier.</p>' +
-                                            '<p><strong>Rappel</strong><br>' +
-                                            'Nous ne partagerons <strong>jamais</strong> votre adresse de courriel!</p>' +
-                                            '<p>Merci pour la confiance accordée à AnotherSocialEconomy !</p>' +
+                                            '<strong>Rappel</strong><br/>' +
+                                            'Nous ne partagerons <strong>jamais</strong> votre adresse de courriel! ' +
+                                            '<img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" title="Votre adresse de courriel est confidentielle" width="16" /> ' +
+                                            '</div>' +
+                                            '<br/>Merci pour la confiance accordée à AnotherSocialEconomy !' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
+                                            '</div>',
+        reviewPaneTitle:                    'Étape de révision de la requête',
+        emailCheckInitialMessage:           '<div style="background-color:#eee;border-radius: 4px; padding: 10px;">' +
+                                            'S\'il vous plaît, vérifier les informations ci-contre une dernière fois avant leur soumission.<br/><br/>' +
+                                            'Cliquez sur <strong>&lt;&lt; Précédent</strong> pour effectuer des corrections. ' +
+                                            'Cliquez sur <strong>Soumettre votre requête</strong> si tout est correct.' +
                                             '</div>',
         cancelButton: '&lt;&lt; Précédent',
         pageTitle: document.getElementsByTagName('title')[0].innerHTML,

@@ -167,6 +167,7 @@ public class ApplicationSettings {
      */
     public static ApplicationSettings get() {
         if (settings == null) {
+            // Facing a race condition here is not an issue
             settings = new ApplicationSettings();
         }
         return settings;

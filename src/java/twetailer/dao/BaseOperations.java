@@ -34,7 +34,7 @@ public class BaseOperations {
         return log;
     }
 
-    private static PersistenceManagerFactory pmfInstance = null;
+    private static PersistenceManagerFactory pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
 
     /**
      * Singleton accessor
@@ -42,9 +42,13 @@ public class BaseOperations {
      * @return Initial instance of the <code>PersistenceManagerFactory</code> class
      */
     public static PersistenceManagerFactory getPersistenceManagerFactory() {
+        /*
+        // The following piece of code is not thread-safe!
+        // Instead of adding 'synchronized' to the method, the singleton is statically initialized
         if (pmfInstance == null) {
             pmfInstance = JDOHelper.getPersistenceManagerFactory("transactions-optional");
         }
+        */
         return pmfInstance;
     }
 

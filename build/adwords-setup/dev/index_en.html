@@ -25,6 +25,9 @@
             font-size: 0pt;
             width: 100%;
         }
+        .reviewPaneTable {
+            width: 600px;
+        }
         .reviewPaneTable th, .reviewPaneTable td {
             vertical-align: top;
             padding: 6px;
@@ -33,19 +36,13 @@
             text-align: right;
             margin-right: 10px;
         }
-        #emailVerifStatus {
-            width: 540px;
-        }
-        #emailVerifStatus>div {
-            border-radius: 4px;
-            padding: 10px;
-        }
-        #emailVerifStatus a, #emailVerifStatus a:active, #emailVerifStatus a:visited {
-            color: white;
+        #confirmationPane {
+            width: 600px;
         }
     </style>
 </head>
 <body class="claro">
+<div id="socialLinks" style="position:absolute;top:20px;left:0px"></div>
 <form id="requestForm" onsubmit="return false;">
     <div id="container" class="container_16">
         <div class="grid_16" style="margin-top: 25px;">
@@ -203,39 +200,44 @@
         emailFieldPlaceHolder:      'Your email address',
         modelFieldPlaceHolder:      'The car model',
         postalCodeFieldPlaceHolder: 'Your postal code',
+        sendRequestPaneTitle:               'Request Submission',
         sendRequestInitialMessage:          '<p>:-) Thank you for submitting your request ...</p>',
         sendRequestErrorMessage:            '>:-( oh snap... we messed up while submitting your request.\n\n' +
                                             'Please send a detailed email to Support@AnotherSocialEconomy.com so we can set things right.',
-        sendRequestSuccessMessage:          '<p>Your request has been submitted :-)</p>' +
+        sendRequestSuccessMessageKnownUser: '<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Your request has been submitted :-)</p>' +
                                             '<p>Please check your email (or spam filter) for our acknowledgement message from <strong>assistant@anothersocialeconomy.appspotmail.com</strong></p>' +
                                             '<p>Thanks for trusting AnotherSocialEconomy with your request!</p>' +
-                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>',
-        emailCheckInitialMessage:           '<div style="background-color:#eee;text-align:center;">' +
-                                            'Checking e-mail...' +
-                                            '<div style="margin-top: 10px;"><img src="http://anothersocialeconomy.appspot.com/images/loading.gif"/></div>' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
                                             '</div>',
-        emailCheckErrorMessage:             'An error has occured while trying to contact the server for the email verification :-(\n\n' +
-                                            'Please email support@anothersocialeconomy.com for help, with the details of your request, or just try later.',
-        emailCheckSuccessKnownMessage:      '<div style="background-color:#0a0;color:white;">' +
-                                            '<p><strong>Welcome back _name_</strong>!<br/>' +
-                                            'Please review your request &amp; click <strong>Submit</strong> so we can start broadcasting it to our used car dealer network.</p>' +
-                                            '<p><strong>Thanks</strong><br>Thank you for trusting AnotherSocialEconomy, again :-)</p>' +
-                                            '</div>',
-        emailCheckSuccessUnknownMessage:    '<div style="background-color:orange;color:white;">' +
+        sendRequestSuccessMessageUnknownUser:'<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Your request has been submitted :-)</p>' +
+                                            '<div style="background-color:orange;color:white;padding:5px;">' +
                                             '<p><strong>New Email Address Verification</strong><br/>' +
-                                            'Since this is your first time using our service, we\'ll place your request on hold until you\'re able to confirm your email address. '+
-                                            'For now, please review your request, especially your email address &amp; click <strong>Submit</strong>.</p>'+
-                                            '<p>Then check your email for a message from <strong>assistant@anothersocialeconomy.appspotmail.com</strong> &amp; simply <strong>reply</strong> '+
+                                            'Since this is your first time using our service, we\'ll place your request on hold until you\'re able to confirm your email address. ' +
+                                            '<p>Check your email for a message from <strong>assistant@anothersocialeconomy.appspotmail.com</strong> &amp; simply <strong>reply</strong> ' +
                                             'to complete the verification process so we can start broadcasting your request to our used car dealer network.</p>' +
                                             '<p><strong>Hint</strong><br>' +
-                                            'If you don\'t see our email in the next twenty minutes, then please check your spam filter. ' +
+                                            'If you don\'t see our email in the next twenty minutes, then please check your <strong>spam filter</strong>. ' +
                                             'If it still hasn\'t arrived, please don\'t give up on us. ' +
                                             'Just click <a href="mailto:Support@AnotherSocialEconomy.com?subject=Verification%20Email%20never%20received&Body=_content_">Support</a> ' +
                                             'to send a detailed email so we can set things right.</p>' +
-                                            '<p><strong>Reminder</strong><br>' +
-                                            'We will <strong>never share</strong> your email address!</p>' +
-                                            '<p><strong>Thanks</strong><br/>' +
+                                            '<br/><strong>Reminder</strong><br>' +
+                                            'We will <strong>never share</strong> your email address!' +
+                                            '</div>' +
+                                            '<br/><strong>Thanks</strong><br/>' +
                                             'Thank you for trusting AnotherSocialEconomy!</p>' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
+                                            '</div>',
+        reviewPaneTitle:                    'Request Review Step',
+        emailCheckInitialMessage:           '<div style="background-color:#eee;border-radius: 4px; padding: 10px;">' +
+                                            'Please confirm your request one last time before submitting it.<br/><br/>' +
+                                            'Click <strong>&lt;&lt; Back</strong> to make any corrections. ' +
+                                            'Click <strong>Submit your Request</strong> if evertything is OK.' +
                                             '</div>',
         cancelButton: '&lt;&lt; Back',
         pageTitle: document.getElementsByTagName('title')[0].innerHTML,

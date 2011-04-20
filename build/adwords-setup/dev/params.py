@@ -27,11 +27,18 @@ def getRootFolderNames():
 #
 # Return the region list
 #
-def getRegions():
-    return {
-        'en': 'Montreal Area',
-        'fr': 'Région de Montréal'
-    }
+def getRegions(forMontreal = True, forToronto = False):
+    if forMontreal:
+        return {
+            'en': 'Montreal Area',
+            'fr': 'Région de Montréal' 
+        }
+    if forToronto:
+        return {
+            'en': 'Montreal Area',
+            'fr': 'Région de Toronto'
+        }
+    raise ValueError('Select Montreal or Toronto in "params.py"')
 
 #
 # Return the default city labels for the root level
@@ -45,17 +52,38 @@ def getGenericCityNames():
 #
 # Return the city list
 #
-def getCities():
-    return {
-        'en': [
-            [ "Montreal", "H2Y 1C6" ],
-            [ "Laval", "H7V 3Z4" ]
-        ],
-        'fr': [
-            [ "Montréal", "H2Y 1C6" ],
-            [ "Laval", "H7V 3Z4" ]
-        ]
-    }
+def getCities(forMontreal = True, forToronto = False):
+    if forMontreal:
+        return {
+            'en': [
+                [ "Montreal", "H2Y 1C6" ],
+                [ "Laval", "H7V 3Z4" ]
+            ],
+            'fr': [
+                [ "Montréal", "H2Y 1C6" ],
+                [ "Laval", "H7V 3Z4" ]
+            ]
+        }
+    if forToronto:
+        return {
+            'en': [
+                # Source: http://en.wikipedia.org/wiki/File:Greater_toronto_area_map.svg
+                [ "Toronto", "M5H 2N2" ], 
+                [ "Mississauga", "L5B 3C1"], 
+                [ "Markham", "L3R 9W3"],
+                [ "Richmond Hill", "L4B 3P4"],
+                [ "Vaughan", "L6A 1T1"]
+            ],
+            'fr': [
+                # Source: http://en.wikipedia.org/wiki/File:Greater_toronto_area_map.svg
+                [ "Toronto", "M5H 2N2" ], 
+                [ "Mississauga", "L5B 3C1"], 
+                [ "Markham", "L3R 9W3"],
+                [ "Richmond Hill", "L4B 3P4"],
+                [ "Vaughan", "L6A 1T1"]
+            ]
+        }
+    raise ValueError('Select Montreal or Toronto in "params.py"')
 
 #
 # Return the qualifier list
@@ -101,14 +129,14 @@ def getColumnNames():
 #
 # Return the default values for most of the cells of the CSV file
 #
-def getDefaultValues():
-    return {
+def getDefaultValues(forMontreal = True, forToronto = False):
+    defaultValues = {
         'en': [
             "Car Dealers Montreal Area",                            # 0. Campaign Name
             "10",                                                   # 1. Campaign Daily Budget
             "en",                                                   # 2. Language
             "CA",                                                   # 3. Location
-            "(35km:45.508889:-73.554166)",                          # 4. Proximity Targets
+            "(35km:45.508889:-73.554166)",                          # 4. Proximity Targets -- default is Montreal
             "[]",                                                   # 5. Ad Schedule
             "${QUALIFIER} ${CITY} ${MAKE} ${MODEL}",                # 6. Ad Group
             "",                                                     # 7. Max CPC
@@ -138,6 +166,13 @@ def getDefaultValues():
             None                                                    # 14. Destination URL
         ]
     }
+    if forMontreal:
+        return defaultValues
+    if forToronto:
+        defaultValues['en'][4] = "(35km:43.743700:-79.466100)"
+        defaultValues['fr'][4] = "(35km:43.743700:-79.466100)"
+        return defaultValues
+    raise ValueError('Select Montreal or Toronto in "params.py"')
 
 #
 # Return the list of negative keywords
@@ -276,17 +311,7 @@ class ReplacementPatterns:
 # Short list of supported makes and models
 #
 shortMakesAndModels = [
-    { 'make': "Acura",         'models': [ "TL", "MDX", "NSX", "RL", "RDX", "RSX", "TSX", "ZDX" ] },
-    { 'make': "Audi",          'models': [ "A4", "A3", "A5", "A6", "A8", "Allroad", "Q5", "Q7", "R8", "RS", "S4", "S5", "S6", "TT", "TTS" ] },
-    { 'make': "BMW",           'models': [ "335i", "128", "128i", "135", "135i", "318", "318i", "320", "320i", "323", "323i", "325", "325i", "328", "328i", "330", "330i", "335", "525", "525i", "528", "528i", "530", "530i", "535", "535i", "540", "540i", "545", "545i", "550", "550i", "645", "645i", "650", "650i", "735", "735i", "740", "740i", "745", "745i", "750", "750i", "760", "760i", "M3", "M5", "M6", "X3", "X5", "X6", "Z3", "Z4", "Z8" ] },
-    { 'make': "Infiniti",      'models': [ "EX", "FX", "G20", "G35", "G37", "G Coupe", "G Sedan", "G Convertible", "G37 Coupe", "G37x", "G37x AWD", "G37x AWD Coupe", "G37x AWD Sport", "G37 M6", "G37 M6 Sport Coupe", "I30", "I35", "J30", "M", "M30", "M35", "M45", "Q45", "QX", "QX4", "QX56" ] },
-    { 'make': "Land Rover",    'models': [ "Defender", "Discovery", "Freelander", "LR2", "LR3", "LR4", "Range Rover", "Range Rover Sport" ] },
-    { 'make': "Honda",         'models': [ "Civic", "Accord", "Accord Coupe", "Accord Crosstour", "Accord Hybrid", "Accord Sedan", "Civic Coupe", "Civic GX", "Civic Hybrid", "Civic Sedan", "Civic Si Coupe", "Civic Si Sedan", "CRV", "CRZ", "CR-V", "CR-Z", "Del Sol", "Element", "Element SC", "Fit", "Insight", "N600", "Odyssey", "Passport", "Pilot", "Prelude", "Ridgeline", "S2000", "S600", "S800" ] },
-    { 'make': "Mercedes-Benz", 'models': [ "B-Class", "C-Class", "C-Class Wagon", "C-Class Sedan", "C-Class Coupe", "CLK", "CLK-Class", "CLK-Class Coupe", "CLK-Cabriolet", "E-Class", "E-Class Sedan", "E-Class Wagon", "E-Class Coupe", "E-Class Cabriolet", "CLS", "CLS-Class", "S", "S-Class", "CL", "CL-Class", "SLK", "SLK-Class", "SL", "SL-Class", "GLK", "GLK-Class", "M", "M-Class", "R", "R-Class", "GL", "GL-Class", "G", "G-Class", "SLR", "SLR-McLaren", "SLS", "Smart", "Sprinter" ] },
-    { 'make': "Mini",          'models': [ "Cooper", "Convertible", "Clubman", "Countryman" ] },
-    { 'make': "Saab",          'models': [ "92x", "9-2X", "93", "9-3", "95", "9-5", "96X", "9-6X", "97", "9-7X", "900", "9000" ] },
-    { 'make': "Volvo",         'models': [ "C30", "122S", "1800", "245", "544", "850", "940", "960", "C70", "S40", "S60", "S70", "S80", "V40", "V50", "V70", "XC60", "XC70", "XC90" ] },
-    { 'make': "Volkswagen",    'models': [ "Beetle", "Cabrio", "Cabriolet", "Eos", "Eurovan", "Golf", "Golf City", "GTI", "Jetta", "Jetta City", "Jetta Wagon", "New Beetle", "New Beetle Convertible", "Passat", "Passat Wagon", "Phaeton", "Rabbit", "Routan", "Tiguan", "Touareg" ] }
+    { 'make': "BMW",           'models': [ "335i", "128", "128i", "135", "135i", "318", "318i", "320", "320i", "323", "323i", "325", "325i", "328", "328i", "330", "330i", "335", "525", "525i", "528", "528i", "530", "530i", "535", "535i", "540", "540i", "545", "545i", "550", "550i", "645", "645i", "650", "650i", "735", "735i", "740", "740i", "745", "745i", "750", "750i", "760", "760i", "M3", "M5", "M6", "X3", "X5", "X6", "Z3", "Z4", "Z8" ] }
 ]
 
 #
@@ -335,5 +360,5 @@ fullMakesAndModels = [
 # Return the list of makes and models
 #
 def getMakesModels():
-    return fullMakesAndModels
-    #return shortMakesAndModels
+    return shortMakesAndModels
+    # return fullMakesAndModels

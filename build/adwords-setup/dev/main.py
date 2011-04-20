@@ -11,6 +11,7 @@ def usage():
     print("Usage:")
     print("  -w, --webDir  Folder where the templates will be propagated")
     print("  -c, --csvDir  Folder where the CSV file for AdWords will be saved -- Default: current directory")
+    print("  -a, --area    Shortcut of the area to process: M for Montreal, T for Toronto -- Default: M")
     print("  -n, --newCSV  To generate a new CSV file name at each run -- Default: False")
     print("  -s, --silent  To bypass the prompt asking for a confirmation of the propagation -- Default: False")
     print("")
@@ -23,8 +24,9 @@ def extractParameters(arguments):
     extractedData['csvDir'] = '.'
     extractedData['newCSV'] = False
     extractedData['silent'] = False
+    extractedData['area'] = 'M'
     try:
-        optionList, optionValues = getopt.getopt(arguments, "w:c:n:s", ["webDir=", "csvDir", "newCSV", "silent"])
+        optionList, optionValues = getopt.getopt(arguments, "w:c:a:n:s", ["webDir=", "csvDir", "area", "newCSV", "silent"])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -33,7 +35,12 @@ def extractParameters(arguments):
         elif option in ["-c", "--csvDir"]: extractedData['csvDir'] = value
         elif option in ["-n", "--newCSV"]: extractedData['newCSV'] = value
         elif option in ["-s", "--silent"]: extractedData['silent'] = value
-    if not 'webDir' in extractedData:
+        elif option in ["-a", "--area"]:   extractedData['area'] = value
+    if not 'webDir' or not 'area' in extractedData:
+        usage()
+        sys.exit(2)
+    if extractedData['area'] != 'M' and extractedData['area'] != 'T':
+        print("Area shortcut must be a value in {M, T}. Value " + extractedData['area'] + " is invalid!")
         usage()
         sys.exit(2)
     if not os.path.exists(extractedData['webDir']):
@@ -320,9 +327,12 @@ def main():
     csvFolder = data['csvDir']
     newCSV = data['newCSV']
     silentMode = data['silent']
-    
+    forMontreal = data['area'] == 'M'
+    forToronto = not forMontreal
+
     # Echo back the given parameters
     print("Prepare the AdWords campaign settings with: ")
+    print("  Area:  " + ('Montreal' if forMontreal else 'Toronto'))
     print("  HTML file folder: " + destinationFolder)
     print("  CSV file folder:  " + csvFolder)
     print("  New CVS File:     " + str(newCSV))
@@ -340,7 +350,7 @@ def main():
     # Get parameters
     languages = params.getLanguages()
     rootFolders = params.getRootFolderNames()
-    cities = params.getCities()
+    cities = params.getCities(forMontreal, forToronto)
     makesAndModels = params.getMakesModels()
     qualifiers = params.getQualifiers()
     ads = params.getAds()
@@ -361,11 +371,11 @@ def main():
     # Prepare the CSV header
     csv = io.StringIO(newline='\n')
     csv.write(twetailer.csv.getHeaders(params.getColumnNames()))
-    
+
     # Get parameters
-    regions = params.getRegions()
+    regions = params.getRegions(forMontreal, forToronto)
     genericCityNames = params.getGenericCityNames()
-    defaultValues = params.getDefaultValues()
+    defaultValues = params.getDefaultValues(forMontreal, forToronto)
     baseFilenames = params.getBaseFilenames()
     negativeKeywords = params.getNegativeKeywords()
     negativeKeywordType = params.getNegativeKeywordType()

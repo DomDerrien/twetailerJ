@@ -2,11 +2,11 @@ var localModule = {};
 
 (function() { // ** To limit the scope of the private variables
 
-    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false, reportOrder = 3;
+    var startDate = new Date(), reportHost = 'https://anothersocialeconomy.appspot.com/3rdParty/', reportDelay = 1000, reportId = '-', debugMode = false, reportOrder = 3, userKnown = true;
 
     dojo.require('dojo.cookie');
     dojo.require('dojo.io.script');
-    dojo.require('dijit.Dialog'); // ** Use DialogSimple as soon as Dojo 1.6 is out
+    dojo.require('dijit.Dialog');
     dojo.require('dojo.data.ItemFileReadStore');
     dojo.require('dijit.form.Button');
     dojo.require('dijit.form.CheckBox');
@@ -19,7 +19,6 @@ var localModule = {};
     dojo.require('dijit.Tooltip');
     dojo.require('dijit.form.ValidationTextBox');
     dojo.require('dojox.analytics.Urchin');
-    // ** dojo.require('dojox.widget.DialogSimple');
 
     dojo.addOnLoad(function() {
         var dueDate = new Date();
@@ -32,6 +31,8 @@ var localModule = {};
             postalCode = '${POSTAL_CODE}',
             checkCookie = true,
             info = '';
+        
+        setSocialLinks(localizedBundle.pageTitle, window.location.toString());
 
         if (window.location.search) {
             // ** Step 1: get the keywords
@@ -96,6 +97,29 @@ var localModule = {};
             new dojox.analytics.Urchin({ acct : 'UA-11910037-5' });
         }
     });
+    
+    var setSocialLinks = function(title, url) {
+        url = encodeURIComponent(url);
+        title = encodeURIComponent(title);
+        var placeHolder = dojo.byId('socialLinks'), anchor, image;
+        // ** mailto:
+        anchor = dojo.create('a', { href: 'mailto:?subject=' + title + '&body=' + url, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
+        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Email.png', title: 'Share by e-mail / envoyer par courriel', width: '32px' }, anchor);
+        // ** Facebook
+        anchor = dojo.create('a', { href: 'http://www.facebook.com/share.php?u=' + url + '&t=' + title, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
+        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/FaceBook-32.png', title: 'Share on Facebook / partager sur Facebook', width: '32px' }, anchor);
+        // ** Twitter
+        anchor = dojo.create('a', { href: 'http://twitter.com/home?status=' + title + ' ' + url, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
+        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Twitter-32.png', title: 'Share on Twitter / partager sur Twitter', width: '32px' }, anchor);
+        // ** Google Bookmarks
+        anchor = dojo.create('a', { href: 'http://www.google.com/bookmarks/mark?op=edit&bkmk=' + url + '&title=' + title, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
+        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Google-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '32px' }, anchor);
+        // ** Internet Explorer Favorite
+        if (dojo.isIE && window.externals && window.externals.AddFavorite) {
+            anchor = dojo.create('a', { href: 'javascript:window.external.AddFavorite("' + url + '","' + title +'")', srel: 'nofollow', tyle: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
+            image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/IE-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '32px' }, anchor);
+        }
+    };
 
     var reportUsage = function() {
         var data = getFormData(), dc = document;
@@ -158,17 +182,17 @@ var localModule = {};
             exceptions : []
         }, exs = dataIn.exceptions, dc = document;
         if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.demoMode = true; dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
-        try { dataIn.email = dc.getElementById('email').value; } catch (ex) { exs.push('email - ' + ex); }
-        try { dataIn.postalCode = dc.getElementById('postalCode').value; } catch (ex) { exs.push('postalCode - ' + ex); }
-        try { dataIn.range = dc.getElementById('range').value; } catch (ex) { exs.push('range - ' + ex); }
+        try { dataIn.email = dijit.byId('email').get('value'); } catch (ex) { exs.push('email - ' + ex); }
+        try { dataIn.postalCode = dijit.byId('postalCode').get('value'); } catch (ex) { exs.push('postalCode - ' + ex); }
+        try { dataIn.range = dijit.byId('range').get('value'); } catch (ex) { exs.push('range - ' + ex); }
         try { dataIn.dueDate = toISOString(dijit.byId('dueDate').get('value')); } catch (ex) { exs.push('dueDate - ' + ex); }
-        try { dataIn.content = document.getElementById('makeFieldLabel').innerHTML + ' ' + dc.getElementById('make').value; } catch (ex) { exs.push('make - ' + ex); }
-        try { dataIn.content += ', ' + document.getElementById('modelFieldLabel').innerHTML + ' ' + dc.getElementById('model').value; } catch (ex) { exs.push('model - ' + ex); }
-        try { dataIn.metadata = '{\'make\':\'' + dc.getElementById('make').value + '\',\'model\':\'' + dc.getElementById('model').value + '\'}';  } catch (ex) { exs.push('metadata - ' + ex); }
+        try { dataIn.content = dojo.byId('makeFieldLabel').innerHTML + ' ' + dijit.byId('make').get('value'); } catch (ex) { exs.push('make - ' + ex); }
+        try { dataIn.content += ', ' + dojo.byId('modelFieldLabel').innerHTML + ' ' + dijit.byId('model').get('value'); } catch (ex) { exs.push('model - ' + ex); }
+        try { dataIn.metadata = '{\'make\':\'' + dijit.byId('make').get('value') + '\',\'model\':\'' + dijit.byId('model').get('value') + '\'}';  } catch (ex) { exs.push('metadata - ' + ex); }
         try {
-            var info = dc.getElementById('info').value;
+            var info = dijit.byId('info').get('value');
             if (info && 0 < info.length) {
-                dataIn.content += ', ' + document.getElementById('infoFieldLabel').innerHTML + ' ' + info;
+                dataIn.content += ', ' + dojo.byId('infoFieldLabel').innerHTML + ' ' + info;
             }
         } catch (ex) { exs.push('info - ' + ex); }
         return dataIn;
@@ -182,36 +206,27 @@ var localModule = {};
         }
         // ** Create the dialog box
         var reviewPane = dijit.byId('reviewPane') || new dijit.Dialog({
-            content :
-                '<div class="dijitDialogPaneContentArea" id="profileForms">' +
-                '<table class="reviewPaneTable"><tbody>' +
-                '<tr><th>' + dc.getElementById('emailFieldLabel').innerHTML + '</th><td id="emailReview"></td><td id="emailVerifStatus" rowspan="6"></td></tr>' +
-                '<tr><th>' + dc.getElementById('makeFieldLabel').innerHTML + '</th><td id="makeReview"></td></tr>' +
-                '<tr><th>' + dc.getElementById('modelFieldLabel').innerHTML + '</th><td id="modelReview"></td></tr>' +
-                '<tr><th>' + dc.getElementById('postalCodeFieldLabel').innerHTML + '</th><td id="postalCodeReview"></td></tr>' +
-                '<tr><th>' + dc.getElementById('rangeFieldLabel').innerHTML + '</th><td id="rangeReview"></td></tr>' +
-                '<tr><th>' + dc.getElementById('dueDateFieldLabel').innerHTML + '</th><td id="dueDateReview"></td></tr>' +
-                '<tr><th>' + dc.getElementById('infoFieldLabel').innerHTML + '</th><td id="infoReview" colspan="2"></td></tr>' +
-                '</tbody></table>' +
-                '</div>' +
-                '<div class="dijitDialogPaneActionBar">' +
-                '<button dojoType="dijit.form.Button" type="submit">' + dc.getElementById('submitButton').innerHTML + '</button>' +
-                '<div style="float:left;padding:4px 0;"><a href="javascript:dijit.byId(\'reviewPane\').hide();">' + lB.cancelButton + '</a></div>' +
-                '</div>',
             execute: localModule.sendRequest,
             id : 'reviewPane',
-            style : 'width: 800px;',
-            title : "Request Review Step"
+            title : lB.reviewPaneTitle
         });
-        // ** Fill up the dialog box fields
-        dc.getElementById('emailReview').innerHTML = dc.getElementById('email').value;
-        dc.getElementById('makeReview').innerHTML = dc.getElementById('make').value;
-        dc.getElementById('modelReview').innerHTML = dc.getElementById('model').value;
-        dc.getElementById('postalCodeReview').innerHTML = dc.getElementById('postalCode').value;
-        dc.getElementById('rangeReview').innerHTML = dc.getElementById('range').value + ' km';
-        dc.getElementById('dueDateReview').innerHTML = dc.getElementById('dueDate').value;
-        dc.getElementById('infoReview').appendChild(dc.createTextNode(dc.getElementById('info').value));
-        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckInitialMessage;
+        reviewPane.setContent(
+            '<div class="dijitDialogPaneContentArea">' +
+            '<table class="reviewPaneTable"><tbody>' +
+            '<tr><th>' + dojo.byId('emailFieldLabel').innerHTML + '</th><td>' + dijit.byId('email').get('value') + '</td><td rowspan="6">' + lB.emailCheckInitialMessage + '</td></tr>' +
+            '<tr><th>' + dojo.byId('makeFieldLabel').innerHTML + '</th><td>' + dijit.byId('make').get('value') + '</td></tr>' +
+            '<tr><th>' + dojo.byId('modelFieldLabel').innerHTML + '</th><td>' + dijit.byId('model').get('value') + '</td></tr>' +
+            '<tr><th>' + dojo.byId('postalCodeFieldLabel').innerHTML + '</th><td>' + dijit.byId('postalCode').get('value') + '</td></tr>' +
+            '<tr><th>' + dojo.byId('rangeFieldLabel').innerHTML + '</th><td>' + dojo.byId('range').value + ' </td></tr>' + // ** Use dojo.byId().value instead of dijit.byId().get('value') to keep the comma as a separator in French
+            '<tr><th>' + dojo.byId('dueDateFieldLabel').innerHTML + '</th><td>' + dojo.byId('dueDate').value + '</td></tr>' + // ** Use dojo.byId().value instead of dijit.byId().get('value') to keep the formatted date
+            '<tr><th>' + dojo.byId('infoFieldLabel').innerHTML + '</th><td colspan="2">' + dijit.byId('info').get('value') + '</td></tr>' +
+            '</tbody></table>' +
+            '</div>' +
+            '<div class="dijitDialogPaneActionBar">' +
+            '<button dojoType="dijit.form.Button" type="submit">' + dojo.byId('submitButton').innerHTML + '</button>' +
+            '<div style="float:left;padding:4px 0;"><a href="javascript:dijit.byId(\'reviewPane\').hide();">' + lB.cancelButton + '</a></div>' +
+            '</div>'
+        );
         // ** Display the dialog box
         reviewPane.show();
         // ** Call the server for an email check
@@ -224,25 +239,14 @@ var localModule = {};
                 reporterTitle: lB.pageTitle,
                 reporterUrl: window.location.toString(),
                 language : localizedBundle.locale,
-                email : dc.getElementById('email').value
+                email : dijit.byId('email').get('value')
             },
             error : function(dataBack) {
                 alert(lB.emailCheckErrorMessage);
             },
             load : function(dataBack) {
                 if (dataBack && dataBack.success) {
-                    if (dataBack.status) {
-                        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessKnownMessage.replace('_name_', dataBack.name);
-                    }
-                    else {
-                        var content = dc.getElementById('makeFieldLabel').innerHTML + dc.getElementById('make').value + ',';
-                        content += dc.getElementById('modelFieldLabel').innerHTML + dc.getElementById('model').value + ',';
-                        content += dc.getElementById('infoFieldLabel').innerHTML + dc.getElementById('info').value + '\n';
-                        content += dc.getElementById('postalCodeFieldLabel').innerHTML + dc.getElementById('postalCode').value + ',';
-                        content += dc.getElementById('rangeFieldLabel').innerHTML + dc.getElementById('range').value + ',';
-                        content += dc.getElementById('dueDateFieldLabel').innerHTML + dc.getElementById('dueDate').value + ',';
-                        dc.getElementById('emailVerifStatus').innerHTML = lB.emailCheckSuccessUnknownMessage.replace('_content_', escape(content));
-                    }
+                    userKnown = dataBack.status;
                 }
                 else {
                     alert(lB.emailCheckErrorMessage);
@@ -254,12 +258,12 @@ var localModule = {};
 
     localModule.sendRequest = function() {
         var lB = localizedBundle,
-            dialog = new dijit.Dialog({ // ** Use DialogSimple as soon as Dojo 1.6 is out
-            // ** var dialog = new dojox.widget.Dialog({
-                content : lB.sendRequestInitialMessage,
-                style : 'min-height: 100px; background-color: #fff; min-width: 400px; max-width: 800px;'
+            dialog = dijit.byId('confirmationPane') || new dijit.Dialog({
+                id: 'confirmationPane',
+                title : lB.sendRequestPaneTitle,
             }),
             data = getFormData();
+        dialog.setContent(lB.sendRequestInitialMessage);
         dialog.startup();
         dialog.show();
         data.reportId = reportId;
@@ -275,7 +279,8 @@ var localModule = {};
                     if (dijit.byId('closeDialog')) {
                         dijit.byId('closeDialog').destroyRecursive();
                     }
-                    dialog.set('content', lB.sendRequestSuccessMessage);
+                    dialog.hide();
+                    dialog.set('content', userKnown ? lB.sendRequestSuccessMessageKnownUser : lB.sendRequestSuccessMessageUnknownUser);
                     new dijit.form.Button({
                         name : 'closeDialog',
                         type : 'submit',
@@ -288,6 +293,7 @@ var localModule = {};
                     }
                     new Image().src = lB.interestTrackerURL;
                     dojo.cookie('reportId', null, { expires: -1 }); // ** To delete the cookie
+                    dialog.show();
                 }
                 else {
                     alert(lB.sendRequestErrorMessage);
