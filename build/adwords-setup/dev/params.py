@@ -7,7 +7,7 @@ import os, sys, time, string
 # Return the base filename list
 #
 def getBaseFilenames():
-    return [ 'index' ]
+    return [ 'index', 'blue' ]
 
 #
 # Return the language list
@@ -169,6 +169,8 @@ def getDefaultValues(forMontreal = True, forToronto = False):
     if forMontreal:
         return defaultValues
     if forToronto:
+        defaultValues['en'][0] = "Car Dealers Toronto Area"
+        defaultValues['fr'][0] = "Concessionnaires Région de Toronto"
         defaultValues['en'][4] = "(35km:43.743700:-79.466100)"
         defaultValues['fr'][4] = "(35km:43.743700:-79.466100)"
         return defaultValues
@@ -228,7 +230,7 @@ def getAds():
             {
                 'headline': [ "${QUALIFIER} ${CITY} ${MAKE} ${MODEL}s", "${CITY} ${MAKE} ${MODEL}s", "${MAKE} ${MODEL}s", "${MODEL}s" ],
                 'line1': "Get Confidential Unadvertised Deals",
-                'line2': "From Montreal Area Dealerships Now",
+                'line2': "From ${CITY} Area Dealerships Now",
             },
             {
                 'headline': [ "${QUALIFIER} ${CITY} ${MAKE} ${MODEL}s", "${CITY} ${MAKE} ${MODEL}s", "${MAKE} ${MODEL}s", "${MODEL}s" ],
@@ -251,7 +253,7 @@ def getAds():
             {
                 'headline': [ "${MAKE} ${MODEL} ${QUALIFIER} à ${CITY}", "${MAKE} ${MODEL} ${QUALIFIER}", "${MAKE} ${MODEL} à ${CITY}", "${MAKE} ${MODEL}", "${MODEL}" ],
                 'line1': "Trouvez rapidement l'occasion à bon",
-                'line2': "prix dans la région de Montréal"
+                'line2': "prix dans la région de ${CITY}"
             # },
             # {
             #     'headline': [ "${MAKE} ${MODEL} ${QUALIFIER} à ${CITY}", "${MAKE} ${MODEL} ${QUALIFIER}", "${MAKE} ${MODEL} à ${CITY}", "${MAKE} ${MODEL}", "${MODEL}" ],

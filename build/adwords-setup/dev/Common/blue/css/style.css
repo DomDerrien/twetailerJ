@@ -1,0 +1,550 @@
+/* - -- --- ---- ----- RESET ----- ---- --- -- - */
+
+body, h1, h2, h3, h3, h4, h5, h6, p, ul, ol, li, form, input, textarea, img, blockquote, code, pre{
+	border:0;
+	margin:0;
+	padding:0;
+	border: none;
+}
+
+
+/* - -- --- LOAD CUSTOM FONT --- -- - */
+
+@font-face {
+	font-family: 'DroidSansRegular';
+	src: url('../font/DroidSans-webfont.eot');
+	src: local('DroidSans'), 
+		url('../font/DroidSans-webfont.woff') format('woff'), 
+		url('../font/DroidSans-webfont.ttf') format('truetype'), 
+		url('../font/DroidSans-webfont.svg#webfontLahtyDxO') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'DroidSansBold';
+	src: url('../font/DroidSans-Bold-webfont.eot');
+	src: local('DroidSans Bold'), 
+		url('../font/DroidSans-Bold-webfont.woff') format('woff'), 
+		url('../font/DroidSans-Bold-webfont.ttf') format('truetype'), 
+		url('../font/DroidSans-Bold-webfont.svg#webfont8VfWbLAP') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
+/* - -- --- ---- ----- MAIN LAYOUT ----- ---- --- -- - */
+
+body{
+	font: 15px DroidSansRegular,arial;
+	color: #141414;
+	background: url(../assets/bg.jpg) repeat #7bb6da;
+	text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+}
+
+#fancy{
+	padding: 60px 0 20px;
+	background: url(../assets/fancy-bg.jpg) repeat-x 0 0;
+}
+
+.wrap{
+	width: 800px;
+	margin: 0 auto;
+}
+
+.intro{
+	float: left;
+	width: 360px;
+	padding: 0 40px 40px 0;
+}
+
+.downloadInfo{
+	display: block;
+	padding: 25px 0 0 0;
+	font-size: 12px;
+	clear: both;
+}
+
+.downloadInfo strong{
+	padding: 0 5px 0 0;
+	color: #cc3333;
+}
+
+.preview{
+	float: left;
+	width: 360px;
+/*	padding: 0 0 40px 40px; ASE */
+}
+
+#logo{
+	float: left;
+	margin: 0 0 20px;
+}
+
+
+/* - -- --- TWITTER --- -- - */
+
+#twitter{
+	padding: 0 0 4px;
+	margin: 0 0 -4px 0;
+	height: 26px;
+	text-align: center;
+	font: normal 12px/26px DroidSansRegular,arial;
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+	background: url(../assets/twitter-bg.png) repeat-x 0 0;
+	position: relative;
+}
+
+#twitter div{
+	display: inline-block;
+	padding: 0 0 0 40px;
+	margin: 0 auto;
+	height: 26px;
+	background: url(../assets/twitter-icon.png) no-repeat 0 0;
+	overflow: hidden;
+}
+
+#twitter a{
+	color: #fff;
+	text-decoration: underline;
+}
+
+#twitter .status{
+	padding: 0 10px 0 0;
+	font: normal 12px/26px DroidSansBold,arial;
+	text-decoration: none;
+}
+
+
+/* - -- --- SLIDER --- -- - */
+
+.sliderContainer{
+	float: left;
+	width: 700px;
+	margin: 0 0 40px;
+	overflow: hidden;
+	position: relative;
+}
+
+ul.slider{
+	position: relative;
+	width: 10000px;
+	left: 0;
+	top: 0;
+	list-style: none;
+	overflow: hidden;
+}
+
+ul.slider li{
+	float: left;
+	width: 700px;
+}
+
+ul.slider li img{
+	display: block;
+	width: 140px;
+	height: 85px;
+	padding: 8px;
+	margin: 0 0 5px 3px;
+	background: #fff;
+	-webkit-box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+	-moz-box-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+	box-shadow: 1px 2px 3px rgba(0,0,0,0.5);		
+}
+
+ul.slider li p{
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+ul.sliderController{
+	margin: 10px auto 0;
+	list-style: none;
+	overflow: hidden;
+}
+
+ul.sliderController li{
+	float: left;
+	padding: 0 6px;
+}
+
+ul.sliderController li a{
+	display: block;
+	height: 13px;
+	width: 13px;
+	background: url(../assets/controller.png) no-repeat 0 0;
+}
+
+ul.sliderController li a:hover, ul.sliderController li.current a{
+	background-position: 0 -13px;
+}
+
+a.arrow{
+	float: left;
+	width: 50px;
+	height: 34px;
+	margin: 0;
+}
+
+a.arrow:active{
+	margin-top: 1px;
+}
+
+a.arrow.arrowLeft{
+	background: url(../assets/arrow-left.png) no-repeat left center;
+}
+
+a.arrow.arrowRight{
+	background: url(../assets/arrow-right.png) no-repeat right center;
+}
+
+/* - -- SLIDER COLUMNS -- - */
+
+.oneOfFour{
+	width: 163px;
+	float: left;
+	margin-right: 16px;
+}
+
+.oneOfFour.last{
+	margin-right: 0;
+}
+
+.twoOfFour{
+	width: 342px;
+	float: left;
+	margin-right: 16px;
+}
+
+.twoOfFour.last{
+	margin-right: 0;
+}
+
+.threeOfFour{
+	width: 521px;
+	float: left;
+	margin-right: 16px;	
+}
+
+.threeOfFour.last{
+	margin-right: 0;
+}
+
+
+/* - -- --- FAQ --- -- - */
+
+ul.faq{
+	list-style: none;
+	overflow: hidden;
+}
+
+ul.faq li{
+	float: left;
+	width: 380px;
+	margin: 0 40px 35px 0;
+}
+
+ul.faq li.even{
+	margin-right: 0;
+}
+
+ul.faq li.clear{
+	height: 0;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	clear: both;
+	float: none;
+}
+
+.faq p{
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+
+/* - -- --- NEWSLETTER --- -- - */
+
+.newsletter{
+	margin: 20px 0 0 0;
+	clear: both;
+}
+
+.newsletter .newsletterTitle{
+	float: left;
+	width: 300px;
+	margin: 0 20px 0 0;
+	text-align: right;
+	font-size: 14px;
+/*	line-height: 17px;  ASE */
+	line-height: 1em;
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+	padding:12px 12px; /* ASE */
+}
+
+.newsletterTitle strong{
+	color: #151515;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+#signUp{
+	float: left;
+/*	margin: -2px 0 0 10px; ASE */
+	margin: 8px 0 0 0px;  /* ASE */
+	width: 91px;
+	height: 40px;
+	text-indent: -9999px;
+	background: url(../assets/signup.png) no-repeat 0 0;
+	cursor: pointer;
+}
+
+/* same as signUp */
+#submitButton{
+	float: left;
+/*	margin: -2px 0 0 10px; ASE */
+	margin: 8px 0 0 0px;  /* ASE */
+	width: 91px;
+	height: 40px;
+	text-indent: -9999px;
+	background: url(../assets/signup.png) no-repeat 0 0;
+	cursor: pointer;
+}
+
+
+/* - -- --- FOOTER --- -- - */
+
+#footer{
+	margin: 40px 0 0 0;
+	font-size: 12px;
+	line-height: 2em;
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+	text-align: center;
+}
+
+#footer a{
+	text-decoration: underline;
+	color: #fff;
+}
+
+.social{
+	margin: 10px 0 0 0;
+	text-align: center;
+	list-style: none;
+}
+
+.social li{
+	display: inline;
+	padding: 0 3px;	
+}
+
+.social li img{
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+	box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.social li img:hover{
+	margin: 0 0 -1px 0;
+}
+
+/* - -- --- FORM --- -- - */
+
+.form{
+	float: left;
+	width: 210px;
+	padding: 8px 12px;
+	font-size: 14px;
+	line-height: 1em;
+	color: #333;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #fff #d5d5d5 #a0a0a0;
+	background: #f9f9f9;
+	-webkit-border-radius: 4px;
+	/* -moz-border-radius: 4px; */
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+	-moz-box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+	box-shadow: inset 0 0 10px rgba(0,0,0,0.25);
+}
+
+input:focus, input:active, textarea:focus{
+    outline: none;
+}
+
+input::-moz-focus-inner { 
+	border: 0;
+}
+
+textarea{
+    resize: none;
+    -moz-resize: none; /* FF4 - via @sambowler */
+    overflow: auto;
+}
+
+.form::-webkit-input-placeholder{
+	color: #333;
+}
+
+.form:-moz-placeholder{
+	color: #333;
+}
+
+/* - -- --- TYPOGRAPHY AND OTHER STYLES --- -- - */
+
+a{
+	text-decoration: none;
+	color: #222;
+}
+
+a:hover, a:focus{
+	outline: none;
+}
+
+h1{
+	margin: 0 0 20px;
+	font: normal 32px DroidSansBold, arial;
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+	clear: both;
+}
+
+h2{
+	font: normal 22px/1em DroidSansBold, arial;
+}
+
+.titleSeparator{
+	margin: 0 0 30px 0;
+	text-align: center;
+	background: url(../assets/separator.png) repeat-x 0 center;
+	clear: both;
+}
+
+.titleSeparator h2{
+	display: inline-block;
+	padding: 0 30px;
+	background: url(../assets/bg.jpg) repeat;
+}
+
+h3{
+	height: 28px;
+	margin: 0 0 20px;
+	font: normal 25px/28px DroidSansBold, arial;
+	text-align: center;
+}
+
+h4{
+	margin: 0 0 10px;
+	font: normal 16px/1.3em DroidSansBold, arial;
+	text-transform: uppercase;
+}
+
+h5{
+	margin: 0 0 6px;
+	font: normal 15px/1em DroidSansBold, arial;
+}
+
+.subtitle{
+	display: block;
+	margin: 0 0 30px;
+	text-align: center;
+}
+
+.downloadButton{
+	float: left;
+	height: 71px;
+	margin: 0 0 1px 0;
+	padding: 0 12px 0 0;
+	color: #fff;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+	background: url(../assets/download-button.png) no-repeat right -71px;
+	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+	overflow: hidden;
+}
+
+.downloadButton .slidingDoor{
+    float: left;
+    height: 71px;
+    margin: 0;
+    padding: 0 0 0 12px;
+    background: url(../assets/download-button.png) no-repeat 0 0;
+    cursor: pointer;
+}
+
+.downloadButton .title{
+	float: left;
+	padding: 7px 5px;
+	font: normal 29px/1em DroidSansBold, arial;
+}
+
+.downloadButton .detail{
+	display: block;
+	clear: both;
+	overflow: hidden;
+}
+
+.downloadButton .detail span{
+	float: left;
+	margin: 0 5px;
+	font: normal 12px/1em arial;
+}
+
+.downloadButton:active{
+	margin: 1px 0 0 0;
+}
+
+.intro p{
+	margin-bottom: 20px;
+	font-size: 20px;
+	line-height: 1.4em;
+}
+
+.separator{
+	height: 2px;
+	margin: 0 0 25px;
+	background: url(../assets/separator.png) repeat-x 0 center;
+	clear: both;
+}
+
+.center{
+	text-align: center;
+}
+
+.left{
+	float: left;
+}
+
+.right{
+	float: right;
+}
+
+.clear{
+	clear: both;
+}
+
+::selection{
+	background: #82bde1;
+	color: #fff;
+}
+
+::-moz-selection{
+	background: #82bde1;
+	color: #fff;
+}
+
+/* ASE Mods */
+.red {
+	color: #cc3333;
+}
+
+.formspacing {
+/*	height: 71px; */
+	margin: 0 0 1px 0;
+	padding: 0 12px 0 0;
+}

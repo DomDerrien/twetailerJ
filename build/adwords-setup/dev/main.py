@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-import os, sys, time, getopt, io, datetime, string, re
+import os, sys, time, getopt, io, datetime, string, re, shutil
 import params, twetailer.csv, twetailer.tmpl
 
 #
@@ -355,6 +355,22 @@ def main():
     qualifiers = params.getQualifiers()
     ads = params.getAds()
     adFolderNames = params.getAdFolderNames()
+    
+    # Copy the default files
+    tempPath = os.path.normpath(destinationFolder + '/cardealer')
+    if os.path.exists(tempPath):
+        shutil.rmtree(tempPath)
+    shutil.copytree('cardealer', tempPath)
+    tempPath = os.path.normpath(destinationFolder + '/Common')
+    if os.path.exists(tempPath):
+        shutil.rmtree(tempPath)
+    shutil.copytree('Common', tempPath)
+    for rootFolder in rootFolders:
+        rootFolder = rootFolders[rootFolder]['root']
+        tempPath = os.path.normpath(destinationFolder + '/' + rootFolder)
+        if os.path.exists(tempPath):
+            shutil.rmtree(tempPath)
+        shutil.copytree(rootFolder, tempPath)
     
     # Create the folder tree
     twetailer.tmpl.createFolderTree(

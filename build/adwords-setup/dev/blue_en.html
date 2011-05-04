@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" />
+    <link rel="icon" href="http://anothersocialeconomy.appspot.com/favicon.ico" type="image/x-icon"/>
+    <title>AnotherSocialEconomy for ${CITY} Car Dealers with Available ${PRINTED_QUALIFIER} ${MAKE} ${MODEL}s</title>
+    <meta name="description" content="Tired of searching search results for that ${PRINTED_QUALIFIER} ${MAKE} ${MODEL}? Let us confidentially forward ${CITY} Car Dealers' proposals right into your Inbox - for Free!" />
+    <meta name="keywords" content="${CITY}, ${QUALIFIER}, ${MAKE}, ${MODEL}, Demands, Proposals, Car, Mini-van, Pick-up, Truck" />
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" media="screen" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/Common/blue/css/style.css" media="screen"/>
+    <link rel="stylesheet" href="/Common/blue/js/fancybox/jquery.fancybox-1.3.4.css" media="screen"/>
+
+    <!-- jQuery Library-->
+    <script src="/Common/blue/js/jQuery.min.js"></script>
+    <script src="/Common/blue/js/jquery.timeago.js"></script>
+    <script src="/Common/blue/js/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+    <script src="/Common/blue/js/functions.js"></script>
+
+    <style type="text/css">
+        .formField {
+            visibility: visible;
+            height: 16px;
+            margin: 0px;
+            border: 1px solid #B5BCC7;
+            background-color: #F7FCFF;
+            font-size: 0pt;
+            width: 100%;
+        }
+        .reviewPaneTable {
+            width: 600px;
+        }
+        .reviewPaneTable th, .reviewPaneTable td {
+            vertical-align: top;
+            padding: 6px;
+        }
+        .reviewPaneTable th {
+            text-align: right;
+            margin-right: 10px;
+        }
+        #confirmationPane {
+            width: 600px;
+        }
+        #confirmationPane p {
+            margin-bottom: 16px;
+        }
+    </style>
+
+</head>
+<body class="claro">
+<form id="requestForm" onsubmit="return false;">
+	
+	<div id="twitter">
+		<div> Loading tweet . . . </div>
+	</div>
+	
+	<div id="fancy">
+	    <div class="wrap">
+	    
+	    	<div class="intro">
+		    	
+		    	<h1>AnotherSocialEconomy</h1>
+		    	<h2>${AD_HEADLINE}</h2>
+		    	<p>${AD_LINE}</p>
+		    	
+		    	<a href="#signupForm" class="downloadButton">
+		    		<span class="slidingDoor">
+			    		<span class="title">Subscribe Now!</span>
+			    		<span class="detail">
+			    			<span>Submit your <strong>5Ws</strong></span>
+			    			<!-- <span class="left"><strong>update:</strong> 1/2/11</span> -->
+			    		</span>
+		    		</span>
+		    	</a>
+		    	
+		    	<span class="downloadInfo">
+		    		<strong>( ! ) </strong> We do NOT share email addresses.
+		    	</span>
+		    	
+	    	</div><!-- intro close -->
+	    	
+	    	<div class="preview">
+     				<img width="400" src="/Common/images/400/${MAKE}_${MODEL}.jpg" title="Source: Wikimedia Commons ${MAKE} ${MODEL}" />
+	    		<div style="margin-top: -5px">
+    				<img width="400" src="/Common/blue/assets/shadow_center_small.png" />
+    			</div>    	
+	    	</div><!-- preview close -->
+	    	
+	    	<div class="titleSeparator">
+	    		<h2>How it works</h2>
+	    	</div>
+	    	
+	    	<a href="#" rel="left" class="arrow arrowLeft"></a>
+	    	<div class="sliderContainer">
+		    	<ul class="slider">
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/ASE/listening.png" class="lightbox" title="We're Listening!"><img src="/Common/images/ASE/listening_thumb.png" alt="We're Listening" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>1. Lead Generation</h4>
+		    				<p>Car buyers create Demand by letting us know <strong>Who</strong> they are, <strong>What</strong> they want, <strong>Where</strong> they want to find it, <strong>When</strong> they need it by and <strong>Why</strong> they're buying it.</p>
+		    			</div>
+		    		</li>
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/iStock/WindingRoad_iStock_000000036783XSmall.jpg" class="lightbox" title="Help Straighten Things Out"><img src="/Common/images/iStock/WindingRoad_iStock_000000036783XSmall.jpg" alt="Help Straighten Things Out" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>2. We help Straighten Things Out</h4>
+		    				<p>Sometimes it's hard for buyers to <strong>qualify what</strong> they're looking for, making it very difficult for dealers to participate. So to get things back on track, we may send a <strong>sampling of available cars</strong> so buyers can <strong>qualify by example</strong>.</p>
+		    			</div>
+		    		</li>
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/iStock/iStock_000007232741XSmall_flip.png" class="lightbox" title="We Share!"><img src="/Common/images/iStock/iStock_000007232741XSmall_thumb.png" alt="We Share" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>3. We Publish</h4>
+		    				<p>We publish their Demand - <strong>not their email addresses</strong>, to our subscribing car dealers asking if they have Supply on hand AND can they offer some <strong>incentive</strong> for the buyer to contact them 							<strong>directly</strong> - like an unadvertised deal. We also agree on a Finder's Fee on resulting sales.</p>
+		    			</div>
+		    		</li>
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/iStock/UsedCarForSale_iStock_000005765188XSmall.png" class="lightbox" title="Dealers Incent"><img src="/Common/images/iStock/UsedCarForSale_iStock_000005765188XSmall_thumb.png" alt="Dealers Incent" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>4. Dealers Propose</h4>
+		    				<p>Interested car dealers submit their Proposals and contact information to us and we forward them to the car buyers. (Dealers are free to publish their email addresses on their own accord.)</p>
+		    			</div>
+		    		</li>
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/iStock/CustomerService_iStock_000001808755XSmall.png" class="lightbox" title="Self-correcting"><img src="/Common/images/iStock/CustomerService_iStock_000001808755XSmall_thumb.png" alt="Self-correcting" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>5. Self-correcting</h4>
+		    				<p>Buyers can Rate Proposals. Dealers can respond by proposing another deal and even Rate buyers too!</p>
+		    			</div>
+		    		</li>
+		    		<li>
+		    			<div class="oneOfFour">
+		    				<a href="/Common/images/ASE/AlwaysBeClosing.png" class="lightbox" title="It's As Easy As ABC (Always Be Closing)"><img src="/Common/images/ASE/AlwaysBeClosing_thumb.png" alt="It's As Easy As ABC (Always Be Closing)" /></a>
+		    			</div>
+		    			<div class="threeOfFour last">
+		    				<h4>6. It's As Easy As ABC (Always Be Closing)</h4>
+		    				<p>Buyers reach out to dealers &amp; close the deal.</p>
+		    			</div>
+		    		</li>
+		    	</ul><!-- slider close -->
+		    	<ul class="sliderController"></ul>
+	    	</div>
+	    	<a href="#" rel="right" class="arrow arrowRight"></a>
+	    	
+	    	<div class="clear"></div>    	
+
+	    	<div class="titleSeparator">
+	    		<h2>About</h2>
+	    	</div>
+	    	
+	    	<ul class="faq">
+	    		<li>
+	    			<h5>Problem</h5>
+					<p>We believe that car buyers are already going to spend enough money. Adding more time &amp; energy trying to find the right dealer, with the right car, for the right price, can be <span style="font-weight: bold;">maddening!</span> So that's <span style="font-weight: bold">why</span> we created a sales lead co-op for local car dealers.</p> 
+	    		</li>
+	    		<li class="even">
+	    			<h5>Solution</h5>
+	    			<p>Our objective is to shorten the sales cycle for both car buyers and car dealers, <strong>reducing everyone's cost of acquisition</strong>. We do not compete with dealers' Internet strategies, we actually complement them by directing our traffic to the dealers' web page of choice.</p>
+					<br>
+					<p>Our aim is to level the playing field by enabling <span style="font-weight: bold">car dealers</span> to <span style="font-weight: bold">compete on product, service and value</span> - not search engine marketing budgets.</p>
+	    		</li>
+	    		<li>
+	    			<h5>From the car buyer's point-of-view...</h5>
+	    			<p>It's as if they Googled for the used car they want to buy and actually called (connected with) <strong>every dealer</strong> in the search results - not just the top 5, or, 6, all at the same time!</p>
+	    		</li>
+	    		<li class="even">
+	    			<h5>From the car dealer's point-of-view...</h5>
+	    			<p>It's as if they were able to offer these <strong>qualified leads</strong> something <strong>unique</strong>, something that they wouldn't advertise on the web, something that would <strong>encourage them to call, or, visit</strong> the sales associate. It could be a better price but, it could also be something more <strong>immediate</strong> like getting a free car wash, a coffee mug, or, simply a really nice espresso when they come in to discuss their needs.</p>
+	    		</li>
+	    		<li class="clear"></li>		
+	    	</ul><!-- faq close -->
+	    	
+	    	<a name="signupForm"></a>
+	    	<div ID="signup" class="titleSeparator">
+	    		<h2>Subscribe Now!</h2>
+	    	</div>
+
+	    	<span class="subtitle">AnotherSocialEconomy: Your Confidential Missing Link Between Shopping Offline &amp; Buying Online.</span>
+	    	
+	    	<div class="newsletter">
+
+	    			<div class="newsletterTitle"><label for="email"><strong>Who</strong><strong>!</strong></label></div>
+                    <label id="emailFieldLabel" style="display:none;">Your email:</label>
+   					<input class="form" id="email" name="email" title="Your email address"/>
+                    <img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" style="margin:6px 4px;" title="Any confidential information entered in this box will not be published to the dealers." width="16" />
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="make"><strong>What</strong></label></div>
+                    <label id="makeFieldLabel" style="display:none;">Manufacturer:</label>
+   					<input class="form" id="make" name="make"  value="${MAKE}" title="Manufacturer" />  					
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="model">&nbsp;</label></div>
+                    <label id="modelFieldLabel" style="display:none;">Model:</label>
+   					<input class="form" id="model" name="model" value="${MODEL}" title="Model"/>  					
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="postalCode"><strong>Where</strong></label></div>
+                    <label id="postalCodeFieldLabel" style="display:none;">Postal Code:</label>
+	    			<input class="form" id="postalCode" name="postalcode" value="${POSTAL_CODE}" title="Postal code" />
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="range">Within KMs</label></div>
+                    <label id="rangeFieldLabel" style="display:none;">Within how many KMs:</label>
+	    			<input class="form" id="range" name="range" value="25" title="Within how many KMs of your postal code?" />
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="dueDate"><strong>When</strong></label></div>
+                    <label id="dueDateFieldLabel" style="display:none;">Due date:</label>
+                    <input id="dueDate" value="2011-01-30" class="form" title="Due date" />
+	    			<div class="clear"></div>
+
+	    			<div class="newsletterTitle"><label for="info"><strong>Why</strong><br>Preferences like manual/automatic transmission, exterior/interior colors, model year, approximate price... all help!</label></div>
+                    <label id="infoFieldLabel" style="display:none;">Other info:</label>
+                    <textarea id="info" class="form" ></textarea>
+	    			<div class="clear"></div>
+
+<!--
+	     			<div class="newsletterTitle">We <strong>don't share</strong> <br> email addresses</div>
+ -->
+    				<span class="newsletterTitle" style="padding-top: 20px"><strong>( ! ) </strong> We do NOT share email addresses.</span>
+					<a href="#" id="submitButton" onclick="localModule.showReviewPane(); return false;">Submit request</a>
+	    			<div class="clear"></div>
+    			
+	    	</div><!-- newsletter close -->
+	    	<div id="footer">
+	    		<div>Call us  (+1) 877 990 1697 Toll free 24/7, or, email <a href="mailto:Support@AnotherSocialEconomy.com">Support@AnotherSocialEconomy.com</a> | 
+	    		 <a href="/CarDealers/CarDealerWelcome.html" title="Car Dealers Welcome">Car Dealers</a> |
+	    		 <a id="switchLanguage1" href="${ALT_PATH}" title="Bienvenue aux acheteurs à la recherche d'une voiture">Français</a></div>
+	    		 <div>&copy; 2011 <a href="http://milstein-assoc.com">Milstein &amp; associates inc.</a> All rights reserved.</div>
+
+	    		<ul class="social">
+	    			<li><a href="http://www.facebook.com/home.php?sk=group_165456116817105&ap=1"><img src="/Common/blue/assets/social/facebook.png" alt="Facebook" /></a></li>
+	    			<li><a href="http://twitter.com/ASEconomy"><img src="/Common/blue/assets/social/twitter.png" alt="Twitter" /></a></li>
+<!--
+	    			<li><a href="#"><img src="img/social/rss.png" alt="Rss" /></a></li>
+		   			<li><a href="#"><img src="img/social/linkedin.png" alt="Linkedin" /></a></li>
+ -->
+	    			<li><a href="http://www.stumbleupon.com/submit?url=http://anothersocialeconomy.com/CarDealers/CarDealerWelcome.html/&title=AnotherSocialEconomy for Local Car Dealers - Join Us"><img src="/Common/blue/assets/social/stumbleupon.png" alt="Stumbleupon" /></a></li>
+	    		</ul>
+	    	</div><!-- footer close -->
+	    	
+	    </div><!-- wrap close -->
+    </div><!-- fancy close -->
+</form>
+<script type="text/javascript">
+    var djConfig = {
+        parseOnLoad: false,
+        isDebug: false,
+        useXDomain: true,
+        baseUrl: './',
+        dojoBlankHtmlUrl: '/blank.html',
+        locale: 'en'
+    };
+    var localizedBundle = {
+        locale: 'en',
+        emailFieldPlaceHolder:      'Your email address',
+        modelFieldPlaceHolder:      'The car model',
+        postalCodeFieldPlaceHolder: 'Your postal code',
+        sendRequestPaneTitle:               'Request Submission',
+        sendRequestInitialMessage:          '<p>:-) Thank you for submitting your request ...</p>',
+        sendRequestErrorMessage:            '>:-( oh snap... we messed up while submitting your request.\n\n' +
+                                            'Please send a detailed email to Support@AnotherSocialEconomy.com so we can set things right.',
+        sendRequestSuccessMessageKnownUser: '<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Your request has been submitted :-)</p>' +
+                                            '<p>Please check your email (or spam filter) for our acknowledgement message from <strong>assistant@anothersocialeconomy.appspotmail.com</strong></p>' +
+                                            '<p>Thanks for trusting AnotherSocialEconomy with your request!</p>' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
+                                            '</div>',
+        sendRequestSuccessMessageUnknownUser:'<div class="dijitDialogPaneContentArea">' +
+                                            '<p>Your request has been submitted :-)</p>' +
+                                            '<div style="background-color:orange;color:white;padding:5px;">' +
+                                            '<p><strong>New Email Address Verification</strong><br/>' +
+                                            'Since this is your first time using our service, we\'ll place your request on hold until you\'re able to confirm your email address. ' +
+                                            '<p>Check your email for a message from <strong>assistant@anothersocialeconomy.appspotmail.com</strong> &amp; simply <strong>reply</strong> ' +
+                                            'to complete the verification process so we can start broadcasting your request to our used car dealer network.</p>' +
+                                            '<p><strong>Hint</strong><br>' +
+                                            'If you don\'t see our email in the next twenty minutes, then please check your <strong>spam filter</strong>. ' +
+                                            'If it still hasn\'t arrived, please don\'t give up on us. ' +
+                                            'Just click <a href="mailto:Support@AnotherSocialEconomy.com?subject=Verification%20Email%20never%20received&Body=_content_">Support</a> ' +
+                                            'to send a detailed email so we can set things right.</p>' +
+                                            '<br/><strong>Reminder</strong><br>' +
+                                            'We will <strong>never share</strong> your email address!' +
+                                            '</div>' +
+                                            '<br/><strong>Thanks</strong><br/>' +
+                                            'Thank you for trusting AnotherSocialEconomy!</p>' +
+                                            '</div>' +
+                                            '<div class="dijitDialogPaneActionBar">' +
+                                            '<div style="text-align:right;"><div id="closeDialog">OK</div></div>' +
+                                            '</div>',
+        reviewPaneTitle:                    'Request Review Step',
+        emailCheckInitialMessage:           '<div style="background-color:#eee;border-radius: 4px; padding: 10px;">' +
+                                            'Please confirm your request one last time before submitting it.<br/><br/>' +
+                                            'Click <strong>&lt;&lt; Back</strong> to make any corrections. ' +
+                                            'Click <strong>Submit your Request</strong> if evertything is OK.' +
+                                            '</div>',
+        cancelButton: '&lt;&lt; Back',
+        pageTitle: document.getElementsByTagName('title')[0].innerHTML,
+        inputFieldStyle: '',
+        textareaFieldStyle: '',
+        visitTrackerURL: 'https://www.googleadservices.com/pagead/conversion/1019079067/?value=0.1&label=jz1RCI2BoAIQm9P35QM&guid=ON&script=0',
+        interestTrackerURL: 'https://www.googleadservices.com/pagead/conversion/1019079067/?value=1&label=UgQfCMXjkQIQm9P35QM&guid=ON&script=0',
+        demandTrackerURL: 'https://www.googleadservices.com/pagead/conversion/1019079067/?value=10&label=3RKbCK39nwIQm9P35QM&guid=ON&script=0'
+    };
+    localizedBundle.inputFieldStyle =
+        'float:left;' +
+        'width:216px;' +
+        'padding:5px 4px 5px 12px;' +
+        'font-size:14px;' +
+        'line-height:1em;' +
+        'color:#333;' +
+        'border:1px solid white !important;' +
+        'border-color:white #D5D5D5 #A0A0A0 !important;' +
+        'background-color:#f9f9f9;' +
+        '-webkit-border-radius:4px;' +
+        'border-radius:4px;' +
+        'box-shadow:inset 0 0 10px rgba(0, 0, 0, 0.25);';
+    localizedBundle.textareaFieldStyle = 'font:15px DroidSansRegular,arial;' + localizedBundle.inputFieldStyle + 'min-height:80px;width:235px;';
+    var makes = ['Acura' ,'Audi' ,'BMW' ,'Buick' ,'Cadillac' ,'Chevrolet' ,'Chrysler' ,'Dodge' ,'Ford' ,'GMC' ,'Honda' ,'Hummer' ,'Hyundai' ,'Infiniti' ,'Jeep' ,'Kia' ,'Land Rover' ,'Lexus' ,'Lincoln' ,'Mazda' ,'Mercedes-Benz' ,'Mini' ,'Mitsubishi' ,'Nissan' ,'Pontiac' ,'Porsche' ,'Saab' ,'Saturn' ,'Smart' ,'Subaru' ,'Suzuki' ,'Toyota' ,'Volkswagen' ,'Volvo'];
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" type="text/javascript"></script>
+<script type="text/javascript">
+${LOCAL_MODULE}
+</script>
+    
+</body>
+</html>

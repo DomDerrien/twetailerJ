@@ -78,13 +78,13 @@ var localModule = {};
 
         var lB = localizedBundle, makers = new dojo.data.ItemFileReadStore({ data : options });
         new dijit.form.Form({ id : 'requestForm' }, 'requestForm');
-        new dijit.form.TextBox({ name : 'model', value : model, placeHolder : lB.modelFieldPlaceHolder, style : 'width:160px;' }, 'model');
-        new dijit.form.NumberSpinner({ name : 'range', value : 25, constraints : { min : 5, max : 100 }, style : 'width:160px;' }, 'range');
-        new dijit.form.ValidationTextBox({ name : 'postalCode', value : postalCode, placeHolder : lB.postalCodeFieldPlaceHolder, regExp : '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required : true, trim : true, style : 'width:160px;' }, 'postalCode');
-        new dijit.form.DateTextBox({ name : 'dueDate', value : dueDate, constraints : { datePattern : 'EEE d MMM yyyy' }, style : 'width:160px;', required : true }, 'dueDate');
-        new dijit.form.FilteringSelect({ name : 'make', value : maker, searchAttr : 'value', store : makers, style : 'width:160px;' }, 'make');
-        new dijit.form.Textarea({ name : 'info', value : info, style : 'min-height:80px;', style : 'width:100%; min-height: 80px;' }, 'info');
-        new dijit.form.ValidationTextBox({ name : 'email', placeHolder : lB.emailFieldPlaceHolder, regExp : '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required : true, trim : true }, 'email').focus();
+        new dijit.form.TextBox({ name : 'model', value : model, placeHolder : lB.modelFieldPlaceHolder, style : lB.inputFieldStyle }, 'model');
+        new dijit.form.NumberSpinner({ name : 'range', value : 25, constraints : { min : 5, max : 100 }, style : lB.inputFieldStyle }, 'range');
+        new dijit.form.ValidationTextBox({ name : 'postalCode', value : postalCode, placeHolder : lB.postalCodeFieldPlaceHolder, regExp : '[a-zA-Z][0-9][a-zA-Z] *[0-9][a-zA-Z][0-9]', required : true, trim : true, style : lB.inputFieldStyle }, 'postalCode');
+        new dijit.form.DateTextBox({ name : 'dueDate', value : dueDate, constraints : { datePattern : 'EEE d MMM yyyy' }, style : lB.inputFieldStyle, required : true }, 'dueDate');
+        new dijit.form.FilteringSelect({ name : 'make', value : maker, searchAttr : 'value', store : makers, style : lB.inputFieldStyle }, 'make');
+        new dijit.form.Textarea({ name : 'info', value : info, style : lB.textareaFieldStyle }, 'info');
+        new dijit.form.ValidationTextBox({ name : 'email', placeHolder : lB.emailFieldPlaceHolder, regExp : '[a-zA-Z0-9\.\_\%\-]+\@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,4}', required : true, style: lB.inputFieldStyle, trim : true }, 'email');
         new dijit.form.CheckBox({ name : 'demoMode' }, 'demoMode');
         var lock = dojo.byId('emailLock');
         new dijit.Tooltip({label:lock.title, connectId:[lock]});
@@ -95,6 +95,9 @@ var localModule = {};
             }
             setTimeout(reportUsage, reportDelay);
             new dojox.analytics.Urchin({ acct : 'UA-11910037-5' });
+        }
+        if (lB.focusEmailField) {
+            dijit.byId('email').focus();
         }
     });
     
@@ -181,7 +184,7 @@ var localModule = {};
             demoMode: false,
             exceptions : []
         }, exs = dataIn.exceptions, dc = document;
-        if (dijit.byId('demoMode').get('value') == 'on') { try { dataIn.demoMode = true; dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
+        if (dijit.byId('demoMode') && dijit.byId('demoMode').get('value') == 'on') { try { dataIn.demoMode = true; dataIn.hashTags.push('demo'); } catch (ex) { exs.push('hashTags - ' + ex); } }
         try { dataIn.email = dijit.byId('email').get('value'); } catch (ex) { exs.push('email - ' + ex); }
         try { dataIn.postalCode = dijit.byId('postalCode').get('value'); } catch (ex) { exs.push('postalCode - ' + ex); }
         try { dataIn.range = dijit.byId('range').get('value'); } catch (ex) { exs.push('range - ' + ex); }

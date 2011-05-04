@@ -1,0 +1,132 @@
+@CHARSET "ISO-8859-1";
+BODY {
+}
+#container {
+	font-size: 100%;
+	color: grey;
+}
+
+input {
+ width: 98%;
+}
+#shadow_center {
+	background:#f6f5f0 url(../images/shadow_center.png) no-repeat center top;
+}
+
+a:link.action {
+	color: PaleGoldenRod;
+;}    /* unvisited link */
+
+a:visited.action {
+	color: PaleGoldenRod;
+} /* visited link */
+
+a:hover.action {
+	color: white;
+}   /* mouse over link */
+
+a:active.action {
+	color: white;
+}  /* selected link */
+
+a.butt_bgorange{
+	background:#f6f5f0 url(../images/shadow_center.png) no-repeat center top;  
+	background-color: rgb(247,150,70);
+	color: PaleGoldenRod;
+	padding:4px 0 5px 0;
+	text-align:center;
+	text-decoration: none;
+	display:block;
+	margin:5px 0;
+	border:1px solid rgb(277,108,9);
+	font-size: 1.1em;
+	font-weight:bold;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+/*  text-shadow:1px 1px 0 rgb(247,150,70); */
+}
+
+a:hover.butt_bgorange{
+	color: white;
+	background-color: rgb(277,108,9); 
+	border:1px solid #fff;
+/*  text-shadow: none; */
+}
+
+/*
+input[type="submit"]{
+	background-color: darkorange; 
+	color:white; 
+	font-weight: bold; 
+	width: 220px;
+	height: 50px;
+}
+
+input[type="submit"]:HOVER {
+	background-color: orange; 
+}
+*/
+
+.col_header {
+	background-color: whitesmoke;
+	color: black;
+	font-size: large;
+}
+
+.col_name {
+ 	font-weight: bold;
+	margin-left: 5px;
+	margin-right: 5px;
+}	
+
+.col_header_action {
+	background-color: rgb(247,150,70);
+	color: white;
+	font-size: large;
+}
+
+.command {
+	font-weight: bold;
+}
+
+.pink {
+	color: rgb(253,16,254);
+	font-weight: bold;
+}
+
+.red {
+	color: rgb(253,53,46);
+	font-weight: bold;
+}
+
+.blue {
+	color: rgb(86,151,233);
+	font-weight: bold;
+}
+
+.green {
+	color: rgb(94,253,97);
+	font-weight: bold;
+}
+
+.yellow {
+	color: rgb(254,197,46);
+	font-weight: bold;
+}
+
+.orange {
+	background-color: rgb(247,150,70);
+	color: white;
+	font-weight: bold;
+}
+
+.black {
+	color: black;
+	font-weight: bold;
+}
+
+.gray {
+	color: gray;
+	font-weight: bold;
+}
