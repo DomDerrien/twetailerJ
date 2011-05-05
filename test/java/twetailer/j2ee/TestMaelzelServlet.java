@@ -273,7 +273,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Command.KEY, name);
@@ -329,7 +329,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if (Location.POSTAL_CODE.equals(name)) {
@@ -392,7 +392,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Demand.KEY, name);
@@ -443,7 +443,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Proposal.KEY, name);
@@ -494,7 +494,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if(Demand.KEY.equals(name)) {
@@ -547,7 +547,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Demand.KEY, name);
@@ -598,7 +598,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Proposal.KEY, name);
@@ -645,7 +645,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Proposal.KEY, name);
@@ -722,7 +722,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 throw new DatastoreTimeoutException("Done in purpose!");
@@ -757,7 +757,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 throw new DatastoreTimeoutException("Done in purpose!");
@@ -1967,7 +1967,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if ("consumerKey".equals(name)) {
@@ -2027,7 +2027,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if ("consumerKey".equals(name)) {
@@ -2093,7 +2093,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if ("ownerKey".equals(name)) {
@@ -2155,7 +2155,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 if ("ownerKey".equals(name)) {
@@ -2296,7 +2296,7 @@ public class TestMaelzelServlet {
             }
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
                     return "true";
                 }
                 assertEquals(Wish.KEY, name);

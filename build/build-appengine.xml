@@ -84,6 +84,8 @@
         <antcall target="step-configuration-push" />
         <antcall target="step-datanucleus-enhance" />
         <antcall target="step-stage-prepare" />
+        <echo message=" " />
+        <echo message="Starting webserver..." />
         <dev_appserver port="${app.serverPort}" war="${temp.dir}/appengine-stage" />
     </target>
 
@@ -201,6 +203,24 @@
         <enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />
     </target>
 
+    <target name="step-stage-prepare-noCDN" unless="app.useCDN">
+        <copy todir="${temp.dir}/appengine-stage/js/release/${app.version}" overwrite="yes" includeemptydirs="false">
+            <fileset dir="src/war/js/release/${app.version}">
+                <include name="**/*" />
+                <exclude name="dijit/themes/**/*"/>
+                <exclude name="dojox/**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${temp.dir}/appengine-stage/js/release/${app.version}" overwrite="yes" includeemptydirs="false">
+            <fileset dir="src/war/js/release/${app.version}">
+                <include name="dijit/themes/*"/>
+                <include name="dijit/themes/claro/**/*"/>
+                <include name="dojox/data/**/*"/>
+                <include name="dojox/grid/**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
     <target name="step-stage-prepare">
         <delete includeemptydirs="yes" failonerror="no" dir="${temp.dir}/appengine-stage" />
         <mkdir dir="${temp.dir}/appengine-stage" />
@@ -208,53 +228,64 @@
             <fileset dir="src/war">
                 <include name="**/*" />
                 <exclude name="**/*.legacy" />
+                <exclude name="Automobiles/**/*"/>
+                <exclude name="CarDealers/**/*"/>
+                <exclude name="Common/**/*"/>
+                <exclude name="cardealer/**/*"/>
                 <exclude name="js/dojo/**/*"/>
+                <exclude name="js/release/**/*"/>
                 <exclude name="WEB-INF/appengine-generated/**" />
                 <exclude name="WEB-INF/classes/**/Test*.*" />
                 <exclude name="WEB-INF/classes/**/Mock*.*" />
             </fileset>
         </copy>
+        <antcall target="step-stage-prepare-noCDN" />
         <!-- Technics inspired by http://www.webapp-performance.com/general-tips/removing-unused-css-whitespace-with-ant-replaceregexp -->
+        <echo message="Replacing multiple separators by one space" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+" />
             <substitution expression=" "/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*"
+                excludes="js/release/**/*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="Removing comments starting by //" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+//.*" />
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*,**/*sample*.*"
+                excludes="js/release/**/*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="Removing separators at the end of a line" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="^\s" />
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*"
+                excludes="js/release/**/*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="Removing comments between /* and */" />
         <replaceregexp match="/\*.+?\*/" replace="" flags="gs" byline="false">
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*,**/*sample*.*"
+                excludes="js/release/**/*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="Removing blank lines" />
         <replaceregexp byline="false" flags="gm">
             <regexp pattern="^\r\n" />
             <substitution expression=""/>
             <fileset
                 dir="${temp.dir}/appengine-stage"
-                excludes="_tmp/**/*.*"
+                excludes="js/release/**/*"
                 includes="**/*.html,**/*.jsp,**/*.js,**/*.css"
             />
         </replaceregexp>

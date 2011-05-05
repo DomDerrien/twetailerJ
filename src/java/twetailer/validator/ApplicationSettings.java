@@ -63,6 +63,12 @@ public class ApplicationSettings {
 
     protected final static String PRODUCT_NAME_KEY = "productName";
 
+    public final static String DEFAULT_PRODUCT_VERSION = "0";
+
+    private String productVersion = DEFAULT_PRODUCT_VERSION;
+
+    protected final static String PRODUCT_VERSION_KEY = "productVersion";
+
     public final static String DEFAULT_PRODUCT_WEBSITE = "http://anothersocialeconomy.com/";
 
     private String productWebsite = DEFAULT_PRODUCT_WEBSITE;
@@ -141,6 +147,15 @@ public class ApplicationSettings {
      */
     public String getProductName() {
         return productName;
+    }
+
+    /**
+     * Get the product version
+     *
+     * @return Version
+     */
+    public String getProductVersion() {
+        return productVersion;
     }
 
     /**
@@ -224,6 +239,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 productName = DEFAULT_PRODUCT_NAME;
+            }
+            try {
+                productVersion = appSettings.getString(PRODUCT_VERSION_KEY);
+            }
+            catch(Exception ex) {
+                productVersion = DEFAULT_PRODUCT_VERSION;
             }
             try {
                 productWebsite = appSettings.getString(PRODUCT_WEBSITE_KEY);

@@ -370,7 +370,7 @@ public class TestCommandProcessor {
                 assertEquals(0L, key.longValue());
                 RawCommand rawCommand = new RawCommand(Source.simulated);
                 rawCommand.setKey(commandKey);
-                rawCommand.setCommand("!list test blah-blah-bla " + CommandProcessor.DEBUG_INFO_SWITCH);
+                rawCommand.setCommand("!list test blah-blah-bla " + CommandProcessor.DEBUG_MODE_PARAM);
                 return rawCommand;
             }
             @Override

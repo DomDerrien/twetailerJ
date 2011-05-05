@@ -7,7 +7,7 @@
 # Boolean used in the JSP file to decide if the Dojo library
 # (JavaScript, CSS, images) should be used from a distributed Content
 # Delivery Network -- Enabling value: true -- Default: false
-useCDN = true
+useCDN = @app.useCDN@
 
 # URL for the Dojo library hosted on a public Content Delivery Network
 # Example: http://ajax.googleapis.com/ajax/libs/dojo/1.3
@@ -28,6 +28,9 @@ productEmailDomain = @app.appEngineId@.appspotmail.com
 # Product name
 productName = @app.productName@
 
+# Product version
+productVersion = @app.version@
+
 # Product website
 # Default: http://anotherosocialeconomy.com/
 productWebsite = http://@app.appEngineId@.com/
@@ -38,4 +41,4 @@ applicationWebsite = https://@app.appEngineId@.appspot.com/
 
 # Optional URL of the product logo
 # Default: /images/logo/logo-48x48.png
-logoURL = https://anothersocialeconomy.appspot.com/images/logo/logo-48x48.png
+logoURL = https://@app.appEngineId@.appspot.com/images/logo/logo-48x48.png

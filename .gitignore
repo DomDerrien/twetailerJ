@@ -5,6 +5,11 @@ src/war/js/dojo/*
 src/war/js/twetailer/nls/*
 src/war/WEB-INF/*
 src/war/_tmp/*
+src/war/Automobiles
+src/war/CarDealers
+src/war/Common
+src/war/cardealer
+src/war/js/release/*
 WEB-INF/*
 cobertura.ser
 *.class

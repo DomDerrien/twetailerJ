@@ -174,7 +174,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * @return <code>true</code> if the debug mode is detected, <code>false</code> otherwise.
      */
     protected static boolean debugModeDetected(HttpServletRequest request) {
-        return request.getParameter(CommandProcessor.DEBUG_INFO_SWITCH) != null;
+        return request.getParameter(CommandProcessor.DEBUG_MODE_PARAM) != null;
     }
 
     /**
@@ -184,7 +184,7 @@ public abstract class BaseRestlet extends HttpServlet {
      * @return <code>true</code> if the debug mode is detected, <code>false</code> otherwise.
      */
     protected static boolean debugModeDetected(JsonObject parameters) {
-        return parameters != null && parameters.containsKey(CommandProcessor.DEBUG_INFO_SWITCH);
+        return parameters != null && parameters.containsKey(CommandProcessor.DEBUG_MODE_PARAM);
     }
 
     private static final String ROOT = "/";

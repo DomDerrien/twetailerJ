@@ -248,7 +248,7 @@ public class CommandProcessor {
         }
     }
 
-    public final static String DEBUG_INFO_SWITCH = "-debugMode";
+    public final static String DEBUG_MODE_PARAM = "debugMode";
 
     /**
      * Extract commands from the tables of raw commands and acts accordingly
@@ -281,7 +281,7 @@ public class CommandProcessor {
         catch(Exception ex) {
             String additionalInfo = getDebugInfo(ex);
             Logger.getLogger(CommandProcessor.class.getName()).severe("Unexpected error -- info: " + additionalInfo);
-            boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_INFO_SWITCH);
+            boolean exposeInfo = rawCommand.getCommand() != null && rawCommand.getCommand().contains(DEBUG_MODE_PARAM);
             // Report the error to the raw command emitter
             communicateToConsumer(
                     rawCommand.getSource(),

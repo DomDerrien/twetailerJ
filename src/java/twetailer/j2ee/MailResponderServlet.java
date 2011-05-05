@@ -143,11 +143,11 @@ public class MailResponderServlet extends HttpServlet {
             rawCommand.setSubject(subject);
 
             // Extract information about a supported receiver
-            StringBuilder log = new StringBuilder();
+            StringBuilder recipientList = new StringBuilder();
             InternetAddress[] recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.TO));
             for (int idx = 0; to == null && idx < (recipients == null ? 0 : recipients.length); idx ++) {
                 to = recipients[idx].getAddress();
-                log.append("\"").append(recipients[idx].getPersonal()).append("\" <").append(recipients[idx].getAddress()).append(">, ");
+                recipientList.append("\"").append(recipients[idx].getPersonal()).append("\" <").append(recipients[idx].getAddress()).append(">, ");
                 if (!getResponderEndpoints().contains(to)) {
                     to = null;
                 }
@@ -160,13 +160,13 @@ public class MailResponderServlet extends HttpServlet {
                 catch(IOException ex) {
                     messageContent = MailConnector.alternateGetText(mailMessage);
                 }
-                getLogger().warning(
+                String message =
                         "Email '" + messageId + "' not addressed to Twetailer!\n" +
                         "From: \"" + name + "\" <" + email + ">\n" +
-                        "To: " + log.toString() + "\n" +
-                        "Subject: " + subject + "\n--\n" + messageContent
-                );
-                throw new RuntimeException("Message received without the To: field! Sent by: \"" + name + "\" <" + email + ">");
+                        "To: " + recipientList.toString() + "\n" +
+                        "Subject: " + subject + "\n--\n" + messageContent;
+                getLogger().warning(message);
+                throw new IllegalArgumentException(message);
             }
             StringBuilder ccList = new StringBuilder();
             recipients = (InternetAddress []) (mailMessage.getRecipients(Message.RecipientType.CC));
@@ -206,6 +206,16 @@ public class MailResponderServlet extends HttpServlet {
             command = extractFirstLine(messageContent) + command;
 
             // Fill up the message to persist
+            if (499 < command.length()) {
+                String message =
+                    "Email '" + messageId + "' has a too big content!\n" +
+                    "From: \"" + name + "\" <" + email + ">\n" +
+                    "To: " + recipientList.toString() + "\n" +
+                    "Subject: " + subject + "\n--\n" + messageContent + "\n\n--\n" +
+                    "Content:\n\n" + command;
+                getLogger().warning(message);
+                throw new IllegalArgumentException(message);
+            }
             rawCommand.setCommand(command);
 
             getLogger().warning("Message sent by: " + name + " <" + email + ">\nWith the identifier: " + messageId + "\nWith the subject: " + subject + "\nWith the command: " + command);
@@ -243,6 +253,21 @@ public class MailResponderServlet extends HttpServlet {
             exception = ex;
             getLogger().warning("During trying to manage data with the back store -- message " + ex.getMessage());
             rawCommand.setErrorMessage(LabelExtractor.get("error_datastore_timeout", language == null ? LocaleValidator.DEFAULT_LOCALE : new Locale(language)));
+        }
+        catch (IllegalArgumentException ex1) {
+            try {
+                MailConnector.reportErrorToAdmins(
+                        "Message misaddressed to a Twetailer end point or with a too long first line!",
+                        ex1.getMessage()
+                );
+            }
+            catch (MessagingException ex2) {
+                getLogger().severe("Failure while trying to report an unexpected by e-mail! -- message: " + ex2.getMessage());
+
+                // Note for the testers:
+                //   Don't know how to generate a MessagingException by just
+                //   injecting a corrupted UTF-8 sequence and/or a wrong character set
+            }
         }
         catch (Exception ex) {
             exception = ex;

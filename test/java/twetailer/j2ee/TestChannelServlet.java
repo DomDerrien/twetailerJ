@@ -165,7 +165,7 @@ public class TestChannelServlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes','action':'register'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes','action':'register'}");
             }
         };
         final MockServletOutputStream stream = new MockServletOutputStream();

@@ -26,7 +26,9 @@
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
+    String appVersion = appSettings.getProductVersion();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
     cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
@@ -51,26 +53,15 @@
     </style><%
     }
     else { // elif (!useCDN)
-    %><style type="text/css">
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/claro/claro.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/claroGrid.css";
-        @import "/css/console.css";
-    </style><%
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/Grid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/claroGrid.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
-    <style type="text/css">
-    </style>
 </head>
 <body class="claro">
-
-    <!--
-    class="tundra" => class="claro"
-    djConfig => data-dojo-config
-    dojoType => data-dojo-type
-    all widget properties into a single attribute => data-dojo-props
-     -->
 
     <div id="introFlash">
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
@@ -79,15 +70,19 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
-        src="/js/dojo/dojo/dojo.js"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', locale: 'en', dojoBlankHtmlUrl: '/blank.html'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <script
+        src="/js/release/<%= appVersion %>/ase/listing.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
@@ -357,7 +352,7 @@
     localModule.fetchConsumers = function(dateFilter, dateLimit) {
         ++ localModule.counts.transfer;
         localModule.updateCounters();
-        var data = { '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes' };
+        var data = { '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes' };
         data[dateFilter] = dateLimit;
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
@@ -420,7 +415,7 @@
             data = {
                 'pointOfView': 'CONSUMER',
                 'onBehalfConsumerKey': consumerKey,
-                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+                '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes'
             };
             data[dateFilter] = dateLimit;
             dojo.xhrGet({
@@ -470,7 +465,7 @@
         var data = {
             'pointOfView': 'CONSUMER',
             'onBehalfConsumerKey': consumerKey,
-            '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+            '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes'
         };
         data[dateFilter] = dateLimit;
         dojo.xhrGet({

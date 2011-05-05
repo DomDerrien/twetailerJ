@@ -1104,8 +1104,8 @@ public class TestBaseRestlet {
         HttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
+                    return CommandProcessor.DEBUG_MODE_PARAM;
                 }
                 if ("debugConsumerKey".equals(name)) {
                     return null;
@@ -1141,8 +1141,8 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
+                    return CommandProcessor.DEBUG_MODE_PARAM;
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
@@ -1171,8 +1171,8 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
+                    return CommandProcessor.DEBUG_MODE_PARAM;
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
@@ -1239,8 +1239,8 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
+                    return CommandProcessor.DEBUG_MODE_PARAM;
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
@@ -1307,8 +1307,8 @@ public class TestBaseRestlet {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest() {
             @Override
             public String getParameter(String name) {
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(name)) {
-                    return CommandProcessor.DEBUG_INFO_SWITCH;
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(name)) {
+                    return CommandProcessor.DEBUG_MODE_PARAM;
                 }
                 throw new IllegalArgumentException("Done in purpose");
             }
@@ -1607,14 +1607,14 @@ public class TestBaseRestlet {
     @Test
     public void testDebugModeIII() {
         assertTrue(BaseRestlet.debugModeDetected(new MockHttpServletRequest() {
-            @Override public String getParameter(String name) { return CommandProcessor.DEBUG_INFO_SWITCH.equals(name) ? "yes" : null; }
+            @Override public String getParameter(String name) { return CommandProcessor.DEBUG_MODE_PARAM.equals(name) ? "yes" : null; }
         }));
     }
 
     @Test
     public void testDebugModeIV() {
         JsonObject json = new GenericJsonObject();
-        json.put(CommandProcessor.DEBUG_INFO_SWITCH, "yes");
+        json.put(CommandProcessor.DEBUG_MODE_PARAM, "yes");
         assertTrue(BaseRestlet.debugModeDetected(json));
     }
 
@@ -1840,7 +1840,7 @@ public class TestBaseRestlet {
                 if (OpenIdUser.ATTR_NAME.equals(key)) {
                     return user;
                 }
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(key)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(key)) {
                     return "yes";
                 }
                 fail("No attribute gathering expected for: " + key);
@@ -1886,7 +1886,7 @@ public class TestBaseRestlet {
                 if (OpenIdUser.ATTR_NAME.equals(key)) {
                     return user;
                 }
-                if (CommandProcessor.DEBUG_INFO_SWITCH.equals(key)) {
+                if (CommandProcessor.DEBUG_MODE_PARAM.equals(key)) {
                     return "yes";
                 }
                 fail("No attribute gathering expected for: " + key);
@@ -2104,7 +2104,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {
@@ -2144,7 +2144,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {
@@ -2382,7 +2382,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {
@@ -2426,7 +2426,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {
@@ -2668,7 +2668,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {
@@ -2712,7 +2712,7 @@ public class TestBaseRestlet {
             }
             @Override
             public ServletInputStream getInputStream() {
-                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_INFO_SWITCH + "':'yes'}");
+                return new MockServletInputStream("{'" + CommandProcessor.DEBUG_MODE_PARAM + "':'yes'}");
             }
             @Override
             public Object getAttribute(String key) {

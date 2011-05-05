@@ -22,9 +22,9 @@
         description="All values defined in this file take precedence. Because this file is not in the SCM, each developer can setup his/her environment independently."
     />
 
-    <property name="app.release"
-        description="Planned release of this build"
-        value="50"
+    <property name="app.version"
+        description="Planned version of this build"
+        value="51"
     />
 
     <property name="app.companyName"
@@ -36,6 +36,11 @@
         description="Product name"
         value="AnotherSocialEconomy.com"
     />
+
+    <!--property name="app.useCDN"
+        description="Product name"
+        value="true"
+    /-->
 
     <property name="app.appEngineId"
         description="Application identifier for Google App Engine"
@@ -173,6 +178,7 @@
                 <include name="docs/test-reports/**/*" />
                 <exclude name="src" />
                 <include name="src/war/js/dojo/**/*" />
+                <include name="src/war/js/release/**/*" />
                 <include name="src/war/js/${app.packageName}/nls/**/*" />
                 <include name="src/war/WEB-INF/classes/com/**/*" />
                 <include name="src/war/WEB-INF/classes/org/**/*" />
@@ -384,7 +390,8 @@
 
     <filterchain id="genericFilterChain">
         <replacetokens>
-            <token key="app.release" value="${app.release}" />
+            <token key="app.version" value="${app.version}" />
+            <token key="app.useCDN" value="${app.useCDN}" />
             <token key="app.productName" value="${app.productName}" />
             <token key="app.appEngineId" value="${app.appEngineId}" />
             <token key="app.packageName" value="${app.packageName}" />
@@ -424,34 +431,39 @@
     </target>
 
     <target name="step-statistics-get" unless="testcase">
+        <echo message="Java code source parsing" />
         <resourcecount property="java.source.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
                 <fileset dir="src/java" includes="**/*.java" />
             </tokens>
         </resourcecount>
+        <echo message="Java test source parsing" />
         <resourcecount property="java.test.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
                 <fileset dir="test/java" includes="**/*.java" />
             </tokens>
         </resourcecount>
+        <echo message="HTML/JS/CSS code source parsing" />
         <resourcecount property="html.source.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="src/war" includes="**/*.html,**/*.jsp,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
+                <fileset dir="src/war" includes="**/*.html,**/*.jsp,**/*.js,**/*.css" excludes="js/dojo/**/*,js/release/**/*,js/domderrien/**/*,Automobiles/**,CarDealers/**,Common/**,cardealer/**" />
             </tokens>
         </resourcecount>
+        <echo message="HTML/JS/CSS test source parsing" />
         <resourcecount property="html.test.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="test/war" includes="**/*.html,**/*.js,**/*.css" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
+                <fileset dir="test/war" includes="**/*.html,**/*.js,**/*.css" excludes="domderrien/**/*" />
             </tokens>
         </resourcecount>
+        <echo message="XML source parsing" />
         <resourcecount property="xml.line.count">
             <tokens>
                 <linetokenizer includedelims="yes" />
-                <fileset dir="src" includes="**/*.xml*,**/*.xsl,**/*.tmx" excludes="**/dojo/**,**/domderrien/**,**/_tmp/**" />
+                <fileset dir="src" includes="**/*.xml*,**/*.xsl,**/*.tmx" excludes="war/js/dojo/**/*,war/js/release/**/*,war/js/domderrien/**/*,war/Automobiles/**,war/CarDealers/**,war/Common/**,war/cardealer/**" />
             </tokens>
         </resourcecount>
         <echo>
@@ -462,78 +474,81 @@
                Resource (XML, XSL, TMX) files: ${xml.line.count} lines
         </echo>
     </target>
-
     <target name="step-file-format" unless="testcase">
+        <!--fileset
+            id="myfileset"
+            dir="src"
+            excludes="war/js/dojo/**/*,war/js/release/**/*,war/Automobiles/**/*,war/CarDealers/**/*,war/Common/**/*,war/cardealer/**/*"
+            includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
+        />
+        <property name="sounds" refid="myfileset" />
+        <echo>${sounds}</echo>
+        <fail message="ddd" /-->
+        <echo message="Java &amp; HTML/JS/CSS code source fixing CRLF" />
         <fixcrlf
             eof="remove"
             eol="crlf"
-            excludes="**/dojo/**/*.*"
+            excludes="war/js/dojo/**/*,war/js/release/**/*,war/Automobiles/**/*,war/CarDealers/**/*,war/Common/**/*,war/cardealer/**/*"
             includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             srcdir="src"
             tab="remove"
             tablength="4"
         />
+        <echo message="Java &amp; HTML/JS/CSS test source fixing CRLF" />
         <fixcrlf
             eof="remove"
             eol="crlf"
-            excludes="**/dojo/**/*.*"
             includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             srcdir="test"
             tab="remove"
             tablength="4"
         />
+        <echo message="XML source fixing CRLF" />
         <fixcrlf
             eof="remove"
             eol="crlf"
-            excludes="**/dojo/**/*.*"
+            excludes="war/js/dojo/**/*,war/js/release/**/*,war/Automobiles/**/*,war/CarDealers/**/*,war/Common/**/*,war/cardealer/**/*"
             includes="**/*.xml,**/.xsl,**/*.tmx,**/*.tmpl"
             srcdir="src"
-            tab="remove"
-            tablength="4"
-        />
-        <fixcrlf
-            eof="remove"
-            eol="crlf"
-            excludes="**/dojo/**/*.*"
-            includes="**/*.xml,**/.xsl,**/*.tmx,**/*.tmpl"
-            srcdir="test"
             tab="remove"
             tablength="4"
         />
 
+        <echo message="Java &amp; HTML/JS/CSS code source replacing TABS" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+$" />
             <substitution expression=""/>
             <fileset
                 dir="src"
-                excludes="**/dojo/**/*.*"
+                excludes="war/js/dojo/**/*,war/js/release/**/*,war/Automobiles/**/*,war/CarDealers/**/*,war/Common/**/*,war/cardealer/**/*"
                 includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="Java &amp; HTML/JS/CSS test source replacing TABS" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+$" />
             <substitution expression=""/>
             <fileset
                 dir="test"
-                excludes="**/dojo/**/*.*"
                 includes="**/*.java,**/*.jsp,**/*.html,**/*.js,**/*.css"
             />
         </replaceregexp>
+        <echo message="XML code source replacing TABS" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+$" />
             <substitution expression=""/>
             <fileset
                 dir="src"
-                excludes="**/dojo/**/*.*"
+                excludes="war/js/dojo/**/*,war/js/release/**/*,war/Automobiles/**/*,war/CarDealers/**/*,war/Common/**/*,war/cardealer/**/*"
                 includes="**/*.xml,**/.xsl,**/*.tmx,**/*.tmpl"
             />
         </replaceregexp>
+        <echo message="XML test source replacing TABS" />
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="\s+$" />
             <substitution expression=""/>
             <fileset
                 dir="test"
-                excludes="**/dojo/**/*.*"
                 includes="**/*.xml,**/.xsl,**/*.tmx,**/*.tmpl"
             />
         </replaceregexp>
@@ -549,23 +564,23 @@
     <target name="step-dojo-unzip" unless="dojo.already.expanded">
         <delete dir="src/war/js/dojo" includeemptydirs="true" />
         <mkdir dir="src/war/js/dojo" />
-        <unzip src="deps/tools/javascript/dojo-release-1.4.0-src.zip" dest="${temp.dir}">
+        <unzip src="deps/tools/javascript/dojo-release-1.6.1-src.zip" dest="${temp.dir}">
             <patternset>
-                <include name="dojo-release-1.4.0-src/dojo/**/*" />
-                <exclude name="dojo-release-1.4.0-src/dojo/tests/**/*" />
-                <include name="dojo-release-1.4.0-src/dijit/**/*" />
-                <exclude name="dojo-release-1.4.0-src/dijit/demos/**/*" />
-                <exclude name="dojo-release-1.4.0-src/dijit/tests/**/*" />
-                <include name="dojo-release-1.4.0-src/dojox/**/*" />
-                <exclude name="dojo-release-1.4.0-src/dojox/demos**/*" />
-                <exclude name="dojo-release-1.4.0-src/dojox/tests/**/*" />
-                <include name="dojo-release-1.4.0-src/util/**/*" />
+                <include name="dojo-release-1.6.1-src/dojo/**/*" />
+                <exclude name="dojo-release-1.6.1-src/dojo/tests/**/*" />
+                <include name="dojo-release-1.6.1-src/dijit/**/*" />
+                <exclude name="dojo-release-1.6.1-src/dijit/demos/**/*" />
+                <exclude name="dojo-release-1.6.1-src/dijit/tests/**/*" />
+                <include name="dojo-release-1.6.1-src/dojox/**/*" />
+                <exclude name="dojo-release-1.6.1-src/dojox/demos**/*" />
+                <exclude name="dojo-release-1.6.1-src/dojox/tests/**/*" />
+                <include name="dojo-release-1.6.1-src/util/**/*" />
             </patternset>
         </unzip>
-        <move file="${temp.dir}/dojo-release-1.4.0-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.4.0-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.4.0-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
-        <move file="${temp.dir}/dojo-release-1.4.0-src/util" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.6.1-src/dojo" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.6.1-src/dijit" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.6.1-src/dojox" todir="src/war/js/dojo" overwrite="yes" />
+        <move file="${temp.dir}/dojo-release-1.6.1-src/util" todir="src/war/js/dojo" overwrite="yes" />
 
     </target>
 
@@ -852,11 +867,26 @@
     </target>
 
     <target name="step-dojo-build">
-        <exec executable="build.bat" dir="src/war/js/dojo/util/buildscripts" spawn="true">
-            <!-- See: http://kb.mozillazine.org/Command_line_arguments -->
-            <arg value="profile=standard" />
-            <arg value="action=release" />
+        <exec executable="${basedir}/src/war/js/dojo/util/buildscripts/build.sh" dir="${basedir}/src/war/js/dojo/util/buildscripts">
+            <!-- See: http://dojotoolkit.org/reference-guide/build/buildScript.html#build-buildscript -->
+            <arg value="action=clean,release" />
+            <arg value="releaseName=${app.version}" />
+            <arg value="version=maelzel-${app.version}" />
+            <arg value="releaseDir=../../../../js/release" />
+            <arg value="profileFile=../../../../js/twetailer.profile.js" />
+            <arg value="localeList=en,fr" />
+            <arg value="optimize=shrinksafe.keepLines" />
+            <arg value="cssOptimize=comments" />
+            <arg value="copyTests=false" />
         </exec>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="dojo\.nls" />
+            <substitution expression="ase.nls.listing"/>
+            <fileset
+                dir="src/war/js/release/${app.version}/ase"
+                includes="**/*.js"
+            />
+        </replaceregexp>
     </target>
 
     <target name="step-configuration-clean">
@@ -900,7 +930,7 @@
 
     <target name="step-package-jar">
         <mkdir dir="bin/distribution" />
-        <delete file="bin/distribution/${app.packageName}-${app.release}.jar" />
+        <delete file="bin/distribution/${app.packageName}-${app.version}.jar" />
         <copy todir="src/war/WEB-INF/classes" overwrite="yes">
             <fileset dir="src/resources">
                 <include name="**/*.x*" />
@@ -909,7 +939,7 @@
             </fileset>
             <filterchain refid="genericFilterChain" />
         </copy>
-        <jar destfile="bin/distribution/${app.packageName}-${app.release}.jar">
+        <jar destfile="bin/distribution/${app.packageName}-${app.version}.jar">
             <fileset dir="src/war/WEB-INF/classes">
                 <include name="**/*" />
                 <exclude name="**/build/**" />
@@ -917,7 +947,7 @@
                 <exclude name="**/Mock*.*" />
             </fileset>
             <manifest>
-                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                <attribute name="Implementation-Title" value="${app.productName} ${app.version}" />
                 <attribute name="Implementation-Version" value="${app.stageId}" />
                 <attribute name="Implementation-Vendor" value="${app.companyName}" />
             </manifest>
@@ -926,7 +956,7 @@
 
     <target name="step-package-src-jar">
         <mkdir dir="bin/distribution" />
-        <jar destfile="bin/distribution/${app.packageName}-${app.release}-src.jar">
+        <jar destfile="bin/distribution/${app.packageName}-${app.version}-src.jar">
             <fileset dir="src" excludes="**/package.html,**/*.db,**/*.keep*,**/*.contrib*"/>
         </jar>
         </target>
@@ -935,7 +965,7 @@
             <mkdir dir="bin/distribution" />
             <mkdir dir="${temp.dir}/stage" />
             <war
-                destfile="bin/distribution/${app.packageName}-${app.release}.war"
+                destfile="bin/distribution/${app.packageName}-${app.version}.war"
                 webxml="src/war/WEB-INF/web.xml"
                 compress="true"
             >
@@ -944,94 +974,17 @@
                     <exclude name="WEB-INF/web.xml" />
                 </fileset>
                 <manifest>
-                    <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                    <attribute name="Implementation-Title" value="${app.productName} ${app.version}" />
                     <attribute name="Implementation-Version" value="${app.stageId}" />
                     <attribute name="Implementation-Vendor" value="${app.companyName}" />
                 </manifest>
             </war>
         </target>
 
-    <!-- TODO:
-            - call dojo compression,
-            - copy files from src/war into ${temp.dir}/stage
-            - move files from ${temp.dir} into ${temp.dir}/stage/${stage.id} being excluded ${temp.dir}/stage/WEB-INF and ${temp.dir}/stage/index.jsp.tmpl
-            - copy $[temp.dir}/stage/index.jsp.tmpl to ${temp.dir}/stage/index.jsp to replace @stage.id@ by the value ${stage.id}
-            - copy ${temp.dir}/stage/index.jsp into ${temp.dir}/stage/${stage.id} and into ${temp.dir}/stage/${stage.id}/html
-
-        <target name="step-package-war2" depends="step-info-get">
-        <delete dir="${temp.dir}/stage" includeemptydirs="yes" failonerror="false" />
-        <mkdir dir="${temp.dir}/stage" />
-        <copy todir="${temp.dir}/stage" overwrite="yes">
-            <fileset dir="src/war">
-                <include name="**/*" />
-                <exclude name="js/**/*"/>
-                <exclude name="**/*.ico" />
-                <exclude name="**/*.png" />
-                <exclude name="**/*.gif" />
-                <exclude name="**/*.svg" />
-                <exclude name="**/*.as" />
-                <exclude name="**/*.swf" />
-                <exclude name="**/*.sh" />
-                <exclude name="**/tests/**/*"/>
-            </fileset>
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy todir="${temp.dir}/stage/${app.taggedDir}">
-            <fileset dir="src/war">
-                <include name="js/**/*" />
-                <exclude name="js/dojo/**/*"/>
-                <exclude name="**/*.ico" />
-                <exclude name="**/*.png" />
-                <exclude name="**/*.gif" />
-                <exclude name="**/*.svg" />
-                <exclude name="**/*.as" />
-                <exclude name="**/*.swf" />
-                <exclude name="**/*.sh" />
-                <exclude name="**/tests/**/*"/>
-            </fileset>
-            <filterchain refid="genericFilterChain" />
-        </copy>
-        <copy todir="${temp.dir}/stage/${app.taggedDir}">
-            <fileset dir="war/tagged">
-                <include name="js/dojo/**/*"/>
-                <exclude name="js/dojo/util/**/*"/>
-                <include name="**/*.ico" />
-                <include name="**/*.png" />
-                <include name="**/*.gif" />
-                <include name="**/*.svg" />
-                <include name="**/*.as" />
-                <include name="**/*.swf" />
-                <include name="**/*.sh" />
-            </fileset>
-        </copy>
-        <mkdir dir="bin/distribution" />
-        <copy todir="${temp.dir}/stage/WEB-INF/lib" flatten="true" overwrite="yes">
-            <fileset dir="bin/distribution">
-                <include name="${app.packageName}-${app.release}.jar" />
-            </fileset>
-            <fileset refid="runtime.deps" />
-        </copy>
-        <war
-            destfile="bin/distribution/${app.packageName}-${app.release}.war"
-            webxml="${temp.dir}/stage/WEB-INF/web.xml"
-            compress="true"
-        >
-            <fileset dir="${temp.dir}/stage">
-                <exclude name="WEB-INF/classes/META-INF/application.xml" />
-            </fileset>
-            <manifest>
-                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
-                <attribute name="Implementation-Version" value="${app.stageId}" />
-                <attribute name="Implementation-Vendor" value="${app.companyName}" />
-            </manifest>
-        </war>
-    </target>
-    -->
-
     <target name="step-package-ear">
         <delete verbose="true" failonerror="false">
             <fileset dir="bin/distribution">
-                <include name="${app.packageName}-${app.release}.ear" />
+                <include name="${app.packageName}-${app.version}.ear" />
             </fileset>
         </delete>
         <copy file="src/resources/application.xml.tmpl" tofile="${temp.dir}/stage/application.xml" overwrite="yes">
@@ -1039,15 +992,15 @@
         </copy>
         <mkdir dir="bin/distribution" />
         <ear
-            destfile="bin/distribution/${app.packageName}-${app.release}.ear"
+            destfile="bin/distribution/${app.packageName}-${app.version}.ear"
             appxml="${temp.dir}/stage/application.xml"
             compress="true"
         >
             <fileset dir="bin/distribution">
-                <include name="${app.packageName}-${app.release}.war" />
+                <include name="${app.packageName}-${app.version}.war" />
             </fileset>
             <manifest>
-                <attribute name="Implementation-Title" value="${app.productName} ${app.release}" />
+                <attribute name="Implementation-Title" value="${app.productName} ${app.version}" />
                 <attribute name="Implementation-Version" value="${app.stageId}" />
                 <attribute name="Implementation-Vendor" value="${rw.companyName}" />
             </manifest>
@@ -1316,6 +1269,7 @@
     </target>
 
     <target name="step-tmxdoc-produce">
+
         <xslt
             basedir="src/resources"
             destdir="docs/generated-doc"

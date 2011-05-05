@@ -20,7 +20,9 @@ Locale locale = LocaleController.getLocale(localeId);
                         alt="<%= LabelExtractor.get("product_name", locale) %>"
                         id="logo"
                         src="/images/logo/network-48.jpg"
+                        height="48"
                         title="<%= LabelExtractor.get("product_name", locale) %>"
+                        width="48"
                     />
                     <a
                         href="<%= ApplicationSettings.get().getProductWebsite() %>"

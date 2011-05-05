@@ -1717,7 +1717,7 @@
                 'pointOfView': pointOfView,
                 '<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>': dijit.byId('consumer.key').get('value'),
                 '<%= BaseRestlet.ON_BEHALF_ASSOCIATE_KEY %>': dijit.byId('saleassociate.key').get('value'),
-                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+                '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes'
             },
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -1800,7 +1800,7 @@
         if (data.hashTags != null) { data.hashTags = data.hashTags.split('\n'); }
         if (data.proposalKeys != null) { delete data.proposalKeys; } // Neutralized server-side, just removed for the bandwidth
         if (data.saleAssociateKeys != null) { delete data.saleAssociateKeys; } // Neutralized server-side, just removed for the bandwidth
-        data['<%= CommandProcessor.DEBUG_INFO_SWITCH %>'] = 'yes';
+        data['<%= CommandProcessor.DEBUG_MODE_PARAM %>'] = 'yes';
         data['pointOfView'] = pointOfView;
         data['<%= BaseRestlet.ON_BEHALF_CONSUMER_KEY %>'] = parseInt(dijit.byId('consumer.key').get('value') || 0);
         data['<%= BaseRestlet.ON_BEHALF_ASSOCIATE_KEY %>'] = parseInt(dijit.byId('saleassociate.key').get('value') || 0);
@@ -1868,7 +1868,7 @@
         }).play();
         dojo.xhrGet({
             headers: { 'content-type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-            content: dojo.mixin({ 'anyState': true, 'onlyKeys': true, '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes' }, (parameters || {})),
+            content: dojo.mixin({ 'anyState': true, 'onlyKeys': true, '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes' }, (parameters || {})),
             handleAs: 'json',
             load: function(response, ioArgs) {
                 if (response !== null && response.success) {
@@ -1976,7 +1976,7 @@
                 'postalCode': dijit.byId('location.postalCode').get('value'),
                 'consumerKey': 0,
                 'key': 0,
-                '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+                '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes'
             },
             handleAs: 'json',
             load: function(response, ioArgs) {
@@ -2005,7 +2005,7 @@
         }).play();
         var data = {
             'onlyKeys': true,
-            '<%= CommandProcessor.DEBUG_INFO_SWITCH %>': 'yes'
+            '<%= CommandProcessor.DEBUG_MODE_PARAM %>': 'yes'
         };
         if (filterName.indexOf('Date') != -1) {
             data[filterName] = twetailer.Common.toISOString(filterField.get('value'), localModule._earlyHourTime);
