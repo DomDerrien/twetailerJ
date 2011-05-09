@@ -107,20 +107,20 @@ var localModule = {};
         var placeHolder = dojo.byId('socialLinks'), anchor, image;
         // ** mailto:
         anchor = dojo.create('a', { href: 'mailto:?subject=' + title + '&body=' + url, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
-        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Email.png', title: 'Share by e-mail / envoyer par courriel', width: '32px' }, anchor);
+        image = dojo.create('img', { height: '16px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Email.png', title: 'Share by e-mail / envoyer par courriel', width: '16px' }, anchor);
         // ** Facebook
         anchor = dojo.create('a', { href: 'http://www.facebook.com/share.php?u=' + url + '&t=' + title, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
-        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/FaceBook-32.png', title: 'Share on Facebook / partager sur Facebook', width: '32px' }, anchor);
+        image = dojo.create('img', { height: '16px', src: 'http://anothersocialeconomy.appspot.com/images/icons/FaceBook-32.png', title: 'Share on Facebook / partager sur Facebook', width: '16px' }, anchor);
         // ** Twitter
         anchor = dojo.create('a', { href: 'http://twitter.com/home?status=' + title + ' ' + url, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
-        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Twitter-32.png', title: 'Share on Twitter / partager sur Twitter', width: '32px' }, anchor);
+        image = dojo.create('img', { height: '16px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Twitter-32.png', title: 'Share on Twitter / partager sur Twitter', width: '16px' }, anchor);
         // ** Google Bookmarks
         anchor = dojo.create('a', { href: 'http://www.google.com/bookmarks/mark?op=edit&bkmk=' + url + '&title=' + title, rel: 'nofollow', style: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
-        image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Google-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '32px' }, anchor);
+        image = dojo.create('img', { height: '16px', src: 'http://anothersocialeconomy.appspot.com/images/icons/Google-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '16px' }, anchor);
         // ** Internet Explorer Favorite
         if (dojo.isIE && window.externals && window.externals.AddFavorite) {
             anchor = dojo.create('a', { href: 'javascript:window.external.AddFavorite("' + url + '","' + title +'")', srel: 'nofollow', tyle: 'float:left;clear:left;', target: 'socialLink' }, placeHolder);
-            image = dojo.create('img', { height: '32px', src: 'http://anothersocialeconomy.appspot.com/images/icons/IE-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '32px' }, anchor);
+            image = dojo.create('img', { height: '16px', src: 'http://anothersocialeconomy.appspot.com/images/icons/IE-32.png', title: 'Bookmark it with Google / Sauver le signet avec Google', width: '16px' }, anchor);
         }
     };
 

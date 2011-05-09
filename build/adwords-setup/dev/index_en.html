@@ -42,149 +42,191 @@
     </style>
 </head>
 <body class="claro">
-<div id="socialLinks" style="position:absolute;top:20px;left:0px"></div>
 <form id="requestForm" onsubmit="return false;">
     <div id="container" class="container_16">
-        <div class="grid_16" style="margin-top: 25px;">
-            <a href="index.html"><img alt="AnotherSocialEconomy Network image" src="/Common/images/ASE/AnotherSocialEconomy-Network_960x164_fade.png" style="z-index: -1; width: 940px;" /></a>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16" style="position:absolute; top: 5px;">
-            <div class="grid_12 alpha">
-                <h1>
-                    AnotherSocialEconomy
-                    <span style="font-size: x-small; font-weight: bolder;">beta</span>
-                    for <span style="font-weight: bold;">${CITY}</span> Car Dealers
-                </h1>
+    
+        <div id="socialLinks" style="margin-top: 7px; float: right;"></div>
+    
+        <div class="grid_12 alpha" style="margin-top: 25px; margin-bottom: 20px">
+            <h1>
+                AnotherSocialEconomy
+                <span style="font-size: x-small; font-weight: bolder;">beta</span>
+                for <span style="font-weight: bold;">${CITY}</span> Car Dealers
+            </h1>
+        </div> <!-- grid_12 -->
+    
+        <div class="grid_4 omega"">
+            <div class="orange" style="border-radius:8px; margin-top: 10px;">
+                <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
+                <div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
+                <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
+                <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="/Automobiles/index.html" id="switchLanguage1">Français</a></div>
             </div>
-            <div class="grid_4 omega">
-                   <div class="orange" style="border-radius:8px;">
-                       <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
-                       <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
-                       <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="${ALT_PATH}" id="switchLanguage1">Français</a></div>
-                   </div>
-            </div>
-        </div>
+        </div> <!-- grid_4 -->
+    
         <div class="clear"></div>
-        <div class="grid_16" style="margin-top: -5px;">
+        
+        <div class="grid_8 alpha">
             <h2 id="keywordAdTitle" class="blue">${AD_HEADLINE}</h2>
-            <h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">${AD_LINE}</h3>
-            <h4 style="margin-top: -10px; margin-bottom: 10px;">Just fill in...</h4>
-        </div>
+            <h3 id="keywordAdSentence" class="blue">${AD_LINE}</h3>
+        </div> <!-- grid_8 -->
+    
+        <div class="grid_8 omega">
+            <div style="float: right">
+                <img width="400" src="/Common/images/400/${MAKE}_${MODEL}.jpg" title="Source: Wikimedia Commons ${MAKE} ${MODEL}" />
+                <div style="margin-top: -1px">
+                    <img width="400" src="/Common/blue/assets/shadow_center_small.png" />
+                </div>
+            </div>
+        </div> <!-- grid_8 -->
+    
         <div class="clear"></div>
-        <div class="grid_16" style="margin-top: 0em;">
-            <div class="grid_3 alpha">
-                <div class="col_header"><span class="blue col_name">Who</span></div>
-                <p>
-                    <label id="emailFieldLabel" for="email">Your email:</label>
-                    <img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" title="Any confidential information entered in this box will not be published to the dealers." width="16" />
-                    <br />
-                    <input id="email" class="formField" />
-                </p>
-                <div style="margin-top: -15px; color: black; font-weight: bold;">We will never <span class="blue">never</span> share your email.</div>
-                <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Demo: Request isn't published. (Just for fun!)</label>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">What</span></div>
-                <p>
-                    <label id="makeFieldLabel">Manufacturer:</label><br><!-- no 'for' attribute for the 'label' tag otherwise a weird issue prevent to get the label by id later! -->
-                    <input id="make" class="formField" style="height:16px;" value="${MAKE}" />
-                </p>
-                <p style="margin-top: -15px">
-                    <label id="modelFieldLabel" for="model">Model:</label><br>
-                    <input id="model" value="${MODEL}" class="formField" />
-                </p>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">Where</span></div>
-                <p>
-                    <label id="postalCodeFieldLabel" for="postalCode">Postal Code:</label><br>
-                    <input id="postalCode" value="${POSTAL_CODE}" class="formField" />
-                </p>
-                <p style="margin-top: -15px">
-                    <label id="rangeFieldLabel" for="range">Within how many KMs:</label><br>
-                    <input id="range" value="25" class="formField" />
-                </p>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">When</span></div>
-                <p>
-                    <label id="dueDateFieldLabel" for="dueDate">Due date:</label><br>
-                    <input id="dueDate" value="2011-01-30" class="formField" />
-                </p>
-            </div>
-            <div class="grid_4 omega">
-                <div class="col_header"><span class="blue col_name">Why</span></div>
-                <p>
-                    <label id="infoFieldLabel" for="info">Other info:</label><br>
-                    <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
-                </p>
-            </div>
-        </div>
+        
+        <div class="grid_16 alpha omega" style="margin-top: -35px">
+            <span style="font-size:large;">Just fill in...</span>
+        </div> <!-- grid_16 -->
+    
         <div class="clear"></div>
-        <div class="grid_16" style="font-size:large; text-align: right; margin-bottom:15px;">
-            <div class="grid_3 alpha prefix_9">
-                   <div><span class="yellow">Click NOW...</span></div>
-                   <div><span class="yellow">IT'S FREE!!!</span></div>
-            </div>
-            <div class="grid_4 omega">
-                   <a class="butt_bgorange" id="submitButton" onclick="localModule.showReviewPane(); return false;" href="#">Submit Your Request</a>
-            </div>
-        </div>
+    
+        <div class="grid_3 alpha">
+            <div class="col_header"><span class="blue col_name">Who</span><img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" title="Any confidential information entered in this box will not be published to the dealers." width="16" style="margin-top: -7px;" /></div>
+            <p>
+                <label id="emailFieldLabel" for="email">Your email:</label>
+                <br />
+                <input id="email" class="formField" />
+            </p>
+            <div style="margin-top: -15px; color: black; font-weight: bold;">We will never <span class="blue">never</span> share your email.</div>
+            <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Demo: Request isn't published. (Just for fun!)</label>
+        </div>  <!-- grid_3 -->
+        
+        <div class="grid_3">
+             <div class="col_header"><span class="blue col_name">What</span></div>
+             <p>
+                 <label id="makeFieldLabel">Manufacturer:</label><br><!-- no 'for' attribute for the 'label' tag otherwise a weird issue prevent to get the label by id later! -->
+                 <input id="make" class="formField" style="height:16px;" value="${MAKE}" />
+             </p>
+             <p style="margin-top: -15px">
+                 <label id="modelFieldLabel" for="model">Model:</label><br>
+                 <input id="model" value="${MODEL}" class="formField" />
+             </p>
+        </div>  <!-- grid_3 -->
+        
+        <div class="grid_3">
+            <div class="col_header"><span class="blue col_name">Where</span></div>
+            <p>
+                <label id="postalCodeFieldLabel" for="postalCode">Postal Code:</label><br>
+                <input id="postalCode" value="${POSTAL_CODE}" class="formField" />
+            </p>
+            <p style="margin-top: -15px">
+                <label id="rangeFieldLabel" for="range">Within how many KMs:</label><br>
+                <input id="range" value="25" class="formField" />
+            </p>
+        </div>  <!-- grid_3 -->
+    
+        <div class="grid_3">
+            <div class="col_header"><span class="blue col_name">When</span></div>
+            <p>
+                <label id="dueDateFieldLabel" for="dueDate">Due date:</label><br>
+                <input id="dueDate" value="2011-01-30" class="formField" />
+            </p>
+        </div>  <!-- grid_3 -->
+    
+        <div class="grid_4 omega">
+            <div class="col_header"><span class="blue col_name">Why</span></div>
+            <p>
+                <label id="infoFieldLabel" for="info">Other info like transmission, price:</label><br>
+                <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
+            </p>
+        </div>  <!-- grid_4 -->
+    
         <div class="clear"></div>
-        <div class="grid_16">
-            <div>
-                <span class="black" style="font-size:large;">How</span> <span style="font-size:large;">it works</span>
-                <span style="font-size: small;">(it's a matter of Supply &amp; Demand)</span>
-            </div>
+    
+        <div style="font-size:large; text-align: right;">
+            <div class="grid_3 alpha prefix_9" style="margin-top: 15px;">
+                <div><span class="yellow">Click NOW...</span></div>
+                <div><span class="yellow">IT'S FREE!!!</span></div>
+            </div>  <!-- grid_3 -->
+    
+            <div class="grid_4 omega"">
+                <a class="butt_bgorange" id="submitButton" onclick="localModule.showReviewPane(); return false;" href="#">Submit Your Request</a>
+            </div>  <!-- grid_4 -->
         </div>
+    
         <div class="clear"></div>
-        <div class="grid_16">
-            <div class="grid_4 alpha">
-                   <div class="col_header"><span class="gray col_name">1. You Create</span></div>
-                <p>You create <span class="command">Demand</span> by letting us know <span class="blue">Who</span> you are, <span class="blue">What</span> you want, <span class="blue">Where</span> you'd like to find it, <span class="blue">When</span> you need it by and <span class="blue">Why</span> you're buying it.</p>
-            </div>
-            <div class="grid_4">
-                   <div class="col_header"><span class="gray col_name">2. We Publish</span></div>
-                <p>We publish your <span class="command">Demand</span> - <span class="blue">not your email addresses</span>, to our subscribing <strong>car dealers</strong> asking if they have <span class="command">Supply</span> on hand.</p>
-            </div>
-            <div class="grid_4">
-                   <div class="col_header"><span class="gray col_name">3. Dealers Propose</span></div>
-                <p>Interested <strong>car dealers</strong> submit their <span class="command">Proposals</span> and contact information to us and <span class="blue">we forward</span> them to you.</p>
-            </div>
-            <div class="grid_4 omega">
-                   <div class="col_header"><span class="gray col_name">4. You Rate</span></div>
-                <p>You're then free to <span class="blue">Rate</span> those <span class="command blue">Proposals</span> and contact the <strong>dealers</strong> to follow-up. BTW, <span style="font-weight: bold">car dealers</span> can <span class="command blue">Rate you</span> too!.</p>
-            </div>
-        </div>
+    
+        <div class="grid_16 alpha omega" style="margin-top: 15px;">
+            <span class="black" style="font-size:large;">How</span> <span style="font-size:large;">it works</span>
+            <span style="font-size: small;">(it's a matter of Supply &amp; Demand)</span>
+            <hr>
+        </div>  <!-- grid_16 -->
+        
         <div class="clear"></div>
-        <div class="grid_16">
+        
+        <div class="grid_3 alpha">
+            <div class="col_header"><span class="gray col_name">1. You Create</span></div>
+            <img class="thumbs_3" src="/Common/images/ASE/listening_thumb.png" alt="We're Listening" />
+            <p>You create <span class="command">Demand</span> by letting us know <span class="blue">Who</span> you are, <span class="blue">What</span> you want, <span class="blue">Where</span> you'd like to find it, <span class="blue">When</span> you need it by and <span class="blue">Why</span> you're buying it.</p>
+        </div>  <!-- grid_3 -->
+    
+        <div class="grid_3">
+            <div class="col_header"><span class="gray col_name">2. We Publish</span></div>
+            <img class="thumbs_3" src="/Common/images/iStock/iStock_000007232741XSmall_thumb.png" alt="We Share" />
+            <p>We publish your <span class="command">Demand</span> - <span class="blue">not your email addresses</span>, to our subscribing <strong>car dealers</strong> asking if they have <span class="command">Supply</span> on hand.</p>
+        </div>  <!-- grid_3 -->
+    
+        <div class="grid_4">
+            <div class="col_header"><span class="gray col_name">3. Dealers Propose</span></div>
+            <img class="thumbs_4" src="/Common/images/iStock/UsedCarForSale_iStock_000005765188XSmall_thumb.png" alt="Dealers Incent" />
+            <p>Interested <strong>car dealers</strong> submit their <span class="command">Proposals</span> and contact information to us and <span class="blue">we forward</span> them to you.</p>
+        </div>  <!-- grid_4 -->
+        
+        <div class="grid_3 omega">
+            <div class="col_header"><span class="gray col_name">4. You Rate</span></div>
+            <img class="thumbs_3" src="/Common/images/iStock/CustomerService_iStock_000001808755XSmall_thumb.png" alt="Self-correcting" />
+            <p>You're then free to <span class="blue">Rate</span> those <span class="command blue">Proposals</span> and ask the <strong>dealer</strong> to follow-up. BTW, <span style="font-weight: bold">car dealers</span> can <span class="command blue">Rate you</span> too!</p>
+        </div>  <!-- grid_3 -->
+        
+        <div class="grid_3 omega">
+            <div class="col_header"><span class="gray col_name">5. You Close</span></div>
+            <img class="thumbs_3"    src="/Common/images/ASE/AlwaysBeClosing_thumb.png" alt="It's As Easy As ABC (Always Be Closing)" />
+            <p>Then contact the <strong>dealer directly</strong>, <strong>referring</strong> to their <strong>Proposal</strong> and <span class="command blue">Close</span> the deal.</p>
+        </div>  <!-- grid_3 -->
+    
+    <!--     
+        <div class="clear"></div>
+    
+        <div class="grid_16 alpha omega">
             <div style="font-size:large;"><span class="black">More people </span> <span class="blue">trust</span> us because we're <span class="blue">open</span> and we're <span class="blue">open</span> because more people <span class="blue">trust</span> us</div>
             <p>In order to <span class="blue">assure the quality</span> of our service and to better the community, we are currently looking to share our <span class="blue">anonymous Rating data with consumer groups</span> and <span class="blue">car brands</span>. In addition, should something go wrong, we can even facilitate filing a report with the appropriate organization.</p>
-        </div>
+        </div>  <!-- grid_16 
+    -->
+    
         <div class="clear"></div>
-        <div class="grid_16">
+        
+        <div class="grid_16 alpha omega" style="margin-top: 15 px;">
             <div><span class="gray" style="font-size:large;">About</span></div>
+            <hr>
             <p><a href="http://anothersocialeconomy.com/">AnotherSocialEconomy</a> believes that you're already going to spend enough money on that <span class="red" id="keywordAdTitleForAbout">${PRINTED_QUALIFIER} ${MAKE}</span>. Adding more time &amp; energy trying to find the right dealer, with the right car, for the right price, can be <span style="font-weight: bold;">maddening!</span> So that's <span class="blue">why</span> we created a sales lead co-op for local car dealers.</p>
             <p>Our aim is to level the playing field by enabling <span style="font-weight: bold">car dealers</span> to <span style="font-weight: bold">compete on product, service and value</span> - not search engine marketing budgets.</p>
-        </div>
+        </div>  <!-- grid_16 -->
+    
         <div class="clear"></div>
-        <div class="grid_16">
-            <div class="grid_12 alpha">
-                <div class="col_header"><span class="gray col_header">AnotherSocialEconomy: Where Supply comes to Meet Demand.</span></div>
-                <div>Copyright &copy; 2011 <a href="http://milstein-assoc.com" target="_blank">Milstein and associates inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Privacy Policy</a></div>
+        
+        <div class="grid_12 alpha">
+            <div class="col_header"><span class="gray col_header">AnotherSocialEconomy: Where Supply comes to Meet Demand.</span></div>
+            <div>Copyright &copy; 2011 <a href="http://milstein-assoc.com" target="_blank">Milstein and associates inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Privacy Policy</a></div>
+        </div>  <!-- grid_12 -->
+    
+        <div class="grid_4 omega" style="margin-bottom: 5px;">
+            <div class="orange" style="border-radius:8px;">
+                <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
+                <div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
+                <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
+                <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="${ALT_PATH}" id="switchLanguage2">Français</a></div>
             </div>
-            <div class="grid_4 omega" style="margin-bottom: 5px;">
-                <div class="orange" style="border-radius:8px;">
-                    <div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="${ALT_PATH}" id="switchLanguage2">Français</a></div>
-                 </div>
-            </div>
-        </div>
-    </div>
+        </div>  <!-- grid_4 -->
+    
+    </div> <!-- container_16 -->
 </form>
 <script type="text/javascript">
     var djConfig = {

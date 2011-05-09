@@ -42,163 +42,204 @@
     </style>
 </head>
 <body class="claro">
-<div id="socialLinks" style="position:absolute;top:20px;left:0px"></div>
 <form id="requestForm" onsubmit="return false;">
-    <div id="container" class="container_16">
-        <div class="grid_16" style="margin-top: 25px;">
-            <a href="index.html"><img alt="Image du réseau d'AnotherSocialEconomy" src="/Common/images/ASE/AnotherSocialEconomy-Network_960x164_fade.png" style="z-index: -1; width: 940px;"></a>
+<div id="container" class="container_16">
+
+    <div id="socialLinks" style="margin-top: 7px; float: right;"></div>
+
+    <div class="grid_12 alpha" style="margin-top: 25px; margin-bottom: 20px">
+        <h1>
+            <span title="NouvelleÉconomieResponsable">AnotherSocialEconomy</span>
+            <span style="font-size: x-small; font-weight: bolder;"> beta</span><br />
+            pour les concessionnaires de <span style="font-weight: bold;">${CITY}</span>
+        </h1>
+    </div> <!-- grid_12 -->
+
+    <div class="grid_4 omega"">
+        <div class="orange" style="border-radius:8px; margin-top: 10px;">
+            <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
+            <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+            <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">Concessionnaires!</a></div>
+            <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage1">English</a></div>
         </div>
-        <div class="clear"></div>
-        <div class="grid_16" style="position:absolute; top: 5px;">
-            <div class="grid_12 alpha">
-                <h1>
-                    <span title="NouvelleÉconomieResponsable">AnotherSocialEconomy</span>
-                    <span style="font-size: x-small; font-weight: bolder;"> beta</span><br />
-                    pour les concessionnaires de <span style="font-weight: bold;">${CITY}</span>
-                </h1>
-            </div>
-            <div class="grid_4 omega">
-                <div class="orange" style="border-radius:8px;">
-                    <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">Concessionnaires!</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage1">English</a></div>
-                </div>
-            </div>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16" style="margin-top: -26px;">
-            <h2 id="keywordAdTitle" class="blue">${AD_HEADLINE}</h2>
-            <h3 id="keywordAdSentence" class="blue" style="margin-top: -10px; margin-bottom: 10px;">${AD_LINE}</h3>
-            <h4 style="margin-top: -10px; margin-bottom: 10px;">Vous n'avez qu'à soumettre le formulaire ci-dessous:</h4>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16" style="margin-top: 0em;">
-            <div class="grid_3 alpha">
-                <div class="col_header"><span class="blue col_name">Qui</span></div>
-                <p>
-                    <label id="emailFieldLabel" for="email">Votre courriel:</label>
-                    <img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" title="L'information confidentielle saisie dans ce champs ne sera pas communiquée aux concessionnaires." width="16" />
-                    <br />
-                    <input id="email" class="formField" />
-                </p>
-                <div style="margin-top: -15px; color: black; font-weight: bold;">Nous ne partagerons jamais, <span class="blue">au grand jamais</span>, vos coordonnées.</div>
-                <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Essayez le service en mode 'démo'.</label>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">Quoi</span></div>
-                <p>
-                    <label id="makeFieldLabel">Constructeur:</label><br><!-- no 'for' attribute for the 'label' tag otherwise a weird issue prevent to get the label by id later! -->
-                    <input id="make" class="formField" style="height:16px;" />
-                </p>
-                <p style="margin-top: -15px">
-                    <label id="modelFieldLabel" for="model">Modèle:</label><br>
-                    <input id="model" value="${MODEL}" class="formField" />
-                </p>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">Où</span></div>
-                <p>
-                    <label id="postalCodeFieldLabel" for="postalCode">Code postal:</label><br>
-                    <input id="postalCode" value="${POSTAL_CODE}" class="formField" />
-                </p>
-                <p style="margin-top: -15px">
-                    <label id="rangeFieldLabel" for="range">Distance en km:</label><br>
-                    <input id="range" value="25" class="formField" />
-                </p>
-            </div>
-            <div class="grid_3">
-                <div class="col_header"><span class="blue col_name">Quand</span></div>
-                <p>
-                    <label id="dueDateFieldLabel" for="dueDate">Date d'expiration:</label><br>
-                    <input id="dueDate" value="2011-01-30" class="formField" />
-                </p>
-            </div>
-            <div class="grid_4 omega">
-                <div class="col_header"><span class="blue col_name">Pourquoi</span></div>
-                <p>
-                    <label id="infoFieldLabel" for="info">Autres informations:</label><br>
-                    <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
-                </p>
+    </div> <!-- grid_4 -->
+
+    <div class="clear"></div>
+    
+    <div class="grid_8 alpha">
+        <h2 id="keywordAdTitle" class="blue">${AD_HEADLINE}</h2>
+        <h3 id="keywordAdSentence" class="blue">${AD_LINE}</h3>
+    </div> <!-- grid_8 -->
+
+    <div class="grid_8 omega">
+        <div style="float: right">
+            <img width="400" src="/Common/images/400/${MAKE}_${MODEL}.jpg" title="Source: Wikimedia Commons ${MAKE} ${MODEL}" />
+            <div style="margin-top: -1px">
+                <img width="400" src="/Common/blue/assets/shadow_center_small.png" />
             </div>
         </div>
-        <div class="clear"></div>
-        <div class="grid_16" style="font-size:large; text-align: right; margin-bottom:15px;">
-            <div class="grid_3 alpha prefix_9">
-                <div><span class="yellow">Envoyez...</span></div>
-                <div><span class="yellow">C'est GRATUIT!</span></div>
-            </div>
-            <div class="grid_4 omega">
-                <a class="butt_bgorange" id="submitButton" onclick="localModule.showReviewPane(); return false;" href="#">Soumettre votre demande</a>
-            </div>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16">
-            <div>
-                <span class="black" style="font-size:large;">Comment</span>
-                <span style="font-size:large;">fonctionne le système </span>
-                <span style="font-size: small;">(la mise en relation des demandes et des offres)</span>
-            </div>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16">
-            <div class="grid_4 alpha">
-                <div class="col_header"><span class="gray col_name">1. Vous demandez</span></div>
-                <p>Vous initiez une <span class="command">Demande</span> en nous communiquant
-                <span class="blue">Qui</span> vous êtes,
-                <span class="blue">Quel véhicule</span> vous cherchez,
-                <span class="blue">Où</span> vous le cherchez,
-                pour <span class="blue">Quand</span> vous en avez besoin et
-                <span class="blue">Pourquoi</span> vous le cherchez.</p>
-            </div>
-            <div class="grid_4">
-                <div class="col_header"><span class="gray col_name">2. Nous diffusons</span></div>
+    </div> <!-- grid_8 -->
+
+    <div class="clear"></div>
+    
+    <div class="grid_16 alpha omega" style="margin-top: -35px">
+        <span style="font-size:large;">Vous n'avez qu'à soumettre le formulaire ci-dessous:</span>
+    </div> <!-- grid_16 -->
+
+    <div class="clear"></div>
+
+    <div class="grid_3 alpha">
+        <div class="col_header"><span class="blue col_name">Qui</span><img id="emailLock" height="16" src="http://twetailer.appspot.com/images/lock.png" title="L'information confidentielle saisie dans ce champs ne sera pas communiquée aux concessionnaires." width="16" style="margin-top: -7px;" /></div>
+        <p>
+            <label id="emailFieldLabel" for="email">Votre courriel:</label>
+            <br />
+            <input id="email" class="formField" />
+        </p>
+         <div style="margin-top: -15px; color: black; font-weight: bold;">Nous ne partagerons jamais, <span class="blue">au grand jamais</span>, vos coordonnées.</div>
+         <input type="checkbox" name="demoMode" id="demoMode" style="width: auto;" /><label for="demoMode">Essayez le service en mode 'démo'.</label>
+    </div>  <!-- grid_3 -->
+    
+    <div class="grid_3">
+         <div class="col_header"><span class="blue col_name">Quoi</span></div>
+         <p>
+            <label id="makeFieldLabel">Constructeur:</label><br><!-- no 'for' attribute for the 'label' tag otherwise a weird issue prevent to get the label by id later! -->
+            <input id="make" class="formField" style="height:16px;" value="${MAKE}" />
+         </p>
+         <p style="margin-top: -15px">
+            <label id="modelFieldLabel" for="model">Modèle:</label><br>
+            <input id="model" value="${MODEL}" class="formField" />
+         </p>
+    </div>  <!-- grid_3 -->
+    
+    <div class="grid_3">
+        <div class="col_header"><span class="blue col_name">Où</span></div>
+        <p>
+            <label id="postalCodeFieldLabel" for="postalCode">Code postal:</label><br>
+            <input id="postalCode" value="${POSTAL_CODE}" class="formField" />
+        </p>
+        <p style="margin-top: -15px">
+            <label id="rangeFieldLabel" for="range">Distance en km:</label><br>
+            <input id="range" value="25" class="formField" />
+        </p>
+    </div>  <!-- grid_3 -->
+
+    <div class="grid_3">
+        <div class="col_header"><span class="blue col_name">Quand</span></div>
+        <p>
+            <label id="dueDateFieldLabel" for="dueDate">Date d'expiration:</label><br>
+            <input id="dueDate" value="2011-01-30" class="formField" />
+        </p>
+    </div>  <!-- grid_3 -->
+
+    <div class="grid_4 omega">
+        <div class="col_header"><span class="blue col_name">Pourquoi</span></div>
+        <p>
+            <label id="infoFieldLabel" for="info">Autres informations telles que le prix, le type de transmission, etc.</label><br>
+            <textarea cols="25" id="info" class="formField" style="margin: 0; min-height: 80px;width: 100%;"></textarea>
+        </p>
+    </div>  <!-- grid_4 -->
+
+    <div class="clear"></div>
+
+    <div style="font-size:large; text-align: right;">
+        <div class="grid_3 alpha prefix_9" style="margin-top: 15px;">
+        <div><span class="yellow">Envoyez...</span></div>
+        <div><span class="yellow">C'est GRATUIT!</span></div>
+        </div>  <!-- grid_3 -->
+
+        <div class="grid_4 omega">
+            <a class="butt_bgorange" id="submitButton" onclick="localModule.showReviewPane(); return false;" href="#">Soumettre votre demande</a>
+        </div>  <!-- grid_4 -->
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="grid_16 alpha omega" style="margin-top: 15px;">
+        <span class="black" style="font-size:large;">Comment</span> <span style="font-size:large;">fonctionne le système</span><span style="font-size: small;"> (la mise en relation des demandes et des offres)</span>
+        <hr>
+    </div>  <!-- grid_16 -->
+    
+    <div class="clear"></div>
+    
+    <div class="grid_3 alpha">
+        <div class="col_header"><span class="gray col_name">1. Vous demandez</span></div>
+        <img class="thumbs_3" src="/Common/images/ASE/listening_thumb.png" alt="1. Vous demandez" />
+        <p>Vous initiez une <span class="command">Demande</span> en nous communiquant
+        <span class="blue">Qui</span> vous êtes,
+        <span class="blue">Quel véhicule</span> vous cherchez,
+        <span class="blue">Où</span> vous le cherchez,
+        pour <span class="blue">Quand</span> vous en avez besoin et
+        <span class="blue">Pourquoi</span> vous le cherchez.</p>
+    </div>  <!-- grid_3 -->
+
+    <div class="grid_3">
+        <div class="col_header"><span class="gray col_name">2. Nous diffusons</span></div>
+        <img class="thumbs_3" src="/Common/images/iStock/iStock_000007232741XSmall_thumb.png" alt="2. Nous diffusons" />
                 <p>Nous diffusons votre <span class="command">Demande</span> -
                 <span class="blue">et non vos coordonnées</span>,
                 aux <strong>concessionnaires automobiles</strong> participants.</p>
-            </div>
-            <div class="grid_4">
-                <div class="col_header"><span class="gray col_name">3. Ils proposent</span></div>
-                <p>Les <strong>concessionnaires</strong> ayant le véhicule que vous cherchez nous
-                soummettent leurs <span class="command">Propositions.</span> Nous vous les
-                <span class="blue">transmettons</span> accompagnées des coordonnées de la concession.</p>
-            </div>
-            <div class="grid_4 omega">
-                <div class="col_header"><span class="gray col_name">4. Vous évaluez</span></div>
-                <p>Libre à vous d'<span class="blue">évaluer</span> ces
-                <span class="command blue">Propositions</span> et de contacter les
-                <strong>concessionnaires</strong> qui vous intéressent. Le cas échéant, les
-                <span style="font-weight: bold">concessionnaires</span> peuvent vous
-                <span class="command blue">évaluer</span> aussi.</p>
-            </div>
+    </div>  <!-- grid_3 -->
+
+    <div class="grid_4">
+        <div class="col_header"><span class="gray col_name">3. Ils <br /> proposent</span></div>
+        <img class="thumbs_4" src="/Common/images/iStock/UsedCarForSale_iStock_000005765188XSmall_thumb.png" alt="3. Ils proposent" />
+         <p>Les <strong>concessionnaires</strong> ayant le véhicule que vous cherchez nous
+         soummettent leurs <span class="command">Propositions.</span> Nous vous les
+         <span class="blue">transmettons</span> accompagnées des coordonnées de la concession.</p>
+    </div>  <!-- grid_4 -->
+    
+    <div class="grid_3 omega">
+        <div class="col_header"><span class="gray col_name">4. Vous évaluez</span></div>
+        <img class="thumbs_3" src="/Common/images/iStock/CustomerService_iStock_000001808755XSmall_thumb.png" alt="4. Vous évaluez" />
+        <p>Vous pouver <span class="blue">évaluer</span> ces <span class="command blue">Propositions</span> et faire un suivi avec les <strong>concessionnaires</strong>. Les concessionnaires eux-même peuvent <span class="command blue">évaluer</span> vos demandes.</p>         
+    </div>  <!-- grid_3 -->
+    
+    <div class="grid_3 omega">
+        <div class="col_header"><span class="gray col_name">5. Conclure votre achat</span></div>
+        <img class="thumbs_3" src="/Common/images/ASE/AlwaysBeClosing_thumb.png" alt="5. Conclure votre achat" />
+        <p>Il ne reste qu'à contacter les <strong>concessionnaires vous même</strong>, en <strong>mentionnant</strong> le numéro de <strong>proposition</strong>, pour <span class="command blue">conclure</span> votre achat.</p>
+    </div>  <!-- grid_3 -->
+
+<!--     
+    <div class="clear"></div>
+
+    <div class="grid_16 alpha omega">
+        <div style="font-size:large;"><span class="black">More people </span> <span class="blue">trust</span> us because we're <span class="blue">open</span> and we're <span class="blue">open</span> because more people <span class="blue">trust</span> us</div>
+        <p>In order to <span class="blue">assure the quality</span> of our service and to better the community, we are currently looking to share our <span class="blue">anonymous Rating data with consumer groups</span> and <span class="blue">car brands</span>. In addition, should something go wrong, we can even facilitate filing a report with the appropriate organization.</p>
+    </div>  <!-- grid_16 
+-->
+ 
+    <div class="clear"></div>
+    
+    <div class="grid_16 alpha omega" style="margin-top: 15 px;">
+        <div><span class="gray" style="font-size:large;">À propos</span></div>
+        <hr>
+        <p><a href="http://anothersocialeconomy.com/" title="NouvelleÉconomieResponsable">AnotherSocialEconomy</a>
+        sait que vous allez déjà dépenser beaucoup d'argent pour la voiture du modèle <span class="red" id="keywordAdTitleForAbout">${MAKE} ${MODEL}</span>
+        ${PRINTED_QUALIFIER}. En vous aidant à trouver le bon concessionnaire, en vous évitant de nombreux appels téléphoniques et des
+        visites infructueuses, <b>AnotherSocialEconomy</b> compte vous faire économiser du temps et de l'énergie.</p>
+        <p>La puissance de <b>AnotherSocialEconomy</b> permet à <b>son réseau de marchands</b> de rentrer en concurrence
+        sur les produits, les services et les prix et non sur les budgets alloués aux moteurs de recherche, ce pour le plus grand bénéfice des clients!
+        </p>
+    </div>  <!-- grid_16 -->
+
+    <div class="clear"></div>
+    
+    <div class="grid_12 alpha">
+        <div class="col_header"><span class="gray col_name">AnotherSocialEconomy: Là où l'offre rencontre la demande.</span></div>
+        <div>Tous droits réservés &copy; 2011 <a href="milstein-assoc.com">Milstein et associés inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Politique de confidentialité</a></div>
+    </div>  <!-- grid_12 -->
+
+    <div class="grid_4 omega" style="margin-bottom: 5px;">
+        <div class="orange" style="border-radius:8px;">
+        <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
+        <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
+        <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">concessionnaires!</a></div>
+        <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage2">English</a></div>
         </div>
-        <div class="clear"></div>
-        <div class="grid_16">
-            <div><span class="gray" style="font-size:large;">À propos</span></div>
-            <p><a href="http://anothersocialeconomy.com/" title="NouvelleÉconomieResponsable">AnotherSocialEconomy</a>
-            sait que vous allez déjà dépenser beaucoup d'argent pour la voiture du modèle <span class="red" id="keywordAdTitleForAbout">${MAKE} ${MODEL}</span>
-            ${PRINTED_QUALIFIER}. En vous aidant à trouver le bon concessionnaire, en vous évitant de nombreux appels téléphoniques et des
-            visites infructueuses, <b>AnotherSocialEconomy</b> compte vous faire économiser du temps et de l'énergie.</p>
-            <p>La puissance de <b>AnotherSocialEconomy</b> permet à <b>son réseau de marchands</b> de rentrer en concurrence
-            sur les produits, les services et les prix et non sur les budgets alloués aux moteurs de recherche, ce pour le plus grand bénéfice des clients!
-            </p>
-        </div>
-        <div class="clear"></div>
-        <div class="grid_16">
-            <div class="grid_12 alpha">
-                <div class="col_header"><span class="gray col_name">AnotherSocialEconomy: Là où l'offre rencontre la demande.</span></div>
-                <div>Tous droits réservés &copy; 2011 <a href="milstein-assoc.com">Milstein et associés inc.</a> | <a href="http://anothersocialeconomy.com/privacy-policy/" target="_blank">Politique de confidentialité</a></div>
-            </div>
-            <div class="grid_4 omega" style="margin-bottom: 5px;">
-                <div class="orange" style="border-radius:8px;">
-                    <div style="margin-left:50px; font-weight: bold;">Tél.: 1-877-990-1697</div>
-                    <div style="margin-left:50px;"><a class="action" title="Contactez-nous" href="/Automobiles/Informations.html">Contactez-nous</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Informations pour les concessionnaires" href="/Automobiles/Concessionnaires.html">concessionnaires!</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Car Buyers Welcome" href="${ALT_PATH}" id="switchLanguage2">English</a></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </div>  <!-- grid_4 -->
+
+</div> <!-- container_16 -->
 </form>
 <script type="text/javascript">
     var djConfig = {
