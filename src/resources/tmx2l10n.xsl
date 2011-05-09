@@ -43,7 +43,7 @@
 			        <div><span>Please, wait while loading...</span></div>
 			    </div>
                 <script
-                    djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', dojoBlankHtmlUrl: '../../src/WebContent/blank.html'"
+                    djConfig="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
                     src="http://ajax.googleapis.com/ajax/libs/dojo/1.4/dojo/dojo.xd.js"
                     type="text/javascript"
                 ></script>

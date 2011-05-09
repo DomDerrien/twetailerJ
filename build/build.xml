@@ -926,6 +926,9 @@
         >
             <filterchain refid="genericFilterChain" />
         </copy>
+        <copy file="src/resources/liveIdKeys-anothersocialeconomy.xml" todir="src/war/WEB-INF/classes" overwrite="true" />
+        <copy file="src/resources/liveIdKeys-localhost.xml" todir="src/war/WEB-INF/classes" overwrite="true" />
+        <copy file="src/resources/liveIdKeys-twetailer.xml" todir="src/war/WEB-INF/classes" overwrite="true" />
     </target>
 
     <target name="step-package-jar">

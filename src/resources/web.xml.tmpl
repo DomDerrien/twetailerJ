@@ -3,18 +3,18 @@
    xmlns="http://java.sun.com/xml/ns/javaee"
    version="2.5">
 
-    <welcome-file-list>
+    <!--welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+    </welcome-file-list-->
 
-    <jsp-config>
+    <!--jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
             <el-ignored>true</el-ignored>
             <trim-directive-whitespaces>true</trim-directive-whitespaces>
         </jsp-property-group>
-    </jsp-config>
+    </jsp-config-->
 
     <filter>
         <filter-name>appstats</filter-name>
@@ -276,12 +276,12 @@
 
     <error-page>
         <error-code>403</error-code>
-        <location>/404.html</location>
+        <location>/_includes/404.html</location>
     </error-page>
 
     <error-page>
         <error-code>404</error-code>
-        <location>/404.html</location>
+        <location>/_includes/404.html</location>
     </error-page>
 
     <security-constraint>

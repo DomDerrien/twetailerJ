@@ -48,7 +48,7 @@
 			   		<div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
 					<div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
 			   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
-			   		<div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage1">Français</a></div>
+			   		<div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs Ã  la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage1">FranÃ§ais</a></div>
    				</div>
 			</div> <!-- end grid_4 -->
 	    </div> <!-- end grid_16 -->
@@ -165,7 +165,7 @@
     		   		<div style="margin-left:50px; font-weight: bold;">Call 1-877-990-1697</div>
     				<div style="margin-left:50px;"><a class="action" title="Request Info" href="/CarDealers/RequestInfo.html">Request Info</a></div>
     		   		<div style="margin-left:50px;"><a class="action" title="Car Dealers Welcome" href="/CarDealers/CarDealerWelcome.html">Dealers Welcome!</a></div>
-                    <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs à la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">Français</a></div>
+                    <div style="margin-left:50px;"><a class="action" title="Bienvenue aux acheteurs Ã  la recherche d'une voiture" href="_OTHER_LANGUAGE_PATH_" id="switchLanguage2">FranÃ§ais</a></div>
       			</div>
     		</div> <!-- end grid_4 -->
         </div> <!-- end grid_16 -->
@@ -177,7 +177,7 @@
         isDebug: false,
         useXDomain: true,
         baseUrl: './',
-        dojoBlankHtmlUrl: '/blank.html',
+        dojoBlankHtmlUrl: '/Common/dojo_blank.html',
         locale: 'en'
     };
 </script>
@@ -213,7 +213,7 @@
         var maker = '_MAKE_' == 'Cars' || '_MAKE_' == 'Automobile' ? 'BMW' : '_MAKE_';
         var model = '_MODEL_';
         var qualifier = '_QUALIFIER_';
-        var postalCode = '_CITY_' == 'Local' || '_CITY_' == 'Votre Localité' ? '' : '_POSTAL_CODE_';
+        var postalCode = '_CITY_' == 'Local' || '_CITY_' == 'Votre LocalitÃ©' ? '' : '_POSTAL_CODE_';
         var info = '';
         if (window.location.search) {
             // Step 1: get the keywords
@@ -236,9 +236,9 @@
                 skw = localModule.removeDups(skw, qualifier, false);
                 skw = localModule.removeDups(skw, maker, false);
                 // Step 7: remove the last occurrence of the page keyword and place the remaining in the 'model' variable
-                skw = localModule.removeDups(skw, city.replace(/é/g, 'e'), false);
-                skw = localModule.removeDups(skw, qualifier.replace(/é/g, 'e'), false);
-                skw = localModule.removeDups(skw, maker.replace(/é/g, 'e'), false);
+                skw = localModule.removeDups(skw, city.replace(/Ã©/g, 'e'), false);
+                skw = localModule.removeDups(skw, qualifier.replace(/Ã©/g, 'e'), false);
+                skw = localModule.removeDups(skw, maker.replace(/Ã©/g, 'e'), false);
                 model = dojo.trim(skw.replace(/\s+/g, ' ').replace(/\"/g, '').replace(/\+/g, ''));
             }
         }

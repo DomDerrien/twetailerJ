@@ -70,14 +70,14 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', locale: 'en', dojoBlankHtmlUrl: '/blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', locale: 'en', dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
         src="/js/release/<%= appVersion %>/dojo/dojo.js"
         type="text/javascript"
     ></script>

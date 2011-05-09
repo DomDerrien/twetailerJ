@@ -228,10 +228,10 @@
             <fileset dir="src/war">
                 <include name="**/*" />
                 <exclude name="**/*.legacy" />
-                <exclude name="Automobiles/**/*"/>
-                <exclude name="CarDealers/**/*"/>
-                <exclude name="Common/**/*"/>
-                <exclude name="cardealer/**/*"/>
+                <exclude name="Automobiles/"/>
+                <exclude name="CarDealers/"/>
+                <exclude name="Common/"/>
+                <exclude name="cardealer/"/>
                 <exclude name="js/dojo/**/*"/>
                 <exclude name="js/release/**/*"/>
                 <exclude name="WEB-INF/appengine-generated/**" />

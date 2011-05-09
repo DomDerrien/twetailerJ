@@ -105,7 +105,7 @@
             twetailer: '/js/twetailer',
             domderrien: '/js/domderrien'
         },
-        dojoBlankHtmlUrl: '/blank.html',
+        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
         locale: '<%= localeId %>'
     };
     </script>
@@ -119,7 +119,7 @@
         useXDomain: true,
         baseUrl: '/js/dojo/dojo/',
         modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
-        dojoBlankHtmlUrl: '/blank.html',
+        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
         locale: '<%= localeId %>'
     };
     </script>
