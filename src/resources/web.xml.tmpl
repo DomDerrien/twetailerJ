@@ -69,6 +69,14 @@
         <filter-name>authverifierfilter</filter-name>
         <url-pattern>/API/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>authverifierfilter</filter-name>
+        <url-pattern>/_wll/liveWebAuthHandler</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>authverifierfilter</filter-name>
+        <url-pattern>/webauth/sample/webauth-handler.jsp</url-pattern>
+    </filter-mapping>
 
     <filter>
         <filter-name>openidfilter</filter-name>

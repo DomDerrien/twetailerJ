@@ -107,7 +107,7 @@
             <prop type="x-tier">dojotk</prop>
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
-                <seg>[a-z,A-Z][0-9][a-z,A-Z]\\s*[0-9][a-z,A-Z][0-9]</seg>
+                <seg>[a-z,A-Z][0-9][a-z,A-Z] *[0-9][a-z,A-Z][0-9]</seg>
             </tuv>
         </tu>
         <tu tuid="location_postalCode_regExp_US" dataType="text">
@@ -1178,14 +1178,13 @@
                 <seg>:-( Veuillez vérifier la référence du Commerce et essayer de nouveau.</seg>
             </tuv>
         </tu>
-        <tu tuid="cp_command_list_invalid_location" datatype="Text">
-            <prop type="x-version">2</prop>
+        <tu tuid="cp_command_list_invalid_location" dataType="text">
             <prop type="x-tier">javarb</prop>
+            <prop type="x-version">2</prop>
             <tuv xml:lang="fr">
                 <seg>:-( Veuillez vérifier le code postal (format: {0} {1}) et essayer de nouveau.</seg>
             </tuv>
         </tu>
-
         <tu tuid="cp_command_list_no_active_demand" dataType="text">
             <prop type="x-tier">javarb</prop>
             <prop type="x-version">2</prop>

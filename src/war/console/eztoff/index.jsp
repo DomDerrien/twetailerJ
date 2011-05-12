@@ -43,7 +43,7 @@
     String emailRegExp = Consumer.EMAIL_REGEXP_VALIDATOR;
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title><%= LabelExtractor.get(ResourceFileId.third, "golfConsu_localized_page_name", locale) %></title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta http-equiv="content-language" content="<%= localeId %>" />

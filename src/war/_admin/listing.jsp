@@ -42,8 +42,7 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
+    <% if (useCDN) {
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
@@ -70,19 +69,19 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', locale: 'en', dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
         src="/js/release/<%= appVersion %>/dojo/dojo.js"
         type="text/javascript"
     ></script>
     <script
-        src="/js/release/<%= appVersion %>/ase/listing.js"
+        src="/js/release/<%= appVersion %>/ase/_admin.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
@@ -96,7 +95,7 @@
         </jsp:include>
         <div data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, region: 'center'" id="centerZone" style="height: 100%;">
             <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top', style: 'border-radius: 5px;'" id="statsBar">
-                <div style="float: right; vertical-align: bottom">
+                <div style="float: right; vertical-align: baseline">
                     Filter:
                     <select
                         id="dateFilter"
@@ -181,7 +180,7 @@
     >
         <div id="keyZone" style="min-height:60px;"></div>
         <div class="dijitDialogPaneActionBar" style="text-align:right;margin-top:5px;">
-            <button data-dojo-type="dijit.form.Button" onclick="dijit.byId('entityKeysDialog').hide();" type="button">Close</button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { dijit.byId('entityKeysDialog').hide(); }" type="button">Close</button>
         </div>
     </div>
 

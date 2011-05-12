@@ -187,7 +187,7 @@
                 Regular expression used to determine a valid Canadian postal code
             </note>
             <tuv xml:lang="en">
-                <seg>[a-z,A-Z][0-9][a-z,A-Z]\\s*[0-9][a-z,A-Z][0-9]</seg>
+                <seg>[a-z,A-Z][0-9][a-z,A-Z] *[0-9][a-z,A-Z][0-9]</seg>
             </tuv>
         </tu>
 

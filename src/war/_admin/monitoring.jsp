@@ -26,7 +26,9 @@
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
+    String appVersion = appSettings.getProductVersion();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
     cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
@@ -35,29 +37,23 @@
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Monitoring Console</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
+    <% if (useCDN) {
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
         @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/claroGrid.css";
         @import "/css/console.css";
     </style><%
     }
     else { // elif (!useCDN)
-    %><style type="text/css">
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/claro/claro.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/claroGrid.css";
-        @import "/css/console.css";
-    </style><%
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
     <style type="text/css">
@@ -102,8 +98,12 @@
     }
     else { // elif (!useCDN)
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
-        src="/js/dojo/dojo/dojo.js"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <script
+        src="/js/release/<%= appVersion %>/ase/_admin.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
@@ -1575,18 +1575,21 @@
                 <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>
                     <td><label for="locationFilter.latitude">Latitude:</label></td>
-                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}" id="locationFilter.latitude" value="-1000" /></td>
+                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-90.0,max:90.0}, value: -1000" id="locationFilter.latitude" /></td>
                 </tr>
                 <tr>
                     <td><label for=locationFilter.longitude>Longitude:</label></td>
-                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-180.0,max:180.0}" id="locationFilter.longitude" value="-1000" /></td>
+                    <td><input data-dojo-type="dijit.form.NumberTextBox" data-dojo-props="'class': 'shortField', constraints: {min:-180.0,max:180.0}, value: -1000" id="locationFilter.longitude" /></td>
                 </tr>
                 <tr><td colspan="2" style="height:1px !important;background-color:lightgrey;"></td></tr>
                 <tr>
                     <td><label for="locationFilter.range">Range:</label></td>
                     <td>
                         <input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="'class': 'shortField', constraints: {min:25,places:0}, value: 25" id="locationFilter.range" />
-                        <select data-dojo-type="dijit.form.Select" data-dojo-props="'class': 'autoField', hasDownArrow: true" id="locationFilter.rangeUnit"><option value="km" selected="selected">km</option><option value="mi">miles</option></select>
+                        <select data-dojo-type="dijit.form.Select" data-dojo-props="'class': 'autoField', hasDownArrow: true" id="locationFilter.rangeUnit">
+                            <option value="km" selected="selected">km</option>
+                            <option value="mi">miles</option>
+                        </select>
                     </td>
                 </tr>
                 <tr id="hasStoreRow">

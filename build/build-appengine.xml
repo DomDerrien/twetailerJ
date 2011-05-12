@@ -39,7 +39,7 @@
 
     <property name="app.serverPort"
         description="Port number used by the Web server"
-        value="9999"
+        value="8080"
     />
 
     <!-- ============== -->
@@ -213,10 +213,12 @@
         </copy>
         <copy todir="${temp.dir}/appengine-stage/js/release/${app.version}" overwrite="yes" includeemptydirs="false">
             <fileset dir="src/war/js/release/${app.version}">
-                <include name="dijit/themes/*"/>
-                <include name="dijit/themes/claro/**/*"/>
-                <include name="dojox/data/**/*"/>
-                <include name="dojox/grid/**/*"/>
+                <include name="dijit/themes/*" />
+                <include name="dijit/themes/claro/**/*" />
+                <include name="dojox/data/**/*" />
+                <include name="dojox/grid/**/*" />
+                <include name="dojox/layout/**/Expando*" />
+                <include name="dojox/widget/Standby/images/loading.gif" />
             </fileset>
         </copy>
     </target>
@@ -228,12 +230,12 @@
             <fileset dir="src/war">
                 <include name="**/*" />
                 <exclude name="**/*.legacy" />
-                <exclude name="Automobiles/"/>
-                <exclude name="CarDealers/"/>
-                <exclude name="Common/"/>
-                <exclude name="cardealer/"/>
-                <exclude name="js/dojo/**/*"/>
-                <exclude name="js/release/**/*"/>
+                <exclude name="Automobiles/" />
+                <exclude name="CarDealers/" />
+                <exclude name="Common/" />
+                <exclude name="cardealer/" />
+                <exclude name="js/dojo/**/*" />
+                <exclude name="js/release/**/*" />
                 <exclude name="WEB-INF/appengine-generated/**" />
                 <exclude name="WEB-INF/classes/**/Test*.*" />
                 <exclude name="WEB-INF/classes/**/Mock*.*" />

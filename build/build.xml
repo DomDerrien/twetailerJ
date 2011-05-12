@@ -391,6 +391,7 @@
     <filterchain id="genericFilterChain">
         <replacetokens>
             <token key="app.version" value="${app.version}" />
+            <token key="app.appEngineId" value="${app.appEngineId}" />
             <token key="app.useCDN" value="${app.useCDN}" />
             <token key="app.productName" value="${app.productName}" />
             <token key="app.appEngineId" value="${app.appEngineId}" />
@@ -880,11 +881,27 @@
             <arg value="copyTests=false" />
         </exec>
         <replaceregexp byline="true" flags="gm">
-            <regexp pattern="dojo\.nls" />
-            <substitution expression="ase.nls.listing"/>
+            <regexp pattern="dojo\.nls\." />
+            <substitution expression="ase.nls._admin"/>
             <fileset
                 dir="src/war/js/release/${app.version}/ase"
-                includes="**/*.js"
+                includes="**/_admin*.js"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="dojo\.nls\." />
+            <substitution expression="ase.nls.login"/>
+            <fileset
+                dir="src/war/js/release/${app.version}/ase"
+                includes="**/login*.js"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="dojo\.nls\." />
+            <substitution expression="ase.nls.stores"/>
+            <fileset
+                dir="src/war/js/release/${app.version}/ase"
+                includes="**/stores*.js"
             />
         </replaceregexp>
     </target>

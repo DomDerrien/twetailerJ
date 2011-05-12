@@ -25,7 +25,10 @@
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
+    String appVersion = appSettings.getProductVersion();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
+    cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -33,29 +36,23 @@
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
     <title>Sale Associate Registration Page</title>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
+    <% if (useCDN) {
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
         @import "/css/console.css";
     </style><%
     }
     else { // elif (!useCDN)
-    %><style type="text/css">
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
-        @import "/css/console.css";
-    </style><%
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
     <style type="text/css">
@@ -72,7 +69,7 @@
         }
     </style>
 </head>
-<body class="tundra">
+<body class="claro">
 
     <div id="introFlash">
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
@@ -81,107 +78,113 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
-        src="/js/dojo/dojo/dojo.js"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <script
+        src="/js/release/<%= appVersion %>/ase/_admin.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
     %>
 
-    <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+    <div id="topContainer" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div
-            dojoType="dijit.layout.ContentPane"
-            id="centerZone"
-            region="center"
+            data-dojo-type="dijit.layout.ContentPane"
+            data-dojo-props="region: 'left', style: 'width:20%'"
             style="margin-top: 5px; margin-bottom: 10px;"
+        ></div>
+        <div
+            data-dojo-type="dijit.layout.ContentPane"
+            data-dojo-props="region: 'right', style: 'width:20%'"
+            style="margin-top: 5px; margin-bottom: 10px;"
+        ></div>
+        <div
+            id="centerZone"
+            data-dojo-type="dijit.layout.ContentPane"
+            data-dojo-props="region: 'center'"
         >
-            <div dojoType="dijit.layout.StackContainer" id="wizard" jsId="wizard" style="margin-left:25%;margin-right:25%;width:50%;height:100%;">
-                <div dojoType="dijit.layout.ContentPane" jsId="step1">
+            <div data-dojo-type="dijit.layout.StackContainer" id="wizard" data-dojo-id="wizard">
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-id="step1">
                     <fieldset class="entityInformation" id="innerStep1">
                         <legend>Location Creation/Retrieval</legend>
-                        <form dojoType="dijit.form.Form" id="locationInformation" onsubmit="localModule.createLocation();return false;">
+                        <form data-dojo-type="dijit.form.Form" id="locationInformation" data-dojo-props="onSubmit: function() { localModule.createLocation(); return false; }">
                             <div>
                                 <label for="<%= Location.POSTAL_CODE %>">Postal Code</label><br/>
                                 <input
-                                    dojoType="dijit.form.ValidationTextBox"
                                     id="<%= Location.POSTAL_CODE %>"
-                                    invalidMessage="<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>"
-                                    name="<%= Location.POSTAL_CODE %>"
-                                    onkeyup="if (event.keyCode == dojo.keys.ENTER) { localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true }); }"
-                                    placeholder="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>"
-                                    regExp="<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>"
-                                    required="true"
-                                    style="width:6em;"
+                                    data-dojo-type="dijit.form.ValidationTextBox"
+                                    data-dojo-props="name: '<%= Location.POSTAL_CODE %>', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', placeHolder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true, style: 'width: 6em'"
                                     type="text"
                                 />
                             </div>
                             <div>
                                 <label for="<%= Location.COUNTRY_CODE %>">Country Code</label><br/>
                                 <select
-                                    dojoType="dijit.form.Select"
                                     id="<%= Location.COUNTRY_CODE %>"
-                                    name="<%= Location.COUNTRY_CODE %>"
-                                    onchange="twetailer.Common.updatePostalCodeFieldConstraints(this.value, '<%= Location.POSTAL_CODE %>');"
+                                    data-dojo-type="dijit.form.Select"
+                                    data-dojo-props="name: '<%= Location.COUNTRY_CODE %>', onChange: function() { twetailer.Common.updatePostalCodeFieldConstraints(this.value, '<%= Location.POSTAL_CODE %>'); }"
                                 >
-                                    <option value="CA" selected="true">Canada</option>
+                                    <option value="CA" selected="selected">Canada</option>
                                     <option value="US">United States of America</option>
                                 </select>
                             </div>
                             <br/>
-                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create Location >></button><br/>(with values from above)</div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button">New Store >></button><br/>(need valid Location key)</div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button><br/>(need valid Store key)</div>
+                            <div class="action current"><button data-dojo-type="dijit.form.Button" data-dojo-props="type: 'submit'">Create Location &gt;&gt;</button><br/>(with values from above)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus(); }" type="button">New Store &gt;&gt;</button><br/>(need valid Location key)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus(); }" type="button">New Sale Associate &gt;&gt;</button><br/>(need valid Store key)</div>
                         </form>
                     </fieldset>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" jsId="step2" style="display:hidden;">
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-id="step2" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep2">
                         <legend>Store Creation</legend>
-                        <form dojoType="dijit.form.Form" id="storeInformation" onsubmit="localModule.createStore();dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();return false;">
+                        <form data-dojo-type="dijit.form.Form" id="storeInformation" data-dojo-props="onSubmit: function() { localModule.createStore(); return false; }">
                             <div>
                                 <label for="<%= Store.LOCATION_KEY %>">Location Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= Store.LOCATION_KEY %>" name="<%= Store.LOCATION_KEY %>" required="true" style="width:8em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.LOCATION_KEY %>" data-dojo-props="name: '<%= Location.LOCATION_KEY %>', required: true, style: 'width:8em;'" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.NAME %>">Store Name</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.NAME %>" required="true" style="width:30em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.NAME %>" data-dojo-props="name: '<%= Store.NAME %>', required: true, style: 'width:30em;'" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.ADDRESS %>">Address</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.ADDRESS %>" required="true" style="width:30em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.ADDRESS %>" data-dojo-props="name: '<%= Store.ADDRESS %>', required: true, style: 'width:30em;'" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.EMAIL %>">Email</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.EMAIL %>" required="true" style="width:30em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.EMAIL %>" data-dojo-props="name: '<%= Store.EMAIL %>', required: true, style: 'width:30em;'" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.PHONE_NUMBER %>">Phone Number</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.PHONE_NUMBER %>" required="true" style="width:12em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.PHONE_NUMBER %>" data-dojo-props="name: '<%= Store.PHONE_NUMBER %>', required: true, style: 'width:12em;', value: 0" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.REGISTRAR_KEY %>">Registrar Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REGISTRAR_KEY %>" required="true" style="width:8em;" type="text" value="0" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.REGISTRAR_KEY %>" data-dojo-props="name: '<%= Store.REGISTRAR_KEY %>', required: true, style: 'width:8em;', value: 0" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.REVIEW_SYSTEM_KEY %>">Review System Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.REVIEW_SYSTEM_KEY %>" required="true" style="width:8em;" type="text" value="0" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.REVIEW_SYSTEM_KEY %>" data-dojo-props="name: '<%= Store.REVIEW_SYSTEM_KEY %>', required: true, style: 'width:8em;', value: 0" type="text" />
                             </div>
                             <div>
                                 <label for="<%= Store.STATE %>">State</label><br/>
-                                <select dojoType="dijit.form.Select" name="<%= Store.STATE %>">
-                                    <option value="referenced" selected="true">referenced</option>
+                                <select data-dojo-type="dijit.form.Select" id="<%= Store.STATE %>" data-dojo-props="name: '<%= Store.STATE %>'">
+                                    <option value="referenced" selected="selected">referenced</option>
                                     <option value="declined">declined</option>
                                     <option value="inProgress">inProgress</option>
                                     <option value="waiting">waiting</option>
@@ -191,63 +194,62 @@
                             </div>
                             <div>
                                 <label for="<%= Store.URL %>">Website URL</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" name="<%= Store.URL %>" required="true" style="width:30em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= Store.URL %>" data-dojo-props="name: '<%= Store.URL %>', required: true, style: 'width:30em;'" type="text" />
                             </div>
                             <br/>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
-                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create Store >></button><br/>(with values from above)</div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button">New Sale Associate >></button><br/>(need valid Store key)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.back();dijit.byId('<%= Location.POSTAL_CODE %>').focus(); }" type="button">&lt;&lt; New Location</button><br/>(create or retrieve)</div>
+                            <div class="action current"><button data-dojo-type="dijit.form.Button" data-dojo-props="type: 'submit'">Create Store &gt;&gt;</button><br/>(with values from above)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus(); }" type="button">New Sale Associate &gt;&gt;</button><br/>(need valid Store key)</div>
                         </form>
                     </fieldset>
                     <fieldset class="entityInformation" id="innerStep2.1">
                         <legend>Store Retrieval</legend>
                         <ul id="storeList"></ul>
-                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getStores();" type="button">Get Stores</button><br/>(for the specified location)</div>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getStores(); }" type="button">Get Stores</button><br/>(for the specified location)</div>
                     </fieldset>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" jsId="step3" style="display:hidden;">
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-id="step3" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep3">
                         <legend>Sale Associate Creation</legend>
-                        <form dojoType="dijit.form.Form" id="saleAssociateInformation" onsubmit="localModule.createSaleAssociate();return false;">
+                        <form data-dojo-type="dijit.form.Form" id="saleAssociateInformation" data-dojo-props="onSubmit: function() { localModule.createSaleAssociate(); return false; }">
                             <div>
                                 <label for="<%= SaleAssociate.STORE_KEY %>">Store Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.STORE_KEY %>" name="<%= SaleAssociate.STORE_KEY %>" required="true" style="width:8em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= SaleAssociate.STORE_KEY %>" data-dojo-props="name: '<%= SaleAssociate.STORE_KEY %>', required: true, style: 'width:8em;'" type="text" />
                             </div>
                             <div>
                                 <label for="<%= SaleAssociate.CONSUMER_KEY %>">Consumer Key</label><br/>
-                                <input dojoType="dijit.form.ValidationTextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" name="<%= SaleAssociate.CONSUMER_KEY %>" required="true" style="width:8em;" type="text" value="" />
+                                <input data-dojo-type="dijit.form.ValidationTextBox" id="<%= SaleAssociate.CONSUMER_KEY %>" data-dojo-props="name: '<%= SaleAssociate.CONSUMER_KEY %>', required: true, style: 'width:8em;'" type="text" />
                             </div>
                             <br/>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);;dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< New Location</button><br/>(create or retrieve)</div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< New Store</button><br/>(need valid Location key)</div>
-                            <div class="action current"><button dojoType="dijit.form.Button" type="submit">Create SaleAssociate >></button><br/>(with values from above)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step1);;dijit.byId('<%= Location.POSTAL_CODE %>').focus(); }" type="button">&lt;&lt; New Location</button><br/>(create or retrieve)</div>
+                            <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus(); }" type="button">&lt;&lt; New Store</button><br/>(need valid Location key)</div>
+                            <div class="action current"><button data-dojo-type="dijit.form.Button" data-dojo-props="type: 'submit'">Create SaleAssociate &gt;&gt;</button><br/>(with values from above)</div>
                         </form>
                     </fieldset>
                     <fieldset class="entityInformation" id="innerStep3.1">
                         <legend>Sale Associate Retrieval</legend>
                         <ul id="saleAssociateList"></ul>
-                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getSaleAssociates();" type="button">Get Sale Associates</button><br/>(for the specified store)</div>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getSaleAssociates(); }" type="button">Get Sale Associates</button><br/>(for the specified store)</div>
                     </fieldset>
                     <fieldset class="entityInformation" id="innerStep3.2">
                         <legend>Consumer Retrieval</legend>
                         <ul id="consumerList"></ul>
-                        <div class="action"><button dojoType="dijit.form.Button" onclick="localModule.getConsumer();" type="button">Get Consumer</button><br/>(for the specified consumer</div>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { localModule.getConsumer(); }" type="button">Get Consumer</button><br/>(for the specified consumer</div>
                     </fieldset>
                 </div>
-                <div dojoType="dijit.layout.ContentPane" jsId="step5" style="display:hidden;">
+                <div data-dojo-type="dijit.layout.ContentPane" data-dojo-id="step5" style="display:hidden;">
                     <fieldset class="entityInformation" id="innerStep5">
                         <legend>Repeat Again ;)</legend>
                         <p>The Sale Associate can now tweet to @twetailer to supply his/her own tags.</p>
-                        <p>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus();" type="button"><< Another Location</button></div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus();" type="button"><< Another Store</button></div>
-                            <div class="action"><button dojoType="dijit.form.Button" onclick="wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();" type="button"><< Another Sale Associate</button></div>
-                        </p>
+                        <br/>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step1);dijit.byId('<%= Location.POSTAL_CODE %>').focus(); }" type="button">&lt;&lt; Another Location</button></div>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step2);dijit.byId('<%= Store.LOCATION_KEY %>').focus(); }" type="button">&lt;&lt; Another Store</button></div>
+                        <div class="action"><button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { wizard.selectChild(step3);dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus(); }" type="button">&lt;&lt; Another Sale Associate</button></div>
                     </fieldset>
                 </div>
             </div>
         </div>
-        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <div data-dojo-type="dijit.layout.ContentPane" id="footerZone" data-dojo-props="region: 'bottom'">
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
@@ -288,6 +290,7 @@
     var localModule = new Object();
     localModule.init = function() {
         dijit.byId('topContainer').resize();
+        dijit.byId('<%= Location.POSTAL_CODE %>').focus();
     };
     localModule.createLocation = function() {
         var form = dijit.byId('locationInformation');
@@ -311,6 +314,7 @@
                     dijit.byId('<%= Store.LOCATION_KEY %>').focus();
                     dijit.byId('<%= Store.LOCATION_KEY %>').set('value', response.resource.<%= Location.KEY %>);
                     wizard.forward();
+                    dijit.byId('<%= Store.NAME %>').focus();
                 }
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);
@@ -339,6 +343,8 @@
         }
         var data = dojo.formToObject('storeInformation');
         data.locationKey = parseInt(data.locationKey); // Otherwise it's passed as a String
+        data.registrarKey = parseInt(data.registrarKey); // Otherwise it's passed as a String
+        data.reviewSystemKey = parseInt(data.reviewSystemKey); // Otherwise it's passed as a String
         data.onBehalfAssociateKey = 0; // Because we assume the sale associate account creation
         dojo.xhrPost({
             headers: { 'content-type': 'application/json; charset-<%= StringUtils.HTML_UTF8_CHARSET %>' },
@@ -349,6 +355,7 @@
                     dijit.byId('<%= SaleAssociate.STORE_KEY %>').focus();
                     dijit.byId('<%= SaleAssociate.STORE_KEY %>').set('value', response.resource.<%= Store.KEY %>);
                     wizard.forward();
+                    dijit.byId('<%= SaleAssociate.CONSUMER_KEY %>').focus();
                 }
                 else {
                     alert(response.message+'\nurl: '+ioArgs.url);

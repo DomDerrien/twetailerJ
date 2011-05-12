@@ -54,7 +54,7 @@
     Long saleAssociateKey = consumer.getSaleAssociateKey();
 %><html dir="ltr" lang="<%= localeId %>">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title><%= LabelExtractor.get(ResourceFileId.third, "coreConsu_localized_page_name", locale) %></title>
     <meta http-equiv="content-type" content="text/html;charset=<%= StringUtils.HTML_UTF8_CHARSET %>" />
     <meta http-equiv="content-language" content="<%= localeId %>" />

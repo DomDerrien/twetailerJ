@@ -101,6 +101,10 @@
         return _saleAssociate || {};
     }
 
+    module.getCachedGeoCoordinates = function(postalCode, countryCode) {
+        return _geoCache[postalCode + '-' + countryCode];
+    }
+
     /**
      * Helper to generate an ISO formatted date without the timezone.
      *
