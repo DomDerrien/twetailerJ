@@ -81,6 +81,12 @@ public class ApplicationSettings {
 
     protected final static String APPLICATION_WEBSITE_KEY = "applicationWebsite";
 
+    public final static String DEFAULT_APPENGINE_ID = "anothersocialeconomy";
+
+    private String appEngineId = DEFAULT_APPENGINE_ID;
+
+    protected final static String APPENGINE_ID_KEY = "appEngineId";
+
     /**
      * Boolean used in the JSP file to decide if the Dojo library
      * (JavaScript, CSS, images) should be used from a distributed Content
@@ -177,6 +183,15 @@ public class ApplicationSettings {
     }
 
     /**
+     * Get the AppEngine Id
+     *
+     * @return Identifier
+     */
+    public String getAppEngineId() {
+        return appEngineId;
+    }
+
+    /**
      * Singleton accessor
      * @return Container for the application settings
      */
@@ -257,6 +272,12 @@ public class ApplicationSettings {
             }
             catch(Exception ex) {
                 applicationWebsite = DEFAULT_APPLICATION_WEBSITE;
+            }
+            try {
+                appEngineId = appSettings.getString(APPENGINE_ID_KEY);
+            }
+            catch(Exception ex) {
+                appEngineId = DEFAULT_APPENGINE_ID;
             }
         }
         catch(Exception ex) {

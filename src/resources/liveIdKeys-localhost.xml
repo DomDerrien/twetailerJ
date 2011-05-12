@@ -1,0 +1,7 @@
+<windowslivelogin>
+
+    <appid>00167FFE80002301</appid>
+    <secret>ApplicationKey123</secret>
+    <securityalgorithm>wsignin1.0</securityalgorithm>
+
+</windowslivelogin>

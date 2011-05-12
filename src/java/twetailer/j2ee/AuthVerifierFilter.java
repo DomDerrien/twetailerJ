@@ -15,13 +15,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import twetailer.connector.FacebookConnector;
 import twetailer.dto.Consumer;
 import twetailer.task.step.BaseSteps;
+import twetailer.validator.ApplicationSettings;
 
 import com.dyuproject.openid.OpenIdUser;
 import com.dyuproject.openid.YadisDiscovery;
+import com.live.login.WindowsLiveLogin;
 
 import domderrien.i18n.StringUtils;
 import domderrien.jsontools.JsonObject;
@@ -51,17 +54,84 @@ public class AuthVerifierFilter implements Filter {
     public void destroy() {
     }
 
+    private final static String LIVE_SESSION_TOKEN = "liveIdWebAuthToken";
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         try {
-            // Is Facebook calling us back?
+            String action = httpRequest.getParameter("action");
+            String code = httpRequest.getParameter("code");
+
             //
+            // Is Windows Live Logging calling us back?
+            // Source: http://msdn.microsoft.com/en-us/library/bb676640.aspx
+            //
+            if (action != null && 0 < action.length()) {
+                ApplicationSettings appSettings = ApplicationSettings.get();
+                boolean onLocalHost = "localhost".equals(request.getServerName()) || "127.0.0.1".equals(request.getServerName()) || "10.0.2.2".equals(request.getServerName());
+                WindowsLiveLogin wll = new WindowsLiveLogin("liveIdKeys-" + (onLocalHost ? "localhost" : appSettings.getAppEngineId()) + ".xml");
+
+                if (!"POST".equals(((HttpServletRequest) request).getMethod())) {
+                    getLogger().severe("POST method expected! -- Was: " + ((HttpServletRequest) request).getMethod());
+                }
+
+                /*
+                 * If action is 'logout', clear the session token and redirect to the logout page.
+                 *
+                 * If action is 'clearcookie', clear the session token and return a GIF as response to signify success.
+                 *
+                 * By default, try to process a login. If login was successful, cache the user token in the session and
+                 * redirect to the site's main page.  If login failed, clear the cookie and redirect to the main page.
+                 */
+                HttpSession session = httpRequest.getSession(false);
+                if ("logout".equals(action)) {
+                    if (session != null) {
+                        session.setAttribute(LIVE_SESSION_TOKEN, null);
+                    }
+                    ((HttpServletResponse) response).sendRedirect("/console");
+                }
+                else if ("clearcookie".equals(action)) {
+                    if (session != null) {
+                        session.setAttribute(LIVE_SESSION_TOKEN, null);
+                    }
+                    response.setContentType(wll.getClearCookieResponseType());
+                    response.getOutputStream().write(wll.getClearCookieResponseBody());
+                    response.flushBuffer();
+                }
+                else { // if ("login".equals(action)) {
+                    @SuppressWarnings("unchecked")
+                    WindowsLiveLogin.User user = wll.processLogin(request.getParameterMap());
+
+                    if (user != null) {
+                        if (session != null) {
+                            session = httpRequest.getSession(true);
+                        }
+                        getLogger().warning("Live user authenticated -- Token: " + user.getToken());
+                        session.setAttribute(LIVE_SESSION_TOKEN, user.getToken());
+                        
+                        // TODO: create a OpenID record for this user
+
+                        if (user.usePersistentCookie()) {
+                            session.setMaxInactiveInterval(-1);
+                        }
+
+                        ((HttpServletResponse) response).sendRedirect("/console");
+                    }
+                    else {
+                        if (session != null) {
+                            session.setAttribute(LIVE_SESSION_TOKEN, null);
+                        }
+                        ((HttpServletResponse) response).sendRedirect("/console");
+                    }
+                }
+            }
+            //
+            // Is Facebook calling us back?
             // Source: http://developers.facebook.com/docs/authentication/
             //
-            String code = httpRequest.getParameter("code");
-            if (code != null && 0 < code.length()) {
+            else if (code != null && 0 < code.length()) {
                 // Get the OAuth access token for this user
                 JsonObject produced = FacebookConnector.getAccessToken(httpRequest.getRequestURL().toString(), code);
                 String accessToken = produced.getString(FacebookConnector.ATTR_ACCESS_TOKEN);
@@ -85,6 +155,9 @@ public class AuthVerifierFilter implements Filter {
                     ((HttpServletResponse) response).sendRedirect(facebookAuthVerifURL);
                 }
             }
+            //
+            // Let the process continue
+            //
             else {
                 filterChain.doFilter(request, response);
             }
