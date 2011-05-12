@@ -303,8 +303,8 @@
 
     <path id="java.compile.classpath">
         <filelist dir="deps/lib">
-            <file name="appengine/appengine-api-1.0-sdk-1.4.3.jar" />
-            <file name="appengine/appengine-api-labs-1.4.3.jar" />
+            <file name="appengine/appengine-api-1.0-sdk-1.5.0.jar" />
+            <file name="appengine/appengine-api-labs-1.5.0.jar" />
             <file name="appengine/appengine-api-stubs.jar" />
             <file name="appengine/appengine-api-labs.jar" />
             <file name="appengine/appengine-local-runtime.jar" />

@@ -21,7 +21,7 @@
 
     <property name="appengine.sdk.dir"
         description="Location of the Google App Engine SDK"
-        location="${basedir}/bin/appengine-java-sdk-1.4.3"
+        location="${basedir}/bin/appengine-java-sdk-1.5.0"
     />
 
     <import file="${appengine.sdk.dir}/config/user/ant-macros.xml" />

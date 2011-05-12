@@ -85,6 +85,9 @@ public class TestAuthVerifierFilter {
                 if ("code".equals(key)) {
                     return null;
                 }
+                if ("action".equals(key)) {
+                    return null;
+                }
                 fail("Unexpected parameter retrieval");
                 return null;
             }
@@ -109,6 +112,9 @@ public class TestAuthVerifierFilter {
             public String getParameter(String key) {
                 if ("code".equals(key)) {
                     return "";
+                }
+                if ("action".equals(key)) {
+                    return null;
                 }
                 fail("Unexpected parameter retrieval");
                 return null;
@@ -157,6 +163,9 @@ public class TestAuthVerifierFilter {
             public String getParameter(String key) {
                 if ("code".equals(key)) {
                     return "test-code";
+                }
+                if ("action".equals(key)) {
+                    return null;
                 }
                 fail("Unexpected parameter retrieval");
                 return null;
@@ -208,6 +217,9 @@ public class TestAuthVerifierFilter {
                 if ("code".equals(key)) {
                     return "test-code";
                 }
+                if ("action".equals(key)) {
+                    return null;
+                }
                 fail("Unexpected parameter retrieval");
                 return null;
             }
@@ -252,6 +264,9 @@ public class TestAuthVerifierFilter {
             public String getParameter(String key) {
                 if ("code".equals(key)) {
                     return "test-code";
+                }
+                if ("action".equals(key)) {
+                    return null;
                 }
                 fail("Unexpected parameter retrieval");
                 return null;
@@ -299,6 +314,9 @@ public class TestAuthVerifierFilter {
                 }
                 if ("code".equals(key)) {
                     return "test-code";
+                }
+                if ("action".equals(key)) {
+                    return null;
                 }
                 fail("Unexpected parameter retrieval");
                 return null;

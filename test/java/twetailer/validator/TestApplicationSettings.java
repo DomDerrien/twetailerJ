@@ -40,11 +40,6 @@ public class TestApplicationSettings {
     }
 
     @Test
-    public void testUseCDN() {
-        assertTrue(ApplicationSettings.get().isUseCDN());
-    }
-
-    @Test
     public void testGetCdnBaseURL() {
         if (ApplicationSettings.get().isUseCDN()) {
             assertNotNull(ApplicationSettings.get().getCdnBaseURL());

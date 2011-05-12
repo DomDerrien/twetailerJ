@@ -110,7 +110,7 @@ public class AuthVerifierFilter implements Filter {
                         }
                         getLogger().warning("Live user authenticated -- Token: " + user.getToken());
                         session.setAttribute(LIVE_SESSION_TOKEN, user.getToken());
-                        
+
                         // TODO: create a OpenID record for this user
 
                         if (user.usePersistentCookie()) {

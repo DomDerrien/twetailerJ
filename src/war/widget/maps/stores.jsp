@@ -116,7 +116,7 @@
         <div data-dojo-type="dijit.layout.BorderContainer" id="centerZone" data-dojo-props="region: 'center'" style="margin: 0; height: 100%; background-color: transparent;">
     <% } %>
             <div data-dojo-type="dojox.layout.ExpandoPane" id="formPane" data-dojo-props="splitter: true, region: 'left'" style="width: 260px; border-bottom: 1px solid #CCC !important; background-color: #FFF;" title="<%= LabelExtractor.get(ResourceFileId.third, "sm_commands_sectionTitle", locale) %>">
-                <form data-dojo-type="dijit.form.Form" id="formEntity">
+                <form data-dojo-type="dijit.form.Form" data-dojo-props="onSubmit: function() { localModule.loadMapForPostalCode(); return false;}" id="formEntity">
                 <table>
                     <tr>
                         <td align="right"><label for="postalCode"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandPostalCode", locale) %></label></td>
@@ -124,15 +124,12 @@
                             <input
                                 id="postalCode"
                                 data-dojo-type="dijit.form.ValidationTextBox"
-                                data-dojo-props="name: 'postalCode', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', placeholder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true"
-                                style="width:6em;"
-                                type="text"
+                                data-dojo-props="name: 'postalCode', invalidMessage: '<%= LabelExtractor.get(ResourceFileId.third, "location_postalCode_invalid_CA", locale) %>', placeHolder: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_default_CA", locale) %>', regExp: '<%= LabelExtractor.get(ResourceFileId.master, "location_postalCode_regExp_CA", locale) %>', required: true, style: 'width:6em;'"
                             />
                             <button
                                 id="detectLocationButton"
                                 data-dojo-type="dijit.form.Button"
                                 data-dojo-props="iconClass: 'silkIcon silkIconGPS', showLabel: false, title: '<%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_detectLocale", locale) %>', onClick: localModule.fetchLocation"
-                                onClick=""
                                 type="button"
                             ></button>
                         </td>
@@ -153,8 +150,8 @@
                     <tr>
                         <td align="right"><label for="range"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandRange", locale) %></label></td>
                         <td>
-                            <input data-dojo-props="constraints: {min:1,max:100,places:0}, required: true" data-dojo-type="name: 'range', dijit.form.NumberSpinner, style: 'width:4em;', value: 10" id="range" />
-                            <select data-dojo-type="dijit.form.Select" id="rangeUnit" data-dojo-props="name: 'rangeUnit', required: true" style="width:3em;">
+                            <input data-dojo-type="dijit.form.NumberSpinner" data-dojo-props="constraints: {min:1,max:100,places:0}, required: true, name: 'range', style: 'width:4em;', value: 10" id="range" />
+                            <select data-dojo-type="dijit.form.Select" id="rangeUnit" data-dojo-props="name: 'rangeUnit', required: true">
                                 <option value="<%= LocaleValidator.KILOMETER_UNIT %>" selected="selected"><%= LocaleValidator.KILOMETER_UNIT %></option>
                                 <option value="<%= LocaleValidator.MILE_UNIT %>"><%= LocaleValidator.MILE_UNIT %></option>
                             </select>
@@ -165,7 +162,7 @@
                         <td>
                             <button
                                 data-dojo-type="dijit.form.Button"
-                                data-dojo-props="iconClass: 'silkIcon silkIconGMaps', onClick: localModule.loadMapForPostalCode, type: 'submit'"
+                                data-dojo-props="iconClass: 'silkIcon silkIconGMaps', type: 'submit'"
                                 id="showMapButton"
                                 type="button"
                             ><%= LabelExtractor.get(ResourceFileId.third, "shared_locale_view_map_link", locale) %></button>
@@ -364,6 +361,8 @@
         if (topContainer) {
             topContainer.resize();
         }
+
+        dijit.byId('postalCode').focus();
     };
     localModule.getInfoWindowHandler = function(map, storeIdx) {
         return function(event) { localModule.showInfoWindow(map, storeIdx); }

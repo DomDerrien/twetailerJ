@@ -27,7 +27,7 @@ public class ApplicationSettings {
 
     protected final static String USE_CDN_KEY = "useCDN";
 
-    protected final static String DEFAULT_BASE_URL = "";
+    protected final static String DEFAULT_BASE_URL = "https://ajax.googleapis.com/ajax/libs/dojo/1.5";
 
     private String cdnBaseURL = DEFAULT_BASE_URL;
 
