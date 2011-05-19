@@ -29,7 +29,11 @@
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
+    String appVersion = appSettings.getProductVersion();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
+    cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
+    useCDN = true;
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -61,30 +65,29 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <style type="text/css"><%
-        if (useCDN) {
-        %>
+    <% if (useCDN) {
+    %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/resources/claroGrid.css";
         @import "<%= cdnBaseURL %>/dojox/layout/resources/FloatingPane.css";
-        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";<%
-        }
-        else { // elif (!useCDN)
-        %>
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
-        @import "/js/dojo/dojox/layout/resources/FloatingPane.css";
-        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";<%
-        } // endif (useCDN)
-        %>
+        @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";
         @import "/css/console.css";
-    </style>
+    </style><%
+    }
+    else { // elif (!useCDN)
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/Grid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/claroGrid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/layout/resources/FloatingPane.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/layout/resources/ExpandoPane.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
+    } // endif (useCDN)
+    %>
 </head>
-<body class="tundra">
+<body class="claro">
 
     <div id="topBar"></div>
 
@@ -94,38 +97,22 @@
 
     <%
     if (useCDN) {
-    %><script type="text/javascript">
-    var djConfig = {
-        parseOnLoad: false,
-        isDebug: false,
-        useXDomain: true,
-        baseUrl: './',
-        modulePaths: {
-            dojo: '<%= cdnBaseURL %>/dojo',
-            dijit: '<%= cdnBaseURL %>/dijit',
-            dojox: '<%= cdnBaseURL %>/dojox',
-            twetailer: '/js/twetailer',
-            domderrien: '/js/domderrien'
-        },
-        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
-        locale: '<%= localeId %>'
-    };
-    </script>
-    <script src="<%= cdnBaseURL %>/dojo/dojo.xd.js" type="text/javascript"></script><%
+    %><script
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
+        type="text/javascript"
+    ></script><%
     }
     else { // elif (!useCDN)
-    %><script type="text/javascript">
-    var djConfig = {
-        parseOnLoad: false,
-        isDebug: false,
-        useXDomain: true,
-        baseUrl: '/js/dojo/dojo/',
-        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
-        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
-        locale: '<%= localeId %>'
-    };
-    </script>
-    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"></script><%
+    %><script
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <!--script
+        src="/js/release/<%= appVersion %>/ase/consumer.js"
+        type="text/javascript"
+    ></script--><%
     } // endif (useCDN)
     %>
 

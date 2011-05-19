@@ -24,7 +24,7 @@
 
     <property name="app.version"
         description="Planned version of this build"
-        value="51"
+        value="52"
     />
 
     <property name="app.companyName"
@@ -870,15 +870,17 @@
     <target name="step-dojo-build">
         <exec executable="${basedir}/src/war/js/dojo/util/buildscripts/build.sh" dir="${basedir}/src/war/js/dojo/util/buildscripts">
             <!-- See: http://dojotoolkit.org/reference-guide/build/buildScript.html#build-buildscript -->
+            <!-- See: http://www.sitepen.com/blog/2008/04/02/dojo-mini-optimization-tricks-with-the-dojo-toolkit/ -->
             <arg value="action=clean,release" />
             <arg value="releaseName=${app.version}" />
             <arg value="version=maelzel-${app.version}" />
             <arg value="releaseDir=../../../../js/release" />
             <arg value="profileFile=../../../../js/twetailer.profile.js" />
             <arg value="localeList=en,fr" />
-            <arg value="optimize=shrinksafe.keepLines" />
+            <arg value="optimize=shrinksafe" />
             <arg value="cssOptimize=comments" />
-            <arg value="copyTests=false" />
+            <arg value="stripConsole=all" />
+            <arg value="mini=true" />
         </exec>
         <replaceregexp byline="true" flags="gm">
             <regexp pattern="dojo\.nls\." />
@@ -902,6 +904,14 @@
             <fileset
                 dir="src/war/js/release/${app.version}/ase"
                 includes="**/stores*.js"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="dojo\.nls\." />
+            <substitution expression="ase.nls.associate"/>
+            <fileset
+                dir="src/war/js/release/${app.version}/ase"
+                includes="**/associate*.js"
             />
         </replaceregexp>
     </target>

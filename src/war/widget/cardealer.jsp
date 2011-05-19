@@ -24,6 +24,8 @@
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
+    useCDN = true;
+
     // Locale detection
     String localeId = request.getParameter("lg");
     if (localeId == null) {

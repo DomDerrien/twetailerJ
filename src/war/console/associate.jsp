@@ -30,7 +30,10 @@
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
+    String appVersion = appSettings.getProductVersion();
     String cdnBaseURL = appSettings.getCdnBaseURL();
+
+    cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -63,34 +66,37 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <style type="text/css"><%
-        if (useCDN) {
-        %>
+    <% if (useCDN) {
+    %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
         @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/resources/claroGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/claro/Common.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/claro/EnhancedGrid.css";
+        @import "<%= cdnBaseURL %>/dojox/grid/enhanced/resources/claro/Filter.css";
         @import "<%= cdnBaseURL %>/dojox/layout/resources/FloatingPane.css";
         @import "<%= cdnBaseURL %>/dojox/layout/resources/ExpandoPane.css";
-        @import "<%= cdnBaseURL %>/dojox/widget/SortList/SortList.css";<%
-        }
-        else { // elif (!useCDN)
-        %>
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
-        @import "/js/dojo/dojox/grid/enhanced/resources/tundraEnhancedGrid.css";
-        @import "/js/dojo/dojox/layout/resources/FloatingPane.css";
-        @import "/js/dojo/dojox/layout/resources/ExpandoPane.css";
-        @import "/js/dojo/dojox/widget/SortList/SortList.css";<%
-        } // endif (useCDN)
-        %>
+        @import "<%= cdnBaseURL %>/dojox/widget/SortList/SortList.css";
         @import "/css/console.css";
-    </style>
+    </style><%
+    }
+    else { // elif (!useCDN)
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/Grid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/resources/claroGrid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/enhanced/resources/claro/Common.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/enhanced/resources/claro/EnhancedGrid.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/grid/enhanced/resources/claro/Filter.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/layout/resources/FloatingPane.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/layout/resources/ExpandoPane.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dojox/widget/SortList/SortList.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
+    } // endif (useCDN)
+    %>
 </head>
-<body class="tundra">
+<body class="claro">
 
     <div id="topBar"></div>
 
@@ -100,42 +106,26 @@
 
     <%
     if (useCDN) {
-    %><script type="text/javascript">
-    var djConfig = {
-        parseOnLoad: false,
-        isDebug: true,
-        useXDomain: true,
-        baseUrl: './',
-        modulePaths: {
-            dojo: '<%= cdnBaseURL %>/dojo',
-            dijit: '<%= cdnBaseURL %>/dijit',
-            dojox: '<%= cdnBaseURL %>/dojox',
-            twetailer: '/js/twetailer',
-            domderrien: '/js/domderrien'
-        },
-        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
-        locale: '<%= localeId %>'
-    };
-    </script>
-    <script src="<%= cdnBaseURL %>/dojo/dojo.xd.js" type="text/javascript"></script><%
+    %><script
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
+        type="text/javascript"
+    ></script><%
     }
     else { // elif (!useCDN)
-    %><script type="text/javascript">
-    var djConfig = {
-        parseOnLoad: false,
-        isDebug: false,
-        useXDomain: true,
-        baseUrl: '/js/dojo/dojo/',
-        modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' },
-        dojoBlankHtmlUrl: '/_includes/dojo_blank.html',
-        locale: '<%= localeId %>'
-    };
-    </script>
-    <script src="/js/dojo/dojo/dojo.js" type="text/javascript"></script><%
+    %><script
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <script
+        src="/js/release/<%= appVersion %>/ase/associate.js"
+        type="text/javascript"
+    ></script><%
     } // endif (useCDN)
     %>
 
-    <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+    <div id="topContainer" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false, style: 'height: 100%;'">
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="verticalId" value="" />
             <jsp:param name="localeId" value="<%= localeId %>" />
@@ -144,137 +134,88 @@
             <jsp:param name="consumerName" value="<%= consumer.getName() %>" />
             <jsp:param name="profilePageURL" value="javascript:twetailer.Associate.showProfile();" />
         </jsp:include>
-        <div dojoType="dijit.layout.BorderContainer" gutters="false" id="centerZone" region="center">
-            <div dojoType="dijit.layout.ContentPane" region="top" style="margin:10px 10px 0 10px;">
+        <div data-dojo-type="dijit.layout.BorderContainer" id="centerZone" data-dojo-props="gutters: false, region: 'center'">
+            <div data-dojo-type="dijit.layout.ContentPane" data-dojo-props="region: 'top', style: 'margin:10px 10px 0 10px;'">
                 <div style="float:right;">
                     <span id="automaticUpdateState" style="padding: 6px; vertical-align: middle;"></span>
-                    <select dojoType="dijit.form.Select" onchange="dijit.byId('demandList').filter({<%= Demand.STATE %>:this.value});" style="">
-                        <option value="*" selected="true"><%= LabelExtractor.get(ResourceFileId.third, "core_stateSelector_anyState", locale) %></option>
+                    <select data-dojo-type="dijit.form.Select" data-dojo-props="onChange: function() { dijit.byId('demandList').filter({ <%= Demand.STATE %>: this.value }); }">
+                        <option value="*" selected="selected"><%= LabelExtractor.get(ResourceFileId.third, "core_stateSelector_anyState", locale) %></option>
                         <option value="<%= State.opened %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_opened", locale) %></option>
                         <option value="<%= State.invalid %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_invalid", locale) %></option>
                         <option value="<%= State.published %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_published", locale) %></option>
                         <option value="<%= State.confirmed %>"><%= LabelExtractor.get(ResourceFileId.master, "cl_state_confirmed", locale) %></option>
                     </select>
                     <button
-                        busyLabel="<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>"
-                        dojoType="dojox.form.BusyButton"
-                        iconClass="silkIcon silkIconRefresh"
+                        data-dojo-props="busyLabel: '<%= LabelExtractor.get(ResourceFileId.third, "refreshing_button_state", locale) %>', iconClass: 'silkIcon silkIconRefresh', onClick: function() { twetailer.Associate.loadNewDemands(); }"
+                        data-dojo-type="dojox.form.BusyButton"
                         id="refreshButton"
-                        onclick="twetailer.Associate.loadNewDemands();"
                     ><%= LabelExtractor.get(ResourceFileId.third, "refresh_button", locale) %></button>
                 </div>
             </div>
-            <div dojoType="dijit.Menu" id="demandListCellMenu" style="display: none;">
-                <div dojoType="dijit.MenuItem" iconClass="silkIcon silkIconProposalAdd" onClick="twetailer.Associate.displayProposalForm();"><%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_createProposal", new String[] { "" }, locale) %></div>
-                <div disabled="true" dojoType="dijit.MenuItem" iconClass="silkIcon silkIconProposalRemove"><%= LabelExtractor.get(ResourceFileId.third, "core_cmenu_declineDemand", new String[] { "" }, locale) %></div>
-            </div>
-            <table
-                dojoType="dojox.grid.EnhancedGrid"
-                errorMessage="&lt;span class='dojoxGridError'&gt;<%= LabelExtractor.get(ResourceFileId.third, "core_dataGrid_loadingError", locale) %>&lt;/span&gt;"
-                id="demandList"
-                region="center"
-                rowMenu="cellMenu"
-                rowsPerPage="20"
-                sortFields="[{attribute: '<%= Demand.MODIFICATION_DATE %>',descending:true}]"
-                style="font-size:larger;margin:10px;border:1px solid lightgrey;background:transparent"
-            >
-                <thead>
-                    <tr>
-                           <th field="<%= Demand.KEY %>" formatter="twetailer.Associate.displayDemandKey" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_demandKey", locale) %></th>
-                           <th field="<%= Demand.LOCATION_KEY %>" formatter="twetailer.Common.displayLocale" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_locale", locale) %></th>
-                           <th field="<%= Demand.DUE_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_dueDate", locale) %></th>
-                           <%--th field="<%= Demand.EXPIRATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_expirationDate", locale) %></th--%>
-                           <th fields="<%= Demand.PROPOSAL_KEYS %>" formatter="twetailer.Associate.displayProposalKeys" styles="padding:2px 5px;" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_proposalKeys", locale) %></th>
-                           <th field="<%= Demand.QUANTITY %>" styles="padding:2px 5px;text-align:right;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_quantity", locale) %></th>
-                           <th fields="<%= Demand.HASH_TAGS %>" formatter="twetailer.Common.displayHashTags" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_hashTags", locale) %></th>
-                           <th
-                               fields="<%= Demand.CONTENT %>"
-                               x_formatter="twetailer.Common.displayCriteria"
-                               styles="padding:2px 5px;"
-                               width="30%"
-                           ><%= LabelExtractor.get(ResourceFileId.third, "core_theader_criteria", locale) %></th>
-                           <th field="<%= Demand.META_DATA %>" formatter="twetailer.Common.displayMetadata" styles="padding:2px 5px;" width="30%"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_metadata", locale) %></th>
-                           <th field="<%= Demand.STATE %>" styles="padding:2px 5px;"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_state", locale) %></th>
-                           <th field="<%= Demand.MODIFICATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_modificationDate", locale) %></th>
-                           <%--th field="<%= Demand.CREATION_DATE %>" formatter="twetailer.Common.displayDateTime" styles="padding:2px 5px;text-align:right;" width="140px"><%= LabelExtractor.get(ResourceFileId.third, "core_theader_creationDate", locale) %></th--%>
-                           <%--th
-                               cellType="dojox.grid.cells.Select"
-                               editable="true"
-                               field="status"
-                               formatter="cpwr.ConsoleLogic.displayParameterStatus"
-                               options="Not Set,Excluded,Always Included,Cache Bypasser"
-                               values="NotSet,Excluded,Included,CacheBypasser"
-                               width="20%"
-                           >Status</th--%>
-                    </tr>
-                </thead>
-            </table>
+            <div id="demandList"></div>
         </div>
-        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <div data-dojo-type="dijit.layout.ContentPane" id="footerZone" data-dojo-props="region: 'bottom'">
             <%= LabelExtractor.get(ResourceFileId.master, "product_rich_copyright", locale) %>
         </div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
-        execute="try{twetailer.Associate.updateProposal(arguments[0]);}catch(ex){alert('ex: '+ex);}"
         id="proposalForm"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_formTitle_creation", locale) %>"
+        data-dojo-type="dijit.Dialog"
+        data-dojo-props="execute: function() { try { twetailer.Associate.updateProposal(arguments[0]); } catch(ex) { alert('ex: '+ex); } }, title: '<%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_formTitle_creation", locale) %>'"
     >
-        <input dojoType="dijit.form.TextBox" type="hidden" id="demand.key" name="demandKey" />
-        <input dojoType="dijit.form.TextBox" type="hidden" id="demand.hashTags" name="hashTags" />
+        <input data-dojo-type="dijit.form.TextBox" data-dojo-props="type: 'hidden', name: 'demandKey'" id="demand.key" />
+        <input data-dojo-type="dijit.form.TextBox" data-dojo-props="type: 'hidden', name: 'hashTags'" id="demand.hashTags" />
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "core_demandInfo", locale) %></legend>
-            <table width="100%">
+            <table style="width: 100%">
                 <tr id="proposalForm.demand.hashTags">
                     <td align="right"><label for="demand.hashTags"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandHashTags", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.visibleHashTags" readonly="true" style="width:25em;" type="text" /></td>
+                    <td><input data-dojo-type="dijit.form.TextBox" id="demand.visibleHashTags" data-dojo-props="readOnly: true,  style: 'width:25em;'" /></td>
                 </tr>
                 <tr id="proposalForm.demand.content">
                     <td align="right"><label for="demand.content"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandCriteria", locale) %></label></td>
-                    <td><textarea dojoType="dijit.form.Textarea" id="demand.content" readonly="true" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;" type="text"></textarea></td>
+                    <td><textarea data-dojo-type="dijit.form.Textarea" id="demand.content" data-dojo-props="readOnly: true, rows: 3, style: 'width:100%;min-height:48px;font-family:\'Droid Sans\', arial, serif;font-size:12px;'"></textarea></td>
                 </tr>
                 <tr id="proposalForm.demand.metadata">
                     <td align="right"><label for="demand.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_demandForm_demandMetadata", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="demand.metadata" readonly="true" style="width:25em;" type="text" /></td>
+                    <td><input data-dojo-type="dijit.form.TextBox" id="demand.metadata" data-dojo-props="readOnly: true, style: 'width:25em;'" /></td>
                 </tr>
             </table>
         </fieldset>
         <fieldset class="entityInformation">
             <legend><%= LabelExtractor.get(ResourceFileId.third, "core_proposalInfo", locale) %></legend>
-            <table class="demandForm" width="100%">
+            <table class="demandForm" style="width: 100%">
                 <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalKey", locale) %></td>
-                    <td><input dojoType="dijit.form.NumberTextBox" id="proposal.key" name="key" readonly="true" style="width:6em;" type="text" /> </td>
+                    <td><input data-dojo-type="dijit.form.TextBox" id="proposal.key" data-dojo-props="name: 'key', readOnly: true, style: 'width:6em;'" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.quantity"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalQuantity", locale) %></label></td>
-                    <td><input constraints="{min:1,places:0}" dojoType="dijit.form.NumberSpinner" id="proposal.quantity" name="quantity" style="width:3em;" type="text" /> </td>
+                    <td><input data-dojo-type="dijit.form.NumberSpinner" id="proposal.quantity" data-dojo-props="constraints: {min:1,places:0}, name: 'quantity', style: 'width:3em;'" /> </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.time"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalDueDate", locale) %></label></td>
                     <td>
-                        <input dojoType="dijit.form.DateTextBox" id="proposal.date" name="date" required="true" type="text" />
-                        <input constraints="{visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}" dojoType="dijit.form.TimeTextBox" id="proposal.time" name="time" required="true" type="text" value="T07:00:00" />
+                        <input data-dojo-type="dijit.form.DateTextBox" id="proposal.date" data-dojo-props="name: 'date', required: true" />
+                        <input data-dojo-type="dijit.form.TimeTextBox" id="proposal.time" data-dojo-props="constraints: {visibleIncrement:'T00:30:00',visibleRange:'T02:00:00'}, name: 'time', required: true, value: 'T07:00:00'" />
                     </td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.price"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalPrice", locale) %></label></td>
-                    <td>$<input constraints="{min:0,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.price" name="price" placeholder="10.00" style="width:7em;" type="text"/></td>
+                    <td>$<input data-dojo-type="dijit.form.NumberSpinner" id="proposal.price" data-dojo-props="constraints: {min:0,places:2}, name: 'price', placeHolder: '10.00', style: 'width:7em;'" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.total"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalTotal", locale) %></label></td>
-                    <td>$<input constraints="{min:5.00,places:2}" dojoType="dijit.form.NumberSpinner" id="proposal.total" name="total" placeholder="11.57" required="true" style="width:7em;" type="text" /></td>
+                    <td>$<input data-dojo-type="dijit.form.NumberSpinner" id="proposal.total" data-dojo-props="constraints: {min:5.00,places:2}, name: 'total', placeHolder: '11.57', required: true, style: 'width:7em;'" /></td>
                 </tr>
                 <tr>
                     <td align="right"><label for="proposal.content"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalCriteria", locale) %></label></td>
                     <td>
                         <textarea
-                            dojoType="dijit.form.Textarea"
                             id="proposal.content"
-                            name="content"
-                            rows="3"
-                            style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;"
+                            data-dojo-type="dijit.form.Textarea"
+                            data-dojo-props="name: 'content', rows: 3, style: 'width:100%;min-height:48px;font-family:\'Droid Sans\', arial, serif;font-size:12px;'"
                         ></textarea><br/>
                     </td>
                 </tr>
@@ -282,85 +223,79 @@
                     <td align="right"><label for="proposal.metadata"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalMetadata", locale) %></label></td>
                     <td>
                         <textarea
-                            dojoType="dijit.form.Textarea"
                             id="proposal.metadata"
-                            name="metadata"
-                            rows="3"
-                            style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;"
+                            data-dojo-type="dijit.form.Textarea"
+                            data-dojo-props="name: 'metadata', rows: 3, style: 'width:100%;min-height:48px;font-family:\'Droid Sans\', arial, serif;font-size:12px;'"
                         ></textarea><br/>
                     </td>
                 </tr>
                 <tr class="existingAttribute">
                     <td align="right"><label for="proposal.score"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalScore", locale) %></label></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.score" readonly="true" style="width:100%;" type="text" /></td>
+                    <td><input data-dojo-type="dijit.form.TextBox" id="proposal.score" data-dojo-props="readOnly: true, style: 'width:100%;'" /></td>
                 </tr>
                 <tr class="existingAttribute">
                     <td align="right"><label for="proposal.comment"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalComment", locale) %></label></td>
-                    <td><textarea dojoType="dijit.form.Textarea" id="proposal.comment" readonly="true" rows="3" style="width:100%;min-height:48px;font-family:'Droid Sans', arial, serif;font-size:12px;" type="text"></textarea></td>
+                    <td><textarea data-dojo-type="dijit.form.Textarea" id="proposal.comment" data-dojo-props="readOnly: true, rows: 3, style: 'width:100%;min-height:48px;font-family:\'Droid Sans\', arial, serif;font-size:12px;'"></textarea></td>
                 </tr>
                 <tr class="existingAttribute">
                     <td align="right"><%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_proposalModificationDate", locale) %></td>
-                    <td><input dojoType="dijit.form.TextBox" id="proposal.modificationDate" readonly="true" style="width:10em;" type="text" /> </td>
+                    <td><input data-dojo-type="dijit.form.TextBox" id="proposal.modificationDate" data-dojo-props="readOnly: true, style: 'width:10em;'"" /> </td>
                 </tr>
             </table>
         </fieldset>
         <div style="text-align:center;">
-            <button class="updateButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormSubmitButton" onclick="return twetailer.Associate.validateMetadata('proposal.metadata') && dijit.byId('proposalForm').validate();" type="submit"></button>
-            <button class="existingAttribute" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalCancel" id="proposalFormCancelButton" onclick="twetailer.Associate.cancelProposal();" type="button"></button>
-            <button class="existingAttribute closeButton" dojoType="dijit.form.Button" iconClass="silkIcon silkIconProposalAccept" id="proposalFormCloseButton" onclick="twetailer.Associate.closeProposal();" type="button"></button>
-            <button dojoType="dijit.form.Button" iconClass="silkIcon silkIconClose" onclick="dijit.byId('proposalForm').hide();" type="button"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
+            <button data-dojo-type="dijit.form.Button" id="proposalFormSubmitButton" data-dojo-props="class: 'updateButton', iconClass: 'silkIcon silkIconProposalAccept', onClick: function() { return twetailer.Associate.validateMetadata('proposal.metadata') && dijit.byId('proposalForm').validate(); }, type: 'submit'" type="submit"></button>
+            <button data-dojo-type="dijit.form.Button" id="proposalFormCancelButton" data-dojo-props="class: 'existingAttribute', iconClass: 'silkIcon silkIconProposalCancel', onClick: twetailer.Associate.cancelProposal"></button>
+            <button data-dojo-type="dijit.form.Button" id="proposalFormCloseButton" data-dojo-props="class: 'existingAttribute closeButton', iconClass:' silkIcon silkIconProposalAccept', onClick: twetailer.Associate.closeProposal"></button>
+            <button data-dojo-type="dijit.form.Button" data-dojo-props="iconClass: 'silkIcon silkIconClose', onClick: function() { dijit.byId('proposalForm').hide(); }"><%= LabelExtractor.get(ResourceFileId.third, "closeDialog_button", locale) %></button>
         </div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
         id="aboutPopup"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>"
-        href="/_includes/about.jsp"
+        data-dojo-type="dijit.Dialog"
+        data-dojo-props="title: '<%= LabelExtractor.get(ResourceFileId.third, "about_dialog_title", locale) %>', href: '/_includes/about.jsp'"
     >
     </div>
 
     <div
-       color="darkgreen"
-       dojoType="dojox.widget.Standby"
        id="demandListOverlay"
-       target="demandList"
+       data-dojo-type="dojox.widget.Standby"
+       data-dojo-props="color: 'darkgreen', target: 'demandList'"
     ></div>
 
     <div
-       color="darkgreen"
-       dojoType="dojox.widget.Standby"
        id="proposalFormOverlay"
-       target="proposalForm"
+       data-dojo-type="dojox.widget.Standby"
+       data-dojo-props="color: 'darkgreen', target: 'proposalForm'"
     ></div>
 
     <div
-        dojoType="dijit.Dialog"
         id="locationMapDialog"
-        title="<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>"
+        data-dojo-type="dijit.Dialog"
+        data-dojo-props="title: '<%= LabelExtractor.get(ResourceFileId.third, "shared_map_preview_dialog_title", locale) %>'"
     >
         <div style="width:600px;height:400px;"><div id='mapPlaceHolder' style='width:100%;height:100%;'></div></div>
     </div>
 
     <div
-        dojoType="dijit.Dialog"
+        data-dojo-type="dijit.Dialog"
         id="userProfile"
         title="<%= LabelExtractor.get(ResourceFileId.third, "user_profile_dialogTitle", locale) %>"
     >
-        <form dojoType="dijit.form.Form" id="userProfileForm">
+        <form data-dojo-type="dijit.form.Form" id="userProfileForm">
             <div class="dijitDialogPaneContentArea" id="profileForms"></div>
             <div class="dijitDialogPaneActionBar" style="text-align: right; border-bottom: 1px solid #ccc; border-left: 1px solid #ccc; border-right: 1px solid #ccc; background-color: #f2f2f2;">
-                <button dojoType="dijit.form.Button" type="submit">OK</button>
-                <button dojoType="dijit.form.Button" type="button" onClick="dijit.byId('userProfile').hide();">Cancel</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="type: 'submit'">OK</button>
+                <button data-dojo-type="dijit.form.Button" data-dojo-props="onClick: function() { dijit.byId('userProfile').hide(); }">Cancel</button>
             </div>
         </form>
     </div>
 
     <div
-       color="darkgreen"
-       dojoType="dojox.widget.Standby"
        id="userProfileFormOverlay"
-       target="userProfileForm"
+       data-dojo-type="dojox.widget.Standby"
+       data-dojo-props="color: 'darkgreen', target: 'userProfileForm'"
     ></div>
 
     <script type="text/javascript">
@@ -372,29 +307,53 @@
         dojo.require('dijit.Dialog');
         dojo.require('dijit.layout.BorderContainer');
         dojo.require('dijit.layout.ContentPane');
-        dojo.require('dijit.layout.TabContainer');
+        // dojo.require('dijit.layout.TabContainer');
         dojo.require('dijit.form.Button');
-        dojo.require('dijit.form.CheckBox');
+        // dojo.require('dijit.form.CheckBox');
         // dojo.require('dijit.form.ComboBox');
         dojo.require('dijit.form.DateTextBox');
         dojo.require('dijit.form.Form');
         dojo.require('dijit.form.NumberSpinner');
-        dojo.require('dijit.form.NumberTextBox');
+        // dojo.require('dijit.form.NumberTextBox');
         dojo.require('dijit.form.Select');
         dojo.require('dijit.form.Textarea');
         dojo.require('dijit.form.TextBox');
         dojo.require('dijit.form.TimeTextBox');
+        // dojo.require('dijit.Menu');
+        // dojo.require('dijit.MenuItem');
         dojo.require('dojox.analytics.Urchin');
         dojo.require('dojox.form.BusyButton');
-        dojo.require('dojox.form.Rating');
+        // dojo.require('dojox.form.Rating');
         dojo.require('dojox.grid.EnhancedGrid');
         // dojo.require('dojox.layout.ExpandoPane');
         // dojo.require('dojox.secure');
         // dojo.require('dojox.widget.Portlet');
         dojo.require('dojox.widget.Standby');
         dojo.require('twetailer.Associate');
-        dojo.addOnLoad(function(){
+        dojo.addOnLoad(function() {
             dojo.parser.parse();
+            // Grid setup -- beginning -- Cf. http://trac.dojotoolkit.org/ticket/12820
+            var grid = new dojox.grid.EnhancedGrid({
+                    errorMessage: '&lt;span class="dojoxGridError"&gt;<%= LabelExtractor.get(ResourceFileId.third, "core_dataGrid_loadingError", locale) %>&lt;/span&gt;',
+                    region: 'center',
+                    rowsPerPage: 20,
+                    sortFields: [{attribute: '<%= Demand.MODIFICATION_DATE %>', descending: true }],
+                    structure: [
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_demandKey", locale) %>',        field:  '<%= Demand.KEY %>',               formatter: twetailer.Associate.displayDemandKey },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_dueDate", locale) %>',          field:  '<%= Demand.DUE_DATE %>',          formatter: twetailer.Common.displayDateTime,        styles: 'text-align: right;', width: '120px' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_proposalKeys", locale) %>',     fields: ['<%= Demand.PROPOSAL_KEYS %>'],   formatter: twetailer.Associate.displayProposalKeys, width: '120px' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_quantity", locale) %>',         field:  '<%= Demand.QUANTITY %>',          styles: 'text-align: right;',                       width: '80px' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_hashTags", locale) %>',         fields: ['<%= Demand.HASH_TAGS %>'],       formatter: twetailer.Common.displayHashTags },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_criteria", locale) %>',         field:  '<%= Demand.CONTENT %>',           width:  '30%' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_metadata", locale) %>',         field:  '<%= Demand.META_DATA %>',         formatter: twetailer.Common.displayMetadata,        width:  '30%' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_state", locale) %>',            field:  '<%= Demand.STATE %>' },
+                        { name: '<%= LabelExtractor.get(ResourceFileId.third, "core_theader_modificationDate", locale) %>', field:  '<%= Demand.MODIFICATION_DATE %>', formatter: twetailer.Common.displayDateTime,        styles: 'text-align: right;', width: '120px' }
+                    ]
+                },
+                dojo.byId('demandList')
+            );
+            grid.startup();
+            // Grid setup -- end
             twetailer.Associate.init('<%= localeId %>', <%= LocaleController.getJsonOfLanguageList() %>, 'automaticUpdateState');
             twetailer.Common.registerConsumer(<%= serializedConsumer.getStream() %>);
             twetailer.Common.registerSaleAssociate(<%= serializedAssociate.getStream() %>);

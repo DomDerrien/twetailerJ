@@ -28,11 +28,6 @@
         // Attach the contextual menu to the DataGrid instance
         // Note: initialization code grabbed in the dojo test file: test_grid_tooltip_menu.html
         _grid = dijit.byId('demandList');
-        dijit.byId('demandListCellMenu').bindDomNode(_grid.domNode);
-        _grid.onCellContextMenu = function(e) {
-            _gridCellNode = e.cellNode;
-            _gridRowIndex = e.rowIndex;
-        };
 
         // Fetch
         var dfd = _globalCommon.loadRemoteDemands(null, 'demandListOverlay', _queryPointOfView, null); // No modificationDate means "load all active Demands" & no filter on hash tag
@@ -299,11 +294,9 @@
             delete data.total;
         }
         data.demandKey = parseInt(data.demandKey);
-//        TODO: remove when the transition from criteria to content is completed
-//        data.criteria = data.criteria.split(/(?:\s|\n|,|;)+/);
         data.quantity = parseInt(data.quantity);
         data.dueDate = _globalCommon.toISOString(data.date, data.time);
-        data.metadata = dojo.trim(data.metadata);
+        if (data.metadata) { data.metadata = dojo.trim(data.metadata); }
 
         data.hashTags = data.hashTags.split(','); // Standard array delimiter
         if (data.demoMode) {

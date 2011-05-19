@@ -203,22 +203,51 @@
         <enhance_war war="${basedir}/src/war" includes="twetailer/dto/*.class" />
     </target>
 
-    <target name="step-stage-prepare-noCDN" unless="app.useCDN">
+    <target name="step-stage-prepare-withoutCDN" unless="app.useCDN">
         <copy todir="${temp.dir}/appengine-stage/js/release/${app.version}" overwrite="yes" includeemptydirs="false">
             <fileset dir="src/war/js/release/${app.version}">
                 <include name="**/*" />
-                <exclude name="dijit/themes/**/*"/>
-                <exclude name="dojox/**/*"/>
+                <exclude name="dijit/themes/**/*" />
+                <exclude name="dojox/**/*" />
+                <exclude name="**/*.uncompressed.js" />
+                <exclude name="**/*.commented.css" />
+                <exclude name="**/templates" />
             </fileset>
         </copy>
         <copy todir="${temp.dir}/appengine-stage/js/release/${app.version}" overwrite="yes" includeemptydirs="false">
             <fileset dir="src/war/js/release/${app.version}">
                 <include name="dijit/themes/*" />
-                <include name="dijit/themes/claro/**/*" />
+                <include name="dijit/themes/claro/claro.css" />
+                <include name="dijit/themes/claro/images/**/*" />
+                <include name="dijit/themes/claro/form/images/**/*" />
+                <include name="dijit/themes/claro/layout/images/**/*" />
                 <include name="dojox/data/**/*" />
                 <include name="dojox/grid/**/*" />
-                <include name="dojox/layout/**/Expando*" />
+                <include name="dojox/analytics/Urchin.js" />
+                <include name="dojox/layout/resources/**/*" />
+                <include name="dojox/widget/SortList/SortList.css" />
                 <include name="dojox/widget/Standby/images/loading.gif" />
+            </fileset>
+        </copy>
+        <copy todir="${temp.dir}/appengine-stage/js"  overwrite="yes" includeemptydirs="false">
+            <fileset dir="src/war/js">
+                <include name="index.html" />
+                <include name="domderrien/**/*" /> <!-- Still included while some JSP files have hard-coded 'useCDN=true;' -->
+                <include name="twetailer/**/*" />  <!-- Still included while some JSP files have hard-coded 'useCDN=true;' -->
+                <exclude name="release/**/*" />
+                <exclude name="dojo/**/*" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="step-stage-prepare-withCDN" if="app.useCDN">
+        <copy todir="${temp.dir}/appengine-stage/js" overwrite="yes" includeemptydirs="false">
+            <fileset dir="src/war/js">
+                <include name="index.html" />
+                <include name="domderrien/**/*" />
+                <include name="twetailer/**/*" />
+                <exclude name="release/**/*" />
+                <exclude name="dojo/**/*" />
             </fileset>
         </copy>
     </target>
@@ -234,14 +263,14 @@
                 <exclude name="CarDealers/" />
                 <exclude name="Common/" />
                 <exclude name="cardealer/" />
-                <exclude name="js/dojo/**/*" />
-                <exclude name="js/release/**/*" />
+                <exclude name="js/**" />
                 <exclude name="WEB-INF/appengine-generated/**" />
                 <exclude name="WEB-INF/classes/**/Test*.*" />
                 <exclude name="WEB-INF/classes/**/Mock*.*" />
             </fileset>
         </copy>
-        <antcall target="step-stage-prepare-noCDN" />
+        <antcall target="step-stage-prepare-withoutCDN" />
+        <antcall target="step-stage-prepare-withCDN" />
         <!-- Technics inspired by http://www.webapp-performance.com/general-tips/removing-unused-css-whitespace-with-ant-replaceregexp -->
         <echo message="Replacing multiple separators by one space" />
         <replaceregexp byline="true" flags="gm">
