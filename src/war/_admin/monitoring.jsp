@@ -1653,7 +1653,7 @@
     localModule.init = function() {
         dojo.query('.entityInformation>form>table').style('display','none');
         if (window.location.search) {
-            var params = dojo.queryToObject(window.location.search.slice(1));
+            var params = dojo.queryToObject(window.location.search.slice(1)), resetURL = false;
             if (params.type && params.key) {
                 if (!dojo.isArray(params.type)) {
                     params.type = [params.type];
@@ -1664,12 +1664,17 @@
                     var type = types[idx], key = keys[idx], id = type.toLowerCase() + '.key';
                     dijit.byId(id).set('value', key);
                     localModule.fetchEntity(id, type);
+                    resetURL - true;
                     ++ idx;
                 }
             }
             if (params.queryLocation) {
                 dijit.byId('queryLocation').set('value', params.queryLocation);
                 localModule.searchEntityKey('queryLocation', 'postalCode', 'Location', 'location.key', { 'countryCode': 'CA', 'centerOnly': true });
+                resetURL = true;
+            }
+            if (resetURL && window.history.replaceState) {
+                window.history.replaceState(null, 'Stable console', '/_admin/monitoring.jsp');
             }
         }
         dijit.byId('topContainer').resize();

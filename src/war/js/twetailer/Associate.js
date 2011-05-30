@@ -62,7 +62,7 @@
 
     /**
      * Helper trying to display the Proposal create pane for the specified demand.
-     * Can reschedule the pane openning if the console state is not yet stable.
+     * Can reschedule the pane opening if the console state is not yet stable.
      *
      * TODO: fix a limit in the number of retries
      */
@@ -76,6 +76,9 @@
         if (parameters.demand == null) { return; }
         if (_grid.store == null) { setTimeout(_processConsoleParameters, 1000); }
         module.displayProposalForm(_grid.store._getItemByIdentity(parameters.demand)._0, null);
+        if (window.history.replaceState) {
+            window.history.replaceState(null, 'Stable console', '/console/associate.jsp');
+        }
     };
 
     var _demandViewDecoration = "<span class='dijitReset dijitInline silkIcon silkIconDemandView'></span>${0}";
