@@ -94,6 +94,16 @@
     </filter-mapping>
 
     <servlet>
+        <servlet-name>oauthverifier</servlet-name>
+        <servlet-class>twetailer.j2ee.OAuthVerifierServlet</servlet-class>
+        <!--load-on-startup>1</load-on-startup-->
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>oauthverifier</servlet-name>
+        <url-pattern>/oauth</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>twetailer.j2ee.LoginServlet</servlet-class>
         <!--load-on-startup>1</load-on-startup-->

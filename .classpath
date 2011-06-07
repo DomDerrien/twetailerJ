@@ -76,4 +76,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="src/war/WEB-INF/classes"/>
+    <classpathentry kind="lib" path="deps/lib/signpost/signpost-core-1.2.1.1.jar"/>
+    <classpathentry kind="lib" path="deps/lib/signpost/signpost-jetty6-1.2.1.1.jar"/>
+    <classpathentry kind="lib" path="deps/lib/signpost/signpost-commonshttp4-1.2.1.1.jar"/>
 </classpath>

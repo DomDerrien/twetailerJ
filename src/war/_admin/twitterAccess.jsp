@@ -26,10 +26,12 @@
 %><%
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
+    String appVersion = appSettings.getProductVersion();
     boolean useCDN = appSettings.isUseCDN();
     String cdnBaseURL = appSettings.getCdnBaseURL();
 
     useCDN = true;
+    cdnBaseURL = "https://ajax.googleapis.com/ajax/libs/dojo/1.6"; // TODO: change at the application level
 
     // Locale detection
     Locale locale = LocaleController.getLocale(request);
@@ -44,34 +46,21 @@
     <meta name="copyright" content="<%= LabelExtractor.get(ResourceFileId.master, "product_copyright", locale) %>" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-    <%
-    if (useCDN) {
+    <% if (useCDN) {
     %><style type="text/css">
         @import "<%= cdnBaseURL %>/dojo/resources/dojo.css";
-        @import "<%= cdnBaseURL %>/dijit/themes/tundra/tundra.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/Grid.css";
-        @import "<%= cdnBaseURL %>/dojox/grid/resources/tundraGrid.css";
+        @import "<%= cdnBaseURL %>/dijit/themes/claro/claro.css";
         @import "/css/console.css";
     </style><%
     }
     else { // elif (!useCDN)
-    %><style type="text/css">
-        @import "/js/dojo/dojo/resources/dojo.css";
-        @import "/js/dojo/dijit/themes/tundra/tundra.css";
-        @import "/js/dojo/dojox/grid/resources/Grid.css";
-        @import "/js/dojo/dojox/grid/resources/tundraGrid.css";
-        @import "/css/console.css";
-    </style><%
+    %><link href="/js/release/<%= appVersion %>/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+    <link href="/js/release/<%= appVersion %>/dijit/themes/claro/claro.css" rel="stylesheet" type="text/css" />
+    <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
-    <style type="text/css">
-        .entityInformation td {
-            height: 24px;
-            vertical-align: middle;
-        }
-    </style>
 </head>
-<body class="tundra">
+<body class="claro">
 
     <div id="introFlash">
         <div id="introFlashWait"><span><%= LabelExtractor.get(ResourceFileId.third, "console_splash_screen_message", locale) %></span></div>
@@ -80,34 +69,38 @@
     <%
     if (useCDN) {
     %><script
-        djConfig="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
     }
     else { // elif (!useCDN)
     %><script
-        djConfig="parseOnLoad: false, isDebug: false, baseUrl: '/js/dojo/dojo/', modulePaths: { twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html'"
-        src="/js/dojo/dojo/dojo.js"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: false, baseUrl: '/js/release/<%= appVersion %>/dojo/', dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        src="/js/release/<%= appVersion %>/dojo/dojo.js"
+        type="text/javascript"
+    ></script>
+    <script
+        src="/js/release/<%= appVersion %>/ase/_admin.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
     %>
 
-    <div id="topContainer" dojoType="dijit.layout.BorderContainer" gutters="false" style="height: 100%;">
+    <div id="topContainer" data-dojo-type="dijit.layout.BorderContainer" data-dojo-props="gutters: false" style="height: 100%;">
         <jsp:include page="/_includes/banner_protected.jsp">
             <jsp:param name="pageForAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="isLoggedUserAssociate" value="<%= Boolean.FALSE.toString() %>" />
             <jsp:param name="consumerName" value="Administrator" />
         </jsp:include>
         <div
-            dojoType="dijit.layout.ContentPane"
             id="centerZone"
-            region="center"
+            data-dojo-type="dijit.layout.ContentPane"
+            data-dojo-props="region: 'center'"
         >
             <fieldset class="entityInformation" style="margin:5px;">
                 <legend>AnotherSocialEconomy Account</legend>
-                <button dojoType="dijit.form.Button" style="float:right;" onclick="location+='?getOAuthToken=true'" type="button">Get Application OAuth Token</button>
+                <button data-dojo-type="dijit.form.Button" style="float:right;" data-dojo-props="onClick: function() { location+='?getOAuthToken=true'; }, type: 'button'">Get Application OAuth Token</button><br/>
                 Consumer Key: <%= TwitterConnector.ASE_HUB_USER_KEY %><br />
                 Consumer Secret: <%= TwitterConnector.ASE_HUB_USER_SECRET %><br />
                 <br />
@@ -285,7 +278,7 @@
                 } %>
             </fieldset>
         </div>
-        <div dojoType="dijit.layout.ContentPane" id="footerZone" region="bottom">
+        <div data-dojo-type="dijit.layout.ContentPane" id="footerZone" data-dojo-props="region: 'bottom'">
             <%= LabelExtractor.get("product_rich_copyright", locale) %>
         </div>
     </div>
@@ -306,7 +299,7 @@
         // dojo.require('dijit.form.FilteringSelect');
         // dojo.require('dijit.form.NumberTextBox');
         // dojo.require('dijit.form.Textarea');
-        dojo.require('dijit.form.TextBox');
+        // dojo.require('dijit.form.TextBox');
         dojo.require('dojox.analytics.Urchin');
         dojo.addOnLoad(function(){
             dojo.parser.parse();

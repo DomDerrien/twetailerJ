@@ -1,3 +1,3 @@
 #!/bin/bash
 # Assume ${temp.dir} in build.xml file set to /tmp/webapp, in ${user.dir}/local.build.properties
-~/Tools/appengine-java-sdk-1.4.3/bin/appcfg.sh --email=dominique.derrien@gmail.com rollback /tmp/webapp/appengine-stage
+~/Tools/appengine-java-sdk-1.5.0/bin/appcfg.sh --email=dominique.derrien@gmail.com rollback /tmp/webapp/appengine-stage
