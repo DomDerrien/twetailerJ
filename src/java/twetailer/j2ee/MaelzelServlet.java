@@ -369,7 +369,8 @@ public class MaelzelServlet extends HttpServlet {
                             if (metadata != null && 0 < metadata.length() && !in.containsKey("debugMode")) {
                                 try {
                                     MessageGenerator msgGen = new MessageGenerator(Source.twitter, report.getHashTags(), LocaleValidator.getLocale(report.getLanguage()));
-                                    String message = msgGen.fetch(report).getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);
+                                    // TODO: fix the hard-coded name of the city!
+                                    String message = msgGen.fetch(report).put("city", "Toronto").getMessage(MessageId.REPORT_LANDING_PAGE_VISIT);
                                     if (reporterUrl != null && 0 < reporterUrl.length()) {
                                         int indexOfQuestionMark = reporterUrl.indexOf('?');
                                         if (-1 < indexOfQuestionMark) {

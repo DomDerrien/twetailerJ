@@ -688,11 +688,12 @@
             <note>
                 Message to publish about a landing page report
                 {report}: just posted demand
-                {source>shortUrl}: shortened URL of the landing page
+                {city}: name of the city concerned by the landing page
+                Note: the shortened URL of the landing page is appended to the message is there's enough place before the 140 character limit
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Someone is thinking about buying a {report>content} in the Montreal area.
+                    Someone is thinking about buying a {report>content} in the {city} area.
                 </seg>
             </tuv>
         </tu>
@@ -703,11 +704,12 @@
             <note>
                 Message to publish about a landing page report
                 {report}: just posted demand
-                {source>shortUrl}: shortened URL of the landing page
+                {city}: name of the city concerned by the landing page
+                Note: the shortened URL of the landing page is appended to the message is there's enough place before the 140 character limit
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Someone is thinking about buying a used {report>metadata>make} {report>metadata>model} in the Montreal area.
+                    Someone is thinking about buying a used {report>metadata>make} {report>metadata>model} in the {city} area.
                 </seg>
             </tuv>
         </tu>
@@ -718,11 +720,12 @@
             <note>
                 Message to publish about a landing page report
                 {report}: just posted demand
-                {source>shortUrl}: shortened URL of the landing page
+                {city}: name of the city concerned by the landing page
+                Note: the shortened URL of the landing page is appended to the message is there's enough place before the 140 character limit
             </note>
             <tuv xml:lang="en">
                 <seg>
-                    Someone is thinking about reserving a tee-off for {report>quantity} in the Montreal area.
+                    Someone is thinking about reserving a tee-off for {report>quantity} in the {city} area.
                 </seg>
             </tuv>
         </tu>

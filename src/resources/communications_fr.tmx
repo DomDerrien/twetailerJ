@@ -553,7 +553,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Quelqu'un envisage l'achat de {report>content} dans la région de Montréal.
+                    Quelqu'un envisage l'achat de {report>content} dans la région de {city}.
                 </seg>
             </tuv>
         </tu>
@@ -562,7 +562,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Quelqu'un envisage l'achat d'une {report>metadata>make} {report>metadata>model} dans la région de Montréal.
+                    Quelqu'un envisage l'achat d'une {report>metadata>make} {report>metadata>model} dans la région de {city}.
                 </seg>
             </tuv>
         </tu>
@@ -571,7 +571,7 @@
             <prop type="x-version">1</prop>
             <tuv xml:lang="fr">
                 <seg>
-                    Quelqu'un prépare la réservation d'un départ de golf pour {report>quantity} dans la région de Montréal.
+                    Quelqu'un prépare la réservation d'un départ de golf pour {report>quantity} dans la région de {city}.
                 </seg>
             </tuv>
         </tu>
