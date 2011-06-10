@@ -26,7 +26,14 @@
     import="twetailer.j2ee.LoginServlet"
     import="twetailer.validator.ApplicationSettings"
     import="twetailer.validator.CommandSettings.State"
+    import="twetailer.validator.MobileBrowserDetector"
 %><%
+    // Redirect mobile browsers
+    if (new MobileBrowserDetector(request).isMobileBrowser()) {
+        request.getRequestDispatcher("associate_m.jsp").forward(request, response);
+        return;
+    }
+
     // Application settings
     ApplicationSettings appSettings = ApplicationSettings.get();
     boolean useCDN = appSettings.isUseCDN();
