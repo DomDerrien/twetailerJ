@@ -169,7 +169,7 @@
     <div
         id="proposalForm"
         data-dojo-type="dijit.Dialog"
-        data-dojo-props="execute: function() { try { twetailer.Associate.updateProposal(arguments[0]); } catch(ex) { alert('ex: '+ex); } }, title: '<%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_formTitle_creation", locale) %>'"
+        data-dojo-props="execute: function() { twetailer.Associate.updateProposal(arguments[0]); }, title: '<%= LabelExtractor.get(ResourceFileId.third, "core_proposalForm_formTitle_creation", locale) %>'"
     >
         <input data-dojo-type="dijit.form.TextBox" data-dojo-props="type: 'hidden', name: 'demandKey'" id="demand.key" />
         <input data-dojo-type="dijit.form.TextBox" data-dojo-props="type: 'hidden', name: 'hashTags'" id="demand.hashTags" />

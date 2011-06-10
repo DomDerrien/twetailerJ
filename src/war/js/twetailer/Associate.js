@@ -278,7 +278,7 @@
      * @param {Object} data Set of attributes built from the <code>form</code> embedded in the dialog box.
      */
     module.updateProposal = function(data) {
-        if (isNaN(data.key)) {
+        if (data.key == "" || isNaN(data.key)) {
             delete data.key;
 
             var cachedProposal = _globalCommon.getCachedProposal(data.key);
