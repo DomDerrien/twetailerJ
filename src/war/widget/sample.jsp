@@ -26,7 +26,7 @@
     String width = request.getParameter("w");
     String height = request.getParameter("h");
     if (localeId == null) { localeId = "en"; }
-    if (width == null) { width = "200"; }
+    if (width == null) { width = "250"; }
     if (height == null) { height = "500"; }
 %>
 <html dir="ltr" lang="<%= localeId %>">
