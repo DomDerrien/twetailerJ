@@ -99,6 +99,21 @@ dependencies = {
                 'dojox.widget.Standby',
                 'twetailer.Associate'
             ]
+        },
+        {
+            name: "../ase/mobile.js",
+            resourceName: "ase.mobile",
+            layerDependencies: [
+            ],
+            dependencies: [
+                'dojox.mobile',
+                'dojox.mobile.TabBar',
+                'dojox.mobile.ScrollableView',
+                'dojox.mobile.app.TextBox',
+                'twetailer.m.DemandList',
+                'twetailer.m.ProposalList',
+                'twetailer.m.ProposalAdd'
+            ]
         }
     ],
 

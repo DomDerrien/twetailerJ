@@ -62,7 +62,7 @@
     <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     }
     else { // elif (!useCDN)
-    %><link href="/js/release/<%= appVersion %>/dojox/mobile/themes//<%= isAndroid ? "android/android" : "iphone/iphone" %>.css" rel="stylesheet" type="text/css" />
+    %><link href="/js/release/<%= appVersion %>/dojox/mobile/themes/<%= isAndroid ? "android/android" : "iphone/iphone" %>.css" rel="stylesheet" type="text/css" />
     <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
@@ -82,7 +82,7 @@
         type="text/javascript"
     ></script>
     <script
-        src="/js/release/<%= appVersion %>/ase/login_m.js"
+        src="/js/release/<%= appVersion %>/ase/mobile.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
@@ -107,27 +107,27 @@
             <li
                 clickable="true"
                 dojoType="dojox.mobile.ListItem"
-                icon="/images/icons/FaceBook-32.png" 
+                icon="/images/icons/FaceBook-32.png"
                 onClick="window.location='<%= FacebookConnector.bootstrapAuthUrl(request) %>'+escape(window.location);"
                 rightText="Go"
             ><%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_facebook", locale) %></li>
             <li
                 clickable="false"
                 dojoType="dojox.mobile.ListItem"
-                icon="/images/icons/Twitter-32.png" 
+                icon="/images/icons/Twitter-32.png"
                 style="background-color:#aaa;"
             ><%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_twitter", locale) %></li>
             <li
                 clickable="true"
                 dojoType="dojox.mobile.ListItem"
-                icon="/images/icons/Google-32.png" 
+                icon="/images/icons/Google-32.png"
                 onClick="window.location='/login?loginWith=google&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + escape(window.location);"
                 rightText="Go"
             ><%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_google", locale) %></li>
             <li
                 clickable="true"
                 dojoType="dojox.mobile.ListItem"
-                icon="/images/icons/Yahoo-red-32.png" 
+                icon="/images/icons/Yahoo-red-32.png"
                 onClick="window.location='/login?loginWith=yahoo&<%= LoginServlet.FROM_PAGE_URL_KEY %>=' + escape(window.location);"
                 rightText="Go"
             ><%= LabelExtractor.get(ResourceFileId.third, "login_provider_shortcut_yahoo", locale) %></li>

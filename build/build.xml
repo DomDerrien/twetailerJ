@@ -24,7 +24,7 @@
 
     <property name="app.version"
         description="Planned version of this build"
-        value="52"
+        value="54"
     />
 
     <property name="app.companyName"
@@ -913,6 +913,14 @@
             <fileset
                 dir="src/war/js/release/${app.version}/ase"
                 includes="**/associate*.js"
+            />
+        </replaceregexp>
+        <replaceregexp byline="true" flags="gm">
+            <regexp pattern="dojo\.nls\." />
+            <substitution expression="ase.nls.mobile"/>
+            <fileset
+                dir="src/war/js/release/${app.version}/ase"
+                includes="**/mobile*.js"
             />
         </replaceregexp>
     </target>

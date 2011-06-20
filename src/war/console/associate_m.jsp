@@ -79,7 +79,7 @@
     <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     }
     else { // elif (!useCDN)
-    %><link href="/js/release/<%= appVersion %>/dojox/mobile/themes//<%= isAndroid ? "android/android" : "iphone/iphone" %>.css" rel="stylesheet" type="text/css" />
+    %><link href="/js/release/<%= appVersion %>/dojox/mobile/themes/<%= isAndroid ? "android/android" : "iphone/iphone" %>.css" rel="stylesheet" type="text/css" />
     <link href="/css/console.css" rel="stylesheet" type="text/css" /><%
     } // endif (useCDN)
     %>
@@ -87,7 +87,7 @@
     <%
     if (useCDN) {
     %><script
-        data-dojo-config="parseOnLoad: false, isDebug: true, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
+        data-dojo-config="parseOnLoad: false, isDebug: false, useXDomain: true, baseUrl: './', modulePaths: { dojo: '<%= cdnBaseURL %>/dojo', dijit: '<%= cdnBaseURL %>/dijit', dojox: '<%= cdnBaseURL %>/dojox', twetailer: '/js/twetailer', domderrien: '/js/domderrien' }, dojoBlankHtmlUrl: '/_includes/dojo_blank.html', locale: '<%= localeId %>'"
         src="<%= cdnBaseURL %>/dojo/dojo.xd.js"
         type="text/javascript"
     ></script><%
@@ -99,7 +99,7 @@
         type="text/javascript"
     ></script>
     <script
-        src="/js/release/<%= appVersion %>/ase/associate_m.js"
+        src="/js/release/<%= appVersion %>/ase/mobile.js"
         type="text/javascript"
     ></script><%
     } // endif (useCDN)
@@ -108,11 +108,13 @@
     <script type="text/javascript">
         dojo.require('dojox.mobile.parser');
         dojo.require('dojox.mobile');
-        dojo.require("dojox.mobile.ScrollableView");
-        dojo.require("dojox.mobile.TabBar");
+        dojo.require('dojox.mobile.ScrollableView');
+        dojo.require('dojox.mobile.TabBar');
         dojo.require('dojox.mobile.app.TextBox');
         dojo.requireIf(!dojo.isWebKit, 'dojox.mobile.compat');
-        dojo.require('twetailer.m.DemandView');
+        dojo.require('twetailer.m.DemandList');
+        dojo.require('twetailer.m.ProposalList');
+        dojo.require('twetailer.m.ProposalAdd');
         dojo.ready(function() {
             dojox.mobile.parser.parse();
         });
@@ -124,6 +126,9 @@
         }
         .viewRefresh img   {
             margin-top: 6px;
+        }
+        .android .viewRefresh img   {
+            margin-top: 3px;
         }
 
         .mblScrollableViewContainer {
@@ -140,74 +145,72 @@
             height: auto;
         }
 
-        .demandActions {
+        .itemIcon, .itemActions {
+            float: left;
+            margin: 0 5px;
+        }
+        .itemActions {
             float: right;
-            padding-right: 10px;
+            margin-right: 10px;
+            text-align:center;
+            border: 1px inset #9CACC0;
+            border-radius: 5px;
+            -webkit-border-radius: 5px;
+        }
+        .itemIcon>img, .itemActions>a>img {
+            width: 24px;
+            height: 24px;
+            padding: 3px;
+        }
+        .itemActions>span {
+            font-size: 50%;
+            padding: 2px;
         }
 
-        .demandDetails {
-            padding-left: 32px;
+        .itemDetails {
         }
 
-        .demandOthers {
+        .itemOthers {
             color:#777;
             font-size:65%;
             font-weight:normal;
         }
+        .android .itemOthers {
+            color:#bbb;
+        }
 
-        .demandOthers span {
+        .itemOthers span {
             font-weight: bold;
         }
-
-        /* username formatting */
-        .tweetviewUser {
-            font-size:80%;
-        }
-
-        /* actual tweet text formatting */
-        .tweetviewText {
-            font-size:70%;
-            font-weight:normal;
-            padding-right:50px;
-            padding-bottom:10px;
-        }
-
-        .android .tweetviewText {
-            font-size:50%;
-        }
-
-
-        /* tweet time */
-        .tweetviewTime {
-            float:right;
-            color:#777;
-            font-size:65%;
-            font-weight:normal;
-            padding-right:10px;
-        }
-
-        /* clears floats at the end of the list item */
-        .tweetviewClear {
-            clear:both;
+        .android .itemOthers span {
+            color:#ddd;
         }
     </style>
 </head>
 <body>
 
-    <div id="demands" dojoType="twetailer.m.DemandView" selected="true">
+    <div id="demandList" dojoType="twetailer.m.DemandList" selected="true">
         <h1 dojoType="dojox.mobile.Heading">
             <div dojoType="dojox.mobile.ToolBarButton" class="mblDomButton viewRefresh" style="float:right;" icon="/js/twetailer/m/resources/images/refresh.png"></div>
             Published Demands
         </h1>
-        <ul dojoType="dojox.mobile.RoundRectList" class="viewList">
-        </ul>
+        <ul dojoType="dojox.mobile.RoundRectList" class="viewList"></ul>
     </div>
 
-    <div id="proposalAdd" dojoType="dojox.mobile.ScrollableView">
-        <h1 dojoType="dojox.mobile.Heading" back="Published Demands" moveTo="demands">Create Proposal</h1>
+    <div id="proposalList" dojoType="twetailer.m.ProposalList">
+        <h1 dojoType="dojox.mobile.Heading" back="Published Demands" moveTo="demandList">
+            <div dojoType="dojox.mobile.ToolBarButton" class="mblDomButton viewRefresh" style="float:right;" icon="/js/twetailer/m/resources/images/refresh.png"></div>
+            Associated Proposals
+        </h1>
+        <h3 id="messageProposalList" style="padding:0 5px"></h3>
+        <ul dojoType="dojox.mobile.RoundRectList" class="viewList"></ul>
+    </div>
+
+    <div id="proposalAdd" dojoType="twetailer.m.ProposalAdd">
+        <h1 dojoType="dojox.mobile.Heading" back="Associated Proposals" moveTo="proposalList">Create Proposal</h1>
         <div dojoType="dojox.mobile.RoundRect" shadow="true">
             <table width="100%">
-                <tr><th colspan="2">Demand summary</th></tr>
+                <tr><th colspan="2"><img src="/js/twetailer/m/resources/images/cart.png" style="width:24px;height:24px;vertical-align:middle;"/> Demand summary</th></tr>
                 <tr><td>Demand Key:</td><td id="demand.key"></td></tr>
                 <tr><td>Description:</td><td id="demand.content"></td></tr>
                 <tr><td>Due date:</th><td id="demand.dueDate"></td></tr>
@@ -215,7 +218,7 @@
         </div>
         <div dojoType="dojox.mobile.RoundRect" shadow="true">
             <table width="100%">
-                <tr><th colspan="2">Proposal composition</th></tr>
+                <tr><th colspan="2"><img src="/js/twetailer/m/resources/images/database.png" style="width:24px;height:24px;vertical-align:middle;"/> Proposal attributes</th></tr>
                 <tr><td>Quantity:</td><td><input dojoType="dojox.mobile.app.TextBox" trim="true" id="proposal.quantity" value="1" style="width:3em"></td></tr>
                 <tr><td>Unit price ($):</td><td><input dojoType="dojox.mobile.app.TextBox" trim="true" placeHolder="10.00" id="proposal.price" value="" style="width:7em"> <span style="color:#aaa;font-size:65%">(Optional)</span></td></tr>
                 <tr><td>Total cost ($):</td><td><input dojoType="dojox.mobile.app.TextBox" trim="true" placeHolder="11.57" id="proposal.total" value="" style="width:7em"></td></tr>
@@ -223,7 +226,7 @@
             </table>
         </div>
         <div dojoType="dojox.mobile.RoundRect" shadow="true" style="text-align:center">
-            <button dojoType="dojox.mobile.Button">Create</button>
+            <button dojoType="dojox.mobile.Button" id="proposalCreate"><img src="/js/twetailer/m/resources/images/database_add.png"/> Create</button>
         </div>
     </div>
 
@@ -235,38 +238,5 @@
         <li dojoType="dojox.mobile.TabBarButton" iconPos1="0,58,29,30" iconPos2="29,58,29,30" moveTo="settings">Settings</li>
     </ul>
     -->
-
-    <!--
-    // From: http://dojotoolkit.org/documentation/tutorials/1.6/mobile/tweetview/getting_started/
-
-    <div id="settings" dojoType="dojox.mobile.View" selected="true">
-        <h1 dojoType="dojox.mobile.Heading">"Homepage" View</h1>
-        <ul dojoType="dojox.mobile.RoundRectList">
-            <li dojoType="dojox.mobile.ListItem" icon="images/icon-1.png">Airplane Mode<div class="mblItemSwitch" dojoType="dojox.mobile.Switch"></div></li>
-            <li dojoType="dojox.mobile.ListItem" icon="images/icon-2.png" rightText="mac">Wi-Fi</li>
-            <li dojoType="dojox.mobile.ListItem" icon="images/icon-3.png" rightText="AcmePhone" moveTo="general">Carrier</li>
-        </ul>
-    </div>
-
-    <div id="general" dojoType="dojox.mobile.View">
-        <h1 dojoType="dojox.mobile.Heading" back="Settings" moveTo="settings">General View</h1>
-        <ul dojoType="dojox.mobile.RoundRectList">
-            <li dojoType="dojox.mobile.ListItem" moveTo="about">About</li>
-            <li dojoType="dojox.mobile.ListItem" rightText="2h 40m" moveTo="about">Usage</li>
-        </ul>
-    </div>
-
-    <div id="about" dojoType="dojox.mobile.View">
-        <h1 dojoType="dojox.mobile.Heading" back="General" moveTo="general">About</h1>
-        <h2 dojoType="dojox.mobile.RoundRectCategory">Generic Mobile Device</h2>
-        <ul dojoType="dojox.mobile.RoundRectList">
-            <li dojoType="dojox.mobile.ListItem" rightText="AcmePhone">Network</li>
-            <li dojoType="dojox.mobile.ListItem" rightText="AcmePhone">Line</li>
-            <li dojoType="dojox.mobile.ListItem" rightText="1024">Songs</li>
-            <li dojoType="dojox.mobile.ListItem" rightText="10">Videos</li>
-        </ul>
-    </div>
-    -->
-
 </body>
 </html>
