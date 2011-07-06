@@ -267,7 +267,7 @@ public class ProposalSteps extends BaseSteps {
      * Helper fetching a list of parameters for a query
      *
      * @param parameters bag of parameters proposed by a connector
-     * @return Prefetch list of query parameters
+     * @return Pre-fetch list of query parameters
      */
     protected static Map<String, Object> prepareQueryForSelection(JsonObject parameters) {
         Map<String, Object> queryFilters = new HashMap<String, Object>();
@@ -278,6 +278,9 @@ public class ProposalSteps extends BaseSteps {
 
         // String fields
         processStringFilter(Command.HASH_TAGS, parameters, queryFilters);
+
+        // Key field
+        processLongFilter(Proposal.DEMAND_KEY, parameters, queryFilters);
 
         // Special fields
         if (!parameters.containsKey(BaseRestlet.ANY_STATE_PARAMETER_KEY)) {
